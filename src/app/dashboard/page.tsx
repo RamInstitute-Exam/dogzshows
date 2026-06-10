@@ -315,7 +315,7 @@ export default function DashboardPage() {
                 <div className="p-5 pt-0">
                   <div className="pt-4 border-t border-gray-100 flex items-center justify-end space-x-3 text-xs font-bold">
                     <button
-                      onClick={() => router.push(`/dashboard/edit/${dog.id}`)}
+                      onClick={() => router.push(`/dashboard/edit?id=${dog.id}`)}
                       className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5 mr-1" />

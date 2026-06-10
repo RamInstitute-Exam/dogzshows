@@ -1,64 +1,79 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../lib/api';
 import { useAuth } from '../../context/AuthContext';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Mail, Lock, Loader2, UserPlus, Dog, ShieldAlert } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Mail, Lock, Loader2, ArrowRight, Dog } from 'lucide-react';
 
-export default function RegisterPage() {
+export default function LoginClient() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('USER'); // Role support (USER / ADMIN / BREEDER)
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
+  const { login } = useAuth();
+  
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('registered') === 'true') {
+      setSuccessMsg('Account created successfully! Please sign in.');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
+    setSuccessMsg('');
     setLoading(true);
 
     try {
-      // In normal Express, we pass email and password, we can pass role as well
-      await api.post('/auth/register', { email, password, role });
-      router.push('/login?registered=true');
+      const response = await api.post('/auth/login', { email, password });
+      const { token, role } = response.data;
+      login(token, { userId: 'unknown', email, role: role || 'USER' });
+      router.push('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to register. Please check your credentials or network connection.');
+      setError(err.response?.data?.error || 'Failed to login. Please check your credentials.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleForgotPassword = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setSuccessMsg('Reset password verification link has been dispatched to your email.');
+  };
+
   return (
     <div className="flex-grow min-h-[85vh] flex items-center justify-center py-16 px-4 relative overflow-hidden bg-slate-950">
-      {/* Glow balls */}
-      <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      {/* Dynamic Back-glow shapes */}
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-      {/* Glass Card */}
+      {/* Glassmorphic Form Card */}
       <div className="max-w-md w-full bg-white/10 backdrop-blur-lg border border-white/10 p-10 rounded-3xl shadow-2xl relative z-10 text-white">
         
-        {/* Header */}
+        {/* Logo Badge */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-14 h-14 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg mb-4">
-            <UserPlus className="h-7 w-7 text-white" />
+            <Dog className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight">Create Account</h2>
-          <p className="text-gray-400 text-xs mt-1.5 font-semibold">Join verified adopters & shelters network</p>
+          <h2 className="text-3xl font-extrabold tracking-tight">Welcome Back</h2>
+          <p className="text-gray-400 text-xs mt-1.5 font-semibold">Sign in to list and adopt companions</p>
         </div>
 
         {error && (
           <div className="bg-rose-500/10 text-rose-400 p-4 rounded-xl text-xs font-bold border border-rose-500/20 mb-6">
             {error}
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="bg-emerald-500/10 text-emerald-400 p-4 rounded-xl text-xs font-bold border border-emerald-500/20 mb-6">
+            {successMsg}
           </div>
         )}
 
@@ -79,25 +94,12 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-4xs font-bold uppercase tracking-wider text-gray-400 mb-2">I want to register as a</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 focus:border-orange-500 rounded-xl px-4 py-3.5 focus:outline-none transition-all text-xs font-semibold text-white"
-            >
-              <option value="USER">Standard Adopter (Find dogs)</option>
-              <option value="BREEDER">Rescue Shelter / Breeder (List dogs)</option>
-            </select>
-          </div>
-
-          <div>
             <label className="block text-4xs font-bold uppercase tracking-wider text-gray-400 mb-2">Password</label>
             <div className="relative">
               <Lock className="h-4 w-4 absolute left-3.5 top-3.5 text-gray-400" />
               <input
                 type="password"
                 required
-                minLength={6}
                 className="w-full bg-white/5 border border-white/10 focus:border-orange-500 rounded-xl pl-10 pr-4 py-3.5 focus:outline-none transition-all text-xs font-semibold placeholder-gray-500 focus:bg-white/10 text-white"
                 placeholder="••••••••"
                 value={password}
@@ -106,20 +108,21 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-4xs font-bold uppercase tracking-wider text-gray-400 mb-2">Confirm Password</label>
-            <div className="relative">
-              <Lock className="h-4 w-4 absolute left-3.5 top-3.5 text-gray-400" />
+          <div className="flex items-center justify-between text-xs pt-1">
+            <label className="flex items-center text-gray-400 font-semibold cursor-pointer select-none">
               <input
-                type="password"
-                required
-                minLength={6}
-                className="w-full bg-white/5 border border-white/10 focus:border-orange-500 rounded-xl pl-10 pr-4 py-3.5 focus:outline-none transition-all text-xs font-semibold placeholder-gray-500 focus:bg-white/10 text-white"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                type="checkbox"
+                className="h-4 w-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-0 mr-2"
               />
-            </div>
+              <span>Remember me</span>
+            </label>
+            <a 
+              href="#" 
+              onClick={handleForgotPassword}
+              className="font-bold text-orange-400 hover:text-orange-500 transition-colors"
+            >
+              Forgot password?
+            </a>
           </div>
 
           <button
@@ -131,24 +134,24 @@ export default function RegisterPage() {
               <Loader2 className="h-4.5 w-4.5 animate-spin" />
             ) : (
               <>
-                <span>Create Account</span>
-                <UserPlus className="ml-2 h-4 w-4" />
+                <span>Sign In</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
               </>
             )}
           </button>
         </form>
 
-        {/* Dividers */}
+        {/* Brand Dividers */}
         <div className="relative my-8 text-center text-4xs font-bold uppercase tracking-wider text-gray-500">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-          <span className="bg-slate-900 px-3 relative z-10">Or register with</span>
+          <span className="bg-slate-900 px-3 relative z-10">Or continue with</span>
         </div>
 
-        {/* Social buttons */}
+        {/* Social Buttons */}
         <div className="grid grid-cols-2 gap-4">
           <button 
             type="button"
-            onClick={() => alert('Social registration registers credentials with client portals.')}
+            onClick={() => alert('Social authentication triggers client authorization pipelines.')}
             className="flex items-center justify-center space-x-2 py-2.5 border border-white/10 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-xs font-bold cursor-pointer"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -158,7 +161,7 @@ export default function RegisterPage() {
           </button>
           <button 
             type="button"
-            onClick={() => alert('Social registration registers credentials with client portals.')}
+            onClick={() => alert('Social authentication triggers client authorization pipelines.')}
             className="flex items-center justify-center space-x-2 py-2.5 border border-white/10 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-xs font-bold cursor-pointer"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -169,9 +172,9 @@ export default function RegisterPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-8 font-semibold">
-          Already registered?{' '}
-          <Link href="/login" className="font-extrabold text-orange-400 hover:text-orange-500 transition-colors">
-            Sign in here
+          Don't have an account yet?{' '}
+          <Link href="/register" className="font-extrabold text-orange-400 hover:text-orange-500 transition-colors">
+            Sign up now
           </Link>
         </p>
       </div>

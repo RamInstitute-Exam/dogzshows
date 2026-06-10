@@ -1,67 +1,120 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useAuth } from '../context/AuthContext';
-import { Dog, LogOut, User as UserIcon } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Camera, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const navLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'Photo Gallery', href: '/photos' },
+    { name: 'Video Gallery', href: '/videos' },
+    { name: 'Show Entries', href: '/entries' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact Us', href: '/contact' },
+  ];
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <Link href="/" className="flex items-center space-x-2">
-              <Dog className="h-8 w-8 text-indigo-600" />
-              <span className="font-bold text-xl text-gray-900 tracking-tight">DogProfiles</span>
-            </Link>
-            <div className="hidden md:flex space-x-6">
-              <Link href="/about" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">
-                About Us
-              </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">
-                Contact
-              </Link>
-            </div>
-          </div>
+    <nav className="fixed w-full top-0 z-50 transition-all duration-300 bg-white border-b border-gray-200 shadow-sm py-3">
+      <div className="max-w-[1400px] mx-auto px-6">
+        <div className="flex justify-between items-center h-12">
           
-          <div className="flex items-center space-x-4">
-            {user ? (
-              <>
-                {user.role === 'ADMIN' && (
-                  <Link href="/admin" className="text-purple-600 hover:text-purple-800 font-bold flex items-center space-x-1 transition-colors bg-purple-50 px-3 py-1 rounded-md border border-purple-100 mr-2">
-                    <span>Admin Panel</span>
-                  </Link>
-                )}
-                <Link href="/dashboard" className="text-gray-600 hover:text-indigo-600 font-medium flex items-center space-x-1 transition-colors">
-                  <UserIcon className="h-5 w-5" />
-                  <span>{user.email.split('@')[0]}</span>
-                </Link>
-                <button
-                  onClick={logout}
-                  className="flex items-center space-x-1 text-gray-500 hover:text-red-600 font-medium transition-colors"
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2 group z-50 relative">
+            <div className="bg-brand-orange p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <Camera className="h-5 w-5 text-white" />
+            </div>
+            <span className={cn(
+              "font-outfit font-extrabold text-2xl tracking-tight transition-colors duration-300 text-gray-900"
+            )}>
+              JuztDog <span className="font-light">Media</span>
+            </span>
+          </Link>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex space-x-1 relative">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link 
+                  key={link.name} 
+                  href={link.href} 
+                  className={cn(
+                    "relative px-4 py-2 rounded-full font-medium transition-all duration-300 text-sm",
+                    isActive 
+                      ? "text-[#F97316]" 
+                      : "text-gray-600 hover:text-[#F97316]"
+                  )}
                 >
-                  <LogOut className="h-5 w-5" />
-                  <span>Logout</span>
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">
-                  Sign In
+                  <span className="relative z-10">{link.name}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-nav-pill"
+                      className="absolute inset-0 rounded-full -z-0 bg-orange-50"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </Link>
-                <Link
-                  href="/register"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full font-medium transition-all shadow-md hover:shadow-lg"
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
+              );
+            })}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="flex items-center md:hidden z-50 relative">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-full transition-colors text-gray-900 hover:bg-gray-100"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-xl overflow-hidden"
+          >
+            <div className="px-4 py-6 flex flex-col space-y-2">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={cn(
+                      "px-4 py-3 rounded-xl font-medium transition-colors text-base",
+                      isActive 
+                        ? "bg-[#F97316] text-white" 
+                        : "text-gray-700 hover:bg-orange-50 hover:text-[#F97316]"
+                    )}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

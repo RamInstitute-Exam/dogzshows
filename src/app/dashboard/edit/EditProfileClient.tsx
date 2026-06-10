@@ -1,16 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ProtectedRoute from '../../../../components/ProtectedRoute';
-import api, { getImageUrl } from '../../../../lib/api';
-import { useRouter } from 'next/navigation';
-import { use } from 'react';
+import ProtectedRoute from '../../../components/ProtectedRoute';
+import api, { getImageUrl } from '../../../lib/api';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, ArrowLeft, Image as ImageIcon, X } from 'lucide-react';
 import Link from 'next/link';
 
-export default function EditProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default function EditProfileClient() {
   const router = useRouter();
-  const { id } = use(params);
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
   
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);

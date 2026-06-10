@@ -455,7 +455,7 @@ export default function SearchPage() {
 
               <div className="md:ml-auto flex-shrink-0">
                 <Link
-                  href={`/dogs/${aiRecommendation.id}`}
+                  href={`/dogs/detail?id=${aiRecommendation.id}`}
                   className="bg-white hover:bg-gray-100 text-indigo-950 font-bold px-6 py-3 rounded-xl transition-all shadow-md flex items-center space-x-1.5 text-xs cursor-pointer"
                 >
                   <span>Interact Profile</span>
@@ -499,7 +499,7 @@ export default function SearchPage() {
                     return (
                       <Link
                         key={dog.id}
-                        href={`/dogs/${dog.id}`}
+                        href={`/dogs/detail?id=${dog.id}`}
                         onClick={() => handleRecordView(dog)}
                         className="group bg-white rounded-2xl shadow-xs hover:shadow-xl hover:-translate-y-1 border border-gray-200/60 overflow-hidden flex flex-col h-full transition-all duration-300 relative"
                       >
@@ -582,7 +582,7 @@ export default function SearchPage() {
                     return (
                       <Link
                         key={dog.id}
-                        href={`/dogs/${dog.id}`}
+                        href={`/dogs/detail?id=${dog.id}`}
                         onClick={() => handleRecordView(dog)}
                         className="group bg-white rounded-2xl border border-gray-200/60 shadow-xs hover:shadow-md transition-shadow duration-300 flex flex-col sm:flex-row overflow-hidden"
                       >
@@ -694,7 +694,7 @@ export default function SearchPage() {
                 {recentlyViewed.map((dog) => (
                   <Link
                     key={dog.id}
-                    href={`/dogs/${dog.id}`}
+                    href={`/dogs/detail?id=${dog.id}`}
                     className="group flex items-center space-x-2.5 bg-white p-2.5 rounded-xl border border-gray-150/80 shadow-3xs hover:border-indigo-200 transition-colors"
                   >
                     <div className="h-10 w-10 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">

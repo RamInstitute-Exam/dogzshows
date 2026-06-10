@@ -1,169 +1,166 @@
 'use client';
 
-import { useState } from 'react';
-import api from '../../lib/api';
-import { Mail, MessageSquare, User, Loader2, Send, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Phone, Mail, MapPin, MessageCircle, Clock, ChevronDown } from 'lucide-react';
+import Button from '../../components/ui/Button';
 
-export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    
-    try {
-      await api.post('/contact', formData);
-      setSuccess(true);
-      setFormData({ name: '', email: '', message: '' });
-    } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.error || 'Failed to send message. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function ContactUs() {
   return (
-    <div className="bg-gray-50 min-h-screen py-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-brand-light pt-24 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-            Get in Touch
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Have questions about our platform, need help with your account, or just want to say hi? We'd love to hear from you.
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h1 className="text-4xl md:text-6xl font-outfit font-extrabold text-brand-dark mb-6 tracking-tight">Get In Touch</h1>
+          <p className="text-xl text-gray-500 font-medium">
+            Booking for an upcoming dog show or need a private studio session for your champion? We'd love to hear from you.
           </p>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
+        {/* Contact Split Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
           
-          {/* Contact Info Sidebar */}
-          <div className="bg-indigo-900 p-10 md:w-2/5 text-white flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-indigo-800 rounded-full opacity-50 blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-48 h-48 bg-purple-800 rounded-full opacity-50 blur-3xl"></div>
-            
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-2">Contact Information</h3>
-              <p className="text-indigo-200 mb-12">Fill out the form and our team will get back to you within 24 hours.</p>
+          {/* Contact Details & Map */}
+          <div className="space-y-8">
+            <div className="bg-brand-darker text-white p-10 rounded-[2.5rem] shadow-xl">
+              <h2 className="text-2xl font-bold font-outfit mb-8">Contact Information</h2>
               
-              <div className="space-y-8">
-                <div className="flex items-start">
-                  <Mail className="w-6 h-6 text-indigo-300 mt-1 mr-4" />
-                  <div>
-                    <p className="font-medium">Email Us</p>
-                    <p className="text-indigo-200 mt-1">support@dogprofiles.com</p>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-brand-orange" />
                   </div>
+                  <div>
+                    <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">Phone</p>
+                    <p className="font-medium text-lg">+91 98765 43210</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-brand-orange" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">Email</p>
+                    <p className="font-medium text-lg">hello@juztdogmedia.com</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-brand-orange" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">Office</p>
+                    <p className="font-medium text-lg leading-relaxed">
+                      123 Photography Lane, Studio District<br />
+                      Bangalore, Karnataka 560001
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-brand-orange" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">Business Hours</p>
+                    <p className="font-medium text-lg">Mon - Sat: 9:00 AM - 7:00 PM</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-10 pt-8 border-t border-white/10">
+                <button className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
+                  <MessageCircle className="w-5 h-5" /> Chat on WhatsApp
+                </button>
+              </div>
+            </div>
+
+            {/* Google Map Mock */}
+            <div className="w-full h-64 bg-gray-200 rounded-[2.5rem] overflow-hidden border border-gray-300 relative group">
+              <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800" alt="Map View" className="w-full h-full object-cover opacity-60" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="bg-white px-4 py-2 rounded-lg premium-shadow text-brand-dark font-bold text-sm flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-brand-orange" /> View on Google Maps
                 </div>
               </div>
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="p-10 md:w-3/5">
-            {success ? (
-              <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-2">
-                  <CheckCircle2 className="w-8 h-8" />
+          <div className="bg-white p-10 rounded-[2.5rem] premium-shadow border border-gray-100">
+            <h2 className="text-3xl font-bold font-outfit text-brand-dark mb-2">Send a Message</h2>
+            <p className="text-gray-500 font-medium mb-8">Fill out the form below and we'll get back to you within 24 hours.</p>
+            
+            <form className="space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">First Name</label>
+                  <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" placeholder="John" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Message Sent!</h3>
-                <p className="text-gray-500">Thank you for reaching out. We will get back to you as soon as possible.</p>
-                <button 
-                  onClick={() => setSuccess(false)}
-                  className="mt-6 text-indigo-600 font-medium hover:text-indigo-800 transition-colors"
-                >
-                  Send another message
-                </button>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
+                  <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" placeholder="Doe" />
+                </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {error && (
-                  <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100">
-                    {error}
-                  </div>
-                )}
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                    <User className="w-4 h-4 mr-2 text-gray-400" />
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white"
-                    placeholder="John Doe"
-                  />
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                    <Mail className="w-4 h-4 mr-2 text-gray-400" />
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white"
-                    placeholder="john@example.com"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
+                <input type="email" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" placeholder="john@example.com" />
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                    <MessageSquare className="w-4 h-4 mr-2 text-gray-400" />
-                    Message
-                  </label>
-                  <textarea
-                    name="message"
-                    required
-                    rows={5}
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white resize-none"
-                    placeholder="How can we help you?"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Service Required</label>
+                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all appearance-none text-gray-600">
+                  <option>Select a service...</option>
+                  <option>Dog Show Photography Coverage</option>
+                  <option>Studio Pet Portrait</option>
+                  <option>Event Videography</option>
+                  <option>Poster & Graphic Design</option>
+                  <option>General Inquiry</option>
+                </select>
+              </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-70 transition-all shadow-md hover:shadow-lg"
-                >
-                  {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5 mr-2" />
-                      Send Message
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Message</label>
+                <textarea rows={5} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all resize-none" placeholder="Tell us about your event or dog..."></textarea>
+              </div>
+
+              <Button size="lg" className="w-full h-14 text-lg mt-4">
+                Send Message
+              </Button>
+            </form>
+          </div>
+
+        </div>
+
+        {/* FAQ Section */}
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-extrabold font-outfit text-brand-dark mb-4">Frequently Asked Questions</h2>
+          </div>
+          
+          <div className="space-y-4">
+            {[
+              { q: 'How early should we book for a dog show?', a: 'For national or major championship shows, we recommend booking our team at least 2 months in advance to guarantee availability and allow for pre-event marketing material design.' },
+              { q: 'Do you provide raw photos/videos?', a: 'We pride ourselves on the final polished product. Therefore, we do not provide RAW unedited files. All packages include high-resolution edited images that reflect our brand quality.' },
+              { q: 'Can you cover shows outside of India?', a: 'Yes! While based in India, our team frequently travels internationally for major FCI and specialty shows. Travel and accommodation fees will apply.' }
+            ].map((faq, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-2xl p-6 premium-shadow">
+                <div className="flex justify-between items-center cursor-pointer">
+                  <h3 className="font-bold text-brand-dark text-lg">{faq.q}</h3>
+                  <ChevronDown className="w-5 h-5 text-brand-orange" />
+                </div>
+                <div className="mt-4 text-gray-500 font-medium leading-relaxed">
+                  {faq.a}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
       </div>
-    </div>
+    </main>
   );
 }
