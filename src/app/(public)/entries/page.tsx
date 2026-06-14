@@ -1,0 +1,375 @@
+'use client';
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar, MapPin, Trophy, Upload, CheckCircle, ChevronRight, FileText, IndianRupee, Clock, Share2, Bookmark, Users, Navigation } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+// Mock Data
+const SHOWS = [
+  { 
+    id: 1, 
+    title: 'All India Championship Dog Show 2026', 
+    date: 'October 15-16, 2026', 
+    venue: 'Ooty Gymkhana Club',
+    location: 'Ooty, Tamil Nadu', 
+    status: 'open', 
+    fee: 1500,
+    deadline: 'Oct 01, 2026',
+    organizer: 'South India Kennel Club',
+    participants: 450,
+    description: 'Join us for the premier championship dog show in the beautiful hills of Ooty. Featuring international judges and premium facilities.',
+    image: '/images/events_banner.png'
+  },
+  { 
+    id: 2, 
+    title: 'National Working Dog Specialty', 
+    date: 'November 22, 2026', 
+    venue: 'Bangalore Palace Grounds',
+    location: 'Bangalore, Karnataka', 
+    status: 'open', 
+    fee: 2000,
+    deadline: 'Nov 10, 2026',
+    organizer: 'Working Dog Federation',
+    participants: 320,
+    description: 'A specialized showcase for working breeds. Watch incredible displays of obedience, agility, and breed standard conformation.',
+    image: '/images/about_banner.png'
+  },
+  { 
+    id: 3, 
+    title: 'Summer Classic Circuit 2026', 
+    date: 'August 10, 2026', 
+    venue: 'Balewadi Stadium',
+    location: 'Pune, Maharashtra', 
+    status: 'closed', 
+    winners: ['Apollo (Golden Retriever)', 'Zeus (Rottweiler)'],
+    fee: 1800,
+    deadline: 'Jul 25, 2026',
+    organizer: 'Pune Kennel Association',
+    participants: 512,
+    description: 'The biggest summer circuit in Western India. Three rings running simultaneously with over 40 breeds participating.',
+    image: '/images/gallery_banner.png'
+  },
+];
+
+export default function ShowEntries() {
+  const [activeTab, setActiveTab] = useState<'open' | 'closed'>('open');
+  const [selectedShow, setSelectedShow] = useState<number | null>(null);
+  const [formStep, setFormStep] = useState(1);
+
+  const upcomingShows = SHOWS.filter(s => s.status === 'open');
+  const pastShows = SHOWS.filter(s => s.status === 'closed');
+  
+  const currentShows = activeTab === 'open' ? upcomingShows : pastShows;
+
+  return (
+    <main className="min-h-screen bg-[#F8FAFC] pt-24 pb-20">
+      <div className="max-w-[1400px] mx-auto px-6">
+        
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto mb-[80px]">
+          <h1 className="text-muted-foregroundxl md:text-muted-foregroundxl font-outfit font-extrabold text-foreground mb-4">Dog Show Entries</h1>
+          <p className="text-[#64748B] font-medium text-lg">Register your purebred companions for upcoming premium events, or browse the archives of our past covered shows.</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex justify-center mb-12">
+          <div className="bg-card p-1 rounded-full shadow-sm border border-[#E5E7EB] inline-flex">
+            <button
+              onClick={() => { setActiveTab('open'); setSelectedShow(null); setFormStep(1); }}
+              className={`px-8 py-3 rounded-full font-bold text-sm transition-colors ${activeTab === 'open' ? 'bg-[#F97316] text-foreground shadow-md' : 'text-[#64748B] hover:text-[#F97316]'}`}
+            >
+              Upcoming Shows
+            </button>
+            <button
+              onClick={() => { setActiveTab('closed'); setSelectedShow(null); }}
+              className={`px-8 py-3 rounded-full font-bold text-sm transition-colors ${activeTab === 'closed' ? 'bg-card text-foreground shadow-md' : 'text-[#64748B] hover:text-foreground'}`}
+            >
+              Past Shows Archive
+            </button>
+          </div>
+        </div>
+
+        {/* Form View (When a show is selected for registration) */}
+        <AnimatePresence mode="wait">
+          {selectedShow && activeTab === 'open' ? (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-card rounded-[20px] shadow-lg border border-[#E5E7EB] overflow-hidden flex flex-col max-w-4xl mx-auto mb-20"
+            >
+              {/* Form Header */}
+              <div className="bg-card p-8 text-foreground relative">
+                <button 
+                  onClick={() => setSelectedShow(null)}
+                  className="absolute top-4 right-4 text-foreground/70 hover:text-foreground bg-card/10 px-3 py-1.5 rounded-full text-xs font-bold transition-colors"
+                >
+                  Cancel Registration
+                </button>
+                <h2 className="text-2xl font-bold font-outfit mb-2">Registration Portal</h2>
+                <p className="text-muted-foreground text-sm">Fill out the details below to enter your dog into {upcomingShows.find(s => s.id === selectedShow)?.title}</p>
+                
+                {/* Progress Bar */}
+                <div className="flex items-center gap-2 mt-8">
+                  {[1, 2, 3, 4].map(step => (
+                    <div key={step} className="flex-1 flex flex-col gap-2">
+                      <div className={`h-1.5 rounded-full ${step <= formStep ? 'bg-[#F97316]' : 'bg-card/10'}`} />
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${step <= formStep ? 'text-[#F97316]' : 'text-muted-foreground'}`}>
+                        {step === 1 ? 'Owner' : step === 2 ? 'Dog' : step === 3 ? 'Docs' : 'Pay'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Form Body */}
+              <div className="p-8 flex-grow">
+                {formStep === 1 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                    <h3 className="text-xl font-bold text-foreground">Owner Details</h3>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="block text-sm font-bold text-foreground mb-2">First Name</label>
+                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="block text-sm font-bold text-foreground mb-2">Last Name</label>
+                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-sm font-bold text-foreground mb-2">Email Address</label>
+                        <input type="email" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {formStep === 2 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                    <h3 className="text-xl font-bold text-foreground">Dog Details</h3>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="block text-sm font-bold text-foreground mb-2">Registered Name</label>
+                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="block text-sm font-bold text-foreground mb-2">Call Name</label>
+                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="block text-sm font-bold text-foreground mb-2">Breed</label>
+                        <select className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all text-[#64748B]">
+                          <option>Select Breed...</option>
+                          <option>Golden Retriever</option>
+                          <option>Siberian Husky</option>
+                          <option>Rottweiler</option>
+                        </select>
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label className="block text-sm font-bold text-foreground mb-2">Date of Birth</label>
+                        <input type="date" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all text-[#64748B]" />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {formStep === 3 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                    <h3 className="text-xl font-bold text-foreground">Documentation Upload</h3>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="col-span-2">
+                        <label className="block text-sm font-bold text-foreground mb-2">Registration Certificate (KCI/FCI)</label>
+                        <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center hover:border-[#F97316] transition-colors bg-[#F8FAFC] cursor-pointer">
+                          <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                          <p className="text-sm text-[#64748B] font-medium">Click to upload or drag and drop</p>
+                          <p className="text-xs text-muted-foreground mt-1">PDF, JPG, or PNG (max. 5MB)</p>
+                        </div>
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-sm font-bold text-foreground mb-2">Latest Vaccination Record</label>
+                        <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center hover:border-[#F97316] transition-colors bg-[#F8FAFC] cursor-pointer">
+                          <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                          <p className="text-sm text-[#64748B] font-medium">Click to upload or drag and drop</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {formStep === 4 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 text-center py-10">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle className="w-10 h-10 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold font-outfit text-foreground mb-2">Review & Payment</h3>
+                    <p className="text-[#64748B] max-w-md mx-auto mb-8">Your registration is almost complete. Please proceed to payment to secure your entry.</p>
+                    
+                    <div className="bg-[#F8FAFC] rounded-xl p-6 max-w-sm mx-auto mb-8 text-left border border-[#E5E7EB]">
+                      <div className="flex justify-between mb-3 text-sm">
+                        <span className="text-[#64748B] font-bold">Entry Fee</span>
+                        <span className="text-foreground font-bold">₹{upcomingShows.find(s => s.id === selectedShow)?.fee}</span>
+                      </div>
+                      <div className="flex justify-between mb-3 text-sm">
+                        <span className="text-[#64748B] font-bold">Catalog Fee</span>
+                        <span className="text-foreground font-bold">₹200</span>
+                      </div>
+                      <div className="flex justify-between pt-3 border-t border-[#E5E7EB] text-lg">
+                        <span className="text-foreground font-extrabold">Total</span>
+                        <span className="text-[#F97316] font-extrabold">₹{(upcomingShows.find(s => s.id === selectedShow)?.fee || 0) + 200}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Form Footer */}
+              <div className="p-8 border-t border-[#E5E7EB] bg-[#F8FAFC] flex justify-between">
+                {formStep > 1 ? (
+                  <Button variant="outline" className="border-[#E5E7EB] text-foreground" onClick={() => setFormStep(formStep - 1)}>Back</Button>
+                ) : (
+                  <div></div>
+                )}
+                
+                {formStep < 4 ? (
+                  <Button className="bg-[#F97316] hover:bg-orange-600" onClick={() => setFormStep(formStep + 1)}>
+                    Next Step <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                ) : (
+                  <Button className="bg-green-600 hover:bg-green-700">
+                    Pay Securely
+                  </Button>
+                )}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="py-[80px]"
+            >
+              <div className={`
+                ${currentShows.length === 1 
+                  ? 'flex justify-center' // Center single item
+                  : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[32px]' // Grid for multiple items
+                }
+              `}>
+                {currentShows.map((show, index) => (
+                  <motion.div 
+                    key={show.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    whileHover={{ scale: 1.02 }}
+                    className={`
+                      bg-card rounded-[20px] shadow-lg border border-[#E5E7EB] overflow-hidden flex flex-col group
+                      ${currentShows.length === 1 ? 'w-full max-w-[420px]' : 'w-full h-full'}
+                    `}
+                  >
+                    {/* Banner Image */}
+                    <div className="relative w-full aspect-[16/9] overflow-hidden bg-input">
+                      <img 
+                        src={show.image} 
+                        alt={show.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      {/* Status Badge */}
+                      <div className="absolute top-4 left-4">
+                        <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full shadow-sm backdrop-blur-md ${show.status === 'open' ? 'bg-green-500/90 text-foreground' : 'bg-accent/90 text-foreground'}`}>
+                          {show.status === 'open' ? 'Registration Open' : 'Archived'}
+                        </span>
+                      </div>
+                      {/* Action Icons */}
+                      <div className="absolute top-4 right-4 flex gap-2">
+                        <button className="w-8 h-8 rounded-full bg-card/90 backdrop-blur text-muted-foreground flex items-center justify-center hover:text-[#F97316] transition-colors shadow-sm">
+                          <Bookmark className="w-4 h-4" />
+                        </button>
+                        <button className="w-8 h-8 rounded-full bg-card/90 backdrop-blur text-muted-foreground flex items-center justify-center hover:text-[#F97316] transition-colors shadow-sm">
+                          <Share2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-xl font-bold font-outfit text-foreground mb-4 line-clamp-2 leading-snug">{show.title}</h3>
+                      
+                      <div className="space-y-3 mb-6 text-sm font-medium text-[#64748B]">
+                        <div className="flex items-start gap-3">
+                          <Calendar className="w-4 h-4 text-[#F97316] flex-shrink-0 mt-0.5" />
+                          <span>{show.date}</span>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <MapPin className="w-4 h-4 text-[#F97316] flex-shrink-0 mt-0.5" />
+                          <span>{show.venue}, {show.location}</span>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <Users className="w-4 h-4 text-[#F97316] flex-shrink-0 mt-0.5" />
+                          <span>{show.organizer} • {show.participants} Participants</span>
+                        </div>
+                      </div>
+
+                      <p className="text-[#64748B] text-sm leading-relaxed line-clamp-2 mb-6">
+                        {show.description}
+                      </p>
+
+                      {/* Footer Info */}
+                      <div className="mt-auto">
+                        <div className="flex items-center justify-between py-4 border-t border-[#E5E7EB]">
+                          <div className="flex flex-col">
+                            <span className="text-xs text-[#64748B] font-bold uppercase tracking-wider">Entry Fee</span>
+                            <span className="text-foreground font-bold flex items-center"><IndianRupee className="w-3 h-3 mr-0.5" /> {show.fee}</span>
+                          </div>
+                          <div className="flex flex-col text-right">
+                            <span className="text-xs text-[#64748B] font-bold uppercase tracking-wider">Deadline</span>
+                            <span className="text-foreground font-bold flex items-center justify-end"><Clock className="w-3 h-3 mr-1" /> {show.deadline}</span>
+                          </div>
+                        </div>
+
+                        {/* Winners Section for Past Shows */}
+                        {show.status === 'closed' && show.winners && (
+                          <div className="mb-4">
+                            <span className="text-xs text-[#64748B] font-bold uppercase tracking-wider mb-2 block">Best in Show Winners</span>
+                            <div className="flex flex-wrap gap-2">
+                              {show.winners.map((winner, idx) => (
+                                <span key={idx} className="bg-[#F8FAFC] text-foreground text-xs font-bold px-2 py-1 rounded border border-[#E5E7EB]">
+                                  {winner}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Buttons */}
+                        <div className="flex gap-[16px] mt-4">
+                          {show.status === 'open' ? (
+                            <Button 
+                              className="w-full bg-[#F97316] hover:bg-orange-600 text-foreground font-bold h-12 shadow-md transition-all"
+                              onClick={() => setSelectedShow(show.id)}
+                            >
+                              Register Now
+                            </Button>
+                          ) : (
+                            <Button 
+                              variant="outline"
+                              className="w-full border-[#E5E7EB] text-foreground hover:bg-[#F8FAFC] font-bold h-12 transition-all"
+                            >
+                              View Results
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
+    </main>
+  );
+}

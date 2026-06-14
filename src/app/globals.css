@@ -1,46 +1,100 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-brand-orange: #FF8C00;
-  --color-brand-orange-light: #FF9E2A;
-  --color-brand-orange-dark: #E67E00;
-  --color-brand-dark: #121212;
-  --color-brand-darker: #0A0A0A;
-  --color-brand-gray: #4B5563;
-  --color-brand-light: #F9FAFB;
-  --color-brand-white: #ffffff;
+  --color-brand-orange: #FF9800;
+  --color-brand-orange-hover: #FFB020;
+  --color-brand-dark: #020817;
+  --color-brand-secondary: #071225;
+  --color-brand-card: #0F172A;
+  --color-brand-hover: rgba(255, 255, 255, 0.05);
+  --color-brand-muted: #94A3B8;
+  --color-brand-white: #FFFFFF;
   
-  --font-sans: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Mulish", ui-sans-serif, system-ui, sans-serif;
 }
 
-:root {
-  --background: var(--color-brand-light);
-  --foreground: var(--color-brand-dark);
+@layer base {
+  * {
+    font-family: 'Mulish', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  html, body, #__next, main {
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1 {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  h2 {
+    font-weight: 800;
+  }
+
+  h3 {
+    font-weight: 700;
+  }
+
+  h4, h5, h6 {
+    font-weight: 700;
+  }
+  
+  p {
+    line-height: 1.8;
+    font-weight: 400;
+  }
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Base Inputs */
+input, textarea, select {
+  @apply bg-input border border-border text-foreground;
+}
+input::placeholder, textarea::placeholder {
+  @apply text-muted-foreground;
+}
+input:focus, textarea:focus, select:focus {
+  @apply border-primary outline-none;
 }
 
-/* Glassmorphism Utilities */
+/* Utilities */
 @layer utilities {
+  .luxury-card {
+    @apply bg-card border border-border rounded-[24px] shadow-sm transition-all duration-300 ease-in-out;
+  }
+  
+  .luxury-card:hover {
+    @apply -translate-y-[6px] shadow-md;
+  }
+
+  .btn-primary-luxury {
+    background: linear-gradient(135deg, #F59E0B, #FB923C);
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+  }
+  .btn-primary-luxury:hover {
+    background: linear-gradient(135deg, #FB923C, #F59E0B);
+  }
+
+  .btn-secondary-luxury {
+    @apply bg-transparent border border-border text-foreground transition-all duration-300;
+  }
+  .btn-secondary-luxury:hover {
+    @apply bg-accent text-accent-foreground border-accent;
+  }
+
+  .small-label {
+    @apply text-muted-foreground font-medium uppercase;
+  }
+
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)];
-  }
-  
-  .glass-panel-dark {
-    @apply bg-brand-dark/80 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
-  }
-  
-  .premium-shadow {
-    @apply shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)];
-  }
-  
-  .premium-hover {
-    @apply transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(255,140,0,0.15)];
+    @apply bg-card/80 backdrop-blur-[18px] border-b border-border;
   }
 }
 
@@ -49,14 +103,14 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-brand-light);
+  background: #020817;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
+  background: #f59e0b;
+  border-radius: 24px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-brand-orange);
+  background: #ffb020;
 }
 
 /* Hide scrollbar for gallery elements */
@@ -66,4 +120,88 @@ body {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #F8FAFC;
+  --foreground: #111827;
+  --card: #FFFFFF;
+  --card-foreground: #111827;
+  --popover: #FFFFFF;
+  --popover-foreground: #111827;
+  --primary: #F59E0B;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #0F172A;
+  --muted: #F1F5F9;
+  --muted-foreground: #6B7280;
+  --accent: #F1F5F9;
+  --accent-foreground: #0F172A;
+  --border: #E5E7EB;
+  --input: #FFFFFF;
+  --ring: #F59E0B;
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: #030712;
+  --foreground: #FFFFFF;
+  --card: #111827;
+  --card-foreground: #FFFFFF;
+  --popover: #111827;
+  --popover-foreground: #FFFFFF;
+  --primary: #F59E0B;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1E293B;
+  --secondary-foreground: #F8FAFC;
+  --muted: #1E293B;
+  --muted-foreground: #9CA3AF;
+  --accent: #1E293B;
+  --accent-foreground: #F8FAFC;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #1F2937;
+  --input: #111827;
+  --ring: #F59E0B;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }

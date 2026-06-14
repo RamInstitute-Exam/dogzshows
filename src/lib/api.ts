@@ -1,39 +1,34 @@
-import axios from 'axios';
+import axiosInstance from './axios';
 
-// Detect environment to use correct backend URL
-const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
-// export const API_BASE_URL = 'http://localhost:5001/api'
-
-
-// export const UPLOADS_BASE_URL =  'http://localhost:5001'
-
-
-
-
-
-export const UPLOADS_BASE_URL = 'https://dogzshow.onrender.com'
-export const API_BASE_URL = 'https://dogzshow.onrender.com/api'
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
-
-api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+export const api = {
+  get: async <T = any>(url: string, params?: any): Promise<T> => {
+    const response = await axiosInstance.get<T>(url, { params });
+    return response.data;
+  },
+  post: async <T = any>(url: string, data?: any, config?: any): Promise<T> => {
+    const response = await axiosInstance.post<T>(url, data, config);
+    return response.data;
+  },
+  put: async <T = any>(url: string, data?: any, config?: any): Promise<T> => {
+    const response = await axiosInstance.put<T>(url, data, config);
+    return response.data;
+  },
+  patch: async <T = any>(url: string, data?: any, config?: any): Promise<T> => {
+    const response = await axiosInstance.patch<T>(url, data, config);
+    return response.data;
+  },
+  delete: async <T = any>(url: string): Promise<T> => {
+    const response = await axiosInstance.delete<T>(url);
+    return response.data;
   }
-  return config;
-});
+};
 
-export const getImageUrl = (url: string) => {
-  if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    return url;
-  }
-  return `${UPLOADS_BASE_URL}${url}`;
+export const getImageUrl = (path: string | undefined | null) => {
+  if (!path) return '/images/placeholder.webp';
+  if (path.startsWith('http') || path.startsWith('/images/') || path.startsWith('data:')) return path;
+
+  const uploadUrl = process.env.NEXT_PUBLIC_UPLOAD_URL || 'https://s3.ap-south-1.amazonaws.com/namma-orru-foods/images';
+  return `${uploadUrl}/${path.replace(/^\//, '')}`;
 };
 
 export default api;

@@ -1,0 +1,57 @@
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Calendar, Users, Trophy, Settings, LogOut, Dog } from 'lucide-react';
+
+export default function AdminSidebar() {
+  const pathname = usePathname();
+
+  const navItems = [
+    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { name: 'Events & Clubs', href: '/admin/events', icon: Calendar },
+    { name: 'Users & Roles', href: '/admin/users', icon: Users },
+    { name: 'Competition Engine', href: '/admin/competition', icon: Trophy },
+    { name: 'Dog Database', href: '/admin/dogs', icon: Dog },
+    { name: 'FCI Groups', href: '/admin/fci-groups', icon: Trophy },
+    { name: 'Breeds Master', href: '/admin/breeds', icon: Dog },
+    { name: 'Age Classes', href: '/admin/age-classes', icon: Calendar },
+    { name: 'Media Gallery', href: '/admin/gallery', icon: LayoutDashboard },
+    { name: 'Settings & CMS', href: '/admin/settings', icon: Settings },
+  ];
+
+  return (
+    <div className="w-64 h-screen bg-card text-foreground hidden md:flex flex-col border-r border-border fixed left-0 top-0 z-40 shadow-xl">
+      <div className="h-[72px] flex items-center px-6 border-b border-border">
+        <Link href="/admin">
+          <img src="/Untitled-1.png" alt="JuzDog Admin" className="h-[46px] w-auto transition-all hover:opacity-90" />
+        </Link>
+      </div>
+      
+      <div className="flex-1 py-6 flex flex-col gap-2 px-3 overflow-y-auto">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                isActive 
+                  ? 'bg-brand-orange text-foreground' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+              }`}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="font-medium">{item.name}</span>
+            </Link>
+          );
+        })}
+      </div>
+
+      <div className="p-4 border-t border-border">
+        <button className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+          <LogOut className="w-5 h-5" />
+          <span className="font-medium">Logout</span>
+        </button>
+      </div>
+    </div>
+  );
+}
