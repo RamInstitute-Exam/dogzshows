@@ -199,7 +199,7 @@ export default function PhotoGallery() {
                     <span className="bg-brand-orange/20 text-brand-orange px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block">
                       {selectedPhoto.category?.name || selectedPhoto.category}
                     </span>
-                    <Link href={`/gallery/show-photos/${selectedPhoto.slug}`}>
+                    <Link href={`/gallery/show-photos/details?slug=${selectedPhoto.slug}`}>
                       <h2 className="text-xl md:text-2xl font-bold font-outfit text-foreground leading-snug hover:text-brand-orange transition-colors">{selectedPhoto.title}</h2>
                     </Link>
                     <p className="text-sm font-semibold text-muted-foreground mt-2">Location: {selectedPhoto.location}</p>
@@ -211,7 +211,7 @@ export default function PhotoGallery() {
                 <div className="flex gap-4 pt-6 border-t border-border mt-8">
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(window.location.origin + `/gallery/show-photos/${selectedPhoto.slug}`);
+                      navigator.clipboard.writeText(window.location.origin + `/gallery/show-photos/details?slug=${selectedPhoto.slug}`);
                       alert('Share link copied to clipboard!');
                     }}
                     className="flex-1 flex items-center justify-center gap-2 py-3 bg-accent hover:bg-accent/80 font-bold rounded-xl transition-colors border border-border text-sm text-foreground"

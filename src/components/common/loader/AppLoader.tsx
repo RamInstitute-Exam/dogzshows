@@ -34,7 +34,7 @@ export const AppLoader = ({ isLoading, isExiting }: { isLoading: boolean; isExit
           animate={{ opacity: isExiting ? 0 : 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }} // 300ms overlay transition as requested
-          className="fixed top-0 left-0 right-0 bottom-0 z-[999999] flex flex-col items-center justify-center bg-[#ffffff] dark:bg-[#020617] select-none pointer-events-none"
+          className="fixed top-0 left-0 right-0 bottom-0 z-[999999] flex flex-col items-center justify-center bg-[#ffffff] dark:bg-background select-none pointer-events-none"
         >
           {/* Injecting pure GPU-accelerated CSS animations */}
           <style jsx global>{`

@@ -143,7 +143,7 @@ export default function PermissionsManagement() {
   const handleSelectOne = (id: string, checked: boolean) => {
     setSelectedIds(prev => ({
       ...prev,
-      [id]: checked
+      details: checked
     }));
   };
 

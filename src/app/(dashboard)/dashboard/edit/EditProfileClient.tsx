@@ -33,7 +33,7 @@ export default function EditProfileClient() {
 
   const fetchDog = async () => {
     try {
-      const response = await api.get(`/dogs/${id}`);
+      const response = await api.get(`/dog-details?id=${id}`);
       const dog = response.data;
       setFormData({
         name: dog.name,
@@ -98,7 +98,7 @@ export default function EditProfileClient() {
         data.append('photos', file);
       });
 
-      await api.put(`/dogs/${id}`, data, {
+      await api.put(`/dog-details?id=${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       

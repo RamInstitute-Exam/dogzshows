@@ -50,7 +50,7 @@ export default function ClubManagement() {
   const handleDelete = async (club: any) => {
     if (confirm(`Are you sure you want to delete club "${club.name}"? This will also remove their associated user account.`)) {
       try {
-        const res = await api.delete(`/clubs/${club.id}`);
+        const res = await api.delete(`/club-details?slug=${club.id}`);
         if (res.success) {
           toast.success('Club deleted successfully');
           fetchClubs();
@@ -66,7 +66,7 @@ export default function ClubManagement() {
 
   const handleToggleStatus = async (club: any, isActive: boolean) => {
     try {
-      const res = await api.put(`/clubs/${club.id}`, { isActive });
+      const res = await api.put(`/club-details?slug=${club.id}`, { isActive });
       if (res.success) {
         toast.success(`Club status updated successfully`);
         fetchClubs();

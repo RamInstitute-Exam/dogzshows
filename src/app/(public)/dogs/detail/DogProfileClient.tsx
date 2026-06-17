@@ -98,7 +98,7 @@ export default function DogProfileClient() {
     if (!id) return;
     setLoading(true);
     try {
-      const response = await api.get(`/dogs/${id}`);
+      const response = await api.get(`/dog-details?id=${id}`);
       const d = response.data;
       
       // Inject fallback parameters for premium feel

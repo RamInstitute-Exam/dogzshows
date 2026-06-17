@@ -166,7 +166,7 @@ export default function VideoGallery() {
                   />
                 </div>
                 <div className="mt-6 text-foreground">
-                  <Link href={`/gallery/show-videos/${activeVideo.slug}`}>
+                  <Link href={`/gallery/show-videos/details?slug=${activeVideo.slug}`}>
                     <h2 className="text-2xl font-bold font-outfit mb-2 hover:underline hover:text-brand-orange transition-colors">{activeVideo.title}</h2>
                   </Link>
                   <div className="flex items-center text-muted-foreground text-sm font-medium gap-6">

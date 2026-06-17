@@ -146,7 +146,7 @@ export default function EventsPage() {
                         View Details
                       </Button>
                     </Link>
-                    <Link href={`/dashboard/events/${event.id}/register`} className="flex-1">
+                    <Link href={`/dashboard/event-details?slug=${event.id}/register`} className="flex-1">
                       <Button className="w-full bg-brand-orange hover:bg-orange-600 text-foreground rounded-xl h-12 shadow-md shadow-brand-orange/20 font-bold">
                         Register Now
                       </Button>

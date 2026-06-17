@@ -191,7 +191,7 @@ export default function UserManagementListing() {
                         </td>
                         <td className="py-4 px-6 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end gap-3 transition-opacity">
-                            <Link href={`/admin/users/edit/${user.id}`}>
+                            <Link href={`/admin/users/edit?id=${user.id}`}>
                               <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent">
                                 <Edit className="w-4 h-4" />
                               </Button>

@@ -67,7 +67,7 @@ export default function DogsPage() {
     if (!confirm('Are you sure you want to delete this dog?')) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${config.apiUrl}/dogs/${id}`, {
+      const res = await fetch(`${config.apiUrl}/dog-details?id=${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -154,7 +154,7 @@ export default function DogsPage() {
                       <td className="p-4 text-muted-foreground capitalize">{dog.gender.toLowerCase()}</td>
                       <td className="p-4">
                         <div className="flex items-center justify-end gap-1">
-                          <Link href={`/dashboard/dogs/${dog.id}`}>
+                          <Link href={`/dashboard/dog-details?id=${dog.id}`}>
                             <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground"><Eye className="w-4 h-4" /></Button>
                           </Link>
                           <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground"><Edit className="w-4 h-4" /></Button>

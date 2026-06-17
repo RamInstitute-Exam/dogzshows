@@ -41,7 +41,7 @@ function EditClubFormContent() {
   useEffect(() => {
     async function loadClubDetails() {
       try {
-        const res = await api.get(`/clubs/${clubId}`);
+        const res = await api.get(`/club-details?slug=${clubId}`);
         if (res.success && res.data) {
           const cd = res.data;
           setFormData({
@@ -107,7 +107,7 @@ function EditClubFormContent() {
     }
     setLoading(true);
     try {
-      const res = await api.put(`/clubs/${clubId}`, formData);
+      const res = await api.put(`/club-details?slug=${clubId}`, formData);
       if (res.success) {
         toast.success('Club profile updated successfully');
         router.push('/admin/clubs');

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -28,16 +28,34 @@ interface HeroSliderProps {
 }
 
 export default function HeroSlider({ banners }: HeroSliderProps) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (!banners || banners.length === 0) {
     return null;
   }
 
+  if (!isMounted) {
+    return (
+      <section className="hero-section">
+        <div className="hero-carousel-container w-full h-[280px] sm:h-[340px] md:h-[460px] lg:h-[600px] xl:h-[680px] bg-muted/10 animate-pulse flex items-center justify-center">
+          <div className="w-10 h-10 border-4 border-[#F59E0B] border-t-transparent rounded-full animate-spin opacity-50" />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="hero-section">
-      <div className="hero-carousel-container">
+      <div className={`hero-carousel-container transition-opacity duration-500 ${isInitialized ? 'opacity-100' : 'opacity-0'}`}>
         <div className="hero-edge-fade-left" />
         <div className="hero-edge-fade-right" />
         <Swiper
+          onInit={() => setTimeout(() => setIsInitialized(true), 50)}
           modules={[Autoplay, Navigation, Pagination, Keyboard]}
           centeredSlides={true}
           loop={true}

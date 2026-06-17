@@ -90,7 +90,7 @@ export function useFCIGroup(slug: string) {
   return useQuery({
     queryKey: ['fci-group', slug],
     queryFn: async () => {
-      return api.get(`/public/groups/${slug}`);
+      return api.get(`/public/group-details?slug=${slug}`);
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,

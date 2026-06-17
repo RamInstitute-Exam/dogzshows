@@ -224,7 +224,7 @@ export default function ClubsClient() {
 
                   <div className="p-6 pt-10 flex-1 flex flex-col">
                     <h3 className="text-xl font-extrabold text-foreground mb-1 line-clamp-1 group-hover:text-brand-orange transition-colors">
-                      <Link href={`/clubs/${club.slug || club.id}`} className="focus:outline-none before:absolute before:inset-0">
+                      <Link href={`/club-details?slug=${club.slug || club.id}`} className="focus:outline-none before:absolute before:inset-0">
                         {club.name}
                       </Link>
                     </h3>

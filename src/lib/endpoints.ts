@@ -10,9 +10,9 @@ export const endpoints = {
   dogs: {
     list: '/dogs',
     create: '/dogs',
-    update: (id: string) => `/dogs/${id}`,
-    delete: (id: string) => `/dogs/${id}`,
-    get: (id: string) => `/dogs/${id}`,
+    update: (id: string) => `/dog-details?id=${id}`,
+    delete: (id: string) => `/dog-details?id=${id}`,
+    get: (id: string) => `/dog-details?id=${id}`,
     bulkDelete: '/dogs/bulk-delete'
   },
   events: {
@@ -23,7 +23,7 @@ export const endpoints = {
     create: '/events/admin',
     update: (id: string) => `/events/admin/${id}`,
     delete: (id: string) => `/events/admin/${id}`,
-    get: (id: string) => `/events/${id}`,
+    get: (id: string) => `/event-details?slug=${id}`,
     bulkDelete: '/events/admin/bulk-delete'
   },
   clubs: {

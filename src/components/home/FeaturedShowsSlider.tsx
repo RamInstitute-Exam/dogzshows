@@ -59,7 +59,7 @@ export default function FeaturedShowsSlider({ shows }: FeaturedShowsSliderProps)
             return (
               <Link 
                 key={show.id} 
-                href={`/events/${show.slug}`}
+                href={`/event-details?slug=${show.slug}`}
                 className="netflix-card group"
               >
                 {/* Image */}

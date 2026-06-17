@@ -136,7 +136,7 @@ export default function FciGroupsMaster() {
                               if(confirm('Are you sure you want to delete this group?')) {
                                 try {
                                   const token = localStorage.getItem('token');
-                                  await api.delete(`/groups/${g.id}`);
+                                  await api.delete(`/group-details?slug=${g.id}`);
                                   fetchGroups();
                                 } catch(err) {
                                   console.error(err);

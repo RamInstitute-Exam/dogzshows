@@ -8,16 +8,16 @@ import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
 
 interface VideosClientProps {
-  initialVideos: any[];
+  initialVideos?: any[];
 }
 
 export default function VideosClient({ initialVideos }: VideosClientProps) {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
 
-  const categories = ['All', ...Array.from(new Set(initialVideos.map((v: any) => v.category?.name).filter(Boolean)))];
+  const categories = ['All', ...Array.from(new Set((initialVideos || []).map((v: any) => v.category?.name).filter(Boolean)))];
 
-  const filtered = initialVideos.filter((v: any) => {
+  const filtered = (initialVideos || []).filter((v: any) => {
     const matchSearch = !search || v.title?.toLowerCase().includes(search.toLowerCase());
     const matchFilter = activeFilter === 'All' || v.category?.name === activeFilter;
     return matchSearch && matchFilter;
@@ -73,7 +73,7 @@ export default function VideosClient({ initialVideos }: VideosClientProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: (index % 9) * 0.05 }}
               >
-                <Link href={`/gallery/show-videos/${video.slug}`}>
+                <Link href={`/gallery/show-videos/details?slug=${video.slug}`}>
                   <div className="group bg-card border border-border rounded-[1.5rem] overflow-hidden cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                     {/* Thumbnail */}
                     <div className="relative aspect-video overflow-hidden bg-black">

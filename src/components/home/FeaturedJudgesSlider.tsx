@@ -66,7 +66,7 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
                 </div>
                 
                 <div className="mt-auto pt-6">
-                  <Link href={`/judges/${judge.slug || judge.id}`}>
+                  <Link href={`/judge-details?slug=${judge.slug || judge.id}`}>
                     <Button className="w-full h-[48px] rounded-[14px] bg-transparent text-foreground border border-[rgba(255,255,255,0.15)] hover:bg-[#F59E0B] hover:text-foreground font-semibold transition-colors">
                       View Profile
                     </Button>

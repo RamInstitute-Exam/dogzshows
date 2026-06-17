@@ -11,7 +11,7 @@ interface Props {
 
 export default function UnderConstruction({ moduleName }: Props) {
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center p-8 text-center bg-[#020617]">
+    <div className="min-h-[80vh] flex flex-col items-center justify-center p-8 text-center bg-background">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

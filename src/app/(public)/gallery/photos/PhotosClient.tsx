@@ -8,7 +8,7 @@ import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
 
 interface PhotosClientProps {
-  initialPhotos: any[];
+  initialPhotos?: any[];
 }
 
 export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
@@ -16,9 +16,9 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
   const [activeFilter, setActiveFilter] = useState('All');
   const [selectedPhoto, setSelectedPhoto] = useState<any | null>(null);
 
-  const categories = ['All', ...Array.from(new Set(initialPhotos.map((p: any) => p.category?.name).filter(Boolean)))];
+  const categories = ['All', ...Array.from(new Set((initialPhotos || []).map((p: any) => p.category?.name).filter(Boolean)))];
 
-  const filtered = initialPhotos.filter((p: any) => {
+  const filtered = (initialPhotos || []).filter((p: any) => {
     const matchSearch = !search || p.title?.toLowerCase().includes(search.toLowerCase()) || p.photographer?.toLowerCase().includes(search.toLowerCase());
     const matchFilter = activeFilter === 'All' || p.category?.name === activeFilter;
     return matchSearch && matchFilter;
@@ -173,7 +173,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                       {selectedPhoto.category.name}
                     </span>
                   )}
-                  <Link href={`/gallery/show-photos/${selectedPhoto.slug}`}>
+                  <Link href={`/gallery/show-photos/details?slug=${selectedPhoto.slug}`}>
                     <h2 className="text-xl font-extrabold text-foreground leading-snug hover:text-brand-orange hover:underline">{selectedPhoto.title}</h2>
                   </Link>
                   {selectedPhoto.description && (
@@ -189,7 +189,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                 </div>
                 <div className="flex gap-3 pt-6 border-t border-border mt-6">
                   <button
-                    onClick={() => { navigator.clipboard.writeText(window.location.origin + `/gallery/show-photos/${selectedPhoto.slug}`); }}
+                    onClick={() => { navigator.clipboard.writeText(window.location.origin + `/gallery/show-photos/details?slug=${selectedPhoto.slug}`); }}
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-accent hover:bg-accent/80 border border-border rounded-xl text-sm font-semibold text-foreground transition-colors"
                   >
                     <Share2 className="w-4 h-4" /> Share

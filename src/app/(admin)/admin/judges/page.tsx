@@ -50,7 +50,7 @@ export default function JudgeManagement() {
   const handleDelete = async (judge: any) => {
     if (confirm(`Are you sure you want to delete judge "${judge.name}"? This will also remove their user account.`)) {
       try {
-        const res = await api.delete(`/judges/${judge.id}`);
+        const res = await api.delete(`/judge-details?slug=${judge.id}`);
         if (res.success) {
           toast.success('Judge deleted successfully');
           fetchJudges();
@@ -66,7 +66,7 @@ export default function JudgeManagement() {
 
   const handleToggleStatus = async (judge: any, newStatus: string) => {
     try {
-      const res = await api.put(`/judges/${judge.id}`, { status: newStatus });
+      const res = await api.put(`/judge-details?slug=${judge.id}`, { status: newStatus });
       if (res.success) {
         toast.success(`Judge status updated to ${newStatus}`);
         fetchJudges();

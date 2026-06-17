@@ -231,7 +231,7 @@ function JudgesList() {
                             Contact
                           </button>
                         )}
-                        <Link href={`/judges/${judge.slug || judge.id}`} className={`${viewMode === 'list' ? 'px-8' : 'flex-1'} bg-brand-orange hover:bg-[#E88C05] text-white font-[700] text-xs py-2.5 rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-brand-orange/20`}>
+                        <Link href={`/judge-details?slug=${judge.slug || judge.id}`} className={`${viewMode === 'list' ? 'px-8' : 'flex-1'} bg-brand-orange hover:bg-[#E88C05] text-white font-[700] text-xs py-2.5 rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-brand-orange/20`}>
                           View Profile <ChevronRight className="w-3.5 h-3.5 ml-1" />
                         </Link>
                       </div>

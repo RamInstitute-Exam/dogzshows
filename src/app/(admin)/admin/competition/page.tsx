@@ -16,7 +16,7 @@ export default function CompetitionEngine() {
   const fetchRounds = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/competitions/events/${eventId}/rounds`);
+      const response = await api.get(`/competitions/event-details?slug=${eventId}/rounds`);
       // Assuming response.data returns rounds and matches
       // For simplicity, we just set mock or fetched matches here:
       if (response.data && response.data.length > 0) {

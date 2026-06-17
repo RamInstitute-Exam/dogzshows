@@ -99,7 +99,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
               >
-                <Link href={`/gallery/show-photos/${photo.slug}`}>
+                <Link href={`/gallery/show-photos/details?slug=${photo.slug}`}>
                   <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer">
                     {/* Image */}
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-accent">
@@ -190,7 +190,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
               >
-                <Link href={`/gallery/show-videos/${video.slug}`}>
+                <Link href={`/gallery/show-videos/details?slug=${video.slug}`}>
                   <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer">
                     {/* Thumbnail */}
                     <div className="relative aspect-video w-full overflow-hidden bg-black">

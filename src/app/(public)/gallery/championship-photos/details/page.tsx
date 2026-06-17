@@ -1,0 +1,44 @@
+"use client";
+import React, { Suspense, useEffect, useState } from 'react';
+import { useSearchParams, notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import PhotoDetailClient from '../../show-photos/details/PhotoDetailClient';
+import { getPhotoBySlug, getAllPhotos } from '@/lib/server-api';
+
+
+function PhotoDetailPageContent() {
+  const searchParams = useSearchParams();
+  const paramVal = searchParams.get('slug');
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!paramVal) {
+      setLoading(false);
+      return;
+    }
+    async function fetchData() {
+      try {
+        // Custom fetch logic needed
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [paramVal]);
+
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (!data) return notFound();
+
+  return <PhotoDetailClient initialPhotos={[data]} />;
+}
+
+export default function PhotoDetailPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+      <PhotoDetailPageContent />
+    </Suspense>
+  );
+}

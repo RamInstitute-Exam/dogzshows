@@ -40,7 +40,7 @@ function EditJudgeFormContent() {
   useEffect(() => {
     async function loadJudgeDetails() {
       try {
-        const res = await api.get(`/judges/${judgeId}`);
+        const res = await api.get(`/judge-details?slug=${judgeId}`);
         if (res.success && res.data) {
           const jd = res.data;
           setFormData({
@@ -129,7 +129,7 @@ function EditJudgeFormContent() {
         ...formData,
         experience: formData.experience ? String(formData.experience) : '0'
       };
-      const res = await api.put(`/judges/${judgeId}`, payload);
+      const res = await api.put(`/judge-details?slug=${judgeId}`, payload);
       if (res.success) {
         toast.success('Judge profile updated successfully');
         router.refresh(); // Tells Next.js to refresh current route and clear router cache
