@@ -8,6 +8,7 @@ import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function ManualRegistrationForm() {
   const router = useRouter();
@@ -29,9 +30,9 @@ export default function ManualRegistrationForm() {
     const headers = { 'Authorization': `Bearer ${token}` };
     try {
       const [evRes, dogRes, userRes] = await Promise.all([
-        fetch('${config.apiUrl}/events/admin', { headers }).then(r => r.json()),
-        fetch('${config.apiUrl}/dogs', { headers }).then(r => r.json()),
-        fetch('${config.apiUrl}/users', { headers }).then(r => r.json())
+        fetch(`${config.apiUrl}/events/admin`, { headers }).then(r => r.json()),
+        fetch(`${config.apiUrl}/dogs`, { headers }).then(r => r.json()),
+        fetch(`${config.apiUrl}/users`, { headers }).then(r => r.json())
       ]);
       if (evRes.success) setEvents(evRes.data);
       if (dogRes.success) setDogs(dogRes.data);
@@ -54,16 +55,9 @@ export default function ManualRegistrationForm() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/registrations', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+      const res = await api.get(`/registrations`);
       
-      const data = await res.json();
+      const data = res;
       if (data.success) {
         router.push('/admin/events/registrations');
       } else {
@@ -77,10 +71,10 @@ export default function ManualRegistrationForm() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[800px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full max-w-[800px]  space-y-4">
           
           <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div className="flex items-center gap-4">
@@ -100,13 +94,13 @@ export default function ManualRegistrationForm() {
             </Button>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-card p-8 rounded-2xl border border-border shadow-xl space-y-6">
+          <form onSubmit={handleSubmit} className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
               <Ticket className="w-5 h-5 text-blue-500" />
               <h2 className="text-lg font-bold text-foreground">Entry Details</h2>
             </div>
             
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Select Event *</label>
                 <select required name="eventId" value={formData.eventId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none appearance-none">

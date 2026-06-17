@@ -6,35 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Search, Filter, Trophy, ArrowRight, Share2, Heart, Award, Users, CreditCard, Clock, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
-import { config } from '@/lib/config';
-import api from '@/lib/api';
+import { useEventsCMS } from '@/hooks/useCMS';
+import PageContainer from '@/components/layout/PageContainer';
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const result = await api.get('/cms/events');
-        if (result.success) {
-          setEvents(result.data || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch events:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEvents();
-  }, []);
+  const { data, isLoading } = useEventsCMS();
+  const events: any[] = data?.success && Array.isArray(data.data) ? data.data : [];
+  const loading = isLoading;
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   return (
-    <div className="min-h-fit bg-background font-sans">
+    <PageContainer>
       
       <BreadcrumbBanner
         slug="events"
@@ -85,8 +70,26 @@ export default function EventsPage() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center min-h-[300px]">
-             <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-card rounded-[24px] overflow-hidden shadow-sm border border-border h-[450px] animate-pulse">
+                <div className="h-[220px] bg-accent/50 w-full" />
+                <div className="p-6 flex flex-col h-full space-y-4">
+                  <div className="h-6 bg-accent rounded w-3/4" />
+                  <div className="h-4 bg-accent rounded w-1/2" />
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="h-4 bg-accent rounded" />
+                    <div className="h-4 bg-accent rounded" />
+                    <div className="h-4 bg-accent rounded" />
+                    <div className="h-4 bg-accent rounded" />
+                  </div>
+                  <div className="mt-auto flex gap-3 pt-4 border-t border-border">
+                    <div className="h-12 bg-accent rounded-xl w-full" />
+                    <div className="h-12 bg-accent rounded-xl w-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -138,12 +141,12 @@ export default function EventsPage() {
                   </div>
                   
                   <div className="pt-4 border-t border-border flex gap-3 mt-auto">
-                    <Link href={`/events/${event.slug}`} className="flex-1">
+                    <Link href={`/events/detail?slug=${event.slug}`} className="flex-1">
                       <Button variant="outline" className="w-full rounded-xl h-12 font-bold text-muted-foreground border-border hover:bg-card">
                         View Details
                       </Button>
                     </Link>
-                    <Link href={`/events/${event.slug}/register`} className="flex-1">
+                    <Link href={`/dashboard/events/${event.id}/register`} className="flex-1">
                       <Button className="w-full bg-brand-orange hover:bg-orange-600 text-foreground rounded-xl h-12 shadow-md shadow-brand-orange/20 font-bold">
                         Register Now
                       </Button>
@@ -155,6 +158,6 @@ export default function EventsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

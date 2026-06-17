@@ -84,7 +84,7 @@ export default function NotificationDropdown() {
               <div className="max-h-[400px] overflow-y-auto hide-scrollbar">
                 {notifications.length === 0 ? (
                   <div className="p-8 text-center text-muted-foreground">
-                    <Bell className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                    <Bell className="w-12 h-12  text-muted-foreground mb-3" />
                     <p className="font-medium">You're all caught up!</p>
                   </div>
                 ) : (

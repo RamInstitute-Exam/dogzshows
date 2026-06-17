@@ -5,13 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Upload, ChevronRight, ChevronLeft, CheckCircle2, Dog, Image as ImageIcon, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { useLoader } from '@/components/shared/GlobalLoader';
+import { useGlobalLoading } from '@/hooks/useGlobalLoading';
 import Link from 'next/link';
 import { determineAgeClass } from '@/lib/age-calculator';
 import { config } from '@/lib/config';
 
 export default function CreateDogWizard() {
-  const { showLoader, hideLoader } = useLoader();
+  const { showLoader, hideLoader } = useGlobalLoading();
   const [step, setStep] = useState(1);
   const [breeds, setBreeds] = useState<{ id: string; name: string; }[]>([]);
   
@@ -40,7 +40,7 @@ export default function CreateDogWizard() {
   const [ocrConfidence, setOcrConfidence] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('${config.apiUrl}/breeds')
+    fetch(`${config.apiUrl}/breeds`)
       .then(res => res.json())
       .then(data => {
         if(data.success) setBreeds(data.data || []);
@@ -66,7 +66,7 @@ export default function CreateDogWizard() {
       mockFormData.append('certificate', file);
       
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/ocr/certificate', {
+      const res = await fetch(`${config.apiUrl}/ocr/certificate`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: mockFormData
@@ -112,7 +112,7 @@ export default function CreateDogWizard() {
         height: formData.height ? parseFloat(formData.height as string) : null,
       };
 
-      const res = await fetch('${config.apiUrl}/dogs', {
+      const res = await fetch(`${config.apiUrl}/dogs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

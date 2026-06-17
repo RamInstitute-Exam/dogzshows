@@ -11,7 +11,7 @@ export default function RelatedEvents({ events }: { events: any[] }) {
   return (
     <div className="mb-[80px]">
       <div className="flex justify-between items-end mb-8">
-        <h2 className="text-muted-foregroundxl font-extrabold text-[#0F172A]">Related Events</h2>
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">Related Events</h2>
         <Button variant="link" className="text-brand-orange font-bold">View Calendar</Button>
       </div>
       
@@ -35,7 +35,7 @@ export default function RelatedEvents({ events }: { events: any[] }) {
               </span>
             </div>
             <div className="p-5 flex-1 flex flex-col">
-              <h4 className="font-extrabold text-[#0F172A] text-lg mb-3 line-clamp-1 group-hover:text-brand-orange transition-colors">{event.name}</h4>
+              <h4 className="font-extrabold text-foreground text-lg mb-3 line-clamp-1 group-hover:text-brand-orange transition-colors">{event.name}</h4>
               <div className="space-y-2 text-sm text-muted-foreground font-medium mb-4">
                 <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-muted-foreground" /> {event.date}</div>
                 <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-muted-foreground" /> {event.location}</div>

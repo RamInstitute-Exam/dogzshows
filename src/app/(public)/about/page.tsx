@@ -1,31 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useAboutCMS } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
 import { Shield, Globe, Users, Trophy } from 'lucide-react';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
+import PageContainer from '@/components/layout/PageContainer';
 import { config } from '@/lib/config';
-import api from '@/lib/api';
 
 export default function AboutPage() {
-  const [aboutData, setAboutData] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchCms = async () => {
-      try {
-        const result = await api.get('/cms/about');
-        if (result.success) {
-          setAboutData(result.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch About CMS:', error);
-      }
-    };
-    fetchCms();
-  }, []);
+  const { data } = useAboutCMS();
+  const aboutData = data?.success ? data.data : null;
 
   return (
-    <div className="min-h-fit bg-background">
+    <PageContainer>
       
       {/* Hero Section */}
       <BreadcrumbBanner
@@ -63,6 +50,6 @@ export default function AboutPage() {
           ))}
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

@@ -14,7 +14,7 @@ export default function EventGallery() {
 
   return (
     <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
-      <h2 className="text-muted-foregroundxl font-extrabold text-[#0F172A] mb-8">Event Gallery</h2>
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">Event Gallery</h2>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[150px]">
         {media.map((item, i) => (

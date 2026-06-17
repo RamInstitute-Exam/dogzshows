@@ -1,188 +1,322 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination, Keyboard } from 'swiper/modules';
 import { getImageUrl } from '@/lib/api';
-import api from '@/lib/api';
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
 
-interface HomepageBanner {
+export interface HeroBannerData {
   id: string;
   title: string;
+  subtitle?: string | null;
   desktopImage: string;
-  mobileImage?: string;
-  redirectUrl?: string;
-  targetBlank: boolean;
+  mobileImage?: string | null;
+  buttonText?: string | null;
+  buttonLink?: string | null;
+  displayOrder: number;
+  isActive: boolean;
 }
 
-export default function HeroSlider() {
-  const [slides, setSlides] = useState<HomepageBanner[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+interface HeroSliderProps {
+  banners: HeroBannerData[];
+}
 
-  useEffect(() => {
-    async function fetchBanners() {
-      try {
-        const result = await api.get('/homepage-banners');
-        
-        if (result.success && result.data?.length > 0) {
-          setSlides(result.data);
-        } else {
-          setSlides([{
-            id: 'fallback',
-            title: 'Welcome to JuzDog',
-            desktopImage: '/images/hero_banner.png',
-            targetBlank: false
-          }]);
-        }
-      } catch (error) {
-        console.error('Failed to fetch homepage banners:', error);
-        setSlides([{
-          id: 'fallback',
-          title: 'Welcome to JuzDog',
-          desktopImage: '/images/hero_banner.png',
-          targetBlank: false
-        }]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchBanners();
-  }, []);
-
-  const sliderHeightClass = "h-[220px] sm:h-[250px] md:h-[420px] lg:h-[550px] xl:h-[650px]";
-
-  if (isLoading) {
-    return (
-      <div className={`w-full ${sliderHeightClass} bg-card animate-pulse`}></div>
-    );
+export default function HeroSlider({ banners }: HeroSliderProps) {
+  if (!banners || banners.length === 0) {
+    return null;
   }
 
   return (
-    <section className={`relative w-full ${sliderHeightClass} bg-background overflow-hidden group`}>
-      <Swiper
-        modules={[Autoplay, Navigation, Pagination, EffectFade]}
-        effect="fade"
-        speed={1000}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        navigation={{
-          prevEl: '.swiper-button-prev-custom',
-          nextEl: '.swiper-button-next-custom',
-        }}
-        pagination={{
-          clickable: true,
-          el: '.swiper-pagination-custom',
-          renderBullet: function (index, className) {
-            return `<span class="${className} w-10 h-[6px] rounded-full bg-white/30 transition-all duration-300"></span>`;
-          },
-        }}
-        loop={slides.length > 1}
-        className="w-full h-full"
-      >
-        {slides.map((slide) => {
-          return (
-            <SwiperSlide key={slide.id}>
-              {({ isActive }) => (
-                <div className="w-full h-full relative">
-                  {slide.redirectUrl ? (
-                    <Link 
-                      href={slide.redirectUrl} 
-                      target={slide.targetBlank ? '_blank' : '_self'}
-                      className="absolute inset-0 cursor-pointer block"
-                    >
-                      <motion.div
-                        initial={{ scale: 1.0 }}
-                        animate={{ scale: isActive ? 1.05 : 1.0 }}
-                        transition={{ duration: 5, ease: 'linear' }}
-                        className="w-full h-full"
-                      >
-                        {/* Desktop Image */}
-                        <div className="hidden md:block w-full h-full relative">
-                          <Image
-                            src={getImageUrl(slide.desktopImage)}
-                            alt={slide.title || 'Hero Banner'}
-                            fill
-                            priority={isActive}
-                            className="object-cover object-center"
-                          />
-                        </div>
-                        {/* Mobile Image */}
-                        <div className="block md:hidden w-full h-full relative">
-                          <Image
-                            src={getImageUrl(slide.mobileImage || slide.desktopImage)}
-                            alt={slide.title || 'Hero Banner'}
-                            fill
-                            priority={isActive}
-                            className="object-cover object-center"
-                          />
-                        </div>
-                      </motion.div>
-                    </Link>
-                  ) : (
-                    <motion.div
-                      initial={{ scale: 1.0 }}
-                      animate={{ scale: isActive ? 1.05 : 1.0 }}
-                      transition={{ duration: 5, ease: 'linear' }}
-                      className="w-full h-full"
-                    >
-                      {/* Desktop Image */}
-                      <div className="hidden md:block w-full h-full relative">
-                        <Image
-                          src={getImageUrl(slide.desktopImage)}
-                          alt={slide.title || 'Hero Banner'}
-                          fill
-                          priority={isActive}
-                          className="object-cover object-center"
-                        />
-                      </div>
-                      {/* Mobile Image */}
-                      <div className="block md:hidden w-full h-full relative">
-                        <Image
-                          src={getImageUrl(slide.mobileImage || slide.desktopImage)}
-                          alt={slide.title || 'Hero Banner'}
-                          fill
-                          priority={isActive}
-                          className="object-cover object-center"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              )}
+    <section className="hero-section">
+      <div className="hero-carousel-container">
+        <div className="hero-edge-fade-left" />
+        <div className="hero-edge-fade-right" />
+        <Swiper
+          modules={[Autoplay, Navigation, Pagination, Keyboard]}
+          centeredSlides={true}
+          loop={true}
+          speed={500}
+          grabCursor={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
+          keyboard={{ enabled: true }}
+          navigation={{
+            prevEl: '.hero-prev',
+            nextEl: '.hero-next',
+          }}
+          pagination={{
+            clickable: true,
+            el: '.hero-dots',
+            bulletClass: 'hero-dot',
+            bulletActiveClass: 'hero-dot-active',
+          }}
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 0,
+            },
+            768: {
+              slidesPerView: 1.2,
+              spaceBetween: 16,
+            },
+            1024: {
+              slidesPerView: 1.35,
+              spaceBetween: 24,
+            },
+          }}
+          className="hero-swiper"
+        >
+          {banners.map((slide, index) => (
+            <SwiperSlide key={slide.id || index} className="hero-slide-item">
+              <div className="hero-slide-wrapper">
+                <Image
+                  src={getImageUrl(slide.desktopImage)}
+                  alt={slide.title || 'Dog Show Championship'}
+                  fill
+                  priority={index === 0}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  sizes="(max-width: 768px) 100vw, 75vw"
+                  quality={90}
+                  className="hero-image"
+                />
+              </div>
             </SwiperSlide>
-          );
-        })}
-      </Swiper>
+          ))}
+        </Swiper>
 
-      {/* Custom Navigation */}
-      {slides.length > 1 && (
-        <>
-          <button className="swiper-button-prev-custom hidden md:flex absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 w-14 h-14 lg:w-[60px] lg:h-[60px] rounded-full bg-black/40 backdrop-blur-md items-center justify-center text-white hover:text-brand-orange hover:bg-black/60 transition-all duration-300 z-20 shadow-lg border border-white/10 opacity-0 group-hover:opacity-100">
-            <ChevronLeft className="w-8 h-8" />
-          </button>
-          <button className="swiper-button-next-custom hidden md:flex absolute right-6 lg:right-10 top-1/2 -translate-y-1/2 w-14 h-14 lg:w-[60px] lg:h-[60px] rounded-full bg-black/40 backdrop-blur-md items-center justify-center text-white hover:text-brand-orange hover:bg-black/60 transition-all duration-300 z-20 shadow-lg border border-white/10 opacity-0 group-hover:opacity-100">
-            <ChevronRight className="w-8 h-8" />
-          </button>
-        </>
-      )}
+        {/* Navigation Arrows */}
+        <button aria-label="Previous slide" className="hero-arrow hero-prev">
+          <ChevronLeft className="w-8 h-8" />
+        </button>
+        <button aria-label="Next slide" className="hero-arrow hero-next">
+          <ChevronRight className="w-8 h-8" />
+        </button>
 
-      {/* Custom Pagination Container */}
-      {slides.length > 1 && (
-        <div className="swiper-pagination-custom absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20 justify-center [&>.swiper-pagination-bullet-active]:bg-brand-orange [&>.swiper-pagination-bullet-active]:w-14"></div>
-      )}
+        {/* Pagination Dots */}
+        <div className="hero-dots" />
+      </div>
+
+      <style jsx global>{`
+        .hero-section {
+          width: 100%;
+          background: #FFFFFF;
+          overflow: hidden;
+          padding-top: 0 !important;
+          padding-bottom: 32px !important;
+        }
+        .dark .hero-section {
+          background: #000000;
+        }
+        @media (min-width: 768px) {
+          .hero-section {
+            padding-bottom: 48px !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .hero-section {
+            padding-bottom: 64px !important;
+          }
+        }
+
+        .hero-carousel-container {
+          position: relative;
+          width: 100%;
+          overflow: hidden;
+        }
+
+        .hero-swiper {
+          width: 100%;
+          overflow: visible !important;
+        }
+
+        .hero-slide-item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.5s ease-in-out;
+        }
+
+        .hero-slide-wrapper {
+          position: relative;
+          width: 100%;
+          height: 280px;
+          border-radius: 28px;
+          overflow: hidden;
+          transition: all 0.5s ease;
+          
+          /* Non-active state (Left/Right Previews) */
+          filter: blur(6px) brightness(0.6);
+          transform: scale(0.85);
+          opacity: 0.85;
+          pointer-events: none;
+        }
+
+        @media (min-width: 640px) {
+          .hero-slide-wrapper {
+            height: 340px;
+          }
+        }
+        @media (min-width: 768px) {
+          .hero-slide-wrapper {
+            height: 460px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .hero-slide-wrapper {
+            height: 600px;
+          }
+        }
+        @media (min-width: 1280px) {
+          .hero-slide-wrapper {
+            height: 680px;
+          }
+        }
+
+        /* Active center slide */
+        .hero-slide-item.swiper-slide-active .hero-slide-wrapper {
+          filter: none;
+          opacity: 1;
+          transform: scale(1);
+          pointer-events: auto;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+          border-radius: 32px;
+        }
+
+        .hero-image {
+          object-fit: cover !important;
+          object-position: center !important;
+        }
+
+        /* Edge Fade Overlays */
+        .hero-edge-fade-left,
+        .hero-edge-fade-right {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 40px;
+          z-index: 10;
+          pointer-events: none;
+        }
+        @media (min-width: 768px) {
+          .hero-edge-fade-left,
+          .hero-edge-fade-right {
+            width: 80px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .hero-edge-fade-left,
+          .hero-edge-fade-right {
+            width: 120px;
+          }
+        }
+        @media (max-width: 767px) {
+          .hero-edge-fade-left,
+          .hero-edge-fade-right {
+            display: none;
+          }
+        }
+
+        .hero-edge-fade-left {
+          left: 0;
+          background: linear-gradient(90deg, rgba(255, 255, 255, 0.85), transparent);
+        }
+        .dark .hero-edge-fade-left {
+          background: linear-gradient(90deg, rgba(0, 0, 0, 0.85), transparent);
+        }
+
+        .hero-edge-fade-right {
+          right: 0;
+          background: linear-gradient(270deg, rgba(255, 255, 255, 0.85), transparent);
+        }
+        .dark .hero-edge-fade-right {
+          background: linear-gradient(270deg, rgba(0, 0, 0, 0.85), transparent);
+        }
+
+        .hero-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+          width: 72px;
+          height: 72px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          outline: none;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hero-arrow:hover {
+          background: #F4B321;
+          border-color: #F4B321;
+          color: #000000;
+          transform: translateY(-50%) scale(1.08);
+        }
+
+        @media (min-width: 1024px) {
+          .hero-prev {
+            left: calc(12.5% - 35px);
+          }
+          .hero-next {
+            right: calc(12.5% - 35px);
+          }
+        }
+
+        @media (max-width: 1023px) {
+          .hero-arrow {
+            width: 50px;
+            height: 50px;
+          }
+          .hero-prev {
+            left: 16px;
+          }
+          .hero-next {
+            right: 16px;
+          }
+        }
+
+        .hero-dots {
+          position: absolute;
+          bottom: 40px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 15;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .hero-dot {
+          display: block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.4);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .hero-dot-active {
+          background: #F59E0B;
+          width: 32px;
+          border-radius: 999px;
+        }
+      `}</style>
     </section>
   );
 }

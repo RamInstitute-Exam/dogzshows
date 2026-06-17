@@ -19,7 +19,7 @@ export default function PastEvents() {
   const fetchEvents = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/events/past', {
+      const res = await fetch(`${config.apiUrl}/events/past`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -36,7 +36,7 @@ export default function PastEvents() {
   const filteredEvents = events.filter(e => e.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="p-4 md:p-8 space-y-8 text-muted-foreground bg-background min-h-screen">
+    <div className="p-4 md:p-8 space-y-8 text-muted-foreground bg-background min-h-[auto]">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
@@ -96,12 +96,12 @@ export default function PastEvents() {
               </div>
 
               <div className="flex gap-3">
-                <Link href={`/events/${event.id}/results`} className="flex-1">
+                <Link href={`/winners?eventId=${event.id}`} className="flex-1">
                   <Button variant="outline" className="w-full border-border hover:bg-accent text-foreground">
                     View Results
                   </Button>
                 </Link>
-                <Link href={`/events/${event.id}/gallery`} className="flex-1">
+                <Link href={`/gallery?eventId=${event.id}`} className="flex-1">
                   <Button variant="outline" className="w-full border-border hover:bg-accent text-foreground">
                     Gallery
                   </Button>

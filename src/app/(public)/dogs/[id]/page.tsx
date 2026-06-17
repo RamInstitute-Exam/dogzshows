@@ -1,7 +1,7 @@
 import DogProfileClient from './DogProfileClient';
 
 export function generateStaticParams() {
-  return [{ id: '1' }, { id: '2' }, { id: '3' }];
+  return [{ id: '1' }];
 }
 
 export default async function DogProfilePage({ params }: { params: Promise<{ id: string }> }) {

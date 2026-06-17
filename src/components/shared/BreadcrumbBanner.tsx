@@ -6,7 +6,8 @@ import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { config } from '@/lib/config';
 import { getImageUrl } from '@/lib/api';
-import api from '@/lib/api';
+import { usePageBanner } from '@/hooks/useCMS';
+import { SafeImage } from '@/components/shared/SafeImage';
 
 interface PageBannerData {
   title: string;
@@ -30,31 +31,25 @@ export default function BreadcrumbBanner({
   fallbackImage = '/images/hero_banner.png',
   fallbackBreadcrumb,
 }: BreadcrumbBannerProps) {
-  const [data, setData] = useState<PageBannerData>({
-    title: fallbackTitle,
-    subtitle: fallbackSubtitle,
-    bannerImage: fallbackImage,
-    breadcrumbTitle: fallbackBreadcrumb || fallbackTitle,
-  });
+  const { data: queryData } = usePageBanner(slug);
 
-  useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const result = await api.get(`/page-banners/${slug}`);
-        if (result.success && result.data) {
-          setData({
-            title: result.data.title || fallbackTitle,
-            subtitle: result.data.subtitle || fallbackSubtitle,
-            bannerImage: result.data.bannerImage || fallbackImage,
-            breadcrumbTitle: result.data.breadcrumbTitle || result.data.title || fallbackBreadcrumb || fallbackTitle,
-          });
-        }
-      } catch (error) {
-        console.error('Failed to fetch page banner:', error);
+  const data: PageBannerData = queryData?.success && queryData.data
+    ? {
+        title: queryData.data.title || fallbackTitle,
+        subtitle: queryData.data.subtitle || fallbackSubtitle,
+        bannerImage: queryData.data.bannerImage || fallbackImage,
+        breadcrumbTitle:
+          queryData.data.breadcrumbTitle ||
+          queryData.data.title ||
+          fallbackBreadcrumb ||
+          fallbackTitle,
       }
-    };
-    fetchBanner();
-  }, [slug, fallbackTitle, fallbackSubtitle, fallbackImage, fallbackBreadcrumb]);
+    : {
+        title: fallbackTitle,
+        subtitle: fallbackSubtitle,
+        bannerImage: fallbackImage,
+        breadcrumbTitle: fallbackBreadcrumb || fallbackTitle,
+      };
 
   return (
     <section className="relative w-full h-[200px] md:h-[260px] lg:h-[300px] xl:h-[340px] flex items-center overflow-hidden bg-background">
@@ -65,10 +60,13 @@ export default function BreadcrumbBanner({
         transition={{ duration: 1.5, ease: 'easeOut' }}
         className="absolute inset-0 w-full h-full"
       >
-        <img
+        <SafeImage
           src={getImageUrl(data.bannerImage)}
+          fallbackSrc="/images/events_banner.png"
           alt={data.title}
-          className="w-full h-full object-cover"
+          fill
+          priority
+          className="object-cover"
         />
       </motion.div>
 
@@ -76,12 +74,12 @@ export default function BreadcrumbBanner({
       <div
         className="absolute inset-0 backdrop-blur-[2px]"
         style={{
-          background: 'linear-gradient(90deg, rgba(2,6,23,.92), rgba(2,6,23,.72), rgba(2,6,23,.45))',
+          background: 'linear-gradient(90deg, rgba(0,0,0,.92), rgba(0,0,0,.72), rgba(0,0,0,.45))',
         }}
       />
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 xl:px-8 py-10 sm:py-15 md:py-20 flex flex-col justify-center h-full">
+      <div className="relative z-10 w-full  px-4 sm:px-6 md:px-8 xl:px-8 py-10 sm:py-15 md:py-20 flex flex-col justify-center h-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -103,7 +101,7 @@ export default function BreadcrumbBanner({
 
           {/* Description */}
           {data.subtitle && (
-            <p className="text-[16px] xl:text-[22px] text-[#CBD5E1] leading-[1.8] max-w-[700px]">
+            <p className="text-[16px] xl:text-[22px] text-muted-foreground leading-[1.8] max-w-[700px]">
               {data.subtitle}
             </p>
           )}

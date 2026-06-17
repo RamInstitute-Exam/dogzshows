@@ -7,6 +7,7 @@ import { Plus, Edit, Trash2, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
 import AdminSidebar from '@/components/shared/AdminSidebar';
+import api from '@/services/api';
 
 interface PageBanner {
   id: string;
@@ -31,10 +32,8 @@ export default function PageBannersCMS() {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch(`${config.apiUrl}/page-banners`, {
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
-      });
-      const data = await res.json();
+      const res = await api.get(`/page-banners`);
+      const data = res;
       if (data.success) {
         setBanners(data.data);
       }
@@ -90,13 +89,8 @@ export default function PageBannersCMS() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this banner?')) return;
     try {
-      const res = await fetch(`${config.apiUrl}/page-banners/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-      });
-      const data = await res.json();
+      const res = await api.delete(`/page-banners/${id}`);
+      const data = res;
       if (data.success) {
         toast.success('Banner deleted');
         fetchBanners();
@@ -108,10 +102,10 @@ export default function PageBannersCMS() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background text-muted-foreground">
-        <div className="w-full max-w-[1400px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background text-muted-foreground">
+        <div className="w-full space-y-4">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
@@ -193,7 +187,7 @@ export default function PageBannersCMS() {
                 <h2 className="text-xl font-bold text-foreground mb-6">{currentBanner?.id ? 'Edit Page Banner' : 'Add New Page Banner'}</h2>
                 
                 <form onSubmit={handleSave} className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-bold text-muted-foreground mb-1">Page Slug *</label>
                       <input 
@@ -234,7 +228,7 @@ export default function PageBannersCMS() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-bold text-muted-foreground mb-1">Subtitle</label>
                       <input 

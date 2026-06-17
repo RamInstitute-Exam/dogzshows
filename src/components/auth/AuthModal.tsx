@@ -77,7 +77,7 @@ export default function AuthModal() {
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
-              "relative z-[99999] bg-[#0B1220] sm:rounded-[24px] shadow-[0_40px_100px_rgba(0,0,0,0.35)] overflow-hidden hide-scrollbar max-h-[100vh] sm:max-h-[92vh] flex flex-col transition-all duration-300",
+              "relative z-[99999] bg-card sm:rounded-[24px] shadow-[0_40px_100px_rgba(0,0,0,0.35)] overflow-hidden hide-scrollbar max-h-[100vh] sm:max-h-[92vh] flex flex-col transition-all duration-300",
               view === 'REGISTER' ? "w-[100vw] sm:w-[95vw] xl:w-[1200px] h-[100vh] sm:h-auto" : "w-[100vw] sm:w-[520px] h-[100vh] sm:h-auto sm:max-h-[92vh] overflow-y-auto"
             )}
           >
@@ -86,7 +86,7 @@ export default function AuthModal() {
               onClick={closeModal}
               className={cn(
                 "absolute top-6 right-6 p-2 z-50 rounded-full transition-colors",
-                view === 'REGISTER' ? "text-muted-foreground hover:bg-background/50 hover:text-foreground bg-[#0B1220]/80 backdrop-blur-md shadow-sm" : "text-muted-foreground hover:bg-background hover:text-foreground"
+                view === 'REGISTER' ? "text-muted-foreground hover:bg-background/50 hover:text-foreground bg-card/80 backdrop-blur-md shadow-sm" : "text-muted-foreground hover:bg-background hover:text-foreground"
               )}
             >
               <X className="w-5 h-5" />

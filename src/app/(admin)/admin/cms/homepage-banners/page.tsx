@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, GripVertical, Image as ImageIcon, ExternalLink, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
+import ImageUploader from '@/components/shared/ImageUploader';
+import api from '@/services/api';
 
 interface HomepageBanner {
   id: string;
@@ -32,10 +34,8 @@ export default function HomepageBannersAdmin() {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch(`${config.apiUrl}/homepage-banners`, {
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
-      });
-      const data = await res.json();
+      const res = await api.get(`/homepage-banners`);
+      const data = res;
       if (data.success) {
         setBanners(data.data);
       }
@@ -56,10 +56,10 @@ export default function HomepageBannersAdmin() {
 
     try {
       const isEdit = !!currentBanner.id;
-      const url = isEdit 
+      const url = isEdit
         ? `${config.apiUrl}/homepage-banners/${currentBanner.id}`
         : `${config.apiUrl}/homepage-banners`;
-      
+
       const payload = {
         ...currentBanner,
         startDate: currentBanner.startDate || null,
@@ -76,7 +76,7 @@ export default function HomepageBannersAdmin() {
       });
 
       const data = await res.json();
-      if (data.success) {
+      if (data?.success) {
         toast.success(`Banner ${isEdit ? 'updated' : 'created'} successfully`);
         setIsModalOpen(false);
         fetchBanners();
@@ -92,13 +92,8 @@ export default function HomepageBannersAdmin() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this banner?')) return;
     try {
-      const res = await fetch(`${config.apiUrl}/homepage-banners/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-      });
-      const data = await res.json();
+      const res = await api.delete(`/homepage-banners/${id}`);
+      const data = res;
       if (data.success) {
         toast.success('Banner deleted');
         fetchBanners();
@@ -115,7 +110,7 @@ export default function HomepageBannersAdmin() {
     const temp = newBanners[index - 1].sortOrder;
     newBanners[index - 1].sortOrder = newBanners[index].sortOrder;
     newBanners[index].sortOrder = temp;
-    
+
     // Swap in array for immediate UI update
     const item = newBanners[index];
     newBanners.splice(index, 1);
@@ -132,7 +127,7 @@ export default function HomepageBannersAdmin() {
     const temp = newBanners[index + 1].sortOrder;
     newBanners[index + 1].sortOrder = newBanners[index].sortOrder;
     newBanners[index].sortOrder = temp;
-    
+
     // Swap in array for immediate UI update
     const item = newBanners[index];
     newBanners.splice(index, 1);
@@ -146,7 +141,7 @@ export default function HomepageBannersAdmin() {
   const saveOrder = async (orderedBanners: HomepageBanner[]) => {
     try {
       await Promise.all(
-        orderedBanners.map(b => 
+        orderedBanners.map(b =>
           fetch(`${config.apiUrl}/homepage-banners/${b.id}`, {
             method: 'PUT',
             headers: {
@@ -163,7 +158,7 @@ export default function HomepageBannersAdmin() {
   };
 
   return (
-    <div className="p-8 space-y-8 bg-background min-h-screen text-muted-foreground">
+    <div className=" space-y-4 bg-background  text-muted-foreground">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
@@ -172,16 +167,16 @@ export default function HomepageBannersAdmin() {
           </h1>
           <p className="text-muted-foreground">Manage full-screen hero sliders for the main homepage.</p>
         </div>
-        <Button 
-          onClick={() => { 
-            setCurrentBanner({ 
-              status: 'ACTIVE', 
-              targetBlank: false, 
-              sortOrder: banners.length 
-            }); 
-            setIsModalOpen(true); 
+        <Button
+          onClick={() => {
+            setCurrentBanner({
+              status: 'ACTIVE',
+              targetBlank: false,
+              sortOrder: banners.length
+            });
+            setIsModalOpen(true);
           }}
-          className="bg-brand-orange hover:bg-orange-600 text-foreground"
+          className="bg-brand-orange hover:bg-orange-600 text-[#000000]"
         >
           <Plus className="w-4 h-4 mr-2" /> Add New Banner
         </Button>
@@ -231,8 +226,8 @@ export default function HomepageBannersAdmin() {
                     </span>
                   </td>
                   <td className="p-4 text-sm text-muted-foreground">
-                    {banner.startDate && <div className="flex items-center gap-1"><Calendar className="w-3 h-3"/> Start: {new Date(banner.startDate).toLocaleDateString()}</div>}
-                    {banner.endDate && <div className="flex items-center gap-1 mt-1"><Calendar className="w-3 h-3 text-red-400"/> End: {new Date(banner.endDate).toLocaleDateString()}</div>}
+                    {banner.startDate && <div className="flex items-center gap-1"><Calendar className="w-3 h-3" /> Start: {new Date(banner.startDate).toLocaleDateString()}</div>}
+                    {banner.endDate && <div className="flex items-center gap-1 mt-1"><Calendar className="w-3 h-3 text-red-400" /> End: {new Date(banner.endDate).toLocaleDateString()}</div>}
                     {!banner.startDate && !banner.endDate && <span className="text-gray-500 italic">Always show</span>}
                   </td>
                   <td className="p-4 flex gap-2 justify-end items-center h-full">
@@ -252,93 +247,91 @@ export default function HomepageBannersAdmin() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-card rounded-2xl w-full max-w-3xl border border-border p-6 shadow-2xl my-8"
+            className="bg-card rounded-2xl w-full  border border-border p-6 shadow-2xl my-8"
           >
             <h2 className="text-xl font-bold text-foreground mb-6">{currentBanner?.id ? 'Edit Banner' : 'Add New Banner'}</h2>
-            
+
             <form onSubmit={handleSave} className="space-y-5">
-              
+
               <div>
                 <label className="block text-sm font-bold text-muted-foreground mb-1">Banner Title (Internal) *</label>
-                <input 
-                  type="text" 
-                  value={currentBanner?.title || ''} 
-                  onChange={e => setCurrentBanner({...currentBanner, title: e.target.value})}
+                <input
+                  type="text"
+                  value={currentBanner?.title || ''}
+                  onChange={e => setCurrentBanner({ ...currentBanner, title: e.target.value })}
                   className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground"
                   placeholder="e.g. Summer Championship Promo"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-muted-foreground mb-1">Desktop Image URL (1920x900) *</label>
-                  <input 
-                    type="text" 
-                    value={currentBanner?.desktopImage || ''} 
-                    onChange={e => setCurrentBanner({...currentBanner, desktopImage: e.target.value})}
-                    className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground"
-                    placeholder="/images/desktop_banner.png"
-                    required
+                  <ImageUploader
+                    currentImage={currentBanner?.desktopImage}
+                    onUploadSuccess={(url) => setCurrentBanner({ ...currentBanner, desktopImage: url })}
+                    onRemove={() => setCurrentBanner({ ...currentBanner, desktopImage: '' })}
+                    folder="cms-banners"
+                    label="Desktop Image (1920x900) *"
+                    aspectRatio={1920 / 900}
+                    helpText="Max 10 MB."
                   />
-                  {currentBanner?.desktopImage && (
-                    <img src={currentBanner.desktopImage} alt="Preview" className="mt-2 h-20 w-full object-cover rounded border border-border" />
-                  )}
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-muted-foreground mb-1">Mobile Image URL (1080x1920)</label>
-                  <input 
-                    type="text" 
-                    value={currentBanner?.mobileImage || ''} 
-                    onChange={e => setCurrentBanner({...currentBanner, mobileImage: e.target.value})}
-                    className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground"
-                    placeholder="/images/mobile_banner.png"
+                  <ImageUploader
+                    currentImage={currentBanner?.mobileImage}
+                    onUploadSuccess={(url) => setCurrentBanner({ ...currentBanner, mobileImage: url })}
+                    onRemove={() => setCurrentBanner({ ...currentBanner, mobileImage: '' })}
+                    folder="cms-banners"
+                    label="Mobile Image (1080x1920)"
+                    aspectRatio={1080 / 1920}
+                    helpText="Max 10 MB."
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-muted-foreground mb-1">Redirect URL</label>
-                  <input 
-                    type="text" 
-                    value={currentBanner?.redirectUrl || ''} 
-                    onChange={e => setCurrentBanner({...currentBanner, redirectUrl: e.target.value})}
+                  <input
+                    type="text"
+                    value={currentBanner?.redirectUrl || ''}
+                    onChange={e => setCurrentBanner({ ...currentBanner, redirectUrl: e.target.value })}
                     className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground"
                     placeholder="https://example.com/promo"
                   />
                 </div>
                 <div className="flex items-center gap-2 pt-6">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     id="targetBlank"
-                    checked={currentBanner?.targetBlank ?? false} 
-                    onChange={e => setCurrentBanner({...currentBanner, targetBlank: e.target.checked})}
+                    checked={currentBanner?.targetBlank ?? false}
+                    onChange={e => setCurrentBanner({ ...currentBanner, targetBlank: e.target.checked })}
                     className="w-4 h-4 accent-brand-orange"
                   />
                   <label htmlFor="targetBlank" className="text-sm font-bold text-muted-foreground">Open link in new tab</label>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-muted-foreground mb-1">Start Date (Optional)</label>
-                  <input 
-                    type="datetime-local" 
-                    value={currentBanner?.startDate ? new Date(currentBanner.startDate).toISOString().slice(0, 16) : ''} 
-                    onChange={e => setCurrentBanner({...currentBanner, startDate: e.target.value ? new Date(e.target.value).toISOString() : undefined})}
+                  <input
+                    type="datetime-local"
+                    value={currentBanner?.startDate ? new Date(currentBanner.startDate).toISOString().slice(0, 16) : ''}
+                    onChange={e => setCurrentBanner({ ...currentBanner, startDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
                     className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground color-scheme-dark"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-muted-foreground mb-1">End Date (Optional)</label>
-                  <input 
-                    type="datetime-local" 
-                    value={currentBanner?.endDate ? new Date(currentBanner.endDate).toISOString().slice(0, 16) : ''} 
-                    onChange={e => setCurrentBanner({...currentBanner, endDate: e.target.value ? new Date(e.target.value).toISOString() : undefined})}
+                  <input
+                    type="datetime-local"
+                    value={currentBanner?.endDate ? new Date(currentBanner.endDate).toISOString().slice(0, 16) : ''}
+                    onChange={e => setCurrentBanner({ ...currentBanner, endDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
                     className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground color-scheme-dark"
                   />
                 </div>
@@ -346,23 +339,23 @@ export default function HomepageBannersAdmin() {
 
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <input 
-                    type="radio" 
+                  <input
+                    type="radio"
                     id="statusActive"
                     name="status"
-                    checked={currentBanner?.status === 'ACTIVE'} 
-                    onChange={() => setCurrentBanner({...currentBanner, status: 'ACTIVE'})}
+                    checked={currentBanner?.status === 'ACTIVE'}
+                    onChange={() => setCurrentBanner({ ...currentBanner, status: 'ACTIVE' })}
                     className="accent-brand-orange"
                   />
                   <label htmlFor="statusActive" className="text-sm font-bold text-muted-foreground">Active</label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input 
-                    type="radio" 
+                  <input
+                    type="radio"
                     id="statusInactive"
                     name="status"
-                    checked={currentBanner?.status === 'INACTIVE'} 
-                    onChange={() => setCurrentBanner({...currentBanner, status: 'INACTIVE'})}
+                    checked={currentBanner?.status === 'INACTIVE'}
+                    onChange={() => setCurrentBanner({ ...currentBanner, status: 'INACTIVE' })}
                     className="accent-brand-orange"
                   />
                   <label htmlFor="statusInactive" className="text-sm font-bold text-muted-foreground">Inactive</label>
@@ -373,7 +366,7 @@ export default function HomepageBannersAdmin() {
                 <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="border-border hover:bg-input">
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-brand-orange hover:bg-orange-600 text-foreground">
+                <Button type="submit" className="bg-brand-orange hover:bg-orange-600 text-[#000000]">
                   Save Banner
                 </Button>
               </div>

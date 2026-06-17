@@ -17,7 +17,7 @@ export default function EventTimeline({ timeline }: { timeline: any[] }) {
 
   return (
     <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
-      <h2 className="text-muted-foregroundxl font-extrabold text-[#0F172A] mb-10">Event Timeline</h2>
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-10">Event Timeline</h2>
       
       <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[3px] before:bg-gradient-to-b before:from-brand-orange/20 before:via-brand-orange before:to-brand-orange/20">
         {timeline.map((item, i) => (
@@ -34,9 +34,9 @@ export default function EventTimeline({ timeline }: { timeline: any[] }) {
             </div>
             
             {/* Content Box */}
-            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-6 rounded-[20px] bg-[#F8FAFC] border border-border shadow-sm group-hover:shadow-md transition-shadow">
+            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-6 rounded-[20px] bg-card border border-border shadow-sm group-hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="font-bold text-[#0F172A] text-xl">{item.title}</h4>
+                <h4 className="font-bold text-foreground text-xl">{item.title}</h4>
                 <span className="text-brand-orange font-bold text-sm bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100">{item.time}</span>
               </div>
               <p className="text-muted-foreground font-medium leading-relaxed">{item.description}</p>

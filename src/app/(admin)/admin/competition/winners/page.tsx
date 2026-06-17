@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function WinnersListing() {
   const [winners, setWinners] = useState<any[]>([]);
@@ -21,10 +22,8 @@ export default function WinnersListing() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${config.apiUrl}/winners?page=${page}&limit=10&search=${search}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const res = await api.get(`/winners?page=${page}&limit=10&search=${search}`);
+      const data = res;
       if (data.success) {
         setWinners(data.data);
         setTotalPages(data.pagination.totalPages);
@@ -57,14 +56,7 @@ export default function WinnersListing() {
     if (!confirm('Are you sure you want to delete selected winner records?')) return;
     try {
       const token = localStorage.getItem('token');
-      await fetch('${config.apiUrl}/winners/bulk-delete', {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ids: selectedIds })
-      });
+      await api.post(`/winners/bulk-delete`, JSON.stringify({ ids: selectedIds }));
       setSelectedIds([]);
       fetchWinners();
     } catch (error) {
@@ -73,10 +65,10 @@ export default function WinnersListing() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-6">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full space-y-4">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
@@ -124,14 +116,14 @@ export default function WinnersListing() {
                   {loading ? (
                     <tr>
                       <td colSpan={6} className="py-12 text-center">
-                        <RefreshCw className="w-8 h-8 animate-spin text-brand-orange mx-auto mb-4" />
+                        <RefreshCw className="w-8 h-8 animate-spin text-brand-orange  mb-4" />
                         <p className="text-muted-foreground">Loading winners...</p>
                       </td>
                     </tr>
                   ) : winners.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="py-12 text-center">
-                        <Trophy className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
+                        <Trophy className="w-12 h-12 text-[#1E293B]  mb-4" />
                         <p className="text-muted-foreground font-medium">No winners found. Generate them from the judging portal.</p>
                       </td>
                     </tr>
@@ -175,7 +167,7 @@ export default function WinnersListing() {
                           {w.score !== null && <p className="text-xs text-brand-orange font-bold mt-0.5">Score: {w.score}</p>}
                         </td>
                         <td className="py-4 px-6 text-right">
-                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center justify-end gap-1  transition-opacity">
                             <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10">
                               <Trash2 className="w-4 h-4" />
                             </Button>

@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Search, Filter, Download, Plus, RefreshCw, Edit, Trash2, Shield, MoreVertical, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function UserManagementListing() {
   const [users, setUsers] = useState<any[]>([]);
@@ -21,10 +21,8 @@ export default function UserManagementListing() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${config.apiUrl}/users?page=${page}&limit=10&search=${search}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const res = await api.get(`/users?page=${page}&limit=10&search=${search}`);
+      const data = res;
       if (data.success) {
         setUsers(data.data);
         setTotalPages(data.pagination.totalPages);
@@ -57,14 +55,7 @@ export default function UserManagementListing() {
     if (!confirm('Are you sure you want to delete selected users?')) return;
     try {
       const token = localStorage.getItem('token');
-      await fetch('${config.apiUrl}/users/bulk-delete', {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ids: selectedIds })
-      });
+      await api.post(`/users/bulk-delete`, JSON.stringify({ ids: selectedIds }));
       setSelectedIds([]);
       fetchUsers();
     } catch (error) {
@@ -73,10 +64,8 @@ export default function UserManagementListing() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-6">
+    <div className="w-full">
+      <div className="w-full space-y-4">
           
           {/* Top Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
@@ -139,23 +128,21 @@ export default function UserManagementListing() {
                     <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">User</th>
                     <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Contact</th>
                     <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Role</th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Status</th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Joined</th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
+                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right min-w-[180px]">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(255,255,255,0.02)]">
                   {loading ? (
                     <tr>
                       <td colSpan={7} className="py-12 text-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-4" />
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-500  mb-4" />
                         <p className="text-muted-foreground">Loading users...</p>
                       </td>
                     </tr>
                   ) : users.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="py-12 text-center">
-                        <Users className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
+                        <Users className="w-12 h-12 text-[#1E293B]  mb-4" />
                         <p className="text-muted-foreground font-medium">No users found.</p>
                       </td>
                     </tr>
@@ -202,22 +189,8 @@ export default function UserManagementListing() {
                             <span className="text-xs text-muted-foreground">User</span>
                           )}
                         </td>
-                        <td className="py-4 px-6">
-                          {user.isActive ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-wider border border-green-500/20">
-                              <CheckCircle className="w-3 h-3" /> Active
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 text-red-500 text-[10px] font-bold uppercase tracking-wider border border-red-500/20">
-                              <XCircle className="w-3 h-3" /> Suspended
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-4 px-6 text-sm text-muted-foreground">
-                          {new Date(user.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="py-4 px-6 text-right">
-                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <td className="py-4 px-6 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-3 transition-opacity">
                             <Link href={`/admin/users/edit/${user.id}`}>
                               <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent">
                                 <Edit className="w-4 h-4" />
@@ -255,7 +228,6 @@ export default function UserManagementListing() {
           </div>
 
         </div>
-      </main>
     </div>
   );
 }

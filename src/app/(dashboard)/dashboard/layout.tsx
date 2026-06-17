@@ -9,15 +9,22 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { USER_ROUTES } from '@/config/navigation';
+import { USER_ROUTES, ADMIN_ROUTES } from '@/config/navigation';
 import NotificationDropdown from '@/components/shared/NotificationDropdown';
 import ProfileDropdown from '@/components/shared/ProfileDropdown';
 import ThemeToggle from '@/components/shared/ThemeToggle';
+import { useQueryClient } from '@tanstack/react-query';
+import axiosInstance from '@/lib/axios';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user } = useAuthStore();
-  const role = user?.roles?.[0] || 'USER';
+  
+  // Extract and normalize roles to uppercase
+  const roles = user?.roles?.map((r: any) => typeof r === 'string' ? r.toUpperCase() : r.role?.name?.toUpperCase()) || [];
+  const isAdminOrSuperAdmin = roles.includes('SUPER_ADMIN') || roles.includes('SUPER ADMIN') || roles.includes('ADMIN');
+  const role = roles[0] || 'USER';
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
@@ -25,7 +32,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setOpenMenus(prev => ({ ...prev, [name]: !prev[name] }));
   };
 
-  const allowedRoutes = USER_ROUTES.filter(route => route.roles?.includes(role));
+  const queryClient = useQueryClient();
+  const handleRouteHover = (href: string) => {
+    if (href === '/dashboard') {
+      queryClient.prefetchQuery({
+        queryKey: ['userDashboardStats'],
+        queryFn: () => axiosInstance.get('/dashboard/stats').then(r => r.data.data)
+      });
+    }
+  };
+
+  const allowedRoutes = isAdminOrSuperAdmin
+    ? ADMIN_ROUTES
+    : USER_ROUTES.filter(route => route.roles?.some(r => roles.includes(r.toUpperCase())));
 
   return (
     <div className="min-h-screen bg-card flex flex-col selection:bg-brand-orange selection:text-foreground font-sans">
@@ -110,7 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                           {!isSidebarCollapsed && <ChevronRight className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />}
                         </button>
                       ) : (
-                        <Link href={route.href!} className={`flex items-center ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4'} py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-orange-50 text-brand-orange' : 'hover:bg-card hover:text-foreground'}`} title={route.name}>
+                        <Link href={route.href!} onMouseEnter={() => handleRouteHover(route.href!)} className={`flex items-center ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4'} py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-orange-50 text-brand-orange' : 'hover:bg-card hover:text-foreground'}`} title={route.name}>
                           <Icon className={`w-5 h-5 ${isSidebarCollapsed ? '' : 'mr-3'} ${isActive ? 'text-brand-orange' : 'text-muted-foreground'}`} />
                           {!isSidebarCollapsed && <span>{route.name}</span>}
                         </Link>
@@ -123,7 +142,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                               <div className="pl-11 py-2 space-y-1">
                                 {route.children?.map(child => (
-                                  <Link key={child.name} href={child.href} className={`block py-2 text-sm font-medium ${pathname === child.href ? 'text-brand-orange' : 'text-muted-foreground hover:text-foreground transition-colors'}`}>
+                                  <Link key={child.name} href={child.href} onMouseEnter={() => handleRouteHover(child.href)} className={`block py-2 text-sm font-medium ${pathname === child.href ? 'text-brand-orange' : 'text-muted-foreground hover:text-foreground transition-colors'}`}>
                                     {child.name}
                                   </Link>
                                 ))}
@@ -162,6 +181,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           animate={{ marginLeft: isSidebarCollapsed ? 80 : 280 }}
           transition={{ type: "spring", bounce: 0, duration: 0.3 }}
           className="flex-1 px-8 pb-8 pt-6 w-full"
+          style={{ paddingTop: 0 }}
         >
           <div className="w-full max-w-[1600px] mx-auto w-full">
             

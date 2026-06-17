@@ -1,35 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useFCIGroups } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
 import { Shield, ChevronRight, List } from 'lucide-react';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
-import { config } from '@/lib/config';
+import PageContainer from '@/components/layout/PageContainer';
 
 export default function GroupsPage() {
-  const [groups, setGroups] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '${config.apiUrl}';
-        const res = await fetch(`${apiUrl}/fci-groups`);
-        if (res.ok) {
-          const data = await res.json();
-          setGroups(data || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch FCI groups:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchGroups();
-  }, []);
+  const { data, isLoading } = useFCIGroups();
+  const groups = data?.success && Array.isArray(data.data) ? data.data : [];
+  const loading = isLoading;
 
   return (
-    <div className="min-h-fit bg-background">
+    <PageContainer>
       <BreadcrumbBanner
         slug="groups"
         fallbackTitle="FCI Breed Groups"
@@ -46,13 +29,13 @@ export default function GroupsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {groups.length === 0 ? (
               <div className="col-span-full text-center text-gray-500 py-10">No groups found.</div>
-            ) : groups.map((group, i) => (
+            ) : groups.map((group: any, i: number) => (
               <motion.div 
                 key={group.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-[#0B1220] rounded-[2rem] p-6 shadow-sm border border-border premium-hover flex flex-col group relative overflow-hidden"
+                className="bg-card rounded-[2rem] p-6 shadow-sm border border-border premium-hover flex flex-col group relative overflow-hidden"
               >
                 <div className="absolute -right-6 -top-6 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
                   <Shield className="w-40 h-40 text-foreground" />
@@ -79,6 +62,6 @@ export default function GroupsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

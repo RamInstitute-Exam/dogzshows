@@ -1,0 +1,308 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Save, ArrowLeft, Loader2, ImagePlus, Globe, Award, Shield, User, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import api from '@/lib/api';
+import { toast } from 'sonner';
+import ImageUploader from '@/components/shared/ImageUploader';
+import { Suspense } from 'react';
+
+function EditJudgeFormContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const judgeId = searchParams.get('id') as string;
+  
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    gender: 'MALE',
+    dob: '',
+    address: '',
+    city: '',
+    state: '',
+    country: 'India',
+    experience: '',
+    bio: '',
+    specialization: '',
+    certifications: '',
+    photoUrl: '',
+    status: 'ACTIVE',
+    isFeatured: false
+  });
+
+  useEffect(() => {
+    async function loadJudgeDetails() {
+      try {
+        const res = await api.get(`/judges/${judgeId}`);
+        if (res.success && res.data) {
+          const jd = res.data;
+          setFormData({
+            name: jd.name || '',
+            email: jd.email || '',
+            phone: jd.phone || '',
+            gender: jd.gender || 'MALE',
+            dob: jd.dob || '',
+            address: jd.address || '',
+            city: jd.city || '',
+            state: jd.state || '',
+            country: jd.country || 'India',
+            experience: jd.experience ? String(jd.experience) : '',
+            bio: jd.bio || '',
+            specialization: jd.specialization || jd.credentials || '',
+            certifications: jd.certifications || jd.qualifications || '',
+            photoUrl: jd.photoUrl || '',
+            status: jd.status || 'ACTIVE',
+            isFeatured: jd.isFeatured === true
+          });
+        } else {
+          toast.error('Failed to load judge details');
+          router.push('/admin/judges');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('Failed to load judge details');
+        router.push('/admin/judges');
+      } finally {
+        setFetching(false);
+      }
+    }
+
+    if (judgeId) {
+      loadJudgeDetails();
+    }
+  }, [judgeId]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    
+    let finalValue: any = value;
+    if (type === 'checkbox') {
+      finalValue = (e.target as HTMLInputElement).checked;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: finalValue
+    }));
+  };
+
+  const handleCheckboxChange = (name: string, checked: boolean) => {
+    setFormData(prev => ({ ...prev, [name]: checked }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name) {
+      toast.error('Name is required');
+      return;
+    }
+    setLoading(true);
+    try {
+      const payload = {
+        ...formData,
+        experience: formData.experience ? String(formData.experience) : '0'
+      };
+      const res = await api.put(`/judges/${judgeId}`, payload);
+      if (res.success) {
+        toast.success('Judge profile updated successfully');
+        router.push('/admin/judges');
+      } else {
+        toast.error(res.message || 'Failed to update judge');
+      }
+    } catch (error: any) {
+      console.error('Update submit error:', error);
+      toast.error(error.message || 'An error occurred during save');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (fetching) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-card text-foreground">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-card px-6 py-4 rounded-2xl border border-border shadow-md">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/judges">
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent rounded-full">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Edit Judge Profile</h1>
+            <p className="text-muted-foreground text-sm mt-1">Modify credentials and information for Dr./Mr./Mrs. {formData.name}.</p>
+          </div>
+        </div>
+        <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/10">
+          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          Save Changes
+        </Button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Main Info Blocks */}
+            
+            {/* Block 1: Identity & Credentials */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-6">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
+                <User className="w-5 h-5 text-blue-500" /> Account & Personal Details
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Full Name *</label>
+                  <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Email Address (Read-only)</label>
+                  <input disabled type="email" name="email" value={formData.email} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-muted-foreground focus:border-blue-500 outline-none transition-all text-sm opacity-70 cursor-not-allowed" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Phone Number</label>
+                  <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Gender</label>
+                  <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm">
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Date of Birth</label>
+                  <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* Block 2: Location Details */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-6">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
+                <MapPin className="w-5 h-5 text-blue-500" /> Location Information
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Street Address</label>
+                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">City</label>
+                  <input type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">State</label>
+                  <input type="text" name="state" value={formData.state} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Country</label>
+                  <input type="text" name="country" value={formData.country} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* Block 3: Biography & Experience */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-6">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
+                <Award className="w-5 h-5 text-blue-500" /> Biography & Professional Experience
+              </h2>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Specialization</label>
+                    <input type="text" name="specialization" value={formData.specialization} onChange={handleInputChange} placeholder="E.g. Golden Retrievers, Toy Breeds" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Years of Judging Experience</label>
+                    <input type="number" name="experience" value={formData.experience} onChange={handleInputChange} placeholder="E.g. 12" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Certifications / Licenses</label>
+                  <input type="text" name="certifications" value={formData.certifications} onChange={handleInputChange} placeholder="E.g. FCI License #492, AKC All Breed Certification" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Biography / Summary</label>
+                  <textarea name="bio" value={formData.bio} onChange={handleInputChange} rows={6} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm leading-relaxed" />
+                </div>
+              </div>
+            </div>
+          {/* Sidebar Config Blocks */}
+            {/* Profile Photo Uploader */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
+              <ImageUploader
+                currentImage={formData.photoUrl}
+                onUploadSuccess={(url) => setFormData(prev => ({ ...prev, photoUrl: url }))}
+                onRemove={() => setFormData(prev => ({ ...prev, photoUrl: '' }))}
+                folder="judges"
+                label="Judge Portrait Image"
+                aspectRatio={1}
+                helpText="SQUARE IMAGE. MAX 10 MB."
+              />
+            </div>
+
+            {/* Platform Settings */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-6">
+              <h3 className="font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-blue-500" /> Platform Configuration
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Status</label>
+                  <select name="status" value={formData.status} onChange={handleInputChange} className="w-full px-4 py-2.5 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none text-sm font-semibold">
+                    <option value="ACTIVE">Active / Approved</option>
+                    <option value="SUSPENDED">Suspended</option>
+                    <option value="PENDING">Pending Approval</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-accent/20 rounded-xl">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Featured Judge</span>
+                    <span className="text-[10px] text-muted-foreground">Highlight on homepage and pages.</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="isFeatured"
+                    checked={formData.isFeatured}
+                    onChange={(e) => handleCheckboxChange('isFeatured', e.target.checked)}
+                    className="w-5 h-5 accent-blue-600 rounded cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Action Info */}
+            <div className="p-6 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-xs text-blue-500 space-y-2 leading-relaxed">
+              <p className="font-bold flex items-center gap-1.5"><Globe className="w-4 h-4" /> Global Synchrony Notice</p>
+              <p>Changes saved here sync immediately to their linked user profile account and show up instantly on the public Judges directory.</p>
+            </div>
+          </form>
+    </div>
+  );
+}
+
+export default function EditJudgeForm() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen bg-card text-foreground">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+      </div>
+    }>
+      <EditJudgeFormContent />
+    </Suspense>
+  );
+}

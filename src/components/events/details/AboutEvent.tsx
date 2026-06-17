@@ -5,7 +5,7 @@ import { Shield, AlertCircle, Target, Sparkles, CheckCircle2 } from 'lucide-reac
 export default function AboutEvent({ event }: { event: any }) {
   return (
     <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
-      <h2 className="text-muted-foregroundxl font-extrabold text-[#0F172A] mb-8">About the Event</h2>
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">About the Event</h2>
       
       {/* Description Section */}
       <div className="mb-10">
@@ -17,7 +17,7 @@ export default function AboutEvent({ event }: { event: any }) {
         <div>
           <div className="flex items-center gap-3 mb-4">
             <Target className="w-6 h-6 text-brand-orange" />
-            <h3 className="text-xl font-bold text-[#0F172A]">Objectives</h3>
+            <h3 className="text-xl font-bold text-foreground">Objectives</h3>
           </div>
           <ul className="space-y-3">
             {['Promote responsible purebred breeding.', 'Provide a competitive platform for exhibitors.', 'Educate the public on various dog breeds.', 'Identify the ultimate Best in Show.'].map((obj, i) => (
@@ -31,7 +31,7 @@ export default function AboutEvent({ event }: { event: any }) {
         <div>
           <div className="flex items-center gap-3 mb-4">
             <Sparkles className="w-6 h-6 text-brand-orange" />
-            <h3 className="text-xl font-bold text-[#0F172A]">Highlights</h3>
+            <h3 className="text-xl font-bold text-foreground">Highlights</h3>
           </div>
           <ul className="space-y-3">
             {['International FCI Judges Panel.', 'Digital certificates & badges.', 'Live scoring and dynamic leaderboards.', 'Professional media coverage.'].map((high, i) => (
@@ -44,10 +44,10 @@ export default function AboutEvent({ event }: { event: any }) {
       </div>
 
       {/* Rules Section */}
-      <div className="bg-[#F8FAFC] rounded-[16px] p-8 border border-border">
+      <div className="bg-card rounded-[16px] p-8 border border-border">
         <div className="flex items-center gap-3 mb-6">
           <Shield className="w-6 h-6 text-red-500" />
-          <h3 className="text-xl font-bold text-[#0F172A]">Strict Competition Rules</h3>
+          <h3 className="text-xl font-bold text-foreground">Strict Competition Rules</h3>
         </div>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {event.rules.map((rule: string, i: number) => (

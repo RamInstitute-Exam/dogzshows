@@ -49,7 +49,7 @@ export default function RegisterForm() {
     
     try {
       setLoading(true);
-      const res = await fetch('${config.apiUrl}/auth/send-otp', {
+      const res = await fetch(`${config.apiUrl}/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: formData.phone })
@@ -81,7 +81,7 @@ export default function RegisterForm() {
 
     try {
       setLoading(true);
-      const res = await fetch('${config.apiUrl}/auth/verify-otp', {
+      const res = await fetch(`${config.apiUrl}/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: formData.phone, otp: formData.otp })
@@ -114,7 +114,7 @@ export default function RegisterForm() {
 
     try {
       setLoading(true);
-      const res = await fetch('${config.apiUrl}/auth/register', {
+      const res = await fetch(`${config.apiUrl}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

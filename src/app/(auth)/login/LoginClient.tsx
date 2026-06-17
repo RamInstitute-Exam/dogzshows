@@ -34,7 +34,6 @@ export default function LoginClient() {
       const response = await api.post('/auth/login', { email, password });
       const { token, role } = response.data;
       login(token, { userId: 'unknown', email, role: role || 'USER' });
-      router.push('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to login. Please check your credentials.');
     } finally {
@@ -48,7 +47,7 @@ export default function LoginClient() {
   };
 
   return (
-    <div className="flex-grow min-h-[85vh] flex items-center justify-center py-16 px-4 relative overflow-hidden bg-slate-950">
+    <div className="flex-grow min-h-[85vh] flex items-center justify-center py-16 px-4 relative overflow-hidden bg-black">
       {/* Dynamic Back-glow shapes */}
       <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>

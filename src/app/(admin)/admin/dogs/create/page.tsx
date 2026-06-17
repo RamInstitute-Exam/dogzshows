@@ -8,6 +8,7 @@ import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function AddDogForm() {
   const router = useRouter();
@@ -59,16 +60,9 @@ export default function AddDogForm() {
         bloodline: { sire: formData.sireName, dam: formData.damName, line: formData.bloodline }
       };
 
-      const res = await fetch('${config.apiUrl}/dogs', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+      const res = await api.get(`/dogs`);
       
-      const data = await res.json();
+      const data = res;
       if (data.success) {
         router.push('/admin/dogs');
       } else {
@@ -91,10 +85,10 @@ export default function AddDogForm() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1200px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full space-y-4">
           
           <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-4 z-50">
             <div className="flex items-center gap-4">
@@ -114,7 +108,7 @@ export default function AddDogForm() {
             </Button>
           </div>
 
-          <div className="flex gap-8">
+          <div className="flex ga">
             {/* Left Nav */}
             <div className="w-64 shrink-0 space-y-2">
               {tabs.map(tab => {
@@ -136,13 +130,13 @@ export default function AddDogForm() {
             </div>
 
             {/* Right Form Area */}
-            <div className="flex-1 bg-card p-8 rounded-2xl border border-border shadow-xl">
-              <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex-1 bg-card p-6 rounded-2xl border border-border shadow-xl">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 
                 {activeTab === 'basic' && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Basic Details</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Dog Name *</label>
                         <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -189,9 +183,9 @@ export default function AddDogForm() {
                 )}
 
                 {activeTab === 'bloodline' && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Bloodline & Pedigree</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Sire (Father) Name</label>
                         <input type="text" name="sireName" value={formData.sireName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -217,9 +211,9 @@ export default function AddDogForm() {
                 )}
 
                 {activeTab === 'owner' && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Owner Contact Data</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Owner Full Name</label>
                         <input type="text" name="ownerName" value={formData.ownerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -242,7 +236,7 @@ export default function AddDogForm() {
 
                 {(activeTab === 'medical' || activeTab === 'gallery' || activeTab === 'qr') && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center py-16">
-                    <ImagePlus className="w-16 h-16 text-[#1E293B] mx-auto mb-4" />
+                    <ImagePlus className="w-16 h-16 text-[#1E293B]  mb-4" />
                     <h3 className="text-xl font-bold text-foreground mb-2">Media & Files Upload</h3>
                     <p className="text-muted-foreground mb-6">Drag and drop files to attach certificates, photos, and medical records.</p>
                     <Button variant="outline" className="border-brand-orange text-brand-orange hover:bg-brand-orange/10">Browse Files</Button>

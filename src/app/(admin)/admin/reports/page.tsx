@@ -6,6 +6,7 @@ import { FileText, Download, Loader2, Plus, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function ReportsDashboard() {
   const [reports, setReports] = useState<any[]>([]);
@@ -19,10 +20,8 @@ export default function ReportsDashboard() {
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${config.apiUrl}/reports`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const res = await api.get(`/reports`);
+      const data = res;
       if (data.success) {
         setReports(data.data);
       }
@@ -37,14 +36,7 @@ export default function ReportsDashboard() {
     setGenerating(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${config.apiUrl}/reports/generate`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ type })
-      });
+      const res = await api.get(`/reports/generate`);
       
       if (res.ok) {
         fetchReports();
@@ -57,10 +49,10 @@ export default function ReportsDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full space-y-4">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -119,14 +111,14 @@ export default function ReportsDashboard() {
                   {loading ? (
                     <tr>
                       <td className="py-12 text-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-4" />
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-500  mb-4" />
                         <p className="text-muted-foreground">Loading archives...</p>
                       </td>
                     </tr>
                   ) : reports.length === 0 ? (
                     <tr>
                       <td className="py-12 text-center">
-                        <FileText className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
+                        <FileText className="w-12 h-12 text-[#1E293B]  mb-4" />
                         <p className="text-muted-foreground font-medium">No reports have been generated yet.</p>
                       </td>
                     </tr>

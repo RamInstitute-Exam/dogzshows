@@ -1,34 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useWinners } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
 import { Trophy, Star, Medal, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import { getImageUrl } from '@/lib/api';
-import { config } from '@/lib/config';
+import PageContainer from '@/components/layout/PageContainer';
 
 export default function WinnersPage() {
-  const [winners, setWinners] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useWinners();
+  const winners = data?.success && Array.isArray(data.data) ? data.data : [];
+  const loading = isLoading;
 
-  useEffect(() => {
-    const fetchWinners = async () => {
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '${config.apiUrl}';
-        const res = await fetch(`${apiUrl}/winners/public`);
-        if (res.ok) {
-          const result = await res.json();
-          setWinners(result.data || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch winners:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchWinners();
-  }, []);
 
   const getGradient = (i: number) => {
     if (i === 0) return 'from-yellow-400 to-amber-600';
@@ -38,7 +22,7 @@ export default function WinnersPage() {
   };
 
   return (
-    <div className="min-h-fit bg-background">
+    <PageContainer>
       
       <BreadcrumbBanner
         slug="winners"
@@ -57,7 +41,7 @@ export default function WinnersPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {winners.length === 0 ? (
               <div className="col-span-full text-center text-gray-500 py-10">No winners have been announced yet.</div>
-            ) : winners.map((winner, i) => {
+            ) : winners.map((winner: any, i: number) => {
               const color = getGradient(i);
               return (
               <motion.div 
@@ -65,7 +49,7 @@ export default function WinnersPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.15 }}
-                className={`relative bg-[#0B1220] rounded-[2rem] p-1 pt-16 mt-16 premium-hover shadow-[0_10px_30px_rgba(0,0,0,0.35)]`}
+                className={`relative bg-card rounded-[2rem] p-1 pt-16 mt-16 premium-hover shadow-[0_10px_30px_rgba(0,0,0,0.35)]`}
               >
                 {/* Floating Avatar */}
                 <div className={`absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full p-1 bg-gradient-to-br ${color} shadow-lg`}>
@@ -76,7 +60,7 @@ export default function WinnersPage() {
                       <Trophy className="w-12 h-12 text-muted-foreground" />
                     )}
                   </div>
-                  <div className={`absolute -bottom-2 -right-2 p-2 rounded-full bg-[#0B1220] text-foreground shadow-sm border border-border`}>
+                  <div className={`absolute -bottom-2 -right-2 p-2 rounded-full bg-card text-foreground shadow-sm border border-border`}>
                     {i === 0 ? <Trophy className="w-5 h-5 text-[#F59E0B]" /> : <Medal className="w-5 h-5 text-muted-foreground" />}
                   </div>
                 </div>
@@ -95,7 +79,7 @@ export default function WinnersPage() {
                     </div>
                   </div>
                   
-                  <Button variant="outline" className="w-full rounded-[14px] h-[48px] btn-secondary-luxury font-[700] text-[#CBD5E1]">
+                  <Button variant="outline" className="w-full rounded-[14px] h-[48px] btn-secondary-luxury font-[700] text-muted-foreground">
                     View Full Profile
                   </Button>
                 </div>
@@ -104,6 +88,6 @@ export default function WinnersPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

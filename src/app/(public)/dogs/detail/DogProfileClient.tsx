@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import api, { getImageUrl } from '@/lib/api';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import PageContainer from '@/components/layout/PageContainer';
 import {
   Loader2,
   ArrowLeft,
@@ -93,11 +94,8 @@ export default function DogProfileClient() {
   // Notification Toast
   const [toast, setToast] = useState('');
 
-  useEffect(() => {
-    fetchDog();
-  }, [id]);
-
-  const fetchDog = async () => {
+  const fetchDog = useCallback(async () => {
+    if (!id) return;
     setLoading(true);
     try {
       const response = await api.get(`/dogs/${id}`);
@@ -141,7 +139,15 @@ export default function DogProfileClient() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  const lastLoadedId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!id || lastLoadedId.current === id) return;
+    lastLoadedId.current = id;
+    fetchDog();
+  }, [id, fetchDog]);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -274,30 +280,34 @@ export default function DogProfileClient() {
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-[70vh]">
-        <Loader2 className="w-12 h-12 text-orange-500 animate-spin mb-4" />
-        <p className="text-muted-foreground text-xs font-semibold">Loading companion profile...</p>
-      </div>
+      <PageContainer>
+        <div className="flex flex-col justify-center items-center min-h-[70vh]">
+          <Loader2 className="w-12 h-12 text-orange-500 animate-spin mb-4" />
+          <p className="text-muted-foreground text-xs font-semibold">Loading companion profile...</p>
+        </div>
+      </PageContainer>
     );
   }
 
   if (!dog) {
     return (
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-20 text-center">
-        <h1 className="text-muted-foregroundxl font-bold text-foreground mb-4">Companion Profile Not Found</h1>
-        <p className="text-gray-550 text-xs font-semibold mb-8">The dog listing you are searching for is no longer active.</p>
-        <Link href="/dogs" className="inline-flex items-center text-orange-500 font-bold hover:text-orange-600">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Search Directory
-        </Link>
-      </div>
+      <PageContainer>
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-20 text-center">
+          <h1 className="text-muted-foregroundxl font-bold text-foreground mb-4">Companion Profile Not Found</h1>
+          <p className="text-gray-550 text-xs font-semibold mb-8">The dog listing you are searching for is no longer active.</p>
+          <Link href="/dogs" className="inline-flex items-center text-orange-500 font-bold hover:text-orange-600">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Search Directory
+          </Link>
+        </div>
+      </PageContainer>
     );
   }
 
   const isOwner = user?.userId === dog.ownerId;
 
   return (
-    <div className="bg-background min-h-fit pb-12 lg:pb-16">
+    <PageContainer>
       {/* Toast Notification */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-50 bg-card text-foreground p-4.5 p-4 rounded-2xl shadow-xl flex items-center space-x-2 animate-in fade-in slide-in-from-bottom-5 duration-300">
@@ -333,7 +343,7 @@ export default function DogProfileClient() {
                       alt={dog.name}
                       className="object-cover w-full h-full group-hover:scale-101 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/40 transition-colors flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                       <span className="bg-card/90 backdrop-blur text-foreground text-xs px-4 py-2 rounded-xl font-bold shadow-md">Zoom Portrait</span>
                     </div>
                   </>
@@ -379,7 +389,7 @@ export default function DogProfileClient() {
                   />
                   <button
                     onClick={handleMuteToggle}
-                    className="absolute bottom-3 right-3 p-2 bg-slate-950/80 backdrop-blur rounded-xl text-foreground transition-all border border-border"
+                    className="absolute bottom-3 right-3 p-2 bg-black/80 backdrop-blur rounded-xl text-foreground transition-all border border-border"
                     title={isVideoMuted ? 'Unmute video' : 'Mute video'}
                   >
                     {isVideoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -601,7 +611,7 @@ export default function DogProfileClient() {
 
       {/* ADOPTION REQUEST MODAL */}
       {isAdoptionOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A0A0A]/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-card rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-gray-250 flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold text-foreground flex items-center space-x-1.5">
@@ -650,7 +660,7 @@ export default function DogProfileClient() {
 
       {/* SEND INBOX MESSAGE MODAL */}
       {isMessageOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A0A0A]/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-card rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-gray-250 flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold text-foreground flex items-center space-x-1.5">
@@ -697,7 +707,7 @@ export default function DogProfileClient() {
 
       {/* BOOK CONSULTATION APPOINTMENT MODAL */}
       {isAppointmentOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A0A0A]/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-card rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-gray-250 flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold text-foreground flex items-center space-x-1.5">
@@ -753,7 +763,7 @@ export default function DogProfileClient() {
 
       {/* REPORT SAFETY MODAL */}
       {isReportOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A0A0A]/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-card rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-gray-250 flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold text-foreground flex items-center space-x-1.5">
@@ -797,7 +807,7 @@ export default function DogProfileClient() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

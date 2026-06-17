@@ -6,7 +6,7 @@ import QueryProvider from '@/components/providers/QueryProvider';
 import { cn } from "@/lib/utils";
 import AuthModal from '@/components/auth/AuthModal';
 import { Toaster } from 'sonner';
-import { GlobalLoaderProvider } from '@/components/shared/GlobalLoader';
+import { LoaderProvider } from '@/components/common/loader/LoaderProvider';
 
 const mulish = Mulish({ 
   subsets: ["latin"], 
@@ -33,18 +33,18 @@ export default function RootLayout({
       <body className="min-h-[100vh] flex flex-col bg-background font-sans text-foreground selection:bg-brand-orange selection:text-foreground overflow-x-hidden">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange={false}
         >
           <AuthProvider>
-            <GlobalLoaderProvider>
+            <LoaderProvider>
               <QueryProvider>
                 {children}
                 <AuthModal />
                 <Toaster position="top-right" richColors />
               </QueryProvider>
-            </GlobalLoaderProvider>
+            </LoaderProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

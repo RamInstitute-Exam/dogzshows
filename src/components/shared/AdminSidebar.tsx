@@ -1,13 +1,20 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Calendar, Users, Trophy, Settings, LogOut, Dog } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, Trophy, Settings, LogOut, Dog, Tent } from 'lucide-react';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { name: 'Events & Clubs', href: '/admin/events', icon: Calendar },
+    { name: 'Events', href: '/admin/events', icon: Calendar },
+    { name: 'Clubs', href: '/admin/clubs', icon: Tent },
+    { name: 'Club Categories', href: '/admin/club-categories', icon: Tent },
+    { name: 'Club Events', href: '/admin/club-events', icon: Tent },
+    { name: 'Club Committee', href: '/admin/club-committees', icon: Tent },
+    { name: 'Club Gallery', href: '/admin/club-galleries', icon: Tent },
+    { name: 'Judges', href: '/admin/judges', icon: Users },
+    { name: 'Judges Bulk Upload', href: '/admin/judges/bulk-upload', icon: Users },
     { name: 'Users & Roles', href: '/admin/users', icon: Users },
     { name: 'Competition Engine', href: '/admin/competition', icon: Trophy },
     { name: 'Dog Database', href: '/admin/dogs', icon: Dog },

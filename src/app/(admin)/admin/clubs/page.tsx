@@ -1,37 +1,43 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Search, Filter, Download, Plus, RefreshCw, Edit, Trash2, MoreVertical, Building2, Globe, Phone, Mail } from 'lucide-react';
+import { Tent, Eye, Edit, Trash2, ShieldAlert, Sparkles, X, Check, XCircle, Ban } from 'lucide-react';
+import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataTable';
+import api from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
-import Link from 'next/link';
-import { config } from '@/lib/config';
 
-export default function ClubsDirectory() {
-  const [clubs, setClubs] = useState<any[]>([]);
+export default function ClubManagement() {
+  const router = useRouter();
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // Modal State for Viewing Club Details
+  const [selectedClub, setSelectedClub] = useState<any>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const fetchClubs = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${config.apiUrl}/clubs?page=${page}&limit=10&search=${search}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (data.success) {
-        setClubs(data.data);
-        setTotalPages(data.pagination.totalPages);
-        setTotalCount(data.pagination.total);
+      let url = `/clubs?page=${page}&search=${search}&limit=10`;
+      if (statusFilter) {
+        url += `&status=${statusFilter}`;
+      }
+      const res = await api.get(url);
+      if (res.success) {
+        setData(res.data.clubs || res.data);
+        setTotalPages(res.data.totalPages || 1);
+        setTotalCount(res.data.totalCount || res.data.length || 0);
       }
     } catch (error) {
-      console.error('Failed to fetch clubs');
+      console.error('Failed to fetch clubs', error);
+      toast.error('Failed to load clubs');
     } finally {
       setLoading(false);
     }
@@ -39,203 +45,307 @@ export default function ClubsDirectory() {
 
   useEffect(() => {
     fetchClubs();
-  }, [page, search]);
+  }, [page, search, statusFilter]);
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedIds(clubs.map(c => c.id));
-    } else {
-      setSelectedIds([]);
+  const handleDelete = async (club: any) => {
+    if (confirm(`Are you sure you want to delete club "${club.name}"? This will also remove their associated user account.`)) {
+      try {
+        const res = await api.delete(`/clubs/${club.id}`);
+        if (res.success) {
+          toast.success('Club deleted successfully');
+          fetchClubs();
+        } else {
+          toast.error(res.message || 'Failed to delete club');
+        }
+      } catch (error) {
+        console.error('Delete error', error);
+        toast.error('Failed to delete club');
+      }
     }
   };
 
-  const handleSelectOne = (id: string) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-  };
-
-  const handleBulkDelete = async () => {
-    if (!confirm('Are you sure you want to delete selected clubs?')) return;
+  const handleToggleStatus = async (club: any, isActive: boolean) => {
     try {
-      const token = localStorage.getItem('token');
-      await fetch('${config.apiUrl}/clubs/bulk-delete', {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ids: selectedIds })
-      });
-      setSelectedIds([]);
-      fetchClubs();
+      const res = await api.put(`/clubs/${club.id}`, { isActive });
+      if (res.success) {
+        toast.success(`Club status updated successfully`);
+        fetchClubs();
+        if (selectedClub?.id === club.id) {
+          setSelectedClub({ ...selectedClub, isActive });
+        }
+      } else {
+        toast.error(res.message || 'Failed to update status');
+      }
     } catch (error) {
-      console.error('Failed to bulk delete');
+      console.error('Status update error', error);
+      toast.error('Failed to update club status');
     }
   };
+
+  const handleExport = () => {
+    try {
+      if (data.length === 0) {
+        toast.error('No data to export');
+        return;
+      }
+      const headers = ['ID', 'Name', 'Registration Number', 'President', 'Email', 'Phone', 'City', 'State', 'Country', 'Website', 'Facebook', 'Instagram', 'Status', 'Featured', 'Created At'];
+      const rows = data.map(c => [
+        c.id,
+        c.name,
+        c.registrationNumber || '',
+        c.president || '',
+        c.email || '',
+        c.phone || '',
+        c.city || '',
+        c.state || '',
+        c.country || '',
+        c.website || '',
+        c.facebook || '',
+        c.instagram || '',
+        c.isActive ? 'ACTIVE' : 'INACTIVE',
+        c.isFeatured ? 'YES' : 'NO',
+        new Date(c.createdAt).toLocaleString()
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(e => e.map(val => `"${val.toString().replace(/"/g, '""')}"`).join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `juzdog_clubs_export_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success('Clubs exported successfully');
+    } catch (e) {
+      console.error('Export error', e);
+      toast.error('Failed to export CSV');
+    }
+  };
+
+  const columns: ColumnDefinition<any>[] = [
+    { 
+      header: 'Logo', 
+      accessor: (c) => (
+        <div className="relative group/logo w-12 h-12 rounded-xl overflow-hidden border border-border bg-accent flex items-center justify-center shadow-inner">
+          {c.logoUrl ? (
+            <img src={c.logoUrl} alt={c.name} className="w-full h-full object-cover group-hover/logo:scale-110 transition-transform duration-300" />
+          ) : (
+            <Tent className="w-6 h-6 text-muted-foreground" />
+          )}
+        </div>
+      ) 
+    },
+    { 
+      header: 'Club Name', 
+      accessor: (c) => (
+        <div className="flex flex-col">
+          <span className="font-extrabold text-foreground group-hover:text-blue-500 transition-colors flex items-center gap-1.5">
+            {c.name}
+            {c.isFeatured && (
+              <span className="px-1.5 py-0.5 bg-yellow-500/10 text-yellow-500 rounded text-[9px] font-extrabold tracking-wider flex items-center gap-0.5">
+                <Sparkles className="w-2.5 h-2.5" /> FEATURED
+              </span>
+            )}
+          </span>
+          <span className="text-xs text-muted-foreground">{c.email || 'No email'}</span>
+        </div>
+      )
+    },
+    { header: 'Location', accessor: (c) => (c.city && c.state) ? `${c.city}, ${c.state}` : c.country || '—' },
+    {
+      header: 'Actions',
+      className: 'text-right',
+      accessor: (c) => (
+        <div className="flex items-center justify-end gap-1.5">
+          <Button 
+            title="View Details" 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => { setSelectedClub(c); setIsViewModalOpen(true); }} 
+            className="text-blue-500 hover:text-blue-400 hover:bg-blue-500/10 h-8 px-2 rounded-lg"
+          >
+            <Eye className="w-4 h-4" />
+          </Button>
+          <Button 
+            title="Edit Details" 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => router.push(`/admin/clubs/edit?id=${c.id}`)} 
+            className="text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 h-8 px-2 rounded-lg"
+          >
+            <Edit className="w-4 h-4" />
+          </Button>
+          <Button 
+            title="Delete Club" 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => handleDelete(c)} 
+            className="text-red-500 hover:text-red-400 hover:bg-red-500/10 h-8 px-2 rounded-lg"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+          
+          {/* Approve / Reject / Suspend buttons */}
+          {c.isActive ? (
+            <Button 
+              title="Suspend/Reject Club"
+              variant="outline" 
+              size="sm" 
+              onClick={() => handleToggleStatus(c, false)} 
+              className="text-orange-500 hover:bg-orange-500/10 hover:text-orange-400 border-orange-500/20 h-8 px-2 rounded-lg text-xs flex items-center gap-1"
+            >
+              <Ban className="w-3 h-3" /> Suspend
+            </Button>
+          ) : (
+            <Button 
+              title="Approve Club"
+              variant="outline" 
+              size="sm" 
+              onClick={() => handleToggleStatus(c, true)} 
+              className="text-green-500 hover:bg-green-500/10 hover:text-green-400 border-green-500/20 h-8 px-2 rounded-lg text-xs flex items-center gap-1"
+            >
+              <Check className="w-3 h-3" /> Approve
+            </Button>
+          )}
+        </div>
+      )
+    }
+  ];
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-6">
-          
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
-            <div>
-              <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <Building2 className="w-8 h-8 text-purple-500" /> Kennel Clubs
-              </h1>
-              <p className="text-muted-foreground font-medium mt-1">Manage partner clubs, associations, and event organizers.</p>
-            </div>
-            
-            <div className="flex flex-wrap gap-3 w-full md:w-auto items-center">
-              <div className="relative w-full md:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input 
-                  type="text" 
-                  placeholder="Search club name..." 
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder-[#7C8798] focus:outline-none focus:border-purple-500 transition-all"
-                />
-              </div>
-              <Button variant="outline" onClick={fetchClubs} className="border-border text-foreground hover:bg-accent">
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-              <Link href="/admin/clubs/create">
-                <Button className="bg-purple-600 hover:bg-purple-700 text-foreground font-bold">
-                  <Plus className="w-4 h-4 mr-2" /> Register Club
-                </Button>
-              </Link>
-            </div>
-          </div>
+    <div className="w-full">
 
-          {selectedIds.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between bg-purple-500/10 border border-purple-500/20 p-4 rounded-xl">
-              <p className="text-purple-400 font-bold">{selectedIds.length} clubs selected</p>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700 text-foreground border-0">Delete Selected</Button>
-              </div>
-            </motion.div>
-          )}
+      <AdminDataTable
+        title="Club Registry"
+        description="Dog registry associated clubs, regional chapters, and specialties."
+        icon={Tent}
+        data={data}
+        columns={columns}
+        loading={loading}
+        page={page}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        search={search}
+        onSearchChange={setSearch}
+        onRefresh={fetchClubs}
+        onPageChange={setPage}
+        onExport={handleExport}
+        createLink="/admin/clubs/create"
+        createLabel="Add Club"
+        keyExtractor={(item) => item.id}
+      />
 
-          <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-card border-b border-border">
-                    <th className="py-4 px-6 w-12">
-                      <input type="checkbox" onChange={handleSelectAll} checked={clubs.length > 0 && selectedIds.length === clubs.length} className="rounded bg-accent border-border text-purple-500 focus:ring-purple-500" />
-                    </th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Club Identity</th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Leadership</th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Contact</th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Metrics</th>
-                    <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[rgba(255,255,255,0.02)]">
-                  {loading ? (
-                    <tr>
-                      <td colSpan={6} className="py-12 text-center">
-                        <RefreshCw className="w-8 h-8 animate-spin text-purple-500 mx-auto mb-4" />
-                        <p className="text-muted-foreground">Loading clubs...</p>
-                      </td>
-                    </tr>
-                  ) : clubs.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="py-12 text-center">
-                        <Building2 className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
-                        <p className="text-muted-foreground font-medium">No clubs registered yet.</p>
-                      </td>
-                    </tr>
+      {/* Details View Modal */}
+      {isViewModalOpen && selectedClub && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+          <div className="bg-card w-full max-w-2xl rounded-3xl border border-border shadow-2xl overflow-hidden animate-in fade-in-50 zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-6 border-b border-border bg-accent/30">
+              <h2 className="text-xl font-extrabold text-foreground flex items-center gap-2">
+                <Eye className="w-5 h-5 text-blue-500" /> Club Profile Details
+              </h2>
+              <button onClick={() => setIsViewModalOpen(false)} className="p-2 hover:bg-input rounded-full transition-colors text-muted-foreground hover:text-foreground">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+              <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
+                <div className="w-24 h-24 rounded-2xl overflow-hidden border border-border bg-accent shrink-0 flex items-center justify-center">
+                  {selectedClub.logoUrl ? (
+                    <img src={selectedClub.logoUrl} alt={selectedClub.name} className="w-full h-full object-cover" />
                   ) : (
-                    clubs.map((club, i) => (
-                      <motion.tr 
-                        key={club.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: i * 0.05 }}
-                        className="hover:bg-[rgba(255,255,255,0.01)] transition-colors group"
-                      >
-                        <td className="py-4 px-6">
-                          <input 
-                            type="checkbox" 
-                            checked={selectedIds.includes(club.id)}
-                            onChange={() => handleSelectOne(club.id)}
-                            className="rounded bg-accent border-border text-purple-500 focus:ring-purple-500" 
-                          />
-                        </td>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-accent flex items-center justify-center font-bold text-foreground overflow-hidden">
-                              {club.logoUrl ? <img src={club.logoUrl} className="w-full h-full object-cover" /> : club.name.substring(0,2).toUpperCase()}
-                            </div>
-                            <div>
-                              <p className="font-bold text-foreground group-hover:text-purple-400 transition-colors">{club.name}</p>
-                              {club.isActive ? (
-                                <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider">Active</span>
-                              ) : (
-                                <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider">Inactive</span>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <p className="text-xs text-muted-foreground mb-1"><span className="text-muted-foreground">President:</span> {club.president || 'N/A'}</p>
-                          <p className="text-xs text-muted-foreground"><span className="text-muted-foreground">Secretary:</span> {club.secretary || 'N/A'}</p>
-                        </td>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                            <Mail className="w-3 h-3" /> {club.email || 'N/A'}
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                            <Phone className="w-3 h-3" /> {club.phone || 'N/A'}
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Globe className="w-3 h-3" /> {club.website ? <a href={club.website} target="_blank" className="hover:text-purple-400">{club.website}</a> : 'N/A'}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 w-fit">
-                            {club._count?.events || 0} Events Hosted
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-right">
-                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Link href={`/admin/clubs/edit/${club.id}`}>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent">
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                            </Link>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    ))
+                    <Tent className="w-12 h-12 text-muted-foreground" />
                   )}
-                </tbody>
-              </table>
-            </div>
-            
-            {/* Pagination */}
-            {!loading && totalPages > 0 && (
-              <div className="p-4 border-t border-border flex items-center justify-between bg-card">
-                <p className="text-sm text-muted-foreground">Showing Page {page} of {totalPages}</p>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="h-8 border-border text-foreground hover:bg-accent">
-                    Previous
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="h-8 border-border text-foreground hover:bg-accent">
-                    Next
-                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-extrabold text-foreground">{selectedClub.name}</h3>
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${selectedClub.isActive ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}`}>
+                      {selectedClub.isActive ? 'APPROVED' : 'PENDING'}
+                    </span>
+                    {selectedClub.isFeatured && (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-500">
+                        Featured Club
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Reg No: {selectedClub.registrationNumber || '—'}</p>
                 </div>
               </div>
-            )}
-          </div>
 
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 border-t border-border pt-6">
+                <div>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Club President</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.president || '—'}</span>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Club Secretary</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.secretary || '—'}</span>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Email Address</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.email || '—'}</span>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Phone Number</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.phone || '—'}</span>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Website</span>
+                  <span className="text-sm font-semibold text-blue-500 hover:underline">
+                    {selectedClub.website ? (
+                      <a href={selectedClub.website} target="_blank" rel="noopener noreferrer">{selectedClub.website}</a>
+                    ) : '—'}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Social Channels</span>
+                  <span className="text-sm font-semibold text-foreground flex gap-3">
+                    {selectedClub.facebook && <a href={selectedClub.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500">Facebook</a>}
+                    {selectedClub.instagram && <a href={selectedClub.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-pink-500">Instagram</a>}
+                    {!selectedClub.facebook && !selectedClub.instagram && '—'}
+                  </span>
+                </div>
+                <div className="md:col-span-2">
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Location Address</span>
+                  <span className="text-sm font-semibold text-foreground">
+                    {selectedClub.address ? `${selectedClub.address}, ` : ''}
+                    {selectedClub.city || ''}, {selectedClub.state || ''}, {selectedClub.country || ''}
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-t border-border pt-4">
+                <span className="block text-xs font-bold text-muted-foreground uppercase mb-1">About the Club</span>
+                <p className="text-sm text-muted-foreground bg-accent/20 p-4 rounded-2xl whitespace-pre-wrap leading-relaxed">
+                  {selectedClub.description || 'No descriptive details available for this club.'}
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-between items-center p-6 border-t border-border bg-accent/30">
+              <div className="flex gap-2">
+                {selectedClub.isActive ? (
+                  <Button variant="outline" size="sm" onClick={() => handleToggleStatus(selectedClub, false)} className="text-orange-500 border-orange-500/20">
+                    Suspend Club
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" onClick={() => handleToggleStatus(selectedClub, true)} className="text-green-500 border-green-500/20">
+                    Approve Club
+                  </Button>
+                )}
+              </div>
+              <Button onClick={() => setIsViewModalOpen(false)} className="bg-blue-600 text-foreground hover:bg-blue-700 font-bold px-6">
+                Close
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
+      )}
     </div>
   );
 }

@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
 import { Users, Dog, Calendar, IndianRupee, Activity, ArrowUpRight } from 'lucide-react';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import { motion } from 'framer-motion';
-import { config } from '@/lib/config';
+import api from '@/lib/api';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -22,13 +21,9 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/dashboard/admin/stats', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (data.success) {
-        setStats(data.data);
+      const result = await api.get('/dashboard/admin/stats');
+      if (result && result.success) {
+        setStats(result.data || null);
       }
     } catch (error) {
       console.error('Failed to fetch admin stats');
@@ -37,15 +32,29 @@ export default function AdminDashboard() {
     }
   };
 
-  const statCards = [
-    { title: 'Total Revenue', value: stats ? `₹${(stats.totalRevenue / 1000000).toFixed(1)}M` : '...', trend: stats?.revenueTrend, trendUp: true, icon: IndianRupee, bg: 'bg-brand-orange/10', color: 'text-brand-orange' },
-    { title: 'Active Events', value: stats?.activeEvents || '...', trend: stats?.eventsTrend, trendUp: true, icon: Calendar, bg: 'bg-blue-500/10', color: 'text-blue-500' },
-    { title: 'Registered Dogs', value: stats?.totalDogs || '...', trend: stats?.dogsTrend, trendUp: true, icon: Dog, bg: 'bg-green-500/10', color: 'text-green-500' },
-    { title: 'Total Users', value: stats?.totalUsers || '...', trend: stats?.usersTrend, trendUp: true, icon: Users, bg: 'bg-purple-500/10', color: 'text-purple-500' },
+  const statCards: {
+    title: string;
+    value: string | number;
+    icon: any;
+    bg: string;
+    color: string;
+    trend?: string;
+    trendUp?: boolean;
+  }[] = [
+    { title: 'Total Revenue', value: stats ? `₹${(stats.revenue || 0).toLocaleString()}` : '...', icon: IndianRupee, bg: 'bg-brand-orange/10', color: 'text-brand-orange' },
+    { title: 'Total Events', value: stats?.totalEvents || '...', icon: Calendar, bg: 'bg-blue-500/10', color: 'text-blue-500' },
+    { title: 'Registered Dogs', value: stats?.totalDogs || '...', icon: Dog, bg: 'bg-green-500/10', color: 'text-green-500' },
+    { title: 'Total Users', value: stats?.totalUsers || '...', icon: Users, bg: 'bg-purple-500/10', color: 'text-purple-500' },
   ];
 
   const chartOptions: any = {
-    chart: { type: 'area', fontFamily: 'inherit', toolbar: { show: false }, zoom: { enabled: false } },
+    chart: { 
+      type: 'area', 
+      fontFamily: 'inherit', 
+      toolbar: { show: false }, 
+      zoom: { enabled: false },
+      animations: { enabled: false } 
+    },
     colors: ['#F97316'],
     fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0, stops: [0, 90, 100] } },
     dataLabels: { enabled: false },
@@ -58,10 +67,8 @@ export default function AdminDashboard() {
   const chartSeries = [{ name: 'Revenue', data: stats?.chartData || [0,0,0,0,0,0,0] }];
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto">
+    <div className="w-full">
+      <div className="w-full">
           
           <div className="flex justify-between items-end mb-8">
             <div>
@@ -78,7 +85,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid gap-6 mb-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
             {statCards.map((stat, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.1 }}>
                 <Card className="border border-border shadow-xl bg-card overflow-hidden relative transition-all hover:border-[rgba(255,255,255,0.15)]">
@@ -107,7 +114,7 @@ export default function AdminDashboard() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 ga">
             {/* Revenue Chart */}
             <Card className="border border-border shadow-xl bg-card lg:col-span-2">
               <CardContent className="p-6">
@@ -130,7 +137,7 @@ export default function AdminDashboard() {
                 <h3 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-brand-orange" /> Recent Activity
                 </h3>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {loading ? (
                     Array(4).fill(0).map((_, i) => (
                       <div key={i} className="flex gap-4">
@@ -142,12 +149,12 @@ export default function AdminDashboard() {
                       </div>
                     ))
                   ) : (
-                    stats?.recentActivity?.map((activity: any, i: number) => (
+                    stats?.recentRegistrations?.map((activity: any, i: number) => (
                       <div key={i} className="flex gap-4 items-start">
-                        <div className={`mt-1.5 w-2 h-2 rounded-full ${activity.bg} ${activity.color} ring-4 ring-[#0F172A]`} />
+                        <div className="mt-1.5 w-2 h-2 rounded-full bg-blue-500 ring-4 ring-[#0F172A]" />
                         <div>
-                          <p className="text-sm font-medium text-foreground">{activity.text}</p>
-                          <p className="text-xs text-muted-foreground">{activity.time}</p>
+                          <p className="text-sm font-medium text-foreground">{activity.user?.firstName || 'A user'} registered {activity.dog?.dogName || 'a dog'}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(activity.createdAt).toLocaleString()}</p>
                         </div>
                       </div>
                     ))
@@ -158,7 +165,6 @@ export default function AdminDashboard() {
           </div>
 
         </div>
-      </main>
     </div>
   );
 }

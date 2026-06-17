@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MapPin, Trophy, Upload, CheckCircle, ChevronRight, FileText, IndianRupee, Clock, Share2, Bookmark, Users, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import PageContainer from '@/components/layout/PageContainer';
 
 // Mock Data
 const SHOWS = [
@@ -63,27 +64,27 @@ export default function ShowEntries() {
   const currentShows = activeTab === 'open' ? upcomingShows : pastShows;
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] pt-24 pb-20">
-      <div className="max-w-[1400px] mx-auto px-6">
+    <PageContainer>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-[80px]">
           <h1 className="text-muted-foregroundxl md:text-muted-foregroundxl font-outfit font-extrabold text-foreground mb-4">Dog Show Entries</h1>
-          <p className="text-[#64748B] font-medium text-lg">Register your purebred companions for upcoming premium events, or browse the archives of our past covered shows.</p>
+          <p className="text-muted-foreground font-medium text-lg">Register your purebred companions for upcoming premium events, or browse the archives of our past covered shows.</p>
         </div>
 
         {/* Tabs */}
         <div className="flex justify-center mb-12">
-          <div className="bg-card p-1 rounded-full shadow-sm border border-[#E5E7EB] inline-flex">
+          <div className="bg-card p-1 rounded-full shadow-sm border border-border inline-flex">
             <button
               onClick={() => { setActiveTab('open'); setSelectedShow(null); setFormStep(1); }}
-              className={`px-8 py-3 rounded-full font-bold text-sm transition-colors ${activeTab === 'open' ? 'bg-[#F97316] text-foreground shadow-md' : 'text-[#64748B] hover:text-[#F97316]'}`}
+              className={`px-8 py-3 rounded-full font-bold text-sm transition-colors ${activeTab === 'open' ? 'bg-[#F97316] text-foreground shadow-md' : 'text-muted-foreground hover:text-[#F97316]'}`}
             >
               Upcoming Shows
             </button>
             <button
               onClick={() => { setActiveTab('closed'); setSelectedShow(null); }}
-              className={`px-8 py-3 rounded-full font-bold text-sm transition-colors ${activeTab === 'closed' ? 'bg-card text-foreground shadow-md' : 'text-[#64748B] hover:text-foreground'}`}
+              className={`px-8 py-3 rounded-full font-bold text-sm transition-colors ${activeTab === 'closed' ? 'bg-card text-foreground shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
             >
               Past Shows Archive
             </button>
@@ -97,7 +98,7 @@ export default function ShowEntries() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-card rounded-[20px] shadow-lg border border-[#E5E7EB] overflow-hidden flex flex-col max-w-4xl mx-auto mb-20"
+              className="bg-card rounded-[20px] shadow-lg border border-border overflow-hidden flex flex-col max-w-4xl mx-auto mb-20"
             >
               {/* Form Header */}
               <div className="bg-card p-8 text-foreground relative">
@@ -131,15 +132,15 @@ export default function ShowEntries() {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="col-span-2 sm:col-span-1">
                         <label className="block text-sm font-bold text-foreground mb-2">First Name</label>
-                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                        <input type="text" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
                       </div>
                       <div className="col-span-2 sm:col-span-1">
                         <label className="block text-sm font-bold text-foreground mb-2">Last Name</label>
-                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                        <input type="text" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
                       </div>
                       <div className="col-span-2">
                         <label className="block text-sm font-bold text-foreground mb-2">Email Address</label>
-                        <input type="email" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                        <input type="email" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
                       </div>
                     </div>
                   </motion.div>
@@ -151,15 +152,15 @@ export default function ShowEntries() {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="col-span-2 sm:col-span-1">
                         <label className="block text-sm font-bold text-foreground mb-2">Registered Name</label>
-                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                        <input type="text" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
                       </div>
                       <div className="col-span-2 sm:col-span-1">
                         <label className="block text-sm font-bold text-foreground mb-2">Call Name</label>
-                        <input type="text" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
+                        <input type="text" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all" />
                       </div>
                       <div className="col-span-2 sm:col-span-1">
                         <label className="block text-sm font-bold text-foreground mb-2">Breed</label>
-                        <select className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all text-[#64748B]">
+                        <select className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all text-muted-foreground">
                           <option>Select Breed...</option>
                           <option>Golden Retriever</option>
                           <option>Siberian Husky</option>
@@ -168,7 +169,7 @@ export default function ShowEntries() {
                       </div>
                       <div className="col-span-2 sm:col-span-1">
                         <label className="block text-sm font-bold text-foreground mb-2">Date of Birth</label>
-                        <input type="date" className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all text-[#64748B]" />
+                        <input type="date" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#F97316]/20 focus:border-[#F97316] outline-none transition-all text-muted-foreground" />
                       </div>
                     </div>
                   </motion.div>
@@ -180,17 +181,17 @@ export default function ShowEntries() {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="col-span-2">
                         <label className="block text-sm font-bold text-foreground mb-2">Registration Certificate (KCI/FCI)</label>
-                        <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center hover:border-[#F97316] transition-colors bg-[#F8FAFC] cursor-pointer">
+                        <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-[#F97316] transition-colors bg-card cursor-pointer">
                           <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                          <p className="text-sm text-[#64748B] font-medium">Click to upload or drag and drop</p>
+                          <p className="text-sm text-muted-foreground font-medium">Click to upload or drag and drop</p>
                           <p className="text-xs text-muted-foreground mt-1">PDF, JPG, or PNG (max. 5MB)</p>
                         </div>
                       </div>
                       <div className="col-span-2">
                         <label className="block text-sm font-bold text-foreground mb-2">Latest Vaccination Record</label>
-                        <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center hover:border-[#F97316] transition-colors bg-[#F8FAFC] cursor-pointer">
+                        <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-[#F97316] transition-colors bg-card cursor-pointer">
                           <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                          <p className="text-sm text-[#64748B] font-medium">Click to upload or drag and drop</p>
+                          <p className="text-sm text-muted-foreground font-medium">Click to upload or drag and drop</p>
                         </div>
                       </div>
                     </div>
@@ -203,18 +204,18 @@ export default function ShowEntries() {
                       <CheckCircle className="w-10 h-10 text-green-600" />
                     </div>
                     <h3 className="text-2xl font-bold font-outfit text-foreground mb-2">Review & Payment</h3>
-                    <p className="text-[#64748B] max-w-md mx-auto mb-8">Your registration is almost complete. Please proceed to payment to secure your entry.</p>
+                    <p className="text-muted-foreground max-w-md mx-auto mb-8">Your registration is almost complete. Please proceed to payment to secure your entry.</p>
                     
-                    <div className="bg-[#F8FAFC] rounded-xl p-6 max-w-sm mx-auto mb-8 text-left border border-[#E5E7EB]">
+                    <div className="bg-card rounded-xl p-6 max-w-sm mx-auto mb-8 text-left border border-border">
                       <div className="flex justify-between mb-3 text-sm">
-                        <span className="text-[#64748B] font-bold">Entry Fee</span>
+                        <span className="text-muted-foreground font-bold">Entry Fee</span>
                         <span className="text-foreground font-bold">₹{upcomingShows.find(s => s.id === selectedShow)?.fee}</span>
                       </div>
                       <div className="flex justify-between mb-3 text-sm">
-                        <span className="text-[#64748B] font-bold">Catalog Fee</span>
+                        <span className="text-muted-foreground font-bold">Catalog Fee</span>
                         <span className="text-foreground font-bold">₹200</span>
                       </div>
-                      <div className="flex justify-between pt-3 border-t border-[#E5E7EB] text-lg">
+                      <div className="flex justify-between pt-3 border-t border-border text-lg">
                         <span className="text-foreground font-extrabold">Total</span>
                         <span className="text-[#F97316] font-extrabold">₹{(upcomingShows.find(s => s.id === selectedShow)?.fee || 0) + 200}</span>
                       </div>
@@ -224,9 +225,9 @@ export default function ShowEntries() {
               </div>
 
               {/* Form Footer */}
-              <div className="p-8 border-t border-[#E5E7EB] bg-[#F8FAFC] flex justify-between">
+              <div className="p-8 border-t border-border bg-card flex justify-between">
                 {formStep > 1 ? (
-                  <Button variant="outline" className="border-[#E5E7EB] text-foreground" onClick={() => setFormStep(formStep - 1)}>Back</Button>
+                  <Button variant="outline" className="border-border text-foreground" onClick={() => setFormStep(formStep - 1)}>Back</Button>
                 ) : (
                   <div></div>
                 )}
@@ -263,7 +264,7 @@ export default function ShowEntries() {
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     whileHover={{ scale: 1.02 }}
                     className={`
-                      bg-card rounded-[20px] shadow-lg border border-[#E5E7EB] overflow-hidden flex flex-col group
+                      bg-card rounded-[20px] shadow-lg border border-border overflow-hidden flex flex-col group
                       ${currentShows.length === 1 ? 'w-full max-w-[420px]' : 'w-full h-full'}
                     `}
                   >
@@ -295,7 +296,7 @@ export default function ShowEntries() {
                     <div className="p-6 flex flex-col flex-grow">
                       <h3 className="text-xl font-bold font-outfit text-foreground mb-4 line-clamp-2 leading-snug">{show.title}</h3>
                       
-                      <div className="space-y-3 mb-6 text-sm font-medium text-[#64748B]">
+                      <div className="space-y-3 mb-6 text-sm font-medium text-muted-foreground">
                         <div className="flex items-start gap-3">
                           <Calendar className="w-4 h-4 text-[#F97316] flex-shrink-0 mt-0.5" />
                           <span>{show.date}</span>
@@ -310,19 +311,19 @@ export default function ShowEntries() {
                         </div>
                       </div>
 
-                      <p className="text-[#64748B] text-sm leading-relaxed line-clamp-2 mb-6">
+                      <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-6">
                         {show.description}
                       </p>
 
                       {/* Footer Info */}
                       <div className="mt-auto">
-                        <div className="flex items-center justify-between py-4 border-t border-[#E5E7EB]">
+                        <div className="flex items-center justify-between py-4 border-t border-border">
                           <div className="flex flex-col">
-                            <span className="text-xs text-[#64748B] font-bold uppercase tracking-wider">Entry Fee</span>
+                            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Entry Fee</span>
                             <span className="text-foreground font-bold flex items-center"><IndianRupee className="w-3 h-3 mr-0.5" /> {show.fee}</span>
                           </div>
                           <div className="flex flex-col text-right">
-                            <span className="text-xs text-[#64748B] font-bold uppercase tracking-wider">Deadline</span>
+                            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Deadline</span>
                             <span className="text-foreground font-bold flex items-center justify-end"><Clock className="w-3 h-3 mr-1" /> {show.deadline}</span>
                           </div>
                         </div>
@@ -330,10 +331,10 @@ export default function ShowEntries() {
                         {/* Winners Section for Past Shows */}
                         {show.status === 'closed' && show.winners && (
                           <div className="mb-4">
-                            <span className="text-xs text-[#64748B] font-bold uppercase tracking-wider mb-2 block">Best in Show Winners</span>
+                            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider mb-2 block">Best in Show Winners</span>
                             <div className="flex flex-wrap gap-2">
                               {show.winners.map((winner, idx) => (
-                                <span key={idx} className="bg-[#F8FAFC] text-foreground text-xs font-bold px-2 py-1 rounded border border-[#E5E7EB]">
+                                <span key={idx} className="bg-card text-foreground text-xs font-bold px-2 py-1 rounded border border-border">
                                   {winner}
                                 </span>
                               ))}
@@ -353,7 +354,7 @@ export default function ShowEntries() {
                           ) : (
                             <Button 
                               variant="outline"
-                              className="w-full border-[#E5E7EB] text-foreground hover:bg-[#F8FAFC] font-bold h-12 transition-all"
+                              className="w-full border-border text-foreground hover:bg-card font-bold h-12 transition-all"
                             >
                               View Results
                             </Button>
@@ -370,6 +371,6 @@ export default function ShowEntries() {
         </AnimatePresence>
 
       </div>
-    </main>
+    </PageContainer>
   );
 }

@@ -15,7 +15,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="pt-8 lg:pt-10 pb-12 lg:pb-16 bg-[#071225]">
+    <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background pt-0">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center mb-16">
@@ -39,7 +39,7 @@ export default function FAQ() {
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                 >
                   <span className="font-bold text-lg text-foreground">{faq.q}</span>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-brand-orange text-foreground' : 'bg-[#071225] text-muted-foreground'}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-brand-orange text-foreground' : 'bg-background text-muted-foreground'}`}>
                     {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   </div>
                 </button>

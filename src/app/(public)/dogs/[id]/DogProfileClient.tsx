@@ -3,10 +3,11 @@
 import { motion } from 'framer-motion';
 import { Trophy, Award, Scroll, Info, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import PageContainer from '@/components/layout/PageContainer';
 
 export default function DogProfileClient({ id }: { id: string }) {
   return (
-    <div className="min-h-fit bg-background pt-8 lg:pt-10 pb-12 lg:pb-16">
+    <PageContainer>
       
       {/* Hero Cover */}
       <div className="h-96 relative">
@@ -45,11 +46,7 @@ export default function DogProfileClient({ id }: { id: string }) {
             </motion.div>
           </div>
           
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="pb-2">
-            <Button size="lg" className="bg-brand-orange hover:bg-orange-600 rounded-full text-foreground font-bold shadow-lg shadow-brand-orange/20">
-              Download Pedigree
-            </Button>
-          </motion.div>
+
         </div>
       </div>
 
@@ -133,6 +130,6 @@ export default function DogProfileClient({ id }: { id: string }) {
 
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

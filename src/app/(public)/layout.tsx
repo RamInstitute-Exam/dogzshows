@@ -9,9 +9,9 @@ export default function PublicLayout({
   return (
     <>
       <Navbar />
-      <main className="flex-grow flex flex-col relative z-0">
+      <div className="flex-grow flex flex-col relative z-0">
         {children}
-      </main>
+      </div>
       <Footer />
     </>
   );

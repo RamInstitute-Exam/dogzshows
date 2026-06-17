@@ -8,6 +8,7 @@ import AdminSidebar from '@/components/shared/AdminSidebar';
 import { config } from '@/lib/config';
 
 import { PaymentService } from '@/services/payment.service';
+import api from '@/services/api';
 
 export default function TransactionsDashboard() {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -41,10 +42,10 @@ export default function TransactionsDashboard() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full space-y-4">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -86,14 +87,14 @@ export default function TransactionsDashboard() {
                   {loading ? (
                     <tr>
                       <td colSpan={4} className="py-12 text-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-green-500 mx-auto mb-4" />
+                        <Loader2 className="w-8 h-8 animate-spin text-green-500  mb-4" />
                         <p className="text-muted-foreground">Loading transactions...</p>
                       </td>
                     </tr>
                   ) : filtered.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="py-12 text-center">
-                        <IndianRupee className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
+                        <IndianRupee className="w-12 h-12 text-[#1E293B]  mb-4" />
                         <p className="text-muted-foreground font-medium">No transactions found.</p>
                       </td>
                     </tr>

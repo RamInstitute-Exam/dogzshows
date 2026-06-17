@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, Dog, Calendar, DollarSign, Activity, CheckCircle, FileText, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { config } from '@/lib/config';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@/lib/axios';
 
 interface AdminStats {
   totalDogs: number;
@@ -22,28 +23,15 @@ interface AdminStats {
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<AdminStats | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchStats() {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await fetch('${config.apiUrl}/dashboard/admin/stats', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (data.success) {
-          setStats(data.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch admin stats');
-      } finally {
-        setLoading(false);
-      }
+  const { data: statsData, isLoading: loading } = useQuery<AdminStats>({
+    queryKey: ['adminDashboardStats'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/dashboard/admin/stats');
+      return response.data.data;
     }
-    fetchStats();
-  }, []);
+  });
+
+  const stats = statsData || null;
 
   const statCards = [
     { title: 'Total Revenue', value: `₹${stats?.revenue?.toLocaleString() || 0}`, icon: DollarSign, color: 'from-[#10B981] to-[#059669]' },

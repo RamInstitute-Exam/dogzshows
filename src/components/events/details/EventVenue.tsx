@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 export default function EventVenue({ event }: { event: any }) {
   return (
     <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
-      <h2 className="text-muted-foregroundxl font-extrabold text-[#0F172A] mb-8">Venue Details</h2>
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">Venue Details</h2>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left: Info */}
@@ -14,7 +14,7 @@ export default function EventVenue({ event }: { event: any }) {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <MapPin className="w-6 h-6 text-brand-orange" />
-              <h3 className="text-2xl font-bold text-[#0F172A]">{event.venue}</h3>
+              <h3 className="text-2xl font-bold text-foreground">{event.venue}</h3>
             </div>
             <p className="text-muted-foreground font-medium ml-9 mb-8">{event.location}</p>
             
@@ -52,7 +52,7 @@ export default function EventVenue({ event }: { event: any }) {
         <div className="h-full min-h-[300px] bg-gray-200 rounded-[16px] overflow-hidden relative group cursor-pointer border border-border">
           <img src="/images/hero_banner.png" alt="Venue Map" className="w-full h-full object-cover blur-[2px] group-hover:blur-none transition-all duration-500" />
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-transparent transition-all duration-500">
-            <div className="bg-card/90 backdrop-blur-sm text-[#0F172A] font-bold px-6 py-3 rounded-full shadow-xl flex items-center gap-2">
+            <div className="bg-card/90 backdrop-blur-sm text-foreground font-bold px-6 py-3 rounded-full shadow-xl flex items-center gap-2">
               <MapPin className="w-4 h-4 text-brand-orange" /> Open in Google Maps
             </div>
           </div>

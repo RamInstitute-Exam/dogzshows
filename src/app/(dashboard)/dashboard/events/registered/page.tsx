@@ -19,7 +19,7 @@ export default function RegisteredEvents() {
   const fetchRegistrations = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/events/registered', {
+      const res = await fetch(`${config.apiUrl}/events/registered`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -36,7 +36,7 @@ export default function RegisteredEvents() {
   const filteredRegistrations = registrations.filter(r => r.event.name.toLowerCase().includes(search.toLowerCase()) || r.dog.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="p-4 md:p-8 space-y-8 text-muted-foreground bg-background min-h-screen">
+    <div className="p-4 md:p-8 space-y-8 text-muted-foreground bg-background min-h-[auto]">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">

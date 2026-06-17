@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, UploadCloud, Shield, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function CreateUserForm() {
   const router = useRouter();
@@ -34,10 +34,8 @@ export default function CreateUserForm() {
   const fetchRoles = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/roles', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const res = await api.get(`/roles`);
+      const data = res;
       if (data.success) {
         setRoles(data.data);
       }
@@ -59,16 +57,9 @@ export default function CreateUserForm() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/users', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+      const res = await api.get(`/users`);
       
-      const data = await res.json();
+      const data = res;
       if (data.success) {
         router.push('/admin/users');
       } else {
@@ -82,12 +73,10 @@ export default function CreateUserForm() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1000px] mx-auto space-y-8">
-          
-          <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl">
+    <div className="w-full">
+      <div className="w-full space-y-4">
+        
+        <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div className="flex items-center gap-4">
               <Link href="/admin/users">
                 <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
@@ -105,12 +94,12 @@ export default function CreateUserForm() {
             </Button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="bg-card p-8 rounded-2xl border border-border shadow-xl">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2 border-b border-border pb-4">
                 <Shield className="w-5 h-5 text-blue-500" /> Account Security & Role
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Email Address *</label>
                   <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none" />
@@ -137,11 +126,11 @@ export default function CreateUserForm() {
               </div>
             </div>
 
-            <div className="bg-card p-8 rounded-2xl border border-border shadow-xl">
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2 border-b border-border pb-4">
                 <CheckCircle className="w-5 h-5 text-blue-500" /> Personal Details
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">First Name *</label>
                   <input required type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none" />
@@ -157,7 +146,7 @@ export default function CreateUserForm() {
               </div>
 
               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mt-8 mb-4">Address Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Street Address</label>
                   <input type="text" name="address1" value={formData.address1} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none" />
@@ -177,21 +166,18 @@ export default function CreateUserForm() {
               </div>
             </div>
 
-            <div className="bg-card p-8 rounded-2xl border border-border shadow-xl">
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl">
               <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2 border-b border-border pb-4">
                 <UploadCloud className="w-5 h-5 text-blue-500" /> Profile Image & Documents
               </h2>
               <div className="border-2 border-dashed border-border rounded-xl p-12 text-center hover:bg-[rgba(255,255,255,0.01)] transition-colors cursor-pointer">
-                <UploadCloud className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <UploadCloud className="w-12 h-12 text-muted-foreground  mb-4" />
                 <p className="text-foreground font-medium mb-1">Drag and drop images here</p>
                 <p className="text-xs text-muted-foreground">or click to browse files (Max 5MB)</p>
               </div>
             </div>
-
           </form>
-
         </div>
-      </main>
     </div>
   );
 }

@@ -1,76 +1,161 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Save, RefreshCw, Image as ImageIcon, Trash2, Upload, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Camera, X } from 'lucide-react';
+import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataTable';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
+import api from '@/lib/api';
 
-export default function MediaGallery() {
-  const [loading, setLoading] = useState(false);
-  const [images] = useState([
-    { id: 1, url: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b', title: 'Dog Show Hero 1', date: '2023-10-01' },
-    { id: 2, url: 'https://images.unsplash.com/photo-1534361960057-19889db9621e', title: 'Championship Event', date: '2023-09-15' },
-    { id: 3, url: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee', title: 'Winner Ceremony', date: '2023-08-20' },
-    { id: 4, url: 'https://images.unsplash.com/photo-1602526430780-781d850d9e2a', title: 'Poodle Jump', date: '2023-07-11' }
-  ]);
+interface GalleryData {
+  id?: string;
+  title: string;
+  url: string;
+  type: string;
+  album: string;
+}
+
+export default function GalleryManagement() {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState<GalleryData>({ title: '', url: '', type: 'PHOTO', album: '' });
+
+  const fetchGallery = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/gallery?page=${page}&search=${search}&limit=10`);
+      if (res.success) {
+        setData(res.data.items || res.data);
+        setTotalPages(res.data.totalPages || 1);
+        setTotalCount(res.data.totalCount || res.data.length || 0);
+      }
+    } catch (error) {
+      console.error('Failed to fetch gallery');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      if (formData.id) {
+        await api.put(`/gallery/${formData.id}`, formData);
+      } else {
+        await api.post('/gallery', formData);
+      }
+      setIsModalOpen(false);
+      fetchGallery();
+    } catch (error) {
+      console.error('Failed to save media');
+    }
+  };
+
+  const handleDelete = async (item: any) => {
+    if (!confirm('Delete this media item?')) return;
+    try {
+      await api.delete(`/gallery/${item.id}`);
+      fetchGallery();
+    } catch (error) {
+      console.error('Failed to delete');
+    }
+  };
+
+  const openCreate = () => {
+    setFormData({ title: '', url: '', type: 'PHOTO', album: '' });
+    setIsModalOpen(true);
+  };
+
+  const openEdit = (item: any) => {
+    setFormData(item);
+    setIsModalOpen(true);
+  };
+
+  useEffect(() => {
+    fetchGallery();
+  }, [page, search]);
+
+  const columns: ColumnDefinition<any>[] = [
+    { header: 'Preview', accessor: (g) => <img src={g.url} alt="Preview" className="w-16 h-16 object-cover rounded-md" /> },
+    { header: 'Title', accessor: 'title', className: 'font-bold text-foreground' },
+    { header: 'Type', accessor: 'type' },
+    { header: 'Album', accessor: (g) => g.album || 'Uncategorized' },
+    { header: 'Date', accessor: (g) => new Date(g.createdAt).toLocaleDateString() }
+  ];
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-6">
-          
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
-            <div>
-              <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <ImageIcon className="w-8 h-8 text-fuchsia-500" /> Media Gallery
-              </h1>
-              <p className="text-muted-foreground font-medium mt-1">Manage global platform imagery, event photos, and assets.</p>
-            </div>
-            
-            <div className="flex gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input 
-                  type="text" 
-                  placeholder="Search media..." 
-                  className="pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder-[#7C8798] focus:outline-none focus:border-fuchsia-500 transition-all w-64"
-                />
-              </div>
-              <Button className="bg-fuchsia-600 hover:bg-fuchsia-700 text-foreground font-bold">
-                <Upload className="w-4 h-4 mr-2" /> Upload Media
-              </Button>
-            </div>
-          </div>
+    <div className="w-full">
+      <AdminDataTable
+        title="Gallery Management"
+        description="Upload and organize event photos, videos, and dog albums."
+        icon={Camera}
+        data={data}
+        columns={columns}
+        loading={loading}
+        page={page}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        search={search}
+        onSearchChange={setSearch}
+        onRefresh={fetchGallery}
+        onPageChange={setPage}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+        createLink="#" // Override generic link since we use modal
+        createLabel="Upload Media"
+        keyExtractor={(item) => item.id}
+      />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {images.map((img, i) => (
-              <motion.div 
-                key={img.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-card rounded-2xl border border-border shadow-xl overflow-hidden group"
-              >
-                <div className="h-48 relative bg-card">
-                  <img src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity gap-3">
-                    <Button variant="ghost" size="icon" className="bg-white/10 hover:bg-white/20 text-foreground rounded-full h-10 w-10">
-                      <Trash2 className="w-5 h-5 text-red-400" />
-                    </Button>
+      {/* Button overlay hack since AdminDataTable createLink opens page */}
+      {!loading && (
+        <Button onClick={openCreate} className="absolute top-[108px] right-12 bg-blue-600 hover:bg-blue-700 text-white font-bold z-10 hidden md:flex">
+          <Camera className="w-4 h-4 mr-2" /> Upload Media
+        </Button>
+      )}
+
+      {/* Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-card w-full max-w-lg rounded-2xl p-6 border border-border shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold">{formData.id ? 'Edit Media' : 'Upload Media'}</h3>
+                <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5"/></button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Title / Description</label>
+                  <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full mt-1 p-3 rounded-lg bg-background border border-border text-foreground focus:border-blue-500 outline-none" placeholder="e.g. Winner at Delhi Dog Show" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Media URL</label>
+                  <input type="text" value={formData.url} onChange={e => setFormData({...formData, url: e.target.value})} className="w-full mt-1 p-3 rounded-lg bg-background border border-border text-foreground focus:border-blue-500 outline-none" placeholder="/images/gallery1.png" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Type</label>
+                    <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full mt-1 p-3 rounded-lg bg-background border border-border text-foreground focus:border-blue-500 outline-none">
+                      <option value="PHOTO">Photo</option>
+                      <option value="VIDEO">Video</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Album Tag</label>
+                    <input type="text" value={formData.album} onChange={e => setFormData({...formData, album: e.target.value})} className="w-full mt-1 p-3 rounded-lg bg-background border border-border text-foreground focus:border-blue-500 outline-none" placeholder="e.g. 2026 Shows" />
                   </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="text-foreground font-bold truncate">{img.title}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Uploaded: {img.date}</p>
+                <div className="pt-4">
+                  <Button onClick={handleSave} className="w-full bg-blue-600 hover:bg-blue-700 font-bold">Save Media</Button>
                 </div>
-              </motion.div>
-            ))}
+              </div>
+            </motion.div>
           </div>
-
-        </div>
-      </main>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

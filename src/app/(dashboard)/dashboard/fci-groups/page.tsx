@@ -23,7 +23,7 @@ export default function FciGroupsPage() {
   const fetchGroups = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('${config.apiUrl}/fci', {
+      const res = await axios.get(`${config.apiUrl}/fci`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {

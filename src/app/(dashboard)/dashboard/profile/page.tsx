@@ -1,26 +1,104 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   User, Mail, Phone, MapPin, Shield, Key, Smartphone, 
-  CheckCircle2, Camera, CreditCard, Link
+  CheckCircle2, Camera, CreditCard, Link, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/useAuthStore';
+import api from '@/lib/api';
+import { toast } from 'sonner';
 
 export default function ProfilePage() {
-  const { user } = useAuthStore();
-  const role = user?.roles?.[0] || 'USER';
+  const { user: authUser, login } = useAuthStore();
+  const role = authUser?.roles?.[0] || 'USER';
   const [activeTab, setActiveTab] = useState('general');
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  
+  const [userData, setUserData] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    address1: ''
+  });
+
+  useEffect(() => {
+    if (authUser?.id) {
+      loadProfile();
+    }
+  }, [authUser?.id]);
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get(`/users/${authUser?.id}`);
+      if (res.success) {
+        setUserData(res.data);
+        setFormData({
+          firstName: res.data.firstName || '',
+          lastName: res.data.lastName || '',
+          phone: res.data.phone || '',
+          address1: res.data.address1 || ''
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load profile', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setSaving(true);
+      const res = await api.put(`/users/${authUser?.id}`, formData);
+      if (res.success) {
+        toast.success('Profile updated successfully');
+        setUserData(res.data);
+        // Sync context
+        if (authUser) {
+           login({ ...authUser, firstName: res.data.firstName, lastName: res.data.lastName }, localStorage.getItem('token') || '');
+        }
+      } else {
+        toast.error('Failed to update profile');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDiscard = () => {
+    if (userData) {
+      setFormData({
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        phone: userData.phone || '',
+        address1: userData.address1 || ''
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-orange" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
       
       {/* Page Header */}
       <div>
-        <h1 className="text-muted-foregroundxl font-extrabold text-foreground tracking-tight">Profile Settings</h1>
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Profile Settings</h1>
         <p className="text-muted-foreground mt-1">Manage your account details, connected accounts, and security preferences.</p>
       </div>
 
@@ -36,11 +114,11 @@ export default function ProfilePage() {
             
             <div className="text-center mt-8">
               <div className="relative inline-block">
-                <div className="w-24 h-24 rounded-full bg-brand-orange text-foreground flex items-center justify-center text-muted-foregroundxl font-bold border-4 border-border shadow-xl overflow-hidden mx-auto">
-                  {user?.profileImage ? (
-                    <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                <div className="w-24 h-24 rounded-full bg-brand-orange text-foreground flex items-center justify-center text-3xl font-bold border-4 border-border shadow-xl overflow-hidden mx-auto">
+                  {userData?.avatarUrl ? (
+                    <img src={userData.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <span>{user?.firstName?.[0] || 'G'}</span>
+                    <span>{userData?.firstName?.[0] || authUser?.firstName?.[0] || 'G'}</span>
                   )}
                 </div>
                 <button className="absolute bottom-0 right-0 p-2 bg-card text-foreground rounded-full shadow-lg hover:bg-brand-orange transition-colors">
@@ -49,9 +127,9 @@ export default function ProfilePage() {
               </div>
 
               <h2 className="text-xl font-extrabold text-foreground mt-4">
-                {user?.firstName ? `${user.firstName} ${user.lastName}` : 'Guest User'}
+                {userData?.firstName ? `${userData.firstName} ${userData.lastName}` : (authUser?.firstName ? `${authUser.firstName} ${authUser.lastName}` : 'Guest User')}
               </h2>
-              <p className="text-muted-foreground text-sm mb-4">{user?.email || 'guest@juzdog.com'}</p>
+              <p className="text-muted-foreground text-sm mb-4">{userData?.email || authUser?.email || 'guest@juzdog.com'}</p>
               
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-bold border border-green-100">
                 <span className="w-2 h-2 rounded-full bg-green-500"></span> Active Account
@@ -113,21 +191,21 @@ export default function ProfilePage() {
                     <label className="text-sm font-bold text-muted-foreground">First Name</label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                      <Input defaultValue={user?.firstName || ''} className="pl-10 rounded-xl bg-card border-border" placeholder="John" />
+                      <Input value={formData.firstName} onChange={e => setFormData(p => ({...p, firstName: e.target.value}))} className="pl-10 rounded-xl bg-card border-border" placeholder="John" />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-muted-foreground">Last Name</label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                      <Input defaultValue={user?.lastName || ''} className="pl-10 rounded-xl bg-card border-border" placeholder="Doe" />
+                      <Input value={formData.lastName} onChange={e => setFormData(p => ({...p, lastName: e.target.value}))} className="pl-10 rounded-xl bg-card border-border" placeholder="Doe" />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-muted-foreground">Email Address</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                      <Input defaultValue={user?.email || ''} readOnly className="pl-10 rounded-xl bg-input border-transparent text-muted-foreground" />
+                      <Input value={userData?.email || authUser?.email || ''} readOnly className="pl-10 rounded-xl bg-input border-transparent text-muted-foreground" />
                     </div>
                     <p className="text-xs text-brand-orange font-bold mt-1">Verified</p>
                   </div>
@@ -135,21 +213,23 @@ export default function ProfilePage() {
                     <label className="text-sm font-bold text-muted-foreground">Mobile Number</label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                      <Input defaultValue="+91 9876543210" className="pl-10 rounded-xl bg-card border-border" />
+                      <Input value={formData.phone} onChange={e => setFormData(p => ({...p, phone: e.target.value}))} className="pl-10 rounded-xl bg-card border-border" />
                     </div>
                   </div>
                   <div className="sm:col-span-2 space-y-2">
                     <label className="text-sm font-bold text-muted-foreground">Residential Address</label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
-                      <textarea rows={3} className="w-full pl-10 pr-4 py-3 rounded-xl bg-card border border-border focus:bg-card focus:border-brand-orange outline-none resize-none text-sm transition-all" placeholder="Enter your full address..." defaultValue="123 Jubilee Hills, Hyderabad, Telangana"></textarea>
+                      <textarea value={formData.address1} onChange={e => setFormData(p => ({...p, address1: e.target.value}))} rows={3} className="w-full pl-10 pr-4 py-3 rounded-xl bg-card border border-border focus:bg-card focus:border-brand-orange outline-none resize-none text-sm transition-all" placeholder="Enter your full address..."></textarea>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-8 flex justify-end gap-4">
-                  <Button variant="outline" className="rounded-xl font-bold">Discard Changes</Button>
-                  <Button className="rounded-xl bg-brand-orange hover:bg-orange-600 text-foreground font-bold px-8">Save Profile</Button>
+                  <Button onClick={handleDiscard} disabled={saving} variant="outline" className="rounded-xl font-bold">Discard Changes</Button>
+                  <Button onClick={handleSaveProfile} disabled={saving} className="rounded-xl bg-brand-orange hover:bg-orange-600 text-foreground font-bold px-8 flex items-center gap-2">
+                    {saving && <Loader2 className="w-4 h-4 animate-spin" />} Save Profile
+                  </Button>
                 </div>
               </div>
 
@@ -166,7 +246,7 @@ export default function ProfilePage() {
                       </div>
                       <div>
                         <h4 className="font-bold text-foreground">Google</h4>
-                        <p className="text-xs text-muted-foreground">Connected as {user?.email || 'guest@gmail.com'}</p>
+                        <p className="text-xs text-muted-foreground">Connected as {userData?.email || authUser?.email || 'guest@gmail.com'}</p>
                       </div>
                     </div>
                     <Button variant="outline" className="rounded-xl border-border text-red-600 hover:text-red-700 hover:bg-red-50 font-bold text-xs h-8">Disconnect</Button>

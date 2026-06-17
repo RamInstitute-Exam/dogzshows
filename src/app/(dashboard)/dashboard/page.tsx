@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Dog, Calendar, FileText, CheckCircle, ArrowRight, Activity, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import AdminDashboard from './AdminDashboard';
-import { config } from '@/lib/config';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@/lib/axios';
 
 interface DashboardStats {
   totalDogs: number;
@@ -18,28 +19,15 @@ interface DashboardStats {
 }
 
 function UserDashboardComponent() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchStats() {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await fetch('${config.apiUrl}/dashboard/stats', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (data.success) {
-          setStats(data.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch stats');
-      } finally {
-        setLoading(false);
-      }
+  const { data: statsData, isLoading: loading } = useQuery<DashboardStats>({
+    queryKey: ['userDashboardStats'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/dashboard/stats');
+      return response.data.data;
     }
-    fetchStats();
-  }, []);
+  });
+
+  const stats = statsData || null;
 
   const statCards = [
     { title: 'Total Dogs', value: stats?.totalDogs || 0, icon: Dog, color: 'from-[#F59E0B] to-[#FB923C]' },

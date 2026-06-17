@@ -1,25 +1,50 @@
 'use client';
 
+import { useState } from 'react';
 import { useAuthModalStore } from '@/store/useAuthModalStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import api from '@/lib/api';
 
 export default function LoginForm() {
   const { setView, closeModal } = useAuthModalStore();
   const { login } = useAuthStore();
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate Login
-    login({ id: '1', email: 'user@juzdog.com', firstName: 'Demo', lastName: 'User', roles: ['USER'] }, 'fake-token-123');
-    toast.success('Welcome back!');
-    closeModal();
-    router.push('/dashboard');
+    try {
+      setLoading(true);
+      const res = await api.post('/auth/login', { email, password });
+      
+      if (res.tokens?.accessToken) {
+        login(res.user, res.tokens.accessToken);
+        toast.success('Welcome back!');
+        closeModal();
+        
+        // Redirect based on role
+        if (res.user.roles?.includes('Super Admin') || res.user.roles?.includes('Admin')) {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard');
+        }
+      } else {
+        toast.error('Unexpected response from server.');
+      }
+    } catch (error: any) {
+      // api.ts interceptor already toasts most errors, but we can handle specific ones if needed
+      console.error('Login failed', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,7 +59,15 @@ export default function LoginForm() {
           <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Email or Mobile</label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input required type="text" placeholder="you@example.com" className="pl-10 rounded-xl bg-card h-12" />
+            <Input 
+              required 
+              type="text" 
+              placeholder="you@example.com" 
+              className="pl-10 rounded-xl bg-card h-12" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+            />
           </div>
         </div>
         
@@ -45,11 +78,20 @@ export default function LoginForm() {
           </div>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input required type="password" placeholder="••••••••" className="pl-10 rounded-xl bg-card h-12" />
+            <Input 
+              required 
+              type="password" 
+              placeholder="••••••••" 
+              className="pl-10 rounded-xl bg-card h-12" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+            />
           </div>
         </div>
 
-        <Button type="submit" className="w-full h-12 rounded-xl bg-brand-orange hover:bg-orange-600 text-foreground font-bold text-base shadow-lg shadow-orange-500/20">
+        <Button disabled={loading} type="submit" className="w-full h-12 rounded-xl bg-brand-orange hover:bg-orange-600 text-foreground font-bold text-base shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2">
+          {loading && <Loader2 className="w-5 h-5 animate-spin" />}
           Sign In
         </Button>
       </form>
@@ -80,7 +122,7 @@ export default function LoginForm() {
 
       <p className="text-center text-sm text-muted-foreground mt-8 font-medium">
         Don't have an account?{' '}
-        <button onClick={() => setView('REGISTER')} className="text-brand-orange font-bold hover:underline">
+        <button type="button" onClick={() => setView('REGISTER')} className="text-brand-orange font-bold hover:underline">
           Create Account
         </button>
       </p>

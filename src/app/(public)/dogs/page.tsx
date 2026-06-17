@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import api, { getImageUrl } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -22,6 +22,7 @@ import {
   Loader2
 } from 'lucide-react';
 import Link from 'next/link';
+import PageContainer from '@/components/layout/PageContainer';
 
 interface DogProfile {
   id: string;
@@ -70,20 +71,7 @@ export default function SearchPage() {
   // Recently viewed list
   const [recentlyViewed, setRecentlyViewed] = useState<DogProfile[]>([]);
 
-  useEffect(() => {
-    fetchDogs();
-    // Load favorites from local storage
-    const storedFavs = localStorage.getItem('dog_favorites');
-    if (storedFavs) {
-      try {
-        setFavorites(JSON.parse(storedFavs));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, []);
-
-  const fetchDogs = async () => {
+  const fetchDogs = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api.get('/dogs');
@@ -104,7 +92,24 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    fetchDogs();
+    // Load favorites from local storage
+    const storedFavs = localStorage.getItem('dog_favorites');
+    if (storedFavs) {
+      try {
+        setFavorites(JSON.parse(storedFavs));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [fetchDogs]);
 
   // Toggle favorite
   const handleToggleFavorite = (dogId: string, e: React.MouseEvent) => {
@@ -197,7 +202,8 @@ export default function SearchPage() {
   const aiRecommendation = dogs.find(d => d.featured) || dogs[0];
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-10 w-full min-h-fit bg-background">
+    <PageContainer>
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-10">
       
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-6 border-b border-border/60 gap-4">
@@ -642,7 +648,7 @@ export default function SearchPage() {
               {viewMode === 'map' && (
                 <div className="bg-card rounded-3xl border border-border/60 shadow-sm overflow-hidden flex flex-col h-[70vh]">
                   <div className="flex-1 bg-[url('/images/hero_banner.png')] bg-cover bg-center relative flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-3xs"></div>
+                    <div className="absolute inset-0 bg-[#0A0A0A]/10 backdrop-blur-3xs"></div>
                     
                     {/* Simulated Map Pins */}
                     {sortedDogs.slice(0, 4).map((dog, i) => {
@@ -801,7 +807,8 @@ export default function SearchPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </PageContainer>
   );
 }
 

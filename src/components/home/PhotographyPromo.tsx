@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 export default function PhotographyPromo() {
   return (
-    <section className="pt-8 lg:pt-10 pb-12 lg:pb-16 bg-[#071225] relative overflow-hidden">
+    <section className="pt-8 lg:pt-10 pb-12 lg:pb-16 bg-background relative overflow-hidden">
       {/* Background Decorative */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-brand-orange/10 blur-[100px] rounded-full pointer-events-none" />
       

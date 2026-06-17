@@ -1,82 +1,94 @@
 import { 
   Home, Users, Dog, Calendar, Activity, Bell, Settings, 
   BarChart, Image, Video, Shield, Award, FileText, LayoutTemplate, 
-  Mail, CreditCard, LifeBuoy, FileBadge, Download, CheckCircle, Database
+  CreditCard, LifeBuoy, Download, Tent, Trophy, PenTool, Layout, Lock, MessageSquare
 } from 'lucide-react';
 
 export const ADMIN_ROUTES = [
-  { name: 'Dashboard', href: '/admin', icon: Home, roles: ['SUPER_ADMIN', 'ADMIN'] },
-  { name: 'Events & Clubs', icon: Calendar, roles: ['SUPER_ADMIN', 'ADMIN', 'SUB_ADMIN'], children: [
-    { name: 'All Events', href: '/admin/events' },
-    { name: 'Create Event', href: '/admin/events/create' },
-    { name: 'Club Management', href: '/admin/events/clubs' },
-    { name: 'Venue Management', href: '/admin/events/venues' },
-    { name: 'Registration List', href: '/admin/events/registrations' },
-    { name: 'Waiting List', href: '/admin/events/waitlist' },
-    { name: 'Live Competition', href: '/admin/events/live' },
+  { name: 'Dashboard', icon: Home, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'Dashboard', href: '/admin' },
+    { name: 'Analytics', href: '/admin/analytics' },
+    { name: 'Activity', href: '/admin/activity' },
   ]},
-  { name: 'Users & Roles', icon: Users, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
-    { name: 'Users List', href: '/admin/users' },
-    { name: 'Role Management', href: '/admin/users/roles' },
-    { name: 'Sub Admins', href: '/admin/users/subadmins' },
-    { name: 'Event Managers', href: '/admin/users/managers' },
-    { name: 'Login History', href: '/admin/users/history' },
+  { name: 'Users', icon: Users, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'All Users', href: '/admin/users' },
+    { name: 'Add User', href: '/admin/users/create' },
+    { name: 'Roles', href: '/admin/users/roles' },
+    { name: 'Permissions', href: '/admin/users/permissions' },
   ]},
-  { name: 'Dog Database', icon: Dog, roles: ['SUPER_ADMIN', 'ADMIN', 'SUB_ADMIN'], children: [
-    { name: 'All Dogs', href: '/admin/dogs' },
-    { name: 'Add Dog', href: '/admin/dogs/add' },
-    { name: 'Champion Status', href: '/admin/dogs/champions' },
-    { name: 'OCR Verification', href: '/admin/dogs/ocr' },
-    { name: 'Pedigree', href: '/admin/dogs/pedigree' },
+  { name: 'Judges', icon: Award, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'All Judges', href: '/admin/judges' },
+    { name: 'Add Judge', href: '/admin/judges/create' },
+    { name: 'Bulk Upload Judges', href: '/admin/judges/bulk-upload' },
+    { name: 'Judge Categories', href: '/admin/judges/categories' },
+    { name: 'Judge Requests', href: '/admin/judges/requests' },
   ]},
-  { name: 'Competition Engine', icon: Trophy, roles: ['SUPER_ADMIN', 'ADMIN', 'SUB_ADMIN', 'EVENT_MANAGER', 'JUDGE'], children: [
-    { name: 'Competition Setup', href: '/admin/competition/setup' },
-    { name: 'Ring Management', href: '/admin/competition/rings' },
-    { name: 'Live Scoreboard', href: '/admin/competition/scoreboard' },
-    { name: 'Final Results', href: '/admin/competition/results' },
-    { name: 'Best in Show', href: '/admin/competition/bis' },
+  { name: 'KCI Clubs', icon: Tent, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'KCI Clubs', href: '/admin/clubs' },
+    { name: 'Add Club', href: '/admin/clubs/create' },
+    { name: 'Bulk Upload Clubs', href: '/admin/clubs/bulk-upload' },
+  ]},
+  { name: 'Dog Shows', icon: Trophy, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'All Shows', href: '/admin/events' },
+    { name: 'Create Show', href: '/admin/events/create' },
+    { name: 'Calendar', href: '/admin/events/calendar' },
+    { name: 'Upcoming', href: '/admin/events/upcoming' },
+    { name: 'Completed', href: '/admin/events/completed' },
+    { name: 'Results', href: '/admin/competition/results' },
+  ]},
+  { name: 'Entries', icon: FileText, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'Pending Entries', href: '/admin/entries/pending' },
+    { name: 'Approved Entries', href: '/admin/entries/approved' },
+    { name: 'Rejected Entries', href: '/admin/entries/rejected' },
+  ]},
+  { name: 'Media Management', icon: Image, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'All Photos', href: '/admin/media/photos' },
+    { name: 'Upload Photo', href: '/admin/media/photos/create' },
+    { name: 'Photo Categories', href: '/admin/media/photos/categories' },
+    { name: 'Albums', href: '/admin/media/photos/albums' },
+    { name: 'Featured Photos', href: '/admin/media/photos/featured' },
+    { name: 'All Videos', href: '/admin/media/videos' },
+    { name: 'Upload Video', href: '/admin/media/videos/create' },
+    { name: 'Video Categories', href: '/admin/media/videos/categories' },
+    { name: 'Featured Videos', href: '/admin/media/videos/featured' },
+  ]},
+  { name: 'CMS', icon: LayoutTemplate, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'Homepage Banner', href: '/admin/cms/homepage-banners' },
+    { name: 'Featured Sections', href: '/admin/cms/featured' },
+    { name: 'SEO', href: '/admin/cms/seo' },
+    { name: 'Footer', href: '/admin/cms/footer' },
+    { name: 'Testimonials', href: '/admin/cms/testimonials' },
+    { name: 'FAQ', href: '/admin/cms/faqs' },
+  ]},
+  { name: 'Settings', icon: Settings, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'General', href: '/admin/settings/general' },
+    { name: 'Email', href: '/admin/settings/email' },
+    { name: 'AWS S3', href: '/admin/settings/aws' },
+    { name: 'Logo', href: '/admin/settings/logo' },
+    { name: 'SEO', href: '/admin/settings/seo' },
+    { name: 'Social Links', href: '/admin/settings/social' },
+    { name: 'Theme', href: '/admin/settings/theme' },
+  ]},
+  { name: 'Notifications', icon: Bell, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'Push Notifications', href: '/admin/notifications/push' },
+    { name: 'Email Templates', href: '/admin/notifications/email' },
+    { name: 'SMS Templates', href: '/admin/notifications/sms' },
+  ]},
+  { name: 'Reports', icon: BarChart, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'Revenue', href: '/admin/reports/revenue' },
+    { name: 'Users', href: '/admin/reports/users' },
+    { name: 'Shows', href: '/admin/reports/shows' },
+    { name: 'Entries', href: '/admin/reports/entries' },
+    { name: 'Media', href: '/admin/reports/media' },
+    { name: 'Downloads', href: '/admin/reports/downloads' },
   ]},
   { name: 'Payments', icon: CreditCard, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
     { name: 'Transactions', href: '/admin/payments/transactions' },
     { name: 'Refunds', href: '/admin/payments/refunds' },
-    { name: 'GST Reports', href: '/admin/payments/gst' },
+    { name: 'Payouts', href: '/admin/payments/payouts' },
     { name: 'Invoices', href: '/admin/payments/invoices' },
   ]},
-  { name: 'Photography', icon: Image, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
-    { name: 'Albums', href: '/admin/photography/albums' },
-    { name: 'Bulk Upload', href: '/admin/photography/upload' },
-    { name: 'AI Tagging', href: '/admin/photography/tagging' },
-  ]},
-  { name: 'Videography', icon: Video, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
-    { name: 'Videos', href: '/admin/videography' },
-    { name: 'Live Streams', href: '/admin/videography/live' },
-  ]},
-  { name: 'Judges', icon: Award, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
-    { name: 'Judge Profiles', href: '/admin/judges' },
-    { name: 'Judge Assignments', href: '/admin/judges/assignments' },
-    { name: 'Judge Ratings', href: '/admin/judges/ratings' },
-  ]},
-  { name: 'Breeds', icon: Database, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
-    { name: 'FCI Groups', href: '/admin/breeds/fci' },
-    { name: 'Breed Master', href: '/admin/breeds/master' },
-  ]},
-  { name: 'Media Library', icon: FileText, roles: ['SUPER_ADMIN', 'ADMIN'], href: '/admin/media' },
-  { name: 'Website CMS', icon: LayoutTemplate, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
-    { name: 'Homepage', href: '/admin/cms/homepage' },
-    { name: 'Blogs', href: '/admin/cms/blogs' },
-    { name: 'Testimonials', href: '/admin/cms/testimonials' },
-    { name: 'SEO', href: '/admin/cms/seo' },
-  ]},
-  { name: 'Notifications', icon: Bell, roles: ['SUPER_ADMIN', 'ADMIN', 'SUB_ADMIN'], children: [
-    { name: 'Campaigns', href: '/admin/notifications/campaigns' },
-    { name: 'History', href: '/admin/notifications/history' },
-  ]},
-  { name: 'Reports', icon: BarChart, roles: ['SUPER_ADMIN', 'ADMIN', 'SUB_ADMIN'], href: '/admin/reports' },
-  { name: 'Settings', icon: Settings, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
-    { name: 'General', href: '/admin/settings/general' },
-    { name: 'Payment Gateway', href: '/admin/settings/payments' },
-    { name: 'Security', href: '/admin/settings/security' },
-  ]},
+  { name: 'Audit Logs', href: '/admin/audit-logs', icon: Shield, roles: ['SUPER_ADMIN', 'ADMIN'] },
 ];
 
 export const USER_ROUTES = [
@@ -103,6 +115,3 @@ export const USER_ROUTES = [
   { name: 'Support', href: '/dashboard/support', icon: LifeBuoy, roles: ['USER', 'BREEDER', 'OWNER'] },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings, roles: ['USER', 'BREEDER', 'OWNER'] },
 ];
-
-// Placeholder fix for missing Trophy icon
-import { Trophy } from 'lucide-react';

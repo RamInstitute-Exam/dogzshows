@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function CompetitionsDashboard() {
   const [matches, setMatches] = useState<any[]>([]);
@@ -42,21 +43,8 @@ export default function CompetitionsDashboard() {
     setSubmitLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/competitions/matches/score', {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({
-          matchId: scoringMatch.id,
-          score: parseFloat(scoreForm.score) || 0,
-          notes: scoreForm.notes,
-          isWinner: scoreForm.isWinner,
-          awardTitle: scoreForm.isWinner ? scoreForm.awardTitle : null
-        })
-      });
-      const data = await res.json();
+      const res = await api.get(`/competitions/matches/score`);
+      const data = res;
       if (data.success) {
         toast.success('Match scored successfully!');
         setScoringMatch(null);
@@ -77,10 +65,10 @@ export default function CompetitionsDashboard() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background relative">
-        <div className="max-w-[1400px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background relative">
+        <div className="w-full space-y-4">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
@@ -107,7 +95,7 @@ export default function CompetitionsDashboard() {
               <Loader2 className="w-12 h-12 animate-spin text-brand-orange" />
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMatches.map(match => (
                 <div key={match.id} className="bg-card rounded-2xl border border-border shadow-lg p-6 flex flex-col hover:border-[rgba(255,255,255,0.1)] transition-colors">
                   <div className="flex justify-between items-start mb-4">
@@ -160,7 +148,7 @@ export default function CompetitionsDashboard() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-card w-full max-w-lg rounded-2xl border border-border shadow-2xl p-6 md:p-8"
+                className="bg-card w-full max-w-lg rounded-2xl border border-border shadow-2xl p-6 md:"
               >
                 <h2 className="text-2xl font-bold text-foreground mb-1">Score Match</h2>
                 <p className="text-muted-foreground mb-6">Evaluating <strong className="text-foreground">{scoringMatch.dog?.name}</strong></p>

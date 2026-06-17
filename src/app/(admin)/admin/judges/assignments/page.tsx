@@ -6,6 +6,7 @@ import { Search, Loader2, Users, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function JudgeAssignments() {
   const [assignments, setAssignments] = useState<any[]>([]);
@@ -19,10 +20,8 @@ export default function JudgeAssignments() {
   const fetchAssignments = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/judges/assignments', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const res = await api.get(`/judges/assignments`);
+      const data = res;
       if (data.success) {
         setAssignments(data.data);
       }
@@ -34,10 +33,10 @@ export default function JudgeAssignments() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full space-y-4">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -54,12 +53,12 @@ export default function JudgeAssignments() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               [1,2,3].map(i => <div key={i} className="h-48 bg-card animate-pulse rounded-xl"></div>)
             ) : assignments.length === 0 ? (
               <div className="col-span-full py-12 text-center bg-card rounded-xl border border-border">
-                <Users className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
+                <Users className="w-12 h-12 text-[#1E293B]  mb-4" />
                 <p className="text-muted-foreground font-medium">No judge assignments found.</p>
               </div>
             ) : (

@@ -30,7 +30,7 @@ export default function BreedExplorer() {
             <input 
               type="text" 
               placeholder="Search breeds..." 
-              className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-[#0B1220] border border-border rounded-full focus:ring-2 focus:ring-[#F59E0B] outline-none text-sm sm:text-base text-foreground"
+              className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-card border border-border rounded-full focus:ring-2 focus:ring-[#F59E0B] outline-none text-sm sm:text-base text-foreground"
             />
           </div>
         </div>
@@ -42,7 +42,7 @@ export default function BreedExplorer() {
               <button
                 key={breed.name}
                 onClick={() => setActiveTab(breed.name)}
-                className={`text-left px-4 py-2 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold whitespace-nowrap transition-all duration-300 ${activeTab === breed.name ? 'bg-[#F59E0B] text-foreground shadow-lg shadow-[#F59E0B]/20' : 'bg-[#0B1220] text-muted-foreground hover:bg-input'}`}
+                className={`text-left px-4 py-2 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold whitespace-nowrap transition-all duration-300 ${activeTab === breed.name ? 'bg-[#F59E0B] text-foreground shadow-lg shadow-[#F59E0B]/20' : 'bg-card text-muted-foreground hover:bg-input'}`}
               >
                 {breed.name}
               </button>
@@ -50,7 +50,7 @@ export default function BreedExplorer() {
           </div>
 
           {/* Content View */}
-          <div className="flex-1 bg-[#0B1220] rounded-2xl md:rounded-[2.5rem] p-4 sm:p-8 md:p-12 border border-border flex flex-col md:flex-row gap-6 md:gap-12 items-center">
+          <div className="flex-1 bg-card rounded-2xl md:rounded-[2.5rem] p-4 sm:p-8 md:p-12 border border-border flex flex-col md:flex-row gap-6 md:gap-12 items-center">
             <AnimatePresence mode="wait">
               <motion.img 
                 key={activeBreed.image}
@@ -89,7 +89,7 @@ export default function BreedExplorer() {
                   </div>
                 </div>
 
-                <Button className="w-full rounded-[14px] h-10 sm:h-[48px] btn-secondary-luxury font-[700] text-[#CBD5E1] text-sm sm:text-base">
+                <Button className="w-full rounded-[14px] h-10 sm:h-[48px] btn-secondary-luxury font-[700] text-muted-foreground text-sm sm:text-base">
                   View Full Standard <Info className="ml-2 w-4 h-4" />
                 </Button>
               </motion.div>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function RegistrationsListing() {
   const [registrations, setRegistrations] = useState<any[]>([]);
@@ -21,10 +22,8 @@ export default function RegistrationsListing() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${config.apiUrl}/registrations?page=${page}&limit=10&search=${search}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const res = await api.get(`/registrations?page=${page}&limit=10&search=${search}`);
+      const data = res;
       if (data.success) {
         setRegistrations(data.data);
         setTotalPages(data.pagination.totalPages);
@@ -57,14 +56,7 @@ export default function RegistrationsListing() {
     if (!confirm('Are you sure you want to delete selected registrations?')) return;
     try {
       const token = localStorage.getItem('token');
-      await fetch('${config.apiUrl}/registrations/bulk-delete', {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ids: selectedIds })
-      });
+      await api.post(`/registrations/bulk-delete`, JSON.stringify({ ids: selectedIds }));
       setSelectedIds([]);
       fetchRegistrations();
     } catch (error) {
@@ -75,14 +67,7 @@ export default function RegistrationsListing() {
   const handleUpdateStatus = async (id: string, status: string, paymentStatus: string) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`${config.apiUrl}/registrations/${id}`, {
-        method: 'PUT',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status, paymentStatus })
-      });
+      await api.put(`/registrations/${id}`, JSON.stringify({ status, paymentStatus }));
       fetchRegistrations();
     } catch (error) {
       console.error('Failed to update status');
@@ -90,10 +75,10 @@ export default function RegistrationsListing() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto space-y-6">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full space-y-4">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
@@ -154,14 +139,14 @@ export default function RegistrationsListing() {
                   {loading ? (
                     <tr>
                       <td colSpan={7} className="py-12 text-center">
-                        <RefreshCw className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-4" />
+                        <RefreshCw className="w-8 h-8 animate-spin text-blue-500  mb-4" />
                         <p className="text-muted-foreground">Loading entries...</p>
                       </td>
                     </tr>
                   ) : registrations.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="py-12 text-center">
-                        <Ticket className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
+                        <Ticket className="w-12 h-12 text-[#1E293B]  mb-4" />
                         <p className="text-muted-foreground font-medium">No registrations found.</p>
                       </td>
                     </tr>
@@ -209,7 +194,7 @@ export default function RegistrationsListing() {
                           </span>
                         </td>
                         <td className="py-4 px-6 text-right">
-                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center justify-end gap-1  transition-opacity">
                             {r.status !== 'APPROVED' && (
                               <Button variant="ghost" size="icon" onClick={() => handleUpdateStatus(r.id, 'APPROVED', 'COMPLETED')} className="h-8 w-8 text-muted-foreground hover:text-green-500 hover:bg-green-500/10">
                                 <CheckCircle className="w-4 h-4" />

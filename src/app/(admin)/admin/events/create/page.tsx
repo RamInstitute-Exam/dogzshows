@@ -10,6 +10,7 @@ import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 export default function CreateEventForm() {
   const router = useRouter();
@@ -51,16 +52,9 @@ export default function CreateEventForm() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/events/admin', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+      const res = await api.get(`/events/admin`);
       
-      const data = await res.json();
+      const data = res;
       if (res.ok) {
         router.push('/admin/events');
       } else {
@@ -82,10 +76,10 @@ export default function CreateEventForm() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1200px] mx-auto space-y-8">
+      <main className="flex-1 md:ml-64  bg-background">
+        <div className="w-full space-y-4">
           
           <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-4 z-50">
             <div className="flex items-center gap-4">
@@ -112,7 +106,7 @@ export default function CreateEventForm() {
             </div>
           </div>
 
-          <div className="flex gap-8">
+          <div className="flex ga">
             {/* Left Nav */}
             <div className="w-64 shrink-0 space-y-2">
               {tabs.map(tab => {
@@ -134,18 +128,18 @@ export default function CreateEventForm() {
             </div>
 
             {/* Right Form Area */}
-            <div className="flex-1 bg-card p-8 rounded-2xl border border-border shadow-xl">
-              <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex-1 bg-card p-6 rounded-2xl border border-border shadow-xl">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 
                 {activeTab === 'basic' && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">General Details</h2>
                     <div className="grid grid-cols-1 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Event Title *</label>
                         <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="E.g., 50th All India Championship Dog Show" />
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-medium text-muted-foreground mb-2">Host Club / Organization</label>
                           <select name="clubId" value={formData.clubId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none appearance-none">
@@ -167,9 +161,9 @@ export default function CreateEventForm() {
                 )}
 
                 {activeTab === 'schedule' && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Scheduling & Timelines</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Event Start Date</label>
                         <input type="datetime-local" name="startDate" value={formData.startDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -191,7 +185,7 @@ export default function CreateEventForm() {
                 )}
 
                 {activeTab === 'venue' && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Venue Configuration</h2>
                     <div>
                       <label className="block text-sm font-medium text-muted-foreground mb-2">Venue / Stadium Name & Full Address</label>
@@ -201,9 +195,9 @@ export default function CreateEventForm() {
                 )}
 
                 {activeTab === 'settings' && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Ticketing & Rules</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Maximum Dog Capacity</label>
                         <input type="number" name="capacity" value={formData.capacity} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -218,7 +212,7 @@ export default function CreateEventForm() {
 
                 {activeTab === 'media' && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center py-16">
-                    <ImagePlus className="w-16 h-16 text-[#1E293B] mx-auto mb-4" />
+                    <ImagePlus className="w-16 h-16 text-[#1E293B]  mb-4" />
                     <h3 className="text-xl font-bold text-foreground mb-2">Banners & Promotions</h3>
                     <p className="text-muted-foreground mb-6">Drag and drop Hero Banners, Mobile Banners, and Promotional Videos.</p>
                     <Button variant="outline" className="border-brand-orange text-brand-orange hover:bg-brand-orange/10">Browse Files</Button>

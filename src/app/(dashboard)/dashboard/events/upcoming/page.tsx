@@ -7,10 +7,10 @@ import { motion } from 'framer-motion';
 import { Calendar, Search, MapPin, ArrowRight, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useLoader } from '@/components/shared/GlobalLoader';
+import { useGlobalLoading } from '@/hooks/useGlobalLoading';
 
 export default function UpcomingEvents() {
-  const { showLoader, hideLoader } = useLoader();
+  const { showLoader, hideLoader } = useGlobalLoading();
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -37,7 +37,7 @@ export default function UpcomingEvents() {
   const filteredEvents = events.filter(e => e.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="p-4 md:p-8 space-y-8 text-muted-foreground bg-background min-h-screen">
+    <div className="p-4 md:p-8 space-y-8 text-muted-foreground bg-background min-h-[auto]">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
@@ -111,7 +111,7 @@ export default function UpcomingEvents() {
                   </div>
                 </div>
 
-                <Link href={`/events/${event.id}`}>
+                <Link href={`/events/detail?id=${event.id}`}>
                   <Button className="w-full bg-card text-foreground hover:bg-brand-orange hover:text-foreground transition-all font-bold">
                     View Details <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import { config } from '@/lib/config';
+import api from '@/services/api';
 
 interface AgeClass {
   id: string;
@@ -21,8 +22,8 @@ export default function AgeClassesPage() {
 
   const fetchClasses = async () => {
     try {
-      const res = await fetch('${config.apiUrl}/age-classes');
-      const data = await res.json();
+      const res = await api.get(`/age-classes`);
+      const data = res;
       if (data.success) {
         setClasses(data.data);
       }
@@ -41,10 +42,7 @@ export default function AgeClassesPage() {
     if (!confirm('Delete this age class?')) return;
     try {
       const token = localStorage.getItem('token');
-      await fetch(`${config.apiUrl}/age-classes/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      await api.delete(`/age-classes/${id}`);
       fetchClasses();
     } catch (err) {}
   };
@@ -58,7 +56,7 @@ export default function AgeClassesPage() {
     
     try {
       const token = localStorage.getItem('token');
-      await fetch('${config.apiUrl}/age-classes', {
+      await fetch(`${config.apiUrl}/age-classes`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -73,10 +71,10 @@ export default function AgeClassesPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background text-muted-foreground">
-        <div className="w-full max-w-[1200px] mx-auto space-y-6">
+      <main className="flex-1 md:ml-64  bg-background text-muted-foreground">
+        <div className="w-full   space-y-4">
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">Show Classes & Age Rules</h1>
@@ -121,7 +119,7 @@ export default function AgeClassesPage() {
                   ))}
                   {classes.length === 0 && (
                     <tr>
-                      <td colSpan={3} className="p-8 text-center text-muted-foreground">No classes found.</td>
+                      <td colSpan={3} className=" text-center text-muted-foreground">No classes found.</td>
                     </tr>
                   )}
                 </tbody>

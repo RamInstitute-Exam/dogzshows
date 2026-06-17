@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, ChevronRight, QrCode, CreditCard, Dog, Calendar } from 'lucide-react';
+import PageContainer from '@/components/layout/PageContainer';
 
 export default function EventRegistrationWorkflow() {
   const [step, setStep] = useState(1);
@@ -30,10 +31,9 @@ export default function EventRegistrationWorkflow() {
   };
 
   return (
-    <div className="min-h-fit bg-background pt-8 lg:pt-10 pb-12 lg:pb-16">
-      
-      <div className="pt-32 pb-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageContainer>
+      <div className="pt-8 pb-12">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8">
           
           <div className="text-center mb-12">
             <h1 className="text-muted-foregroundxl font-extrabold text-foreground tracking-tight mb-4">Event Registration</h1>
@@ -159,8 +159,6 @@ export default function EventRegistrationWorkflow() {
                     <QrCode className="w-32 h-32 mx-auto text-foreground mb-4" />
                     <p className="text-sm font-bold text-foreground tracking-widest">SN: JUZ-98421-26</p>
                   </div>
-                  
-                  <Button variant="outline" className="mt-8 font-bold border-border rounded-full px-8">Download PDF Pass</Button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -175,6 +173,6 @@ export default function EventRegistrationWorkflow() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

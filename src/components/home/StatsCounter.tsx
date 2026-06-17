@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Dog, Trophy, Calendar, Users, DollarSign, Activity } from 'lucide-react';
-import { config } from '@/lib/config';
-import api from '@/lib/api';
 
 const DEFAULT_STATS = [
   { label: 'Registered Dogs', value: 15000, suffix: '+', icon: Dog, color: 'text-[#F59E0B]', key: 'registered_dogs' },
@@ -45,35 +43,28 @@ function Counter({ from, to, duration = 2 }: { from: number, to: number, duratio
   return <span ref={ref}>{count.toLocaleString()}</span>;
 }
 
-export default function StatsCounter() {
-  const [stats, setStats] = useState(DEFAULT_STATS);
+interface StatsCounterProps {
+  statsData: any;
+}
 
-  useEffect(() => {
-    async function fetchStats() {
-      try {
-        const result = await api.get('/cms/home');
-        if (result.success && result.data?.stats?.length > 0) {
-          // Map fetched stats to our default UI icons/colors
-          const backendStats = result.data.stats;
-          const updatedStats = DEFAULT_STATS.map(defaultStat => {
-            const matchedStat = backendStats.find((bs: any) => bs.metricKey.toLowerCase() === defaultStat.key.toLowerCase());
-            if (matchedStat) {
-              return { ...defaultStat, value: matchedStat.metricValue };
-            }
-            return defaultStat;
-          });
-          setStats(updatedStats);
+export default function StatsCounter({ statsData }: StatsCounterProps) {
+  const stats = (() => {
+    if (statsData && statsData?.stats?.length > 0) {
+      const backendStats = statsData.stats;
+      return DEFAULT_STATS.map(defaultStat => {
+        const matchedStat = backendStats.find((bs: any) => bs.metricKey.toLowerCase() === defaultStat.key.toLowerCase());
+        if (matchedStat) {
+          return { ...defaultStat, value: matchedStat.metricValue };
         }
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-      }
+        return defaultStat;
+      });
     }
-    fetchStats();
-  }, []);
+    return DEFAULT_STATS;
+  })();
 
   return (
-    <section className="pt-8 lg:pt-10 pb-12 lg:pb-16 relative z-20 bg-background border-y border-border">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+    <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background relative z-20 border-y border-border pt-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
           {stats.map((stat, i) => (
             <motion.div 

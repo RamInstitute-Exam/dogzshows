@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Trophy, ChevronRight, Activity, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import PageContainer from '@/components/layout/PageContainer';
 
 export default function CompetitionEngine() {
   const MOCK_BRACKET: any[] = [
@@ -31,10 +31,10 @@ export default function CompetitionEngine() {
   ];
 
   return (
-    <div className="min-h-screen bg-card text-foreground selection:bg-brand-orange">
+    <PageContainer>
       
       {/* Header */}
-      <div className="pt-32 pb-12 relative overflow-hidden">
+      <div className="pt-8 pb-12 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-orange/20 blur-[100px] -z-10" />
         <div className="absolute top-1/2 left-0 w-96 h-96 bg-blue-500/20 blur-[100px] -z-10" />
         
@@ -111,6 +111,6 @@ export default function CompetitionEngine() {
           ))}
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

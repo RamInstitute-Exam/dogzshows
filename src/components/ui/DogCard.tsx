@@ -24,7 +24,7 @@ const DogCard: React.FC<DogCardProps> = ({
   featured = false
 }) => {
   return (
-    <Link href={`/dogs/${id}`} className="group block h-full">
+    <Link href={`/dogs/detail?id=${id}`} className="group block h-full">
       <div className="glass-panel overflow-hidden rounded-[2rem] premium-hover h-full flex flex-col relative">
         
         {/* Image Section */}

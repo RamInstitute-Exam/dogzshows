@@ -1,6 +1,7 @@
 import { MOCK_EVENT_DETAIL, MOCK_EVENTS } from '@/lib/mock/eventsData';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import PageContainer from '@/components/layout/PageContainer';
 
 // Components
 import EventHero from '@/components/events/details/EventHero';
@@ -17,7 +18,36 @@ import EventFAQs from '@/components/events/details/EventFAQs';
 import RelatedEvents from '@/components/events/details/RelatedEvents';
 import EventSidebar from '@/components/events/details/EventSidebar';
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
+    const res = await fetch(`${apiUrl}/public/events`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.success && Array.isArray(data.data)) {
+        const dbParams = data.data.map((event: any) => ({
+          slug: event.slug,
+        }));
+
+        // Merge with MOCK_EVENTS to ensure mock pages also resolve correctly
+        const mockParams = MOCK_EVENTS.map((event) => ({
+          slug: event.slug,
+        }));
+
+        const allParams = [...dbParams];
+        mockParams.forEach(mp => {
+          if (!allParams.some(ap => ap.slug === mp.slug)) {
+            allParams.push(mp);
+          }
+        });
+        return allParams;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch dynamic events in generateStaticParams:', error);
+  }
+
+  // Fallback to mock events if API is offline/unavailable
   return MOCK_EVENTS.map((event) => ({
     slug: event.slug,
   }));
@@ -28,7 +58,7 @@ export default function EventDetailsPage({ params }: { params: { slug: string } 
   const event = MOCK_EVENT_DETAIL;
 
   return (
-    <div className="min-h-fit bg-background pt-8 lg:pt-10 pb-12 lg:pb-16 font-sans">
+    <PageContainer>
       
       {/* Breadcrumb */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -37,7 +67,7 @@ export default function EventDetailsPage({ params }: { params: { slug: string } 
           <ChevronRight className="w-4 h-4" />
           <Link href="/events" className="hover:text-brand-orange transition-colors">Events</Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-[#0F172A] truncate max-w-[200px] sm:max-w-none">{event.name}</span>
+          <span className="text-foreground truncate max-w-[200px] sm:max-w-none">{event.name}</span>
         </div>
       </div>
 
@@ -72,6 +102,6 @@ export default function EventDetailsPage({ params }: { params: { slug: string } 
 
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

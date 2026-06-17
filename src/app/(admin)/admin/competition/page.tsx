@@ -43,9 +43,9 @@ export default function CompetitionEngine() {
   };
 
   return (
-    <div className="flex min-h-screen bg-card">
+    <div className="flex bg-card">
       <AdminSidebar />
-      <div className="flex-1 md:ml-64 p-8">
+      <div className="flex-1 md:ml-64 ">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-muted-foregroundxl font-bold text-foreground">Competition Engine</h1>
@@ -91,9 +91,9 @@ export default function CompetitionEngine() {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={5} className="text-center p-8">Loading matches...</td></tr>
+                  <tr><td colSpan={5} className="text-center ">Loading matches...</td></tr>
                 ) : matches.length === 0 ? (
-                  <tr><td colSpan={5} className="text-center p-8 text-muted-foreground">No matches found for this round.</td></tr>
+                  <tr><td colSpan={5} className="text-center  text-muted-foreground">No matches found for this round.</td></tr>
                 ) : matches.map((match) => (
                   <tr key={match.id} className="border-b last:border-0 hover:bg-card transition-colors">
                     <td className="p-4 font-semibold text-foreground">{match.dog?.name || 'Unknown'}</td>

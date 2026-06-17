@@ -9,7 +9,7 @@ export default function EventSidebar({ event }: { event: any }) {
       
       {/* 1. Register Card */}
       <div className="bg-card rounded-[20px] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50">
-        <h3 className="text-2xl font-extrabold text-[#0F172A] mb-2">Register Dog</h3>
+        <h3 className="text-2xl font-extrabold text-foreground mb-2">Register Dog</h3>
         <p className="text-muted-foreground font-medium mb-6">Secure your spot before slots fill up.</p>
         
         <div className="flex justify-between items-center mb-6 pb-6 border-b border-border">
@@ -20,7 +20,7 @@ export default function EventSidebar({ event }: { event: any }) {
         <div className="space-y-4 mb-8">
           <div className="flex justify-between text-sm font-bold">
             <span className="text-muted-foreground">Available Slots</span>
-            <span className="text-[#0F172A]">{event.availableSlots} <span className="text-muted-foreground">/ 500</span></span>
+            <span className="text-foreground">{event.availableSlots} <span className="text-muted-foreground">/ 500</span></span>
           </div>
           <div className="w-full bg-input rounded-full h-3 overflow-hidden">
             <div className="bg-brand-orange h-full rounded-full" style={{ width: '75%' }}></div>
@@ -39,7 +39,7 @@ export default function EventSidebar({ event }: { event: any }) {
       <div className="bg-card rounded-[20px] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50">
         <div className="flex items-center gap-2 mb-6">
           <Info className="w-5 h-5 text-brand-orange" />
-          <h3 className="text-xl font-extrabold text-[#0F172A]">Age Classes</h3>
+          <h3 className="text-xl font-extrabold text-foreground">Age Classes</h3>
         </div>
         <div className="space-y-3">
           {event.ageClasses.slice(0, 5).map((cls: any, i: number) => (

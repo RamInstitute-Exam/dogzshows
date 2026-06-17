@@ -2,11 +2,15 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface User {
   userId: string;
   email: string;
   role: string;
+  firstName?: string;
+  lastName?: string;
+  roles?: string[];
 }
 
 interface AuthContextType {
@@ -30,7 +34,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (storedToken && storedUser) {
       setToken(storedToken);
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+
+        // Sync to Zustand useAuthStore on startup
+        const storeLogin = useAuthStore.getState().login;
+        storeLogin({
+          id: parsedUser.userId || parsedUser.id || 'unknown',
+          email: parsedUser.email,
+          firstName: parsedUser.firstName || 'User',
+          lastName: parsedUser.lastName || '',
+          roles: parsedUser.roles || [parsedUser.role || 'USER']
+        }, storedToken);
       } catch (e) {
         console.error('Failed to parse user from local storage', e);
       }
@@ -42,7 +57,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(newUser);
     localStorage.setItem('token', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
-    router.push('/');
+    
+    // Sync to Zustand useAuthStore
+    const storeLogin = useAuthStore.getState().login;
+    storeLogin({
+      id: newUser.userId || 'unknown',
+      email: newUser.email,
+      firstName: newUser.firstName || 'User',
+      lastName: newUser.lastName || '',
+      roles: newUser.roles || [newUser.role || 'USER']
+    }, newToken);
+
+    // Redirect immediately based on user role
+    const finalRole = newUser.role || newUser.roles?.[0] || 'USER';
+    if (finalRole === 'SUPER_ADMIN' || finalRole === 'ADMIN') {
+      router.push('/admin');
+    } else {
+      router.push('/dashboard');
+    }
   };
 
   const logout = () => {
@@ -50,6 +82,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    
+    // Sync to Zustand useAuthStore
+    const storeLogout = useAuthStore.getState().logout;
+    storeLogout();
+
     router.push('/login');
   };
 

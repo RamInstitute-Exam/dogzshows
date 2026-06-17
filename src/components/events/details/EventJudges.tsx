@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 export default function EventJudges({ judges }: { judges: any[] }) {
   return (
     <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
-      <h2 className="text-muted-foregroundxl font-extrabold text-[#0F172A] mb-8">Esteemed Judges</h2>
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">Esteemed Judges</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {judges.map((judge, i) => (
@@ -17,12 +17,12 @@ export default function EventJudges({ judges }: { judges: any[] }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="group p-6 bg-[#F8FAFC] rounded-[20px] border border-border hover:border-brand-orange/50 transition-colors text-center"
+            className="group p-6 bg-card rounded-[20px] border border-border hover:border-brand-orange/50 transition-colors text-center"
           >
             <div className="w-32 h-32 mx-auto rounded-full overflow-hidden mb-6 border-4 border-border shadow-lg group-hover:scale-105 transition-transform duration-300">
               <img src={judge.image} alt={judge.name} className="w-full h-full object-cover" />
             </div>
-            <h4 className="font-extrabold text-[#0F172A] text-xl mb-2">{judge.name}</h4>
+            <h4 className="font-extrabold text-foreground text-xl mb-2">{judge.name}</h4>
             
             <div className="flex items-center justify-center gap-4 mb-4 text-sm font-semibold text-muted-foreground">
               <span className="flex items-center gap-1"><MapPin className="w-4 h-4 text-muted-foreground" /> {judge.country}</span>

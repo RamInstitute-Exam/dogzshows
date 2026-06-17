@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEventsCMS } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Users, ArrowRight, Timer, Trophy, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { config } from '@/lib/config';
-import api from '@/lib/api';
 
 interface EventData {
   id: string;
@@ -27,24 +26,8 @@ interface EventData {
 }
 
 export default function UpcomingEventsCarousel() {
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchEvents() {
-      try {
-        const result = await api.get('/cms/events');
-        if (result.success) {
-          setEvents(result.data || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch events:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchEvents();
-  }, []);
+  const { data, isLoading } = useEventsCMS();
+  const events: EventData[] = data?.success && Array.isArray(data.data) ? data.data : [];
 
   const getDaysRemaining = (endDateStr: string) => {
     if (!endDateStr) return 'TBA';
@@ -57,16 +40,61 @@ export default function UpcomingEventsCarousel() {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  if (loading) {
+  // Skeleton Loader while API is loading
+  if (isLoading) {
     return (
-      <section className="py-20 bg-[#07090F] flex justify-center items-center min-h-[600px]">
-        <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+      <section className="w-full pt-8 lg:pt-10 pb-12 lg:pb-16 bg-background">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+          {/* Skeleton Header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 sm:mb-16 gap-4 sm:gap-6">
+            <div className="space-y-3 w-full md:max-w-xl">
+              <span className="small-label text-[10px] sm:text-sm uppercase tracking-wider font-semibold text-[#F59E0B] opacity-60">
+                Upcoming Events
+              </span>
+              <div className="h-8 bg-muted/20 animate-pulse rounded w-3/4" />
+            </div>
+            <div className="h-10 sm:h-[52px] w-36 bg-muted/20 animate-pulse rounded-full" />
+          </div>
+
+          {/* Skeleton Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div 
+                key={i} 
+                className="luxury-card relative flex flex-col overflow-hidden min-h-[300px] sm:min-h-[360px] lg:min-h-[420px] animate-pulse bg-card/50 border border-border"
+              >
+                {/* Skeleton Image */}
+                <div className="h-[120px] sm:h-[160px] lg:h-[220px] w-full bg-muted/20 shrink-0" />
+                {/* Skeleton Body */}
+                <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <div className="h-4 bg-muted/20 rounded w-3/4 mb-3" />
+                    <div className="space-y-2">
+                      <div className="h-3 bg-muted/20 rounded w-1/2" />
+                    </div>
+                  </div>
+                  <div className="space-y-3 mt-auto">
+                    <div className="flex justify-between items-center">
+                      <div className="h-3 bg-muted/20 rounded w-1/4" />
+                      <div className="h-3 bg-muted/20 rounded w-1/4" />
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="h-8 bg-muted/20 rounded-xl flex-1" />
+                      <div className="h-8 bg-muted/20 rounded-xl flex-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     );
   }
 
+  // If loading is complete and no events exist, hide the section completely
   if (events.length === 0) {
-    return null; // or empty state
+    return null;
   }
 
   const featuredEvent = events[0];
@@ -96,7 +124,7 @@ export default function UpcomingEventsCarousel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group luxury-card relative flex flex-col overflow-hidden h-full min-h-[300px] sm:min-h-[360px] lg:min-h-[420px]"
+              className="group luxury-card relative flex flex-col overflow-hidden min-h-[300px] sm:min-h-[360px] lg:min-h-[420px]"
             >
               {/* Card Image */}
               <div className="h-[120px] sm:h-[160px] lg:h-[220px] w-full relative overflow-hidden shrink-0">
@@ -106,7 +134,7 @@ export default function UpcomingEventsCarousel() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1220] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                 
                 {/* Badges */}
                 <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded-lg text-foreground text-[10px] font-bold border border-border truncate max-w-[50%]">

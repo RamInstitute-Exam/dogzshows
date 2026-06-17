@@ -24,8 +24,19 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       accessToken: null,
       isAuthenticated: false,
-      login: (user, token) => set({ user, accessToken: token, isAuthenticated: true }),
-      logout: () => set({ user: null, accessToken: null, isAuthenticated: false }),
+      login: (user, token) => {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('token', token);
+        }
+        set({ user, accessToken: token, isAuthenticated: true });
+      },
+      logout: () => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+        set({ user: null, accessToken: null, isAuthenticated: false });
+      },
       setMockRole: (role: string) => set({ 
         user: { id: 'mock-1', email: 'mock@juzdog.com', firstName: role, lastName: 'User', roles: [role] },
         isAuthenticated: true 

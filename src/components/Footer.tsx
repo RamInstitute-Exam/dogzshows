@@ -1,69 +1,100 @@
 'use client';
 
 import Link from 'next/link';
-import { Dog, MapPin, Phone, Mail } from 'lucide-react';
-import { config } from '@/lib/config';
-import api from '@/lib/api';
-import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { MapPin, Phone, Mail } from 'lucide-react';
+import { useGlobalCMS } from '@/hooks/useCMS';
 
 export default function Footer() {
-  const [footerData, setFooterData] = useState<any>(null);
-
-  useEffect(() => {
-    async function fetchFooter() {
-      try {
-        const result = await api.get('/cms/global');
-        if (result.success) {
-          setFooterData(result.data?.footer);
-        }
-      } catch (error) {
-        console.error('Failed to fetch footer data:', error);
-      }
-    }
-    fetchFooter();
-  }, []);
+  const { data } = useGlobalCMS();
+  const footerData = data?.success ? data.data?.footer : null;
 
   // Fallbacks
-  const quickLinks = footerData?.quickLinks || [];
-  const services = footerData?.services || [];
-  const supportLinks = footerData?.resources || [];
-  const socialLinks = footerData?.socialLinks || [];
+  const quickLinks = footerData?.quickLinks || [
+    { label: 'Home', url: '/' },
+    { label: 'Events', url: '/events' },
+    { label: 'Judges', url: '/judges' },
+    { label: 'Gallery', url: '/gallery' },
+    { label: 'Winners', url: '/winners' },
+    { label: 'About', url: '/about' },
+  ];
+  
+  const services = footerData?.services || [
+    { label: 'Dog Registration', url: '/dashboard/dogs/add' },
+    { label: 'Show Entry', url: '/events' },
+    { label: 'KCI Verification', url: '/dashboard/dogs/kci' },
+    { label: 'Results Hall', url: '/winners' },
+  ];
+  
+  const supportLinks = footerData?.resources || [
+    { label: 'Help Center', url: '/support' },
+    { label: 'Contact Us', url: '/contact' },
+    { label: 'Terms & Conditions', url: '/terms' },
+    { label: 'Privacy Policy', url: '/privacy' },
+  ];
+  
+  const socialLinks = footerData?.socialLinks || [
+    { name: 'Facebook', url: 'https://facebook.com' },
+    { name: 'Instagram', url: 'https://instagram.com' },
+    { name: 'Twitter', url: 'https://twitter.com' },
+    { name: 'YouTube', url: 'https://youtube.com' },
+  ];
+  
   const contact = footerData?.contactDetails || {};
 
   return (
-    <footer className="bg-[#050b18] border-t border-border relative z-50 w-full">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-10 lg:py-12">
+    <footer 
+      className="w-full relative z-10 overflow-hidden border-t border-border bg-white dark:bg-[#0A0A0A]"
+    >
+      <div className="w-full max-w-[1440px] mx-auto pt-[80px] pb-[40px] px-6 sm:px-10">
 
         {/* HEADER */}
         <div className="flex flex-col lg:flex-row justify-between items-center gap-6 mb-12 pb-12 border-b border-border">
-          <div className="flex items-center gap-2">
-            <Dog className="h-8 w-8 text-[#f59e0b]" />
-            <span className="font-extrabold text-[#ffffff] text-2xl tracking-tight">Juz<span className="text-[#f59e0b]">Dog</span></span>
+          <div className="flex flex-col items-start gap-3">
+            <Link href="/" aria-label="JuzDog Home" className="footer-logo">
+              <img
+                src="/Untitled-1.png"
+                alt="JuzDog"
+                width={180}
+                height={56}
+                loading="lazy"
+                className="footer-logo-img dark:brightness-0 dark:invert" // Invert image for dark theme
+              />
+            </Link>
+            <p className="text-muted-foreground text-sm max-w-xs leading-relaxed mt-5">
+              India&apos;s modern dog show &amp; breed registration platform.
+            </p>
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-3 w-full lg:w-auto">
             {socialLinks.map((social: any) => (
-              <a key={social.name} href={social.url} className="text-xs font-bold text-[#94a3b8] bg-[#0f172a] border border-border px-4 py-2 rounded-full hover:bg-white/5 hover:text-brand-orange transition-all">
+              <a 
+                key={social.name} 
+                href={social.url} 
+                className="text-xs font-bold text-muted-foreground bg-accent/20 dark:bg-[#0A0A0A] border border-border px-5 py-2.5 rounded-full hover:bg-accent hover:text-primary hover:-translate-y-1 transition-all duration-300"
+              >
                 {social.name}
               </a>
             ))}
-            <Link href="/login" className="w-full sm:w-auto mt-4 sm:mt-0 bg-yellow-500 hover:bg-yellow-600 text-foreground px-8 h-[42px] rounded-full flex items-center justify-center font-bold text-sm shadow-lg shadow-yellow-500/30">
+            <Link 
+              href="/login" 
+              className="w-full sm:w-auto mt-4 sm:mt-0 bg-[#F4C542] hover:bg-yellow-400 text-black px-8 h-[42px] rounded-full flex items-center justify-center font-bold text-sm shadow-[0_0_15px_rgba(244,197,66,0.3)] transition-all"
+            >
               Login
             </Link>
           </div>
         </div>
 
         {/* MAIN GRID */}
-        {/* Main layout: 1 column on mobile (so each glass card is full width), 3 on tablet, 4 on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16 items-start w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start w-full">
 
           {/* SECTION 1: QUICK LINKS */}
-          <div className="rounded-2xl bg-slate-900/60 border border-border backdrop-blur-xl p-6 flex flex-col items-start w-full min-h-[280px]">
-            <h4 className="text-foreground font-bold mb-6 tracking-widest text-sm uppercase text-left w-full">Quick Links</h4>
+          <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <h4 className="text-foreground text-[20px] font-bold mb-6 tracking-[1px] text-left w-full">QUICK LINKS</h4>
             <ul className="grid grid-cols-2 gap-y-5 gap-x-8 w-full items-start">
               {quickLinks.map((link: any) => (
-                <li key={link.label} className="text-left flex items-start min-h-[32px]">
-                  <Link href={link.url} className="text-slate-300 hover:text-amber-400 inline-block transition-all duration-300 text-sm font-medium whitespace-normal break-words">
+                <li key={link.label} className="text-left flex items-start">
+                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium">
                     {link.label}
                   </Link>
                 </li>
@@ -72,12 +103,12 @@ export default function Footer() {
           </div>
 
           {/* SECTION 2: SERVICES */}
-          <div className="rounded-2xl bg-slate-900/60 border border-border backdrop-blur-xl p-6 flex flex-col items-start w-full min-h-[280px]">
-            <h4 className="text-foreground font-bold mb-6 tracking-widest text-sm uppercase text-left w-full">Services</h4>
+          <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <h4 className="text-foreground text-[20px] font-bold mb-6 tracking-[1px] text-left w-full">SERVICES</h4>
             <ul className="grid grid-cols-2 gap-y-5 gap-x-8 w-full items-start">
               {services.map((link: any) => (
-                <li key={link.label} className="text-left flex items-start min-h-[32px]">
-                  <Link href={link.url} className="text-slate-300 hover:text-amber-400 inline-block transition-all duration-300 text-sm font-medium whitespace-normal break-words">
+                <li key={link.label} className="text-left flex items-start">
+                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium">
                     {link.label}
                   </Link>
                 </li>
@@ -86,12 +117,12 @@ export default function Footer() {
           </div>
 
           {/* SECTION 3: SUPPORT */}
-          <div className="rounded-2xl bg-slate-900/60 border border-border backdrop-blur-xl p-6 flex flex-col items-start w-full min-h-[280px]">
-            <h4 className="text-foreground font-bold mb-6 tracking-widest text-sm uppercase text-left w-full">Support</h4>
+          <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <h4 className="text-foreground text-[20px] font-bold mb-6 tracking-[1px] text-left w-full">SUPPORT</h4>
             <ul className="grid grid-cols-2 gap-y-5 gap-x-8 w-full items-start">
               {supportLinks.map((link: any) => (
-                <li key={link.label} className="text-left flex items-start min-h-[32px]">
-                  <Link href={link.url} className="text-slate-300 hover:text-amber-400 inline-block transition-all duration-300 text-sm font-medium whitespace-normal break-words">
+                <li key={link.label} className="text-left flex items-start">
+                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium">
                     {link.label}
                   </Link>
                 </li>
@@ -100,41 +131,47 @@ export default function Footer() {
           </div>
 
           {/* SECTION 4: CONTACT */}
-          <div className="rounded-2xl bg-slate-900/60 border border-border backdrop-blur-xl p-6 flex flex-col items-start w-full md:col-span-3 lg:col-span-1 min-h-[280px]">
-            <h4 className="text-foreground font-bold mb-6 tracking-widest text-sm uppercase text-left w-full">Contact</h4>
+          <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <h4 className="text-foreground text-[20px] font-bold mb-6 tracking-[1px] text-left w-full">CONTACT</h4>
             <ul className="space-y-5 flex flex-col w-full items-start">
-              <li className="flex flex-row items-start justify-start gap-3 text-slate-300 text-sm font-medium min-h-[32px]">
-                <Phone className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                <span className="text-left">{contact?.phone || '+91 98765 43210'}</span>
+              <li className="flex flex-row items-start justify-start gap-3">
+                <Phone className="w-5 h-5 text-[#F4C542] shrink-0" />
+                <span className="text-muted-foreground text-sm font-medium text-left">{contact?.phone || '+91 98765 43210'}</span>
               </li>
-              <li className="flex flex-row items-start justify-start gap-3 text-slate-300 text-sm font-medium min-h-[32px]">
-                <Mail className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                <span className="text-left">{contact?.email || 'support@juzdog.com'}</span>
+              <li className="flex flex-row items-start justify-start gap-3">
+                <Mail className="w-5 h-5 text-primary shrink-0" />
+                <span className="text-muted-foreground text-sm font-medium text-left">{contact?.email || 'support@juzdog.com'}</span>
               </li>
-              <li className="flex flex-row items-start justify-start gap-3 text-slate-300 text-sm font-medium min-h-[32px]">
-                <MapPin className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                <span className="text-left leading-relaxed">{contact?.address || 'Mumbai, India'}</span>
+              <li className="flex flex-row items-start justify-start gap-3">
+                <MapPin className="w-5 h-5 text-primary shrink-0" />
+                <span className="text-muted-foreground text-sm font-medium text-left leading-relaxed">{contact?.address || 'Mumbai, India'}</span>
               </li>
             </ul>
           </div>
 
         </div>
 
-        {/* BOTTOM FOOTER */}
-        <div className="pt-8 border-t border-border flex flex-col items-center justify-center gap-4 text-center">
-          <p className="text-[#94a3b8] text-sm font-medium">{footerData?.copyrightText || '© 2026 JuzDog'}</p>
-          <div className="flex flex-wrap justify-center gap-4 text-sm font-medium">
-            <Link href={footerData?.privacyUrl || "/privacy"} className="text-slate-300 hover:text-amber-400 transition-colors">Privacy Policy</Link>
-            <span className="text-slate-500">•</span>
-            <Link href={footerData?.termsUrl || "/terms"} className="text-slate-300 hover:text-amber-400 transition-colors">Terms</Link>
-            <span className="text-slate-500">•</span>
-            <Link href="/support" className="text-slate-300 hover:text-amber-400 transition-colors">Support</Link>
+        {/* DIVIDER */}
+        <div className="w-full border-t border-border mt-[60px] mb-[20px]" />
+
+        {/* BOTTOM COPYRIGHT */}
+        <div className="w-full bg-transparent flex flex-col md:flex-row justify-between items-center gap-4 pt-[10px]">
+          <p className="text-muted-foreground text-sm font-medium">
+            {footerData?.copyrightText || '© 2026 JuzDog'}
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-6 text-sm font-medium">
+            <Link href={footerData?.privacyUrl || "/privacy"} className="text-muted-foreground hover:text-primary transition-colors duration-250">Privacy Policy</Link>
+            <Link href={footerData?.termsUrl || "/terms"} className="text-muted-foreground hover:text-primary transition-colors duration-250">Terms</Link>
+            <Link href="/support" className="text-muted-foreground hover:text-primary transition-colors duration-250">Support</Link>
           </div>
-          <p className="text-[#94a3b8] text-sm font-medium">{footerData?.description || 'Made with ❤️ in India'}</p>
+          
+          <p className="text-muted-foreground text-sm font-medium">
+            {footerData?.description || 'Made with ❤️ in India'}
+          </p>
         </div>
 
       </div>
-
     </footer>
   );
 }

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, MessageCircle, Clock, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
+import PageContainer from '@/components/layout/PageContainer';
 import { config } from '@/lib/config';
 import api from '@/lib/api';
 
@@ -22,7 +23,7 @@ export default function ContactUs() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '${config.apiUrl}';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || `${config.apiUrl}`;
       const name = `${formData.firstName} ${formData.lastName}`.trim();
       const payload = {
         name: name || 'Anonymous',
@@ -45,7 +46,7 @@ export default function ContactUs() {
   };
 
   return (
-    <main className="min-h-fit bg-background">
+    <PageContainer>
       <BreadcrumbBanner
         slug="contact"
         fallbackTitle="Get In Touch"
@@ -209,6 +210,6 @@ export default function ContactUs() {
         </div>
 
       </div>
-    </main>
+    </PageContainer>
   );
 }

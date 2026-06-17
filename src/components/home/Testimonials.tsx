@@ -3,16 +3,19 @@
 import { motion } from 'framer-motion';
 import { Quote, Star } from 'lucide-react';
 
-const TESTIMONIALS = [
-  { name: 'Elena Rostova', role: 'FCI Judge', text: 'JuzDog has revolutionized international event scoring. The real-time bracket updates make our job incredibly efficient.' },
-  { name: 'Marcus Sterling', role: 'Breeder', text: 'The OCR certificate upload saved me hours of manual entry. This is exactly what the dog show community needed.' },
-  { name: 'Sarah Jenkins', role: 'Event Organizer', text: 'Managing 500+ registrations used to be a nightmare. With JuzDog, everything from Razorpay payments to QR passes is fully automated.' }
-];
 
-export default function Testimonials() {
+
+interface TestimonialsProps {
+  testimonialsData: any[];
+}
+
+export default function Testimonials({ testimonialsData }: TestimonialsProps) {
+  const testimonials = testimonialsData && testimonialsData.length > 0 ? testimonialsData : [];
+  if (testimonials.length === 0) return null;
+
   return (
-    <section className="pt-8 lg:pt-10 pb-12 lg:pb-16 bg-[#071225] border-y border-border">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+    <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background border-y border-border pt-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         
         <div className="text-center mb-16">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
@@ -24,7 +27,7 @@ export default function Testimonials() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {TESTIMONIALS.map((t, i) => (
+          {testimonials.map((t, i) => (
             <motion.div 
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -40,14 +43,20 @@ export default function Testimonials() {
               </div>
               
               <p className="text-muted-foreground text-lg mb-8 relative z-10 leading-relaxed italic">
-                "{t.text}"
+                "{t.text || t.content}"
               </p>
               
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gray-200" />
+                {t.photoUrl ? (
+                  <img src={t.photoUrl} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-muted-foreground font-bold text-xl">
+                    {t.name?.charAt(0)}
+                  </div>
+                )}
                 <div>
                   <h4 className="font-bold text-foreground">{t.name}</h4>
-                  <p className="text-sm font-medium text-brand-orange">{t.role}</p>
+                  <p className="text-sm font-medium text-brand-orange">{t.role || t.designation}</p>
                 </div>
               </div>
             </motion.div>

@@ -2,141 +2,249 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, ArrowLeft, Loader2, ImagePlus } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, ImagePlus, Globe, Shield, User, MapPin, AlignLeft, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { config } from '@/lib/config';
+import api from '@/lib/api';
+import { toast } from 'sonner';
+import ImageUploader from '@/components/shared/ImageUploader';
 
 export default function RegisterClubForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  
   const [formData, setFormData] = useState({
-    name: '', secretary: '', president: '', email: '', phone: '', website: '', address: '', description: '', history: '', isActive: true
+    name: '',
+    registrationNumber: '',
+    president: '',
+    secretary: '',
+    email: '',
+    password: 'ClubWelcome@123',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    country: 'India',
+    description: '',
+    website: '',
+    facebook: '',
+    instagram: '',
+    isActive: true,
+    isFeatured: false,
+    logoUrl: ''
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    
+    let finalValue: any = value;
+    if (type === 'checkbox') {
+      finalValue = (e.target as HTMLInputElement).checked;
+    }
+
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      [name]: finalValue
     }));
+  };
+
+  const handleCheckboxChange = (name: string, checked: boolean) => {
+    setFormData(prev => ({ ...prev, [name]: checked }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name || !formData.email) {
+      toast.error('Club Name and Contact Email are required');
+      return;
+    }
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('${config.apiUrl}/clubs', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await res.json();
-      if (data.success) {
+      const res = await api.post('/clubs', formData);
+      if (res.success) {
+        toast.success('Club registered successfully');
         router.push('/admin/clubs');
       } else {
-        alert(data.error || 'Failed to create club');
+        toast.error(res.message || 'Failed to register club');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submit error:', error);
+      toast.error(error.message || 'An error occurred during submission');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64 p-8 bg-background">
-        <div className="w-full max-w-[1000px] mx-auto space-y-8">
-          
-          <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl">
-            <div className="flex items-center gap-4">
-              <Link href="/admin/clubs">
-                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Register New Club</h1>
-                <p className="text-muted-foreground text-sm mt-1">Add a new partner organization or kennel club.</p>
-              </div>
-            </div>
-            <Button onClick={handleSubmit} disabled={loading} className="bg-purple-600 hover:bg-purple-700 text-foreground font-bold">
-              {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-              Save Club
+    <div className="w-full space-y-4">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-card px-6 py-4 rounded-2xl border border-border shadow-md">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/clubs">
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent rounded-full">
+              <ArrowLeft className="w-5 h-5" />
             </Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Register New Club</h1>
+            <p className="text-muted-foreground text-sm mt-1">Add a new kennel club or regional chapter and auto-create login credentials.</p>
           </div>
+        </div>
+        <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/10">
+          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          Save Club Profile
+        </Button>
+      </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="bg-card p-8 rounded-2xl border border-border shadow-xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Club Name *</label>
-                  <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" />
-                </div>
-                
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Main Info Blocks */}
+            
+            {/* Block 1: Identity & Contact */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
+                <User className="w-5 h-5 text-blue-500" /> Club Identity & Primary Contact
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">President Name</label>
-                  <input type="text" name="president" value={formData.president} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Secretary Name</label>
-                  <input type="text" name="secretary" value={formData.secretary} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Contact Email</label>
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" />
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Club Name *</label>
+                  <input required type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="E.g. Kennel Club of India" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Contact Phone</label>
-                  <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" />
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Registration Number</label>
+                  <input type="text" name="registrationNumber" value={formData.registrationNumber} onChange={handleInputChange} placeholder="E.g. KCI-REG-8472" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
                 </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Website URL</label>
-                  <input type="url" name="website" value={formData.website} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" placeholder="https://" />
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">President Name</label>
+                  <input type="text" name="president" value={formData.president} onChange={handleInputChange} placeholder="E.g. Dr. A. K. Bose" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
                 </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Headquarters Address</label>
-                  <textarea name="address" value={formData.address} onChange={handleInputChange} rows={2} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" />
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Secretary Name</label>
+                  <input type="text" name="secretary" value={formData.secretary} onChange={handleInputChange} placeholder="E.g. Mr. Rajiv Sharma" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
                 </div>
-                
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Club Description / Bio</label>
-                  <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-purple-500 outline-none" />
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Contact Email *</label>
+                  <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="E.g. info@kennelclub.org" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
                 </div>
-
-                <div className="md:col-span-2 flex items-end">
-                  <label className="flex items-center gap-3 cursor-pointer p-3 border border-border rounded-lg bg-card w-full">
-                    <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleInputChange} className="w-5 h-5 rounded bg-accent border-none text-purple-500 focus:ring-purple-500" />
-                    <span className="text-foreground font-medium">Club is Active</span>
-                  </label>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">System Login Password</label>
+                  <input required type="text" name="password" value={formData.password} onChange={handleInputChange} placeholder="E.g. SecurePass123" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                  <p className="text-[10px] text-muted-foreground mt-1 font-medium">This credentials will be auto-created for the club admin login.</p>
                 </div>
-
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Phone Number</label>
+                  <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="E.g. +9122847294" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Website URL</label>
+                  <input type="url" name="website" value={formData.website} onChange={handleInputChange} placeholder="https://example.com" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
               </div>
             </div>
-            
-            <div className="bg-card p-8 rounded-2xl border border-border shadow-xl text-center">
-              <ImagePlus className="w-12 h-12 text-[#1E293B] mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-foreground mb-2">Club Logo</h3>
-              <p className="text-muted-foreground mb-6">Drag and drop logo image here</p>
-              <Button variant="outline" className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10">Browse Logo</Button>
+
+            {/* Block 2: Location Details */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
+                <MapPin className="w-5 h-5 text-blue-500" /> Location Details
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Street Address</label>
+                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} placeholder="E.g. 84, Park Avenue Road" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">City</label>
+                  <input type="text" name="city" value={formData.city} onChange={handleInputChange} placeholder="E.g. Chennai" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">State</label>
+                  <input type="text" name="state" value={formData.state} onChange={handleInputChange} placeholder="E.g. Tamil Nadu" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Country</label>
+                  <input type="text" name="country" value={formData.country} onChange={handleInputChange} placeholder="E.g. India" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                </div>
+              </div>
             </div>
 
-          </form>
+            {/* Block 3: Social & Description */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
+                <AlignLeft className="w-5 h-5 text-blue-500" /> Club Background & Social Media
+              </h2>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Facebook Page URL</label>
+                    <input type="url" name="facebook" value={formData.facebook} onChange={handleInputChange} placeholder="https://facebook.com/club" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Instagram Handle URL</label>
+                    <input type="url" name="instagram" value={formData.instagram} onChange={handleInputChange} placeholder="https://instagram.com/club" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Description / History</label>
+                  <textarea name="description" value={formData.description} onChange={handleInputChange} rows={6} placeholder="Provide details about the club, its mission, events history, associated branches..." className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm leading-relaxed" />
+                </div>
+              </div>
+            </div>
+          {/* Sidebar Config Blocks */}
+            {/* Club Logo Uploader */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
+              <ImageUploader
+                currentImage={formData.logoUrl}
+                onUploadSuccess={(url) => setFormData(prev => ({ ...prev, logoUrl: url }))}
+                onRemove={() => setFormData(prev => ({ ...prev, logoUrl: '' }))}
+                folder="clubs"
+                label="Club Crest / Logo"
+                aspectRatio={1}
+                helpText="Square image. Max 10 MB."
+              />
+            </div>
 
-        </div>
-      </main>
+            {/* Platform Settings */}
+            <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
+              <h3 className="font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-blue-500" /> Platform Configuration
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-accent/20 rounded-xl">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Approved / Active</span>
+                    <span className="text-[10px] text-muted-foreground">Allows creating show events.</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="isActive"
+                    checked={formData.isActive}
+                    onChange={(e) => handleCheckboxChange('isActive', e.target.checked)}
+                    className="w-5 h-5 accent-blue-600 rounded cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-accent/20 rounded-xl">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Featured Club</span>
+                    <span className="text-[10px] text-muted-foreground">Promote on homepage slider.</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="isFeatured"
+                    checked={formData.isFeatured}
+                    onChange={(e) => handleCheckboxChange('isFeatured', e.target.checked)}
+                    className="w-5 h-5 accent-blue-600 rounded cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Action Notice */}
+            <div className="p-6 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-xs text-blue-500 space-y-2 leading-relaxed">
+              <p className="font-bold flex items-center gap-1.5"><Info className="w-4 h-4" /> Credentials notice</p>
+              <p>Clubs registered here will have their system login profiles generated immediately. The president/secretary can log in to post event updates, view registrations, and manage results.</p>
+            </div>
+          </form>
     </div>
   );
 }

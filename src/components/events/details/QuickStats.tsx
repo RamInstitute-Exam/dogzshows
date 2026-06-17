@@ -29,7 +29,7 @@ export default function QuickStats({ event }: { event: any }) {
             <stat.icon className="w-6 h-6" />
           </div>
           <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">{stat.label}</p>
-          <p className="text-xl font-extrabold text-[#0F172A]">{stat.value}</p>
+          <p className="text-xl font-extrabold text-foreground">{stat.value}</p>
         </motion.div>
       ))}
     </div>
