@@ -8,6 +8,8 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
 import { useJudges } from '@/hooks/useJudges';
+import { usePageBanner } from '@/hooks/useCMS';
+import { getImageUrl } from '@/lib/api';
 
 function JudgesList() {
   const searchParams = useSearchParams();
@@ -18,7 +20,6 @@ function JudgesList() {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [specializationFilter, setSpecializationFilter] = useState('');
-  const [experienceFilter, setExperienceFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   
   // Custom debounced search query
@@ -36,7 +37,6 @@ function JudgesList() {
     limit: 12,
     search: debouncedSearch || undefined,
     specialization: specializationFilter || undefined,
-    experience: experienceFilter || undefined,
     category: categoryFilter || undefined,
     status: 'ACTIVE'
   });
@@ -52,14 +52,62 @@ function JudgesList() {
     setPage(1);
   };
 
+  const { data: bannerData } = usePageBanner('judges');
+  const customTitle = bannerData?.data?.title || (showFeaturedOnly ? "Featured Judges" : "Judges");
+  const customSubtitle = bannerData?.data?.subtitle || "Meet the world-class professionals bringing decades of expertise to evaluate our champions.";
+  const customImage = bannerData?.data?.bannerImage ? getImageUrl(bannerData.data.bannerImage) : '/images/judges-hero-premium.png';
+
   return (
     <PageContainer>
-      <BreadcrumbBanner
-        slug="judges"
-        fallbackTitle={showFeaturedOnly ? "Our Featured Judges" : "Our Esteemed Judges"}
-        fallbackSubtitle="Meet the world-class professionals bringing decades of expertise to evaluate our champions."
-        fallbackImage="/images/judges_banner.png"
-      />
+      <section className="relative w-full h-[320px] md:h-[420px] xl:h-[520px] flex items-center overflow-hidden bg-black">
+        <motion.div
+          initial={{ scale: 1.05 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: 'easeOut' }}
+          className="absolute inset-0 w-full h-full"
+        >
+          <img
+            src={customImage}
+            alt="Judges Hero Banner"
+            className="w-full h-full object-cover object-center"
+          />
+        </motion.div>
+
+        {/* Dark black gradient overlay (65-75% opacity) */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.70) 50%, rgba(0,0,0,0.4) 100%)',
+          }}
+        />
+
+        <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 xl:px-12 py-10 flex flex-col justify-center h-full max-w-[1600px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 mb-4 font-medium text-sm md:text-base">
+              <Link href="/" className="text-[rgba(255,255,255,0.75)] hover:text-white transition-colors">
+                Home
+              </Link>
+              <ChevronRight className="w-4 h-4 text-[rgba(255,255,255,0.5)]" />
+              <span className="text-[#F5B400]">{bannerData?.data?.breadcrumbTitle || 'Judges'}</span>
+            </nav>
+
+            {/* Title */}
+            <h1 className="text-[32px] md:text-[42px] xl:text-[64px] font-[800] text-[#FFFFFF] leading-tight mb-4 drop-shadow-md">
+              {customTitle}
+            </h1>
+
+            {/* Description */}
+            <p className="text-[18px] xl:text-[22px] text-[rgba(255,255,255,0.92)] leading-[1.8] max-w-[650px] drop-shadow-sm">
+              {customSubtitle}
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-12">
         <div className="flex flex-col gap-8">
@@ -102,20 +150,6 @@ function JudgesList() {
                 </select>
               </div>
               
-              <div className="relative min-w-[160px]">
-                <Award className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <select 
-                  className="w-full bg-background border border-border text-foreground text-sm rounded-xl pl-9 pr-4 py-3 appearance-none focus:outline-none focus:ring-2 ring-brand-orange/50"
-                  value={experienceFilter}
-                  onChange={(e) => handleFilterChange(setExperienceFilter, e.target.value)}
-                >
-                  <option value="">Any Experience</option>
-                  <option value="10">10+ Years</option>
-                  <option value="20">20+ Years</option>
-                  <option value="30">30+ Years</option>
-                </select>
-              </div>
-
               <div className="hidden sm:flex items-center bg-background border border-border rounded-xl p-1 shrink-0 ml-auto xl:ml-0">
                 <button
                   type="button"
@@ -165,7 +199,7 @@ function JudgesList() {
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">No judges available.</h3>
                 <p className="text-muted-foreground">We couldn't find any judges matching your current filters.</p>
-                <button onClick={() => { setSearchQuery(''); setSpecializationFilter(''); setExperienceFilter(''); setDebouncedSearch(''); setPage(1); }} className="mt-6 text-brand-orange font-medium hover:underline">
+                <button onClick={() => { setSearchQuery(''); setSpecializationFilter(''); setDebouncedSearch(''); setPage(1); }} className="mt-6 text-brand-orange font-medium hover:underline">
                   Clear all filters
                 </button>
               </div>
@@ -177,14 +211,14 @@ function JudgesList() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.05, 0.5) }}
-                    className={`bg-card rounded-[2rem] p-6 shadow-sm border border-border premium-hover group ${viewMode === 'list' ? 'flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-8 text-center sm:text-left' : 'flex flex-col items-center text-center'}`}
+                    className={`bg-card rounded-[2rem] p-6 sm:p-8 shadow-sm border border-border group hover:-translate-y-[6px] transition-all duration-300 ease hover:shadow-xl ${viewMode === 'list' ? 'flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-8 text-center sm:text-left' : 'flex flex-col items-center text-center'}`}
                   >
-                    <div className={`shrink-0 rounded-full overflow-hidden relative border-4 border-[#020817] group-hover:border-[#F59E0B] transition-colors ${viewMode === 'list' ? 'w-28 h-28 sm:w-36 sm:h-36 sm:self-center' : 'w-32 h-32 mb-6'}`}>
+                    <div className={`shrink-0 overflow-hidden relative border-[3px] border-[#1f2937] bg-[#f8fafc] shadow-[0_10px_30px_rgba(0,0,0,0.12)] rounded-[24px] ${viewMode === 'list' ? 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] sm:self-center' : 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] mb-[20px]'}`}>
                       {judge.photoUrl ? (
-                        <img src={judge.photoUrl} alt={judge.name} className="w-full h-full object-cover" />
+                        <img src={judge.photoUrl} alt={judge.name} className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
                       ) : (
-                        <div className="w-full h-full bg-accent flex items-center justify-center text-muted-foreground text-4xl font-extrabold">
-                          {judge.name?.[0]?.toUpperCase() || 'J'}
+                        <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center text-[#64748b] text-[64px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
+                          {judge.name?.[0]?.toUpperCase() || 'M'}
                         </div>
                       )}
                       {judge.isFeatured && (
@@ -213,17 +247,17 @@ function JudgesList() {
                           <p className="text-foreground font-[700] text-sm line-clamp-1">{judge.qualifications || judge.specialization || 'Professional Judge'}</p>
                           <p className="small-label text-[10px]">Specialization</p>
                         </div>
-                        {judge.experience && (
-                          <div className={`border-l border-border pl-4 ${viewMode === 'list' ? '' : 'text-center'}`}>
-                            <p className="text-foreground font-[700] text-sm whitespace-nowrap">{judge.experience} Yrs</p>
-                            <p className="small-label text-[10px]">Experience</p>
-                          </div>
-                        )}
                       </div>
 
                       <p className={`text-xs text-muted-foreground line-clamp-3 mb-6 leading-relaxed ${viewMode === 'list' ? 'max-w-2xl' : ''}`}>
                         {judge.bio || 'Certified all breed international judge with credentials in evaluating multiple groups and working class breeds. Brings years of expertise and professionalism to every show ring.'}
                       </p>
+
+                      {judge.source && (
+                        <p className="text-[10px] text-muted-foreground/70 italic mb-3 truncate w-full" title={judge.source}>
+                          📷 {judge.source}
+                        </p>
+                      )}
 
                       <div className={`flex gap-3 mt-auto ${viewMode === 'list' ? 'w-fit' : 'w-full'}`}>
                         {viewMode === 'grid' && (

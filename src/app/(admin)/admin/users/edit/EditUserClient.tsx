@@ -119,8 +119,7 @@ export default function EditUserForm() {
   }
 
   return (
-    <div className="w-full">
-      <div className="w-full space-y-4">
+    <div className="w-full max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-6 space-y-6">
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
           <div className="flex items-center gap-4">
@@ -147,7 +146,7 @@ export default function EditUserForm() {
             <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2 border-b border-border pb-4">
               <Shield className="w-5 h-5 text-blue-500" /> Account Security & Role
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Email Address *</label>
                 <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none text-sm" />
@@ -178,7 +177,7 @@ export default function EditUserForm() {
             <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2 border-b border-border pb-4">
               <CheckCircle className="w-5 h-5 text-blue-500" /> Personal Details
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">First Name *</label>
                 <input required type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none text-sm" />
@@ -194,8 +193,8 @@ export default function EditUserForm() {
             </div>
 
             <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-8 mb-4 border-b border-border pb-2">Address Details</h3>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+              <div className="md:col-span-2 2xl:col-span-3">
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Street Address</label>
                 <input type="text" name="address1" value={formData.address1} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none text-sm" />
               </div>
@@ -215,7 +214,6 @@ export default function EditUserForm() {
             </div>
           </form>
 
-      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export interface ColumnDefinition<T> {
-  header: string;
+  header: string | React.ReactNode;
   accessor: keyof T | ((item: T) => React.ReactNode);
   className?: string;
 }
@@ -31,7 +31,10 @@ interface AdminDataTableProps<T> {
   createLink?: string;
   onCreate?: () => void;
   createLabel?: string;
+  emptyStateDescription?: string;
   keyExtractor: (item: T) => string;
+  limit?: number;
+  onLimitChange?: (limit: number) => void;
 }
 
 export function AdminDataTable<T>({
@@ -55,8 +58,33 @@ export function AdminDataTable<T>({
   createLink,
   onCreate,
   createLabel = 'Create New',
-  keyExtractor
+  emptyStateDescription,
+  keyExtractor,
+  limit = 10,
+  onLimitChange
 }: AdminDataTableProps<T>) {
+  
+  const getPageNumbers = () => {
+    const pages = [];
+    let start = Math.max(1, page - 2);
+    let end = Math.min(totalPages, page + 2);
+
+    if (page <= 3) {
+      end = Math.min(totalPages, 5);
+    }
+    if (page >= totalPages - 2) {
+      start = Math.max(1, totalPages - 4);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
+  const startRecord = (page - 1) * limit + 1;
+  const endRecord = Math.min(page * limit, totalCount);
+  
   return (
     <div className="w-full  flex flex-col">
       {/* Top Header Card */}
@@ -122,7 +150,7 @@ export function AdminDataTable<T>({
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[rgba(255,255,255,0.02)]">
+            <tbody className="divide-y divide-border" style={{ minHeight: loading ? '400px' : 'auto' }}>
               {loading ? (
                 <tr>
                   <td colSpan={columns.length + (onEdit || onDelete ? 1 : 0)} className="py-12 text-center">
@@ -137,7 +165,7 @@ export function AdminDataTable<T>({
                       <Icon className="w-12 h-12 text-muted-foreground mb-4" strokeWidth={1} />
                       <h3 className="text-lg font-bold text-foreground mb-2">No {title} Found</h3>
                       <p className="text-sm text-muted-foreground mb-6 text-center">
-                        No records have been created yet. Create your first record to organize and manage them here.
+                        {emptyStateDescription || "No records have been created yet. Create your first record to organize and manage them here."}
                       </p>
                       {createLink ? (
                         <Link href={createLink}>
@@ -197,14 +225,95 @@ export function AdminDataTable<T>({
         
         {/* Pagination */}
         {!loading && data.length > 0 && totalPages > 0 && (
-          <div className="p-4 border-t border-border flex items-center justify-between bg-card">
-            <p className="text-sm text-muted-foreground">Showing Page {page} of {totalPages} ({totalCount} total)</p>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => onPageChange(Math.max(1, page - 1))} disabled={page === 1} className="h-8 border-border text-foreground hover:bg-accent">
-                Previous
+          <div className="p-4 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 bg-card">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              {onLimitChange && (
+                <div className="flex items-center gap-2">
+                  <span>Rows per page:</span>
+                  <select
+                    value={limit}
+                    onChange={(e) => {
+                      onLimitChange(Number(e.target.value));
+                      onPageChange(1); // Reset to page 1 on limit change
+                    }}
+                    className="h-8 rounded-md border border-input bg-background px-2 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {[10, 25, 50, 100].map(val => (
+                      <option key={val} value={val}>{val}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <p>
+                Showing {startRecord}–{endRecord} of {totalCount} records <span className="hidden sm:inline">(Page {page} of {totalPages})</span>
+              </p>
+            </div>
+            
+            <div className="flex gap-2 items-center">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => onPageChange(Math.max(1, page - 1))} 
+                disabled={page === 1} 
+                className="h-8 border-border text-foreground hover:bg-accent px-3 hidden sm:flex"
+              >
+                &lt;&lt; Previous
               </Button>
-              <Button variant="outline" size="sm" onClick={() => onPageChange(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="h-8 border-border text-foreground hover:bg-accent">
-                Next
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => onPageChange(Math.max(1, page - 1))} 
+                disabled={page === 1} 
+                className="h-8 w-8 p-0 border-border text-foreground hover:bg-accent sm:hidden"
+              >
+                &lt;
+              </Button>
+              
+              <div className="flex items-center gap-1">
+                {getPageNumbers()[0] > 1 && (
+                  <>
+                    <Button variant="ghost" size="sm" onClick={() => onPageChange(1)} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">1</Button>
+                    {getPageNumbers()[0] > 2 && <span className="text-muted-foreground px-1">...</span>}
+                  </>
+                )}
+                
+                {getPageNumbers().map(p => (
+                  <Button
+                    key={p}
+                    variant={p === page ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => onPageChange(p)}
+                    className={`h-8 w-8 p-0 ${p === page ? 'bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    {p}
+                  </Button>
+                ))}
+                
+                {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
+                  <>
+                    {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && <span className="text-muted-foreground px-1">...</span>}
+                    <Button variant="ghost" size="sm" onClick={() => onPageChange(totalPages)} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">{totalPages}</Button>
+                  </>
+                )}
+              </div>
+
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => onPageChange(Math.min(totalPages, page + 1))} 
+                disabled={page === totalPages} 
+                className="h-8 border-border text-foreground hover:bg-accent px-3 hidden sm:flex"
+              >
+                Next &gt;&gt;
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => onPageChange(Math.min(totalPages, page + 1))} 
+                disabled={page === totalPages} 
+                className="h-8 w-8 p-0 border-border text-foreground hover:bg-accent sm:hidden"
+              >
+                &gt;
               </Button>
             </div>
           </div>

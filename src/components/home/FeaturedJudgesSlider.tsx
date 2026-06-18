@@ -38,38 +38,42 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="h-full flex flex-col rounded-[24px] overflow-hidden bg-card border border-border group hover:shadow-2xl hover:shadow-[#F59E0B]/10 transition-all duration-300"
+              className="h-full flex flex-col rounded-[2rem] bg-card border border-border group hover:-translate-y-[6px] transition-all duration-300 ease hover:shadow-xl p-6 sm:p-8 items-center text-center"
             >
-              <div className="relative aspect-[4/5] overflow-hidden shrink-0">
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent z-10" />
-                <img 
-                  src={judge.photoUrl || "/images/judges_banner.png"} 
-                  alt={judge.name} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute top-4 right-4 z-20 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full text-foreground text-xs font-bold border border-border flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5" /> <span>{judge.country || 'International'}</span>
-                </div>
+              <div className="shrink-0 overflow-hidden relative border-[3px] border-[#1f2937] bg-[#f8fafc] shadow-[0_10px_30px_rgba(0,0,0,0.12)] rounded-[24px] w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] mb-[20px]">
+                {judge.photoUrl ? (
+                  <img src={judge.photoUrl} alt={judge.name} className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
+                ) : (
+                  <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center text-[#64748b] text-[64px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
+                    {judge.name?.[0]?.toUpperCase() || 'M'}
+                  </div>
+                )}
               </div>
 
-              <div className="flex flex-col flex-1 p-6">
-                <div className="mb-4">
-                  <h3 className="text-xl font-[700] text-foreground mb-2 line-clamp-1">{judge.name}</h3>
-                  <div className="flex items-center gap-2 text-muted-foreground text-sm font-[500]">
-                    <Award className="w-4 h-4 text-[#F59E0B]" /> {judge.experience || judge.exp || 'Experienced'}
+              <div className="flex flex-col flex-1 w-full">
+                <h3 className="text-xl font-[800] text-foreground mb-1 line-clamp-1">{judge.name}</h3>
+                
+                <p className="text-[#F59E0B] font-[700] text-sm mb-3 flex items-center justify-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5" />
+                  {judge.country || 'International'}
+                </p>
+
+                <div className="flex gap-4 mb-4 py-3 border-y border-border justify-center w-full">
+                  <div className="w-full text-center">
+                    <p className="text-foreground font-[700] text-sm line-clamp-1">{judge.groups || judge.specialization || 'All Groups'}</p>
+                    <p className="small-label text-[10px]">Specialization</p>
                   </div>
+                  {(judge.experience || judge.exp) && (
+                    <div className="border-l border-border pl-4 text-center">
+                      <p className="text-foreground font-[700] text-sm whitespace-nowrap">{judge.experience || judge.exp} Yrs</p>
+                      <p className="small-label text-[10px]">Experience</p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="mb-4">
-                  <p className="small-label text-[10px] mb-1.5">Licensed For</p>
-                  <p className="font-[700] text-foreground text-sm bg-white/5 inline-block px-3 py-1 rounded-md border border-border truncate max-w-full">{judge.groups || 'All Groups'}</p>
-                </div>
-                
-                <div className="mt-auto pt-6">
-                  <Link href={`/judge-details?slug=${judge.slug || judge.id}`}>
-                    <Button className="w-full h-[48px] rounded-[14px] bg-transparent text-foreground border border-[rgba(255,255,255,0.15)] hover:bg-[#F59E0B] hover:text-foreground font-semibold transition-colors">
-                      View Profile
-                    </Button>
+                <div className="mt-auto pt-2">
+                  <Link href={`/judge-details?slug=${judge.slug || judge.id}`} className="w-full bg-brand-orange hover:bg-[#E88C05] text-white font-[700] text-xs py-2.5 rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-brand-orange/20">
+                    View Profile <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Link>
                 </div>
               </div>

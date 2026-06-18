@@ -58,7 +58,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
               <h2 className="text-3xl font-extrabold text-foreground mb-10 text-center">Recommended Clubs</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {recommendedClubs.map((rec) => (
-                  <Link key={rec.id} href={`/club-details?slug=${rec.slug || rec.id}`} className="group bg-card rounded-2xl border border-border overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 block">
+                  <Link key={rec.id} href={`/clubs/${rec.slug || rec.id}`} className="group bg-card rounded-2xl border border-border overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 block">
                     <div className="h-32 bg-accent relative overflow-hidden">
                        {rec.bannerUrl ? (
                           <img src={getImageUrl(rec.bannerUrl)} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />

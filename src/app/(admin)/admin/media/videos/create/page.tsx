@@ -115,7 +115,7 @@ export default function AddVideoForm() {
   };
 
   return (
-    <div className="   space-y-4">
+    <div className="w-full max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-6 space-y-6">
       <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-24 z-40">
         <div className="flex items-center gap-4">
           <Link href="/admin/media/videos">
@@ -176,7 +176,7 @@ export default function AddVideoForm() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Video Title *</label>
             <input required type="text" name="title" value={formData.title} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
@@ -185,7 +185,7 @@ export default function AddVideoForm() {
             <label className="block text-sm font-medium text-muted-foreground mb-2">Slug (Optional)</label>
             <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 2xl:col-span-3">
             <label className="block text-sm font-medium text-muted-foreground mb-2">Description</label>
             <textarea name="description" value={formData.description} onChange={handleInputChange} disabled={loading} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
           </div>

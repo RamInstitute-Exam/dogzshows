@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, Download, Plus, RefreshCw, Trophy, Trash2, Edit, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { config } from '@/lib/config';
 import api from '@/services/api';
@@ -65,10 +64,7 @@ export default function WinnersListing() {
   };
 
   return (
-    <div className="flex bg-card">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64  bg-background">
-        <div className="w-full space-y-4">
+    <div className="w-full space-y-4">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
@@ -197,7 +193,6 @@ export default function WinnersListing() {
           </div>
 
         </div>
-      </main>
-    </div>
+      
   );
 }

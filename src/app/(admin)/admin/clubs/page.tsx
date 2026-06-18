@@ -1,22 +1,48 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Tent, Eye, Edit, Trash2, ShieldAlert, Sparkles, X, Check, XCircle, Ban } from 'lucide-react';
+import { Tent, Eye, Edit, Trash2, Sparkles, X, Check, Ban, Download, Loader2, AlertTriangle } from 'lucide-react';
 import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataTable';
 import api from '@/lib/api';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
 export default function ClubManagement() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '10', 10);
+  const search = searchParams.get('search') || '';
+  const statusFilter = searchParams.get('statusFilter') || '';
+
+  const updateQueryParams = (newParams: Record<string, string | number>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, String(value));
+      } else {
+        params.delete(key);
+      }
+    });
+    router.push(`/admin/clubs?${params.toString()}`, { scroll: false });
+  };
+
+  const setPage = (p: number) => updateQueryParams({ page: p });
+  const setLimit = (l: number) => updateQueryParams({ limit: l, page: 1 });
+  const setSearch = (s: string) => updateQueryParams({ search: s, page: 1 });
+  const setStatusFilter = (s: string) => updateQueryParams({ statusFilter: s, page: 1 });
+
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+
+  // Bulk Selection State
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
 
   // Modal State for Viewing Club Details
   const [selectedClub, setSelectedClub] = useState<any>(null);
@@ -25,15 +51,24 @@ export default function ClubManagement() {
   const fetchClubs = async () => {
     setLoading(true);
     try {
-      let url = `/clubs?page=${page}&search=${search}&limit=10`;
+      let url = `/clubs?page=${page}&search=${search}&limit=${limit}&_t=${Date.now()}`;
       if (statusFilter) {
         url += `&status=${statusFilter}`;
       }
       const res = await api.get(url);
       if (res.success) {
-        setData(res.data.clubs || res.data);
-        setTotalPages(res.data.totalPages || 1);
-        setTotalCount(res.data.totalCount || res.data.length || 0);
+        const fetchedItems = Array.isArray(res.data) ? res.data : (res.data?.clubs || []);
+        const fetchedTotal = res.total ?? res.pagination?.totalRecords ?? res.totalCount ?? fetchedItems.length;
+        const fetchedTotalPages = res.totalPages ?? res.pagination?.totalPages ?? 1;
+
+        if (page > fetchedTotalPages && fetchedTotalPages > 0) {
+          setPage(fetchedTotalPages);
+          return;
+        }
+
+        setData(fetchedItems);
+        setTotalPages(fetchedTotalPages);
+        setTotalCount(fetchedTotal);
       }
     } catch (error) {
       console.error('Failed to fetch clubs', error);
@@ -45,12 +80,57 @@ export default function ClubManagement() {
 
   useEffect(() => {
     fetchClubs();
-  }, [page, search, statusFilter]);
+  }, [page, limit, search, statusFilter]);
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const newSelected = new Set(selectedIds);
+      data.forEach(item => newSelected.add(item.id));
+      setSelectedIds(newSelected);
+    } else {
+      const newSelected = new Set(selectedIds);
+      data.forEach(item => newSelected.delete(item.id));
+      setSelectedIds(newSelected);
+    }
+  };
+
+  const handleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    setIsDeletingBulk(true);
+    try {
+      const res = await api.post('/clubs/bulk-delete', {
+        ids: Array.from(selectedIds)
+      });
+      if (res.success) {
+        toast.success(`${res.deletedCount || selectedIds.size} clubs deleted successfully.`);
+        setSelectedIds(new Set());
+        setIsBulkDeleteModalOpen(false);
+        fetchClubs();
+      } else {
+        toast.error(res.message || 'Failed to delete selected clubs');
+      }
+    } catch (error) {
+      console.error('Bulk delete error', error);
+      toast.error('An error occurred during bulk deletion');
+    } finally {
+      setIsDeletingBulk(false);
+    }
+  };
 
   const handleDelete = async (club: any) => {
     if (confirm(`Are you sure you want to delete club "${club.name}"? This will also remove their associated user account.`)) {
       try {
-        const res = await api.delete(`/club-details?slug=${club.id}`);
+        const res = await api.delete(`/clubs/${club.id}`);
         if (res.success) {
           toast.success('Club deleted successfully');
           fetchClubs();
@@ -66,7 +146,7 @@ export default function ClubManagement() {
 
   const handleToggleStatus = async (club: any, isActive: boolean) => {
     try {
-      const res = await api.put(`/club-details?slug=${club.id}`, { isActive });
+      const res = await api.put(`/clubs/${club.id}`, { isActive });
       if (res.success) {
         toast.success(`Club status updated successfully`);
         fetchClubs();
@@ -84,12 +164,16 @@ export default function ClubManagement() {
 
   const handleExport = () => {
     try {
-      if (data.length === 0) {
+      const dataToExport = selectedIds.size > 0 
+        ? data.filter(c => selectedIds.has(c.id)) 
+        : data;
+
+      if (dataToExport.length === 0) {
         toast.error('No data to export');
         return;
       }
       const headers = ['ID', 'Name', 'Registration Number', 'President', 'Email', 'Phone', 'City', 'State', 'Country', 'Website', 'Facebook', 'Instagram', 'Status', 'Featured', 'Created At'];
-      const rows = data.map(c => [
+      const rows = dataToExport.map(c => [
         c.id,
         c.name,
         c.registrationNumber || '',
@@ -116,14 +200,34 @@ export default function ClubManagement() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      toast.success('Clubs exported successfully');
+      toast.success(`${dataToExport.length} clubs exported successfully`);
     } catch (e) {
       console.error('Export error', e);
       toast.error('Failed to export CSV');
     }
   };
 
-  const columns: ColumnDefinition<any>[] = [
+  const columns: ColumnDefinition<any>[] = React.useMemo(() => [
+    {
+      header: (
+        <input 
+          type="checkbox" 
+          className="w-4 h-4 rounded border-border bg-background checked:bg-brand-orange cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          checked={data.length > 0 && data.every(c => selectedIds.has(c.id))}
+          onChange={handleSelectAll}
+          disabled={data.length === 0}
+        />
+      ),
+      accessor: (c) => (
+        <input 
+          type="checkbox" 
+          className="w-4 h-4 rounded border-border bg-background checked:bg-brand-orange cursor-pointer"
+          checked={selectedIds.has(c.id)}
+          onChange={() => handleSelect(c.id)}
+        />
+      ),
+      className: 'w-[40px]'
+    },
     { 
       header: 'Logo', 
       accessor: (c) => (
@@ -140,10 +244,10 @@ export default function ClubManagement() {
       header: 'Club Name', 
       accessor: (c) => (
         <div className="flex flex-col">
-          <span className="font-extrabold text-foreground group-hover:text-blue-500 transition-colors flex items-center gap-1.5">
+          <span className="font-extrabold text-foreground group-hover:text-brand-orange transition-colors flex items-center gap-1.5">
             {c.name}
             {c.isFeatured && (
-              <span className="px-1.5 py-0.5 bg-yellow-500/10 text-yellow-500 rounded text-[9px] font-extrabold tracking-wider flex items-center gap-0.5">
+              <span className="px-1.5 py-0.5 bg-brand-orange/10 text-brand-orange rounded text-[9px] font-extrabold tracking-wider flex items-center gap-0.5">
                 <Sparkles className="w-2.5 h-2.5" /> FEATURED
               </span>
             )}
@@ -152,7 +256,7 @@ export default function ClubManagement() {
         </div>
       )
     },
-    { header: 'Location', accessor: (c) => (c.city && c.state) ? `${c.city}, ${c.state}` : c.country || '—' },
+    { header: 'Location', accessor: (c) => (c.city && c.state) ? `${c.city}, ${c.state}` : c.country || '-' },
     {
       header: 'Actions',
       className: 'text-right',
@@ -211,10 +315,53 @@ export default function ClubManagement() {
         </div>
       )
     }
-  ];
+  ], [data, selectedIds]);
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+
+      {/* Bulk Action Toolbar */}
+      {selectedIds.size > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in slide-in-from-bottom-10 fade-in duration-300">
+          <div className="bg-[#111827] border border-brand-orange/30 shadow-2xl shadow-brand-orange/10 px-6 py-4 rounded-full flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-brand-orange/20 flex items-center justify-center border border-brand-orange/30">
+                <span className="text-brand-orange font-black text-sm">{selectedIds.size}</span>
+              </div>
+              <span className="text-white font-semibold text-sm">Clubs Selected</span>
+            </div>
+            
+            <div className="h-6 w-px bg-gray-800"></div>
+
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setSelectedIds(new Set())}
+                className="text-gray-400 hover:text-white hover:bg-white/10 rounded-full px-4"
+              >
+                Clear
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleExport}
+                className="text-brand-orange hover:text-brand-orange hover:bg-brand-orange/10 rounded-full px-4"
+              >
+                <Download className="w-4 h-4 mr-2" /> Export
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setIsBulkDeleteModalOpen(true)}
+                className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-full px-4 ml-2 transition-colors"
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Delete Selected
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <AdminDataTable
         title="Club Registry"
@@ -230,11 +377,52 @@ export default function ClubManagement() {
         onSearchChange={setSearch}
         onRefresh={fetchClubs}
         onPageChange={setPage}
+        limit={limit}
+        onLimitChange={setLimit}
         onExport={handleExport}
         createLink="/admin/clubs/create"
         createLabel="Add Club"
+        emptyStateDescription="Create your first club or import clubs using Bulk Upload."
         keyExtractor={(item) => item.id}
       />
+
+      {/* Bulk Delete Confirmation Modal */}
+      {isBulkDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+          <div className="bg-card w-full max-w-md rounded-3xl border border-border shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-8 text-center space-y-4">
+              <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <AlertTriangle className="w-10 h-10 text-red-500" />
+              </div>
+              <h2 className="text-2xl font-black text-foreground">Delete {selectedIds.size} Clubs?</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Are you sure you want to permanently delete the selected clubs? This action cannot be undone and will remove all their associated accounts and events.
+              </p>
+            </div>
+            <div className="p-4 bg-accent/30 border-t border-border flex gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1 rounded-xl font-bold border-border"
+                onClick={() => setIsBulkDeleteModalOpen(false)}
+                disabled={isDeletingBulk}
+              >
+                Cancel
+              </Button>
+              <Button 
+                className="flex-1 rounded-xl font-bold bg-red-500 hover:bg-red-600 text-white border-0"
+                onClick={handleBulkDelete}
+                disabled={isDeletingBulk}
+              >
+                {isDeletingBulk ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Deleting...</>
+                ) : (
+                  'Delete Permanently'
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Details View Modal */}
       {isViewModalOpen && selectedClub && (
@@ -272,33 +460,33 @@ export default function ClubManagement() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">Reg No: {selectedClub.registrationNumber || '—'}</p>
+                  <p className="text-sm text-muted-foreground">Reg No: {selectedClub.registrationNumber || '-'}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 border-t border-border pt-6">
                 <div>
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Club President</span>
-                  <span className="text-sm font-semibold text-foreground">{selectedClub.president || '—'}</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.president || '-'}</span>
                 </div>
                 <div>
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Club Secretary</span>
-                  <span className="text-sm font-semibold text-foreground">{selectedClub.secretary || '—'}</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.secretary || '-'}</span>
                 </div>
                 <div>
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Email Address</span>
-                  <span className="text-sm font-semibold text-foreground">{selectedClub.email || '—'}</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.email || '-'}</span>
                 </div>
                 <div>
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Phone Number</span>
-                  <span className="text-sm font-semibold text-foreground">{selectedClub.phone || '—'}</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.phone || '-'}</span>
                 </div>
                 <div>
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Website</span>
                   <span className="text-sm font-semibold text-blue-500 hover:underline">
                     {selectedClub.website ? (
                       <a href={selectedClub.website} target="_blank" rel="noopener noreferrer">{selectedClub.website}</a>
-                    ) : '—'}
+                    ) : '-'}
                   </span>
                 </div>
                 <div>
@@ -306,7 +494,7 @@ export default function ClubManagement() {
                   <span className="text-sm font-semibold text-foreground flex gap-3">
                     {selectedClub.facebook && <a href={selectedClub.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500">Facebook</a>}
                     {selectedClub.instagram && <a href={selectedClub.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-pink-500">Instagram</a>}
-                    {!selectedClub.facebook && !selectedClub.instagram && '—'}
+                    {!selectedClub.facebook && !selectedClub.instagram && '-'}
                   </span>
                 </div>
                 <div className="md:col-span-2">

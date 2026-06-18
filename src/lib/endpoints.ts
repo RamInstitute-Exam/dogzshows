@@ -16,15 +16,15 @@ export const endpoints = {
     bulkDelete: '/dogs/bulk-delete'
   },
   events: {
-    list: '/events',
-    adminList: '/events/admin',
-    upcoming: '/events/upcoming',
-    past: '/events/past',
-    create: '/events/admin',
-    update: (id: string) => `/events/admin/${id}`,
-    delete: (id: string) => `/events/admin/${id}`,
-    get: (id: string) => `/event-details?slug=${id}`,
-    bulkDelete: '/events/admin/bulk-delete'
+    list: '/shows',
+    adminList: '/shows',
+    upcoming: '/shows/upcoming',
+    past: '/shows/completed',
+    create: '/shows',
+    update: (id: string) => `/shows/${id}`,
+    delete: (id: string) => `/shows/${id}`,
+    get: (id: string) => `/shows/${id}`,
+    bulkDelete: '/shows/bulk-delete'
   },
   clubs: {
     list: '/clubs',
@@ -41,6 +41,17 @@ export const endpoints = {
     updateStatus: (id: string) => `/registrations/${id}/status`,
     bulkDelete: '/registrations/bulk-delete',
     userRegistrations: '/registrations/user'
+  },
+  entries: {
+    list: '/entries',
+    create: '/entries',
+    update: (id: string) => `/entries/${id}`,
+    delete: (id: string) => `/entries/${id}`,
+    bulkDelete: '/entries/bulk-delete',
+    bulkUpload: '/entries/bulk-upload',
+    approve: '/entries/approve',
+    reject: '/entries/reject',
+    categories: '/entries/categories'
   },
   judges: {
     list: '/judges',

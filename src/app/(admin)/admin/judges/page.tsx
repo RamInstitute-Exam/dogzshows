@@ -4,19 +4,44 @@ import React, { useState, useEffect } from 'react';
 import { Award, Eye, Edit, Trash2, ShieldAlert, Sparkles, X } from 'lucide-react';
 import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataTable';
 import api from '@/lib/api';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
 export default function JudgeManagement() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '10', 10);
+  const search = searchParams.get('search') || '';
+  const statusFilter = searchParams.get('statusFilter') || '';
+
+  const updateQueryParams = (newParams: Record<string, string | number>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, String(value));
+      } else {
+        params.delete(key);
+      }
+    });
+    router.push(`/admin/judges?${params.toString()}`, { scroll: false });
+  };
+
+  const setPage = (p: number) => updateQueryParams({ page: p });
+  const setLimit = (l: number) => updateQueryParams({ limit: l, page: 1 });
+  const setSearch = (s: string) => updateQueryParams({ search: s, page: 1 });
+  const setStatusFilter = (s: string) => updateQueryParams({ statusFilter: s, page: 1 });
+
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+
+  // Bulk Selection State
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
 
   // Modal State for Viewing Judge Details
   const [selectedJudge, setSelectedJudge] = useState<any>(null);
@@ -25,15 +50,38 @@ export default function JudgeManagement() {
   const fetchJudges = async () => {
     setLoading(true);
     try {
-      let url = `/judges?page=${page}&search=${search}&limit=10`;
+      // Appending timestamp to strictly bypass browser cache
+      let url = `/judges?page=${page}&search=${search}&limit=${limit}&_t=${Date.now()}`;
       if (statusFilter) {
         url += `&status=${statusFilter}`;
       }
       const res = await api.get(url);
       if (res.success) {
-        setData(res.data || []);
-        setTotalPages(res.totalPages || 1);
-        setTotalCount(res.total || res.data?.length || 0);
+        const fetchedItems = res.items || res.data || [];
+        const fetchedTotal = res.pagination?.total ?? res.total ?? fetchedItems.length;
+        const calcPages = Math.ceil(fetchedTotal / limit) || 1;
+        const fetchedTotalPages = res.pagination?.totalPages ?? res.totalPages ?? calcPages;
+
+        // If the current page is greater than the available pages, navigate back
+        if (page > fetchedTotalPages && fetchedTotalPages > 0) {
+          setPage(fetchedTotalPages);
+          return;
+        }
+
+        setData(fetchedItems);
+        setTotalPages(fetchedTotalPages);
+        setTotalCount(fetchedTotal);
+        
+        // Clean up selectedIds to only include items that actually exist in the fetched data
+        // This prevents "ghost" selections if items were deleted by another process
+        setSelectedIds(prev => {
+          const newSet = new Set<string>();
+          const fetchedIds = new Set(fetchedItems.map((j: any) => j.id));
+          prev.forEach(id => {
+            if (fetchedIds.has(id)) newSet.add(id);
+          });
+          return newSet;
+        });
       }
     } catch (error) {
       console.error('Failed to fetch judges', error);
@@ -45,28 +93,89 @@ export default function JudgeManagement() {
 
   useEffect(() => {
     fetchJudges();
-  }, [page, search, statusFilter]);
+  }, [page, limit, search, statusFilter]);
 
   const handleDelete = async (judge: any) => {
-    if (confirm(`Are you sure you want to delete judge "${judge.name}"? This will also remove their user account.`)) {
+    // We now use a strict hard delete
+    if (confirm(`Are you sure you want to permanently delete judge "${judge.name}"? This cannot be undone.`)) {
       try {
-        const res = await api.delete(`/judge-details?slug=${judge.id}`);
+        // Optimistic UI update - remove from list and selection immediately
+        setData(prev => prev.filter(j => j.id !== judge.id));
+        setTotalCount(prev => Math.max(0, prev - 1));
+        setSelectedIds(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(judge.id);
+          return newSet;
+        });
+        
+        const res = await api.delete(`/judges/${judge.id}`);
         if (res.success) {
-          toast.success('Judge deleted successfully');
-          fetchJudges();
+          toast.success('Judge deleted permanently');
         } else {
           toast.error(res.message || 'Failed to delete judge');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Delete error', error);
-        toast.error('Failed to delete judge');
+        toast.error(error?.response?.data?.message || 'Failed to delete judge');
+      } finally {
+        // Re-fetch to sync pagination and state perfectly
+        fetchJudges();
       }
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.size === data.length && data.length > 0) {
+      // Unselect all on current page
+      const newSelected = new Set(selectedIds);
+      data.forEach(j => newSelected.delete(j.id));
+      setSelectedIds(newSelected);
+    } else {
+      // Select all on current page
+      const newSelected = new Set(selectedIds);
+      data.forEach(j => newSelected.add(j.id));
+      setSelectedIds(newSelected);
+    }
+  };
+
+  const handleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleBulkDelete = async () => {
+    setIsBulkDeleteModalOpen(false);
+    if (selectedIds.size === 0) return;
+
+    try {
+      // Optimistic update
+      const idsToDelete = Array.from(selectedIds);
+      setData(prev => prev.filter(j => !idsToDelete.includes(j.id)));
+      setTotalCount(prev => Math.max(0, prev - idsToDelete.length));
+      setSelectedIds(new Set());
+
+      const res = await api.post('/judges/bulk-delete', { ids: idsToDelete });
+      if (res.success) {
+        toast.success(`Successfully deleted ${idsToDelete.length} judges permanently.`);
+      } else {
+        toast.error(res.message || 'Failed to delete selected judges');
+      }
+    } catch (error) {
+      console.error('Bulk delete error:', error);
+      toast.error('Failed to perform bulk delete');
+    } finally {
+      await fetchJudges();
     }
   };
 
   const handleToggleStatus = async (judge: any, newStatus: string) => {
     try {
-      const res = await api.put(`/judge-details?slug=${judge.id}`, { status: newStatus });
+      const res = await api.put(`/judges/${judge.id}`, { status: newStatus });
       if (res.success) {
         toast.success(`Judge status updated to ${newStatus}`);
         fetchJudges();
@@ -84,16 +193,20 @@ export default function JudgeManagement() {
 
   const handleExport = () => {
     try {
-      if (data.length === 0) {
+      const dataToExport = selectedIds.size > 0 
+        ? data.filter(j => selectedIds.has(j.id)) 
+        : data;
+
+      if (dataToExport.length === 0) {
         toast.error('No data to export');
         return;
       }
-      const headers = ['ID', 'Name', 'Email', 'Phone', 'City', 'State', 'Country', 'Experience', 'Specialization', 'Status', 'Featured', 'Created At'];
-      const rows = data.map(j => [
+      const headers = ['ID', 'Name', 'Email', 'Mobile', 'City', 'State', 'Country', 'Experience', 'Specialization', 'Status', 'Featured', 'Created At'];
+      const rows = dataToExport.map(j => [
         j.id,
         j.name,
         j.email || '',
-        j.phone || '',
+        j.mobile || j.phone || '',
         j.city || '',
         j.state || '',
         j.country || '',
@@ -113,7 +226,7 @@ export default function JudgeManagement() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      toast.success('Judges exported successfully');
+      toast.success(`Exported ${dataToExport.length} judges successfully`);
     } catch (e) {
       console.error('Export error', e);
       toast.error('Failed to export CSV');
@@ -121,6 +234,26 @@ export default function JudgeManagement() {
   };
 
   const columns: ColumnDefinition<any>[] = React.useMemo(() => [
+    {
+      header: (
+        <input 
+          type="checkbox" 
+          className="w-4 h-4 rounded border-border bg-background checked:bg-blue-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          checked={data.length > 0 && data.every(j => selectedIds.has(j.id))}
+          onChange={handleSelectAll}
+          disabled={data.length === 0}
+        />
+      ),
+      accessor: (j) => (
+        <input 
+          type="checkbox" 
+          className="w-4 h-4 rounded border-border bg-background checked:bg-blue-600 cursor-pointer"
+          checked={selectedIds.has(j.id)}
+          onChange={() => handleSelect(j.id)}
+        />
+      ),
+      className: 'w-[40px]'
+    },
     { 
       header: 'Photo', 
       accessor: (j) => (
@@ -151,7 +284,7 @@ export default function JudgeManagement() {
         </div>
       )
     },
-    { header: 'Phone', accessor: (j) => j.phone || '—' },
+    { header: 'Mobile Number', accessor: (j: any) => j.mobile || j.phone || '—' },
     { header: 'Location', accessor: (j) => (j.city && j.state) ? `${j.city}, ${j.state}` : j.country || '—' },
     {
       header: 'Actions',
@@ -207,10 +340,33 @@ export default function JudgeManagement() {
         </div>
       )
     }
-  ], [data]);
+  ], [data, selectedIds]);
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-4">
+
+      {/* Selection Toolbar */}
+      {selectedIds.size > 0 && data.length > 0 && (
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex items-center justify-between animate-in fade-in slide-in-from-top-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-500 text-white w-6 h-6 rounded flex items-center justify-center text-xs font-bold">
+              {selectedIds.size}
+            </div>
+            <span className="font-semibold text-blue-500">Judges Selected</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={() => setSelectedIds(new Set())} className="border-border hover:bg-accent text-foreground h-9">
+              Clear Selection
+            </Button>
+            <Button variant="default" size="sm" onClick={() => handleExport()} className="bg-foreground text-background hover:bg-foreground/90 h-9">
+              Export Selected
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => setIsBulkDeleteModalOpen(true)} className="h-9 gap-2">
+              <Trash2 className="w-4 h-4" /> Delete Selected
+            </Button>
+          </div>
+        </div>
+      )}
 
       <AdminDataTable
         title="Judge Registry"
@@ -226,6 +382,8 @@ export default function JudgeManagement() {
         onSearchChange={setSearch}
         onRefresh={fetchJudges}
         onPageChange={setPage}
+        limit={limit}
+        onLimitChange={setLimit}
         onExport={handleExport}
         createLink="/admin/judges/create"
         createLabel="Add Judge"
@@ -280,8 +438,8 @@ export default function JudgeManagement() {
                   </span>
                 </div>
                 <div>
-                  <span className="block text-xs font-bold text-muted-foreground uppercase">Phone Number</span>
-                  <span className="text-sm font-semibold text-foreground">{selectedJudge.phone || '—'}</span>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Mobile Number</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedJudge.mobile || selectedJudge.phone || '—'}</span>
                 </div>
                 <div>
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Gender</span>
@@ -331,6 +489,29 @@ export default function JudgeManagement() {
               </div>
               <Button onClick={() => setIsViewModalOpen(false)} className="bg-blue-600 text-foreground hover:bg-blue-700 font-bold px-6">
                 Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Confirmation Modal */}
+      {isBulkDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+          <div className="bg-card w-full max-w-md rounded-2xl border border-border shadow-2xl p-6 text-center animate-in fade-in-50 zoom-in-95">
+            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ShieldAlert className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-xl font-extrabold text-foreground mb-2">Permanent Deletion</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              Are you sure you want to permanently delete the <strong>{selectedIds.size} selected judges</strong>? This action cannot be undone and will remove all associated user data.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button variant="outline" onClick={() => setIsBulkDeleteModalOpen(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleBulkDelete} className="flex-1 font-bold">
+                Delete Permanently
               </Button>
             </div>
           </div>

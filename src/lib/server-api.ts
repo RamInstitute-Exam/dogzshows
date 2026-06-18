@@ -8,6 +8,10 @@ const getBaseUrl = () => {
  * Reusable server-side fetcher with built-in revalidation.
  */
 export async function fetchServerData(endpoint: string, revalidate: number = 60) {
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return { success: true, data: [] };
+  }
+
   try {
     const url = `${getBaseUrl()}${endpoint}`;
     const res = await fetch(url, {
@@ -18,7 +22,7 @@ export async function fetchServerData(endpoint: string, revalidate: number = 60)
     });
 
     if (!res.ok) {
-      console.error(`Failed to fetch ${endpoint}: Status ${res.status}`);
+      console.warn(`Failed to fetch ${endpoint}: Status ${res.status}`);
       return { success: false, data: [] };
     }
 
@@ -67,6 +71,10 @@ export async function getSponsors() {
 }
 
 export async function fetchServerDataSingle(endpoint: string, revalidate: number = 60) {
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return { success: true, data: null };
+  }
+
   try {
     const url = `${getBaseUrl()}${endpoint}`;
     const res = await fetch(url, {
@@ -77,7 +85,7 @@ export async function fetchServerDataSingle(endpoint: string, revalidate: number
     });
 
     if (!res.ok) {
-      console.error(`Failed to fetch ${endpoint}: Status ${res.status}`);
+      console.warn(`Failed to fetch ${endpoint}: Status ${res.status}`);
       return { success: false, data: null };
     }
 

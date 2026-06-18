@@ -84,7 +84,7 @@ export default function AddPhotoForm() {
   };
 
   return (
-    <div className="   space-y-4">
+    <div className="w-full max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-6 space-y-6">
       <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-24 z-40">
         <div className="flex items-center gap-4">
           <Link href="/admin/media/photos">
@@ -125,7 +125,7 @@ export default function AddPhotoForm() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Title *</label>
             <input required type="text" name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
@@ -134,7 +134,7 @@ export default function AddPhotoForm() {
             <label className="block text-sm font-medium text-muted-foreground mb-2">Slug (Optional)</label>
             <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 2xl:col-span-3">
             <label className="block text-sm font-medium text-muted-foreground mb-2">Description</label>
             <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
           </div>
@@ -156,7 +156,7 @@ export default function AddPhotoForm() {
           </div>
         </div>
 
-        <div className="border-t border-border pt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="border-t border-border pt-6 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Title</label>
             <input type="text" name="seoTitle" value={formData.seoTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
@@ -165,7 +165,7 @@ export default function AddPhotoForm() {
             <label className="block text-sm font-medium text-muted-foreground mb-2">Alt Text</label>
             <input type="text" name="altText" value={formData.altText} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 2xl:col-span-3">
             <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Description</label>
             <textarea name="seoDescription" value={formData.seoDescription} onChange={handleInputChange} rows={2} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
           </div>

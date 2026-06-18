@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, RefreshCw, FileText, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import api from '@/services/api';
 
 export default function GuidelinesCMS() {
@@ -34,10 +33,7 @@ export default function GuidelinesCMS() {
   ];
 
   return (
-    <div className="flex bg-card">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64  bg-background">
-        <div className="w-full   space-y-4">
+    <div className="w-full   space-y-4">
           
           <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
@@ -88,7 +84,6 @@ export default function GuidelinesCMS() {
           </div>
 
         </div>
-      </main>
-    </div>
+      
   );
 }

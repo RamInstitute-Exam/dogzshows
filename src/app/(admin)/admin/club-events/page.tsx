@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import { config } from '@/lib/config';
 import api from '@/lib/api';
 
@@ -54,10 +53,7 @@ export default function ClubEventsPage() {
   };
 
   return (
-    <div className="flex bg-card">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64  bg-background text-muted-foreground p-8">
-        <div className="w-full space-y-4">
+    <div className="w-full space-y-4">
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">Club Events</h1>
@@ -115,7 +111,6 @@ export default function ClubEventsPage() {
             </div>
           )}
         </div>
-      </main>
-    </div>
+      
   );
 }

@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, ImagePlus, Dog, FileText, HeartPulse, UserCircle, QrCode, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -85,10 +84,7 @@ export default function AddDogForm() {
   ];
 
   return (
-    <div className="flex bg-card">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64  bg-background">
-        <div className="w-full space-y-4">
+    <div className="w-full max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-6 space-y-6">
           
           <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-4 z-50">
             <div className="flex items-center gap-4">
@@ -108,7 +104,7 @@ export default function AddDogForm() {
             </Button>
           </div>
 
-          <div className="flex ga">
+          <div className="flex flex-col md:flex-row gap-6">
             {/* Left Nav */}
             <div className="w-64 shrink-0 space-y-2">
               {tabs.map(tab => {
@@ -136,7 +132,7 @@ export default function AddDogForm() {
                 {activeTab === 'basic' && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Basic Details</h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Dog Name *</label>
                         <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -168,7 +164,7 @@ export default function AddDogForm() {
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Colour & Markings</label>
                         <input type="text" name="color" value={formData.color} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
                       </div>
-                      <div className="flex gap-4 items-end">
+                      <div className="md:col-span-2 2xl:col-span-3 flex gap-4 items-end mt-4">
                         <label className="flex items-center gap-3 cursor-pointer p-3 border border-border rounded-lg bg-card w-full">
                           <input type="checkbox" name="isImported" checked={formData.isImported} onChange={handleInputChange} className="w-5 h-5 rounded bg-accent border-none text-brand-orange focus:ring-brand-orange" />
                           <span className="text-foreground font-medium">Is Imported?</span>
@@ -185,7 +181,7 @@ export default function AddDogForm() {
                 {activeTab === 'bloodline' && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Bloodline & Pedigree</h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Sire (Father) Name</label>
                         <input type="text" name="sireName" value={formData.sireName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -194,7 +190,7 @@ export default function AddDogForm() {
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Dam (Mother) Name</label>
                         <input type="text" name="damName" value={formData.damName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
                       </div>
-                      <div className="md:col-span-2">
+                      <div className="md:col-span-2 2xl:col-span-3">
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Bloodline Details</label>
                         <textarea name="bloodline" value={formData.bloodline} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
                       </div>
@@ -213,7 +209,7 @@ export default function AddDogForm() {
                 {activeTab === 'owner' && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Owner Contact Data</h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Owner Full Name</label>
                         <input type="text" name="ownerName" value={formData.ownerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
@@ -248,7 +244,6 @@ export default function AddDogForm() {
           </div>
 
         </div>
-      </main>
-    </div>
+      
   );
 }

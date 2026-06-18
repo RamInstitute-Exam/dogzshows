@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 import "./globals.css";
@@ -7,6 +8,7 @@ import { cn } from "@/lib/utils";
 import AuthModal from '@/components/auth/AuthModal';
 import { Toaster } from 'sonner';
 import { LoaderProvider } from '@/components/common/loader/LoaderProvider';
+import ScrollPreservationProvider from '@/components/providers/ScrollPreservationProvider';
 
 const mulish = Mulish({ 
   subsets: ["latin"], 
@@ -38,13 +40,18 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           <AuthProvider>
-            <LoaderProvider>
-              <QueryProvider>
-                {children}
-                <AuthModal />
-                <Toaster position="top-right" richColors />
-              </QueryProvider>
-            </LoaderProvider>
+            <Suspense fallback={null}>
+              <ScrollPreservationProvider />
+            </Suspense>
+            <Suspense fallback={null}>
+              <LoaderProvider>
+                <QueryProvider>
+                  {children}
+                  <AuthModal />
+                  <Toaster position="top-right" richColors />
+                </QueryProvider>
+              </LoaderProvider>
+            </Suspense>
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, Loader2, ArrowLeft } from 'lucide-react';
+import { ChevronRight, Loader2, ArrowLeft, Dog } from 'lucide-react';
 import { EventService } from '@/services/event.service';
 import { MOCK_EVENT_DETAIL, MOCK_EVENTS } from '@/lib/mock/eventsData';
 import PageContainer from '@/components/layout/PageContainer';
+import api from '@/lib/api';
 
 // Components
 import EventHero from '@/components/events/details/EventHero';
@@ -16,6 +17,7 @@ import EventTimeline from '@/components/events/details/EventTimeline';
 import BreedCategories from '@/components/events/details/BreedCategories';
 import AgeClasses from '@/components/events/details/AgeClasses';
 import EventJudges from '@/components/events/details/EventJudges';
+import OrganizingCommittee from '@/components/events/details/OrganizingCommittee';
 import EventVenue from '@/components/events/details/EventVenue';
 import EventGallery from '@/components/events/details/EventGallery';
 import EventSponsors from '@/components/events/details/EventSponsors';
@@ -47,7 +49,8 @@ export default function EventDetailClient() {
             ...response.data,
             timeline: response.data.timeline || MOCK_EVENT_DETAIL.timeline,
             ageClasses: response.data.ageClasses || MOCK_EVENT_DETAIL.ageClasses,
-            judges: response.data.judges || MOCK_EVENT_DETAIL.judges,
+            judges: response.data.judges && response.data.judges.length > 0 ? response.data.judges : [],
+            secretaries: response.data.secretaries && response.data.secretaries.length > 0 ? response.data.secretaries : [],
             faqs: response.data.faqs || MOCK_EVENT_DETAIL.faqs,
           };
           setEvent(mergedEvent);
@@ -70,6 +73,27 @@ export default function EventDetailClient() {
     };
     fetchEvent();
   }, [id]);
+
+  const [showEntries, setShowEntries] = useState<any[]>([]);
+  const [loadingEntries, setLoadingEntries] = useState(false);
+
+  useEffect(() => {
+    if (!event?.id) return;
+    const fetchShowEntries = async () => {
+      setLoadingEntries(true);
+      try {
+        const res = await api.get(`/public/entries?dogShowId=${event.id}`);
+        if (res.success) {
+          setShowEntries(res.data || []);
+        }
+      } catch (err) {
+        console.error('Failed to load show entries:', err);
+      } finally {
+        setLoadingEntries(false);
+      }
+    };
+    fetchShowEntries();
+  }, [event?.id]);
 
   if (loading) {
     return (
@@ -126,7 +150,37 @@ export default function EventDetailClient() {
             <BreedCategories />
             <AgeClasses classes={event.ageClasses} />
             <EventJudges judges={event.judges} />
+            <OrganizingCommittee secretaries={event.secretaries} />
             <EventVenue event={event} />
+
+            {/* Show Registered Entries Section */}
+            <div className="bg-card rounded-[24px] p-8 border border-border shadow-sm mb-8 text-foreground">
+              <h3 className="text-2xl font-black mb-6 flex items-center gap-2">
+                <Dog className="w-6 h-6 text-brand-orange" /> Registered Dog Entries ({showEntries.length})
+              </h3>
+              {loadingEntries ? (
+                <div className="text-center py-6 text-muted-foreground flex items-center justify-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin text-brand-orange" /> Loading registered dogs...
+                </div>
+              ) : showEntries.length === 0 ? (
+                <p className="text-muted-foreground font-medium italic">No verified dog entries registered for this show yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {showEntries.map((ent: any) => (
+                    <div key={ent.id} className="p-4 bg-accent/15 border border-border rounded-2xl flex gap-4 items-center">
+                      <div className="w-12 h-12 rounded-full overflow-hidden bg-accent shrink-0 border border-border">
+                        <img src={ent.dogPhoto || '/images/hero_banner.png'} alt={ent.dogName} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-foreground truncate">{ent.dogName}</p>
+                        <p className="text-xs text-muted-foreground truncate">{ent.breed} • {ent.category}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <EventGallery />
             <EventSponsors />
             <EventFAQs faqs={event.faqs} />

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, Ticket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -71,10 +70,7 @@ export default function ManualRegistrationForm() {
   };
 
   return (
-    <div className="flex bg-card">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64  bg-background">
-        <div className="w-full max-w-[800px]  space-y-4">
+    <div className="w-full max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-6 space-y-6">
           
           <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div className="flex items-center gap-4">
@@ -100,7 +96,7 @@ export default function ManualRegistrationForm() {
               <h2 className="text-lg font-bold text-foreground">Entry Details</h2>
             </div>
             
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Select Event *</label>
                 <select required name="eventId" value={formData.eventId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none appearance-none">
@@ -133,7 +129,6 @@ export default function ManualRegistrationForm() {
           </form>
 
         </div>
-      </main>
-    </div>
+      
   );
 }

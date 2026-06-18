@@ -224,7 +224,7 @@ export default function ClubsClient() {
 
                   <div className="p-6 pt-10 flex-1 flex flex-col">
                     <h3 className="text-xl font-extrabold text-foreground mb-1 line-clamp-1 group-hover:text-brand-orange transition-colors">
-                      <Link href={`/club-details?slug=${club.slug || club.id}`} className="focus:outline-none before:absolute before:inset-0">
+                      <Link href={`/clubs/${club.slug || club.id}`} className="focus:outline-none before:absolute before:inset-0">
                         {club.name}
                       </Link>
                     </h3>
@@ -256,9 +256,12 @@ export default function ClubsClient() {
                     </div>
 
                     <div className="mt-auto">
-                      <button className="w-full py-2.5 bg-accent text-foreground font-semibold rounded-xl group-hover:bg-brand-orange group-hover:text-white transition-colors flex items-center justify-center gap-2">
+                      <Link
+                        href={`/clubs/${club.slug || club.id}`}
+                        className="block w-full py-2.5 bg-accent text-foreground font-semibold rounded-xl text-center group-hover:bg-brand-orange group-hover:text-white transition-colors flex items-center justify-center gap-2"
+                      >
                         View Profile
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>

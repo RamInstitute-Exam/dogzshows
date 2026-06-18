@@ -58,15 +58,26 @@ export default function EventSidebar({ event }: { event: any }) {
         <p className="text-muted-foreground font-medium mb-6 text-sm">Contact the event organizer directly for any queries.</p>
         
         <div className="space-y-4">
-          <Button variant="outline" className="w-full min-h-[48px] md:h-12 bg-card/10 hover:bg-card/20 border-border text-foreground rounded-xl justify-start">
-            <Phone className="w-4 h-4 mr-3 text-brand-orange" /> +91 98765 43210
-          </Button>
-          <Button variant="outline" className="w-full min-h-[48px] md:h-12 bg-card/10 hover:bg-card/20 border-border text-foreground rounded-xl justify-start">
-            <MessageCircle className="w-4 h-4 mr-3 text-green-400" /> WhatsApp Support
-          </Button>
-          <Button variant="outline" className="w-full min-h-[48px] md:h-12 bg-card/10 hover:bg-card/20 border-border text-foreground rounded-xl justify-start">
-            <Mail className="w-4 h-4 mr-3 text-blue-400" /> support@juzdog.com
-          </Button>
+          <a href={`tel:${event.secretaries?.[0]?.mobile || event.mobile || '+91 98765 43210'}`} className="block">
+            <Button variant="outline" className="w-full min-h-[48px] md:h-12 bg-card/10 hover:bg-card/20 border-border text-foreground rounded-xl justify-start">
+              <Phone className="w-4 h-4 mr-3 text-brand-orange" /> {event.secretaries?.[0]?.mobile || event.mobile || '+91 98765 43210'}
+            </Button>
+          </a>
+          <a 
+            href={`https://wa.me/${(event.secretaries?.[0]?.mobile || event.mobile || '919876543210').replace(/[^0-9]/g, '')}`} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="block"
+          >
+            <Button variant="outline" className="w-full min-h-[48px] md:h-12 bg-card/10 hover:bg-card/20 border-border text-foreground rounded-xl justify-start">
+              <MessageCircle className="w-4 h-4 mr-3 text-green-400" /> WhatsApp Support
+            </Button>
+          </a>
+          <a href={`mailto:${event.secretaries?.[0]?.email || event.email || 'support@juzdog.com'}`} className="block">
+            <Button variant="outline" className="w-full min-h-[48px] md:h-12 bg-card/10 hover:bg-card/20 border-border text-foreground rounded-xl justify-start">
+              <Mail className="w-4 h-4 mr-3 text-blue-400" /> {event.secretaries?.[0]?.email || event.email || 'support@juzdog.com'}
+            </Button>
+          </a>
         </div>
       </div>
 

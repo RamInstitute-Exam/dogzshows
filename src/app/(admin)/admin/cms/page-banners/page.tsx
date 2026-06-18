@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import api from '@/services/api';
 
 interface PageBanner {
@@ -102,10 +101,7 @@ export default function PageBannersCMS() {
   };
 
   return (
-    <div className="flex bg-card">
-      <AdminSidebar />
-      <main className="flex-1 md:ml-64  bg-background text-muted-foreground">
-        <div className="w-full space-y-4">
+    <div className="w-full space-y-4">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
@@ -273,7 +269,6 @@ export default function PageBannersCMS() {
             </div>
           )}
         </div>
-      </main>
-    </div>
+      
   );
 }

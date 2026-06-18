@@ -21,6 +21,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
+  useEffect(() => {
+    const activeRoute = ADMIN_ROUTES.find((r: any) => 
+      r.children && r.children.some((c: any) => pathname.startsWith(c.href))
+    );
+    if (activeRoute) {
+      setOpenMenus(prev => ({ ...prev, [activeRoute.name]: true }));
+    }
+  }, [pathname]);
+
   const toggleMenu = (name: string) => {
     setOpenMenus(prev => ({ ...prev, [name]: !prev[name] }));
   };

@@ -3,19 +3,102 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Search, Filter, Trophy, ArrowRight, Share2, Heart, Award, Users, CreditCard, Clock, ChevronDown } from 'lucide-react';
+import { Calendar, MapPin, Search, Filter, Trophy, ArrowRight, Share2, Heart, Award, Users, CreditCard, Clock, ChevronDown, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
-import { useEventsCMS } from '@/hooks/useCMS';
 import PageContainer from '@/components/layout/PageContainer';
+import api from '@/lib/api';
 
 export default function EventsPage() {
-  const { data, isLoading } = useEventsCMS();
-  const events: any[] = data?.success && Array.isArray(data.data) ? data.data : [];
-  const loading = isLoading;
+  const [events, setEvents] = useState<any[]>([]);
+  const [clubs, setClubs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedClub, setSelectedClub] = useState('');
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const formatDate = (dateStr: string) => {
+  // Debounce search
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // Load clubs once for filter
+  useEffect(() => {
+    async function loadClubs() {
+      try {
+        const res = await api.get('/public/clubs?limit=1000');
+        if (res.success) {
+          setClubs(res.data || []);
+        }
+      } catch (err) {
+        console.error('Failed to load clubs:', err);
+      }
+    }
+    loadClubs();
+  }, []);
+
+  // Fetch filtered events
+  const loadEvents = async () => {
+    setLoading(true);
+    try {
+      const queryParams = new URLSearchParams({
+        page: String(page),
+        limit: '12',
+        search: debouncedSearch,
+        clubId: selectedClub,
+        state: selectedState,
+        status: selectedStatus,
+      });
+      const res = await api.get(`/public/shows?${queryParams.toString()}`);
+      if (res.success) {
+        setEvents(res.data || res.items || []);
+        setTotalPages(res.totalPages || 1);
+      }
+    } catch (err) {
+      console.error('Failed to load events:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadEvents();
+  }, [page, debouncedSearch, selectedClub, selectedState, selectedStatus]);
+
+  const formatDate = (dateStr: string | null | undefined) => {
+    if (!dateStr) return 'TBA';
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  // Get list of unique states from existing shows for filters
+  const uniqueStates = ['Tamil Nadu', 'Karnataka', 'Maharashtra', 'Delhi', 'West Bengal', 'Punjab', 'Kerala', 'Gujarat'];
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'REGISTRATION_OPEN':
+        return 'bg-green-500 text-white';
+      case 'ONGOING':
+        return 'bg-yellow-500 text-foreground';
+      case 'COMPLETED':
+        return 'bg-blue-500 text-white';
+      case 'CANCELLED':
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    if (status === 'REGISTRATION_OPEN') return 'REGISTRATION OPEN';
+    return status;
   };
 
   return (
@@ -28,115 +111,148 @@ export default function EventsPage() {
         fallbackImage="/images/hero_banner.png"
       />
 
+      {/* Filter / Search Bar */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 mb-12 mt-12">
-        <div className="bg-card rounded-[24px] p-4 shadow-sm border border-border flex flex-wrap gap-4 items-center">
+        <div className="bg-card rounded-[24px] p-5 shadow-sm border border-border flex flex-wrap gap-4 items-center">
           <div className="flex-1 min-w-[250px] relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input 
               type="text" 
               placeholder="Search Event Name or Club..." 
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-card border-transparent focus:bg-card focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 outline-none transition-all font-medium text-muted-foreground"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 outline-none transition-all font-medium text-foreground"
             />
           </div>
           
           <div className="flex flex-wrap gap-3">
-            {['Location', 'Breed Group', 'Date', 'Judge', 'Status'].map((filter) => (
-              <button key={filter} className="px-4 py-3.5 bg-card hover:bg-input rounded-xl font-semibold text-muted-foreground text-sm flex items-center gap-2 transition-colors border border-transparent">
-                {filter} <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              </button>
-            ))}
+            {/* Club filter */}
+            <select
+              value={selectedClub}
+              onChange={(e) => { setSelectedClub(e.target.value); setPage(1); }}
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+            >
+              <option value="">All Clubs</option>
+              {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+
+            {/* State filter */}
+            <select
+              value={selectedState}
+              onChange={(e) => { setSelectedState(e.target.value); setPage(1); }}
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+            >
+              <option value="">All States</option>
+              {uniqueStates.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+
+            {/* Status filter */}
+            <select
+              value={selectedStatus}
+              onChange={(e) => { setSelectedStatus(e.target.value); setPage(1); }}
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+            >
+              <option value="">All Statuses</option>
+              <option value="DRAFT">Draft</option>
+              <option value="REGISTRATION_OPEN">Open For Registration</option>
+              <option value="ONGOING">Ongoing</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
           </div>
 
           <div className="flex gap-3 ml-auto">
-            <Button variant="outline" className="h-[52px] px-6 rounded-xl border-border text-muted-foreground font-bold hover:bg-card">
-              <Filter className="w-4 h-4 mr-2" /> More Filters
-            </Button>
-            <Button className="h-[52px] px-8 rounded-xl bg-card hover:bg-foreground text-background text-foreground font-bold shadow-md shadow-gray-900/10">
-              Search
+            <Button 
+              onClick={() => {
+                setSearch('');
+                setSelectedClub('');
+                setSelectedState('');
+                setSelectedStatus('');
+                setPage(1);
+              }}
+              variant="outline" 
+              className="h-[52px] px-6 rounded-xl border-border text-muted-foreground font-bold hover:bg-card"
+            >
+              Reset Filters
             </Button>
           </div>
         </div>
       </div>
 
+      {/* Shows Grid */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-20">
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Featured Events</h2>
-            <p className="text-muted-foreground mt-2 font-medium">Discover top-tier dog shows happening soon.</p>
-          </div>
-          <div className="flex gap-2">
-            <button className="px-4 py-2 text-sm font-bold text-muted-foreground hover:text-foreground">Sort by: Date</button>
+            <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Dog Show Events</h2>
+            <p className="text-muted-foreground mt-2 font-medium">Browse dynamic show schedules, dates, and locations.</p>
           </div>
         </div>
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-card rounded-[24px] overflow-hidden shadow-sm border border-border h-[450px] animate-pulse">
-                <div className="h-[220px] bg-accent/50 w-full" />
-                <div className="p-6 flex flex-col h-full space-y-4">
-                  <div className="h-6 bg-accent rounded w-3/4" />
-                  <div className="h-4 bg-accent rounded w-1/2" />
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="h-4 bg-accent rounded" />
-                    <div className="h-4 bg-accent rounded" />
-                    <div className="h-4 bg-accent rounded" />
-                    <div className="h-4 bg-accent rounded" />
-                  </div>
-                  <div className="mt-auto flex gap-3 pt-4 border-t border-border">
-                    <div className="h-12 bg-accent rounded-xl w-full" />
-                    <div className="h-12 bg-accent rounded-xl w-full" />
-                  </div>
-                </div>
-              </div>
+              <div key={i} className="bg-card rounded-[24px] overflow-hidden shadow-sm border border-border h-[450px] animate-pulse" />
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.length === 0 ? (
-              <div className="col-span-full text-center text-gray-500 py-10">No events found.</div>
+              <div className="col-span-full text-center text-muted-foreground py-24 font-bold text-lg">
+                No dog shows match the selected filters.
+              </div>
             ) : events.map((event, i) => (
               <motion.div 
                 key={event.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-card rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col group relative"
+                transition={{ delay: i * 0.05 }}
+                className="bg-card rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col group relative text-foreground"
               >
-                <div className={`h-[220px] bg-gradient-to-r from-gray-900 to-indigo-900 relative p-5 flex flex-col justify-between overflow-hidden`}>
-                  <img src={event.cardImage || event.bannerUrl || '/images/events_banner.png'} alt={event.name} className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50 group-hover:opacity-70 transition-opacity" />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                <div className="h-[220px] bg-accent relative overflow-hidden flex flex-col justify-between p-5">
+                  <img 
+                    src={event.bannerUrl || '/images/events_banner.png'} 
+                    alt={event.name} 
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute inset-0 bg-black/40" />
                   
                   <div className="flex justify-between items-start relative z-10 w-full">
-                    <span className="inline-block bg-card/90 backdrop-blur-md text-foreground text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-                      {event.status === 'REGISTRATION_OPEN' ? 'OPEN' : event.status}
+                    <span className={`inline-block text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
+                      {getStatusText(event.status)}
                     </span>
-                    <div className="flex gap-2">
-                      <button className="w-8 h-8 rounded-full bg-card/20 hover:bg-card backdrop-blur-md flex items-center justify-center text-foreground hover:text-red-500 transition-colors">
-                        <Heart className="w-4 h-4" />
-                      </button>
-                    </div>
                   </div>
                 </div>
                 
                 <div className="p-6 flex flex-col flex-1 relative">
-                  
-                  <div className="absolute -top-10 right-6 bg-card rounded-xl shadow-lg border border-border p-2 text-center min-w-[70px]">
-                    <span className="block text-brand-orange font-bold text-lg leading-none">{new Date(event.startDate).getDate()}</span>
-                    <span className="block text-muted-foreground font-semibold text-xs uppercase">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</span>
+                  {/* Date Badge */}
+                  <div className="absolute -top-10 right-6 bg-card rounded-xl shadow-lg border border-border p-2.5 text-center min-w-[75px] z-10">
+                    <span className="block text-brand-orange font-black text-xl leading-none">{new Date(event.startDate).getDate()}</span>
+                    <span className="block text-muted-foreground font-black text-xs uppercase mt-0.5">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</span>
                   </div>
 
-                  <div className="space-y-4 mb-6 flex-1 pr-16">
+                  <div className="space-y-4 mb-6 flex-1 pr-12">
                     <div>
-                      <h3 className="text-xl font-extrabold text-foreground leading-tight mb-1 group-hover:text-brand-orange transition-colors line-clamp-2">{event.name}</h3>
-                      <p className="text-sm font-semibold text-muted-foreground">{event.club?.name}</p>
+                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-brand-orange transition-colors line-clamp-2">{event.name}</h3>
+                      <p className="text-sm font-semibold text-muted-foreground">{event.club?.name || 'TBA'}</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-sm text-muted-foreground font-medium">
-                      <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-muted-foreground" /> <span className="truncate">{event.venue || 'TBA'}</span></div>
-                      <div className="flex items-center gap-2"><Trophy className="w-4 h-4 text-muted-foreground" /> <span className="truncate">{event.eventType || 'All Breeds'}</span></div>
-                      <div className="flex items-center gap-2"><CreditCard className="w-4 h-4 text-muted-foreground" /> ₹{event.entryFee}</div>
-                      <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-muted-foreground" /> Ends: {formatDate(event.registrationWindowEnd)}</div>
+                    <div className="grid grid-cols-1 gap-y-2 text-sm text-muted-foreground font-semibold">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-brand-orange shrink-0" /> 
+                        <span className="truncate">{event.city ? `${event.city}, ${event.state || ''}` : event.venue || 'TBA'}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Trophy className="w-4 h-4 text-brand-orange shrink-0" /> 
+                        <span className="truncate">{event.type || 'Championship Show'}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-brand-orange shrink-0" /> 
+                        <span>Entry Fee: ₹{event.entryFee}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-brand-orange shrink-0" /> 
+                        <span>Closing Date: {formatDate(event.registrationWindowEnd)}</span>
+                      </div>
                     </div>
                   </div>
                   
@@ -146,15 +262,38 @@ export default function EventsPage() {
                         View Details
                       </Button>
                     </Link>
-                    <Link href={`/dashboard/event-details?slug=${event.id}/register`} className="flex-1">
+                    <Link href={`/register-event?id=${event.id}`} className="flex-1">
                       <Button className="w-full bg-brand-orange hover:bg-orange-600 text-foreground rounded-xl h-12 shadow-md shadow-brand-orange/20 font-bold">
-                        Register Now
+                        Register
                       </Button>
                     </Link>
                   </div>
                 </div>
               </motion.div>
             ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-12">
+            <Button
+              variant="outline"
+              disabled={page === 1}
+              onClick={() => setPage(p => p - 1)}
+              className="border-border text-foreground hover:bg-card"
+            >
+              Previous
+            </Button>
+            <span className="text-sm font-bold text-muted-foreground px-4">Page {page} of {totalPages}</span>
+            <Button
+              variant="outline"
+              disabled={page === totalPages}
+              onClick={() => setPage(p => p + 1)}
+              className="border-border text-foreground hover:bg-card"
+            >
+              Next
+            </Button>
           </div>
         )}
       </div>

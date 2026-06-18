@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   MapPin, Phone, Mail, Award, ChevronLeft, 
-  UserCircle, Star, BookOpen
+  UserCircle, Star
 } from 'lucide-react';
 import { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
@@ -29,15 +29,13 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
   }
 
   const getInitials = (name: string) => {
-    if (!name) return 'J';
-    const parts = name.trim().split(' ');
+    if (!name) return 'JD';
+    const parts = name.split(' ');
     if (parts.length > 1) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      return (parts[0][0] + parts[1][0]).toUpperCase();
     }
     return parts[0].substring(0, 2).toUpperCase();
   };
-
-  const licensedGroups = judge.groups ? String(judge.groups).split(',').map(g => g.trim()) : [];
 
   return (
     <PageContainer>
@@ -60,12 +58,12 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-40 h-40 md:w-56 md:h-56 rounded-full bg-card border-[4px] border-[#020817] shadow-[0_0_0_2px_rgba(245,158,11,0.3)] flex items-center justify-center text-6xl font-bold overflow-hidden shrink-0 relative"
+              className="w-40 h-40 md:w-56 md:h-56 rounded-[20px] md:rounded-[32px] bg-[#f5f5f5] border-[4px] border-[#111827] shadow-[0_8px_20px_rgba(0,0,0,0.12)] flex items-center justify-center text-6xl font-[700] overflow-hidden shrink-0 relative"
             >
               {judge.photoUrl ? (
-                <img src={getImageUrl(judge.photoUrl)} alt={judge.name} className="w-full h-full object-cover" />
+                <img src={getImageUrl(judge.photoUrl)} alt={judge.name} className="w-full h-full object-cover object-center" />
               ) : (
-                <span className="text-muted-foreground">{getInitials(judge.name)}</span>
+                <span className="text-[#64748b] text-[72px]">{getInitials(judge.name)}</span>
               )}
               {judge.isFeatured && (
                 <div className="absolute bottom-2 right-6 bg-[#F59E0B] text-white p-1.5 rounded-full border-2 border-[#020817]">
@@ -80,15 +78,10 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
               transition={{ delay: 0.1 }}
               className="flex-grow"
             >
-              <div className="flex flex-wrap items-center gap-3 mb-3">
+              <div className="flex flex-wrap items-center gap-3 mb-4">
                 <span className="px-3 py-1 bg-[#F59E0B]/20 text-[#F59E0B] rounded-full text-xs font-bold uppercase tracking-wider border border-[#F59E0B]/30 flex items-center gap-1.5">
                   <Award className="w-3.5 h-3.5" /> KCI Approved Judge
                 </span>
-                {judge.experience && (
-                  <span className="px-3 py-1 bg-accent text-muted-foreground rounded-full text-xs font-bold uppercase tracking-wider">
-                    {judge.experience} Exp
-                  </span>
-                )}
               </div>
               
               <h1 className="text-4xl md:text-6xl font-extrabold text-white font-outfit mb-4">{judge.name}</h1>
@@ -120,7 +113,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
           <div className="lg:col-span-2 space-y-8">
             {/* Tabs */}
             <div className="flex overflow-x-auto hide-scrollbar gap-2 border-b border-border pb-px">
-              {['about', 'qualifications', 'groups'].map((tab) => (
+              {['about'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -145,47 +138,6 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                       {judge.bio || 'No biography available for this judge.'}
                     </div>
                   </div>
-                </motion.div>
-              )}
-
-              {activeTab === 'qualifications' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-                  <div>
-                    <h2 className="text-2xl font-bold font-outfit mb-6">Professional Qualifications</h2>
-                    {judge.qualifications || judge.certifications ? (
-                      <div className="p-6 bg-card border border-border rounded-2xl flex items-start gap-4 shadow-sm">
-                        <div className="w-12 h-12 bg-[#F59E0B]/10 rounded-full flex items-center justify-center shrink-0 mt-1">
-                          <BookOpen className="w-6 h-6 text-[#F59E0B]" />
-                        </div>
-                        <div className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                          {judge.qualifications || judge.certifications}
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-muted-foreground italic">No qualifications explicitly listed.</p>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-
-              {activeTab === 'groups' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <h2 className="text-2xl font-bold font-outfit mb-6">Licensed Breed Groups</h2>
-                  
-                  {licensedGroups.length > 0 ? (
-                    <div className="flex flex-wrap gap-3">
-                      {licensedGroups.map((group: string, idx: number) => (
-                        <div key={idx} className="px-5 py-3 rounded-xl bg-card border border-[#F59E0B]/30 shadow-sm flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-[#F59E0B]"></div>
-                          <span className="font-bold text-foreground">{group}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-6 bg-accent/50 rounded-2xl border border-border text-center">
-                      <p className="text-muted-foreground">This judge's licensed groups are not detailed yet. Please contact KCI for specific group licensing information.</p>
-                    </div>
-                  )}
                 </motion.div>
               )}
             </div>
@@ -237,6 +189,14 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                     </li>
                   )}
                 </ul>
+
+                {judge.source && (
+                  <div className="mt-5 pt-4 border-t border-border">
+                    <p className="text-[11px] text-muted-foreground italic leading-relaxed">
+                      📷 {judge.source}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

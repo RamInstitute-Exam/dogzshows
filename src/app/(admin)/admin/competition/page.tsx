@@ -1,6 +1,5 @@
 'use client';
 
-import AdminSidebar from '@/components/shared/AdminSidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Trophy, CheckCircle, XCircle } from 'lucide-react';
@@ -43,9 +42,7 @@ export default function CompetitionEngine() {
   };
 
   return (
-    <div className="flex bg-card">
-      <AdminSidebar />
-      <div className="flex-1 md:ml-64 ">
+    <div className="w-full">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-muted-foregroundxl font-bold text-foreground">Competition Engine</h1>
@@ -122,7 +119,6 @@ export default function CompetitionEngine() {
             </table>
           </CardContent>
         </Card>
-      </div>
     </div>
   );
 }

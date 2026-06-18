@@ -1,0 +1,2034 @@
+
+[
+  {
+    "clubName": "AMRITSAR KENNEL CLUB",
+    "secretaryName": "Mr. Agamjit Singh",
+    "designation": "Hony Secretary",
+    "address": "53, Kennedy Avenue",
+    "city": "Amritsar",
+    "state": "Punjab",
+    "country": "India",
+    "zipcode": "",
+    "phone": "",
+    "mobile": "9814242424",
+    "fax": "",
+    "email": [
+      "asrkennelclub@gmail.com",
+      "agam24@gmail.com"
+    ],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "amritsar-kennel-club"
+  },
+  {
+    "clubName": "AHMEDABAD CANINE CLUB",
+    "secretaryName": "Mr. Nitin Giri Goswami",
+    "designation": "Hony Secretary",
+    "address": "G/F-12, Heera Panna Complex, B/S Trade Centre, Stadium Circle, Navrangpura",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "country": "India",
+    "zipcode": "380009",
+    "phone": "",
+    "mobile": "9712726283",
+    "fax": "",
+    "email": [],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "ahmedabad-canine-club"
+  },
+  {
+    "clubName": "ALLAHABAD KENNEL CLUB",
+    "secretaryName": "Mr. Vibhav Agrahari",
+    "designation": "Hony Secretary",
+    "address": "44, Thornhill Road",
+    "city": "Allahabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "zipcode": "211002",
+    "phone": "0532-2468581",
+    "mobile": "",
+    "fax": "0532-2468579",
+    "email": [
+      "akc.allahabad@gmail.com"
+    ],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "allahabad-kennel-club"
+  },
+  {
+    "clubName": "BANGALORE CANINE CLUB",
+    "secretaryName": "Mr. C. Santosh Kumar",
+    "designation": "Hony Secretary",
+    "address": "No. 122, Mezzanine Floor, Shree Complex, St. Jones Road",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "country": "India",
+    "zipcode": "560042",
+    "phone": "",
+    "mobile": "9035800500",
+    "fax": "",
+    "email": [],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "bangalore-canine-club"
+  },
+  {
+    "clubName": "CALCUTTA CANINE CLUB",
+    "secretaryName": "Mr. Sib Sankar Chatterjee",
+    "designation": "Hony Secretary",
+    "address": "\"Durgapur House\", 46, Durgapur Lane, No.302, 3rd Floor",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "country": "India",
+    "zipcode": "700027",
+    "phone": "033-24499091",
+    "mobile": "9830910048,9433013542",
+    "fax": "",
+    "email": [
+      "ssc@bengalbeverages.com"
+    ],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "calcutta-canine-club"
+  },
+{
+  "clubName": "BOMBAY PRESIDENCY KENNEL CLUB",
+  "secretaryName": "Aziza Tyabji Hydari",
+  "designation": "Vice President",
+  "address": "9, Garden Homes, 15th Road, Khar West",
+  "city": "Mumbai",
+  "state": "Maharashtra",
+  "country": "India",
+  "zipcode": "400052",
+  "phone": "",
+  "mobile": "9820174677",
+  "fax": "",
+  "email": [
+    "kcbombaypresidency@gmail.com"
+  ],
+  "website": "",
+  "description": "",
+  "logo": "",
+  "banner": "",
+  "status": "ACTIVE",
+  "featured": false,
+  "slug": "bombay-presidency-kennel-club"
+},
+{
+  "clubName": "CALCUTTA KENNEL CLUB",
+  "secretaryName": "Mr. S. Raman",
+  "designation": "Hony Secretary",
+  "address": "G-6, Tagore Park, 2nd Floor, 815, Naskarhat",
+  "city": "Kolkata",
+  "state": "West Bengal",
+  "country": "India",
+  "zipcode": "700039",
+  "phone": "033-24030642",
+  "mobile": "9830062160",
+  "fax": "033-24030642",
+  "email": [
+    "calcuttakennelclub@gmail.com"
+  ],
+  "website": "",
+  "description": "",
+  "logo": "",
+  "banner": "",
+  "status": "ACTIVE",
+  "featured": false,
+  "slug": "calcutta-kennel-club"
+},
+{
+  "clubName": "CHANDIGARH KENNEL CLUB",
+  "secretaryName": "H. S. Aulakh",
+  "designation": "Hony Secretary",
+  "address": "Bungalow No. 320, Sector 35-A",
+  "city": "Chandigarh",
+  "state": "Chandigarh",
+  "country": "India",
+  "zipcode": "160022",
+  "phone": "",
+  "mobile": "9888881939",
+  "fax": "",
+  "email": [
+    "hsaulakh35@rediffmail.com"
+  ],
+  "website": "",
+  "description": "",
+  "logo": "",
+  "banner": "",
+  "status": "ACTIVE",
+  "featured": false,
+  "slug": "chandigarh-kennel-club"
+},
+{
+  "clubName": "THE CANINE CLUB OF COCHIN",
+  "secretaryName": "Adv. Vineeth R. Menon",
+  "designation": "Hony Secretary",
+  "address": "F-2103, JNI Stadium, Kaloor",
+  "city": "Cochin",
+  "state": "Kerala",
+  "country": "India",
+  "zipcode": "682017",
+  "phone": "0484-4026101",
+  "mobile": "9048888808,8281649808",
+  "fax": "",
+  "email": [
+    "canineclubcochin@gmail.com"
+  ],
+  "website": "",
+  "description": "",
+  "logo": "",
+  "banner": "",
+  "status": "ACTIVE",
+  "featured": false,
+  "slug": "the-canine-club-of-cochin"
+},
+{
+  "clubName": "DOON VALLEY KENNEL CLUB",
+  "secretaryName": "Mr. Navneet Chaudhary",
+  "designation": "Hony Show Secretary",
+  "address": "\"Santosh Villa\", Tapovan Enclave, Near NCC Group Headquarters, Nalapani Road",
+  "city": "Dehradun",
+  "state": "Uttarakhand",
+  "country": "India",
+  "zipcode": "248001",
+  "phone": "",
+  "mobile": "9897056527",
+  "fax": "",
+  "email": [],
+  "website": "",
+  "description": "",
+  "logo": "",
+  "banner": "",
+  "status": "ACTIVE",
+  "featured": false,
+  "slug": "doon-valley-kennel-club"
+},
+
+
+{
+
+  "clubName": "GUWAHATI KENNEL CLUB",
+
+  "secretaryName": "Dr. Kishore Sharma",
+
+  "designation": "Hony Secretary",
+
+  "address": "1st Floor, Jayanta Commercial Center, Pachavati, GNB Road",
+
+  "city": "Guwahati",
+
+  "state": "Assam",
+
+  "country": "India",
+
+  "zipcode": "781003",
+
+  "phone": "0361-2666309",
+
+  "mobile": "",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "guwahati-kennel-club"
+
+},
+
+{
+
+  "clubName": "GUJARAT KENNEL CLUB",
+
+  "secretaryName": "Mr. R. M. Salvi",
+
+  "designation": "President",
+
+  "address": "\"Shama\", 44, Anandvan Society No. 02, B/H Vrundavan Nagar, Post Sama Road",
+
+  "city": "Vadodara",
+
+  "state": "Gujarat",
+
+  "country": "India",
+
+  "zipcode": "390024",
+
+  "phone": "0265-2780282",
+
+  "mobile": "9825388982",
+
+  "fax": "",
+
+  "email": [
+
+    "rmsalvi@yahoo.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "gujarat-kennel-club"
+
+},
+
+{
+
+  "clubName": "HYDERABAD CANINE CLUB",
+
+  "secretaryName": "Mr. Philip Butt",
+
+  "designation": "Hony Secretary",
+
+  "address": "S628, Commando Farms, Deveryamjal",
+
+  "city": "Hyderabad",
+
+  "state": "Telangana",
+
+  "country": "India",
+
+  "zipcode": "500078",
+
+  "phone": "",
+
+  "mobile": "9394022802",
+
+  "fax": "",
+
+  "email": [
+
+    "philip@commandokennels.net.in"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "hyderabad-canine-club"
+
+},
+
+{
+
+  "clubName": "JAMSHEDPUR KENNEL CLUB",
+
+  "secretaryName": "Mr. Ranjan Kumar Singh",
+
+  "designation": "Hony Secretary",
+
+  "address": "Road No. 7, B.H. Area, Kadma",
+
+  "city": "Jamshedpur",
+
+  "state": "Jharkhand",
+
+  "country": "India",
+
+  "zipcode": "831005",
+
+  "phone": "0657-2301335",
+
+  "mobile": "9234500229",
+
+  "fax": "",
+
+  "email": [
+
+    "jamshedpurkennelclub@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "jamshedpur-kennel-club"
+
+},
+
+{
+
+  "clubName": "KENNEL ASSOCIATION OF GOA",
+
+  "secretaryName": "Mr. Steve Almeida",
+
+  "designation": "Vice President",
+
+  "address": "291-C, Martindom Uddo-Laxette, Varca, Salcete",
+
+  "city": "Goa",
+
+  "state": "Goa",
+
+  "country": "India",
+
+  "zipcode": "403721",
+
+  "phone": "",
+
+  "mobile": "9823033565,8600741209",
+
+  "fax": "",
+
+  "email": [
+
+    "Steve.Almeida@marriotthotels.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "kennel-association-of-goa"
+
+},
+
+
+{
+
+  "clubName": "KOTTAYAM KENNEL CLUB",
+
+  "secretaryName": "Mr. George Jacob",
+
+  "designation": "Hony Secretary",
+
+  "address": "Purackal Honda, Purackal Arcade, Manipuzha, Nattakom PO",
+
+  "city": "Kottayam",
+
+  "state": "Kerala",
+
+  "country": "India",
+
+  "zipcode": "686013",
+
+  "phone": "0481-2361004",
+
+  "mobile": "9847057059",
+
+  "fax": "",
+
+  "email": [
+
+    "kochumon@purackalmotors.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "kottayam-kennel-club"
+
+},
+
+{
+
+  "clubName": "KANYAKUMARI KENNEL CLUB",
+
+  "secretaryName": "Mrs. S. Parvathi Vijayakumar",
+
+  "designation": "Hony Secretary",
+
+  "address": "VIII: 9/58, Subramaniapuram, Theroor PO",
+
+  "city": "Kanyakumari",
+
+  "state": "Tamil Nadu",
+
+  "country": "India",
+
+  "zipcode": "629704",
+
+  "phone": "04652-242628",
+
+  "mobile": "9486325459",
+
+  "fax": "",
+
+  "email": [
+
+    "facebook@kanyakumarikennelclub.com"
+
+  ],
+
+  "website": "www.kanyakumarikennelclub.com",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "kanyakumari-kennel-club"
+
+},
+
+{
+
+  "clubName": "KENNEL CLUB OF MAHAKAUSHAL",
+
+  "secretaryName": "Dr. Ankur Choudhary",
+
+  "designation": "Hony Secretary",
+
+  "address": "307, Abirama, Shastri Bridge, Ramlala Mandir Road, Napier Town",
+
+  "city": "Jabalpur",
+
+  "state": "Madhya Pradesh",
+
+  "country": "India",
+
+  "zipcode": "482001",
+
+  "phone": "0781-4048070",
+
+  "mobile": "9893758574,9827393535",
+
+  "fax": "",
+
+  "email": [
+
+    "ankurak46@yahoo.co.in"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "kennel-club-of-mahakaushal"
+
+},
+
+{
+
+  "clubName": "LUDHIANA KENNEL CLUB",
+
+  "secretaryName": "Mr. Inderpal Singh Dhaliwal",
+
+  "designation": "Hony Secretary",
+
+  "address": "1033, Punjab Mata Nagar, Pakhowal Road",
+
+  "city": "Ludhiana",
+
+  "state": "Punjab",
+
+  "country": "India",
+
+  "zipcode": "",
+
+  "phone": "",
+
+  "mobile": "9872018858",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "ludhiana-kennel-club"
+
+},
+
+{
+
+  "clubName": "MADRAS CANINE CLUB",
+
+  "secretaryName": "Mr. S. Siddhartha",
+
+  "designation": "Hony Secretary",
+
+  "address": "Old No. 51, 7th Cross Street, Shenoy Nagar",
+
+  "city": "Chennai",
+
+  "state": "Tamil Nadu",
+
+  "country": "India",
+
+  "zipcode": "600030",
+
+  "phone": "044-26260693",
+
+  "mobile": "9092524298",
+
+  "fax": "",
+
+  "email": [
+
+    "secretarymcc2017@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "madras-canine-club"
+
+},
+
+
+{
+
+  "clubName": "MADURAI CANINE CLUB",
+
+  "secretaryName": "Mr. S. Ramanathan",
+
+  "designation": "Hony Secretary",
+
+  "address": "Plot No. 403, K.K. Nagar",
+
+  "city": "Madurai",
+
+  "state": "Tamil Nadu",
+
+  "country": "India",
+
+  "zipcode": "625020",
+
+  "phone": "",
+
+  "mobile": "9842181000",
+
+  "fax": "",
+
+  "email": [
+
+    "rottie_rams@yahoo.co.in"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "madurai-canine-club"
+
+},
+
+{
+
+  "clubName": "SILICON CITY KENNEL CLUB",
+
+  "secretaryName": "Dr. R. Narendra",
+
+  "designation": "Hony Secretary",
+
+  "address": "No. 131/A, Virupakshapura, Next to Anjaneya Temple, Vidyaranyapura PO",
+
+  "city": "Bangalore",
+
+  "state": "Karnataka",
+
+  "country": "India",
+
+  "zipcode": "560097",
+
+  "phone": "",
+
+  "mobile": "9972096168",
+
+  "fax": "",
+
+  "email": [
+
+    "drnarenvet@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "silicon-city-kennel-club"
+
+},
+
+{
+
+  "clubName": "NAGPUR CANINE CLUB",
+
+  "secretaryName": "Mr. Gaurav Goyal",
+
+  "designation": "Hony Secretary",
+
+  "address": "\"Sheelanand\", Plot No. 156, New Nakasha, Near Qidwai Ground",
+
+  "city": "Nagpur",
+
+  "state": "Maharashtra",
+
+  "country": "India",
+
+  "zipcode": "440017",
+
+  "phone": "",
+
+  "mobile": "9850754911",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "nagpur-canine-club"
+
+},
+
+{
+
+  "clubName": "NORTH CALCUTTA KENNEL CLUB",
+
+  "secretaryName": "Mr. Pallab Saha",
+
+  "designation": "Hony Secretary",
+
+  "address": "Ashinandan Apartment, TG-2/14/B, Kalupukur, Teghoria",
+
+  "city": "Kolkata",
+
+  "state": "West Bengal",
+
+  "country": "India",
+
+  "zipcode": "700157",
+
+  "phone": "",
+
+  "mobile": "9830634777,9330732737",
+
+  "fax": "",
+
+  "email": [
+
+    "northcalcuttakennelclubcss@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "north-calcutta-kennel-club"
+
+},
+
+{
+
+  "clubName": "ORISSA KENNEL CLUB",
+
+  "secretaryName": "Mr. Siddhartha Mohanty",
+
+  "designation": "Hony Secretary",
+
+  "address": "65, Forest Park, Budheswari Area",
+
+  "city": "Bhubaneswar",
+
+  "state": "Odisha",
+
+  "country": "India",
+
+  "zipcode": "751009",
+
+  "phone": "",
+
+  "mobile": "9437002910,9437076888",
+
+  "fax": "",
+
+  "email": [
+
+    "okc.india@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "orissa-kennel-club"
+
+},
+
+ 
+
+{
+
+  "clubName": "OUDH KENNEL CLUB",
+
+  "secretaryName": "Mr. Shashank Trivedi",
+
+  "designation": "Hony Secretary",
+
+  "address": "C-784, Sector C, Mahanagar",
+
+  "city": "Lucknow",
+
+  "state": "Uttar Pradesh",
+
+  "country": "India",
+
+  "zipcode": "226004",
+
+  "phone": "0522-4066179",
+
+  "mobile": "9415020510",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "oudh-kennel-club"
+
+},
+
+{
+
+  "clubName": "PALGHAT KENNEL CLUB",
+
+  "secretaryName": "Mr. Vijayakrishnan P. N.",
+
+  "designation": "Hony Secretary",
+
+  "address": "Santha Nivas, Nellissery, Vadakkanthara PO",
+
+  "city": "Palakkad",
+
+  "state": "Kerala",
+
+  "country": "India",
+
+  "zipcode": "678012",
+
+  "phone": "",
+
+  "mobile": "9746006199",
+
+  "fax": "",
+
+  "email": [
+
+    "palghatkennelclub@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "palghat-kennel-club"
+
+},
+
+{
+
+  "clubName": "PATIALA KENNEL CLUB",
+
+  "secretaryName": "Mr. G. P. Singh Brar",
+
+  "designation": "Secretary General",
+
+  "address": "#14-B, Hira Nagar",
+
+  "city": "Patiala",
+
+  "state": "Punjab",
+
+  "country": "India",
+
+  "zipcode": "147001",
+
+  "phone": "0175-2215741",
+
+  "mobile": "9855205888",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "patiala-kennel-club"
+
+},
+
+{
+
+  "clubName": "POONA KENNEL CONFEDERATION",
+
+  "secretaryName": "Mr. Sanjay Desai",
+
+  "designation": "President",
+
+  "address": "3rd Floor, Atur Chambers, 2-A, Dr. Babasaheb Ambedkar Road",
+
+  "city": "Pune",
+
+  "state": "Maharashtra",
+
+  "country": "India",
+
+  "zipcode": "411001",
+
+  "phone": "020-71008117,020-71108112",
+
+  "mobile": "",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "poona-kennel-confederation"
+
+},
+
+{
+
+  "clubName": "SOUTH OF INDIA KENNEL CLUB",
+
+  "secretaryName": "Mr. Motesh M",
+
+  "designation": "Hony Secretary",
+
+  "address": "Guild of Service School Building, 50C, Old Garden Road",
+
+  "city": "Ooty",
+
+  "state": "Tamil Nadu",
+
+  "country": "India",
+
+  "zipcode": "643001",
+
+  "phone": "",
+
+  "mobile": "7010714853",
+
+  "fax": "",
+
+  "email": [
+
+    "sikc.ooty@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "south-of-india-kennel-club"
+
+},
+
+ 
+
+{
+
+  "clubName": "OUDH KENNEL CLUB",
+
+  "secretaryName": "Mr. Shashank Trivedi",
+
+  "designation": "Hony Secretary",
+
+  "address": "C-784, Sector C, Mahanagar",
+
+  "city": "Lucknow",
+
+  "state": "Uttar Pradesh",
+
+  "country": "India",
+
+  "zipcode": "226004",
+
+  "phone": "0522-4066179",
+
+  "mobile": "9415020510",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "oudh-kennel-club"
+
+},
+
+{
+
+  "clubName": "PALGHAT KENNEL CLUB",
+
+  "secretaryName": "Mr. Vijayakrishnan P. N.",
+
+  "designation": "Hony Secretary",
+
+  "address": "Santha Nivas, Nellissery, Vadakkanthara PO",
+
+  "city": "Palakkad",
+
+  "state": "Kerala",
+
+  "country": "India",
+
+  "zipcode": "678012",
+
+  "phone": "",
+
+  "mobile": "9746006199",
+
+  "fax": "",
+
+  "email": [
+
+    "palghatkennelclub@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "palghat-kennel-club"
+
+},
+
+{
+
+  "clubName": "PATIALA KENNEL CLUB",
+
+  "secretaryName": "Mr. G. P. Singh Brar",
+
+  "designation": "Secretary General",
+
+  "address": "#14-B, Hira Nagar",
+
+  "city": "Patiala",
+
+  "state": "Punjab",
+
+  "country": "India",
+
+  "zipcode": "147001",
+
+  "phone": "0175-2215741",
+
+  "mobile": "9855205888",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "patiala-kennel-club"
+
+},
+
+{
+
+  "clubName": "POONA KENNEL CONFEDERATION",
+
+  "secretaryName": "Mr. Sanjay Desai",
+
+  "designation": "President",
+
+  "address": "3rd Floor, Atur Chambers, 2-A, Dr. Babasaheb Ambedkar Road",
+
+  "city": "Pune",
+
+  "state": "Maharashtra",
+
+  "country": "India",
+
+  "zipcode": "411001",
+
+  "phone": "020-71008117,020-71108112",
+
+  "mobile": "",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "poona-kennel-confederation"
+
+},
+
+{
+
+  "clubName": "SOUTH OF INDIA KENNEL CLUB",
+
+  "secretaryName": "Mr. Motesh M",
+
+  "designation": "Hony Secretary",
+
+  "address": "Guild of Service School Building, 50C, Old Garden Road",
+
+  "city": "Ooty",
+
+  "state": "Tamil Nadu",
+
+  "country": "India",
+
+  "zipcode": "643001",
+
+  "phone": "",
+
+  "mobile": "7010714853",
+
+  "fax": "",
+
+  "email": [
+
+    "sikc.ooty@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "south-of-india-kennel-club"
+
+},
+ 
+
+{
+
+  "clubName": "THE LABRADOR RETRIEVER CLUB OF INDIA",
+
+  "secretaryName": "Mr. T. Preetham",
+
+  "designation": "Hony Secretary",
+
+  "address": "No. 199, 9th Main, 9th Cross, BEML Layout, 3rd Stage, Rajarajeshwari Nagar",
+
+  "city": "Bangalore",
+
+  "state": "Karnataka",
+
+  "country": "India",
+
+  "zipcode": "560098",
+
+  "phone": "9844038608",
+
+  "mobile": "",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "the-labrador-retriever-club-of-india"
+
+},
+
+{
+
+  "clubName": "THE GOLDEN RETRIEVER CLUB (INDIA)",
+
+  "secretaryName": "Mr. T. K. Chandrashekar",
+
+  "designation": "Hony Secretary",
+
+  "address": "No. 325, 2nd South Main Road, Sri Kapaleeswarar Nagar, Neelangarai",
+
+  "city": "Chennai",
+
+  "state": "Tamil Nadu",
+
+  "country": "India",
+
+  "zipcode": "600115",
+
+  "phone": "",
+
+  "mobile": "9840098488",
+
+  "fax": "",
+
+  "email": [
+
+    "goldieclub2002@yahoo.com",
+
+    "Chandru28@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "the-golden-retriever-club-india"
+
+},
+
+{
+
+  "clubName": "GREAT DANE CLUB OF INDIA",
+
+  "secretaryName": "Ms. Gauri Nargolkar",
+
+  "designation": "Hony Secretary",
+
+  "address": "\"Renaissance\", Office No. 101, 1277A, J.M. Road",
+
+  "city": "Pune",
+
+  "state": "Maharashtra",
+
+  "country": "India",
+
+  "zipcode": "411004",
+
+  "phone": "",
+
+  "mobile": "9860052704",
+
+  "fax": "",
+
+  "email": [
+
+    "greatdaneclubindia@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "great-dane-club-of-india"
+
+},
+
+{
+
+  "clubName": "ROTTWEILER CLUB OF INDIA",
+
+  "secretaryName": "Mr. Ankit Chhibber",
+
+  "designation": "General Secretary",
+
+  "address": "Faridkot Road, Kotkapura, District Faridkot",
+
+  "city": "Kotkapura",
+
+  "state": "Punjab",
+
+  "country": "India",
+
+  "zipcode": "151204",
+
+  "phone": "",
+
+  "mobile": "7508585856",
+
+  "fax": "",
+
+  "email": [
+
+    "chhibberkennels@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "rottweiler-club-of-india"
+
+},
+
+{
+
+  "clubName": "DACHSHUND SPECIALITY CLUB",
+
+  "secretaryName": "Mr. Motesh",
+
+  "designation": "Hony Secretary",
+
+  "address": "99, Burn Foot, Coonoor Road",
+
+  "city": "Ooty",
+
+  "state": "Tamil Nadu",
+
+  "country": "India",
+
+  "zipcode": "643001",
+
+  "phone": "",
+
+  "mobile": "9976757171",
+
+  "fax": "",
+
+  "email": [
+
+    "dachshundspecialityclub@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "dachshund-speciality-club"
+
+},
+ 
+
+{
+
+  "clubName": "KENNEL ASSOCIATION OF GADHINGLAJ",
+
+  "secretaryName": "Mr. Mahesh Kori",
+
+  "designation": "Hony Secretary",
+
+  "address": "\"Suraj\", Church Road, Gandhi Nagar",
+
+  "city": "Gadhinglaj",
+
+  "state": "Maharashtra",
+
+  "country": "India",
+
+  "zipcode": "416502",
+
+  "phone": "",
+
+  "mobile": "9545734606",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "kennel-association-of-gadhinglaj"
+
+},
+
+{
+
+  "clubName": "KAKATHIYA KENNEL ASSOCIATION",
+
+  "secretaryName": "Mr. V. Ramana Reddy",
+
+  "designation": "Hony Secretary",
+
+  "address": "H.No. 1-7-1212, Advocates Colony, Balasamudram, Hanamkonda",
+
+  "city": "Warangal",
+
+  "state": "Telangana",
+
+  "country": "India",
+
+  "zipcode": "506001",
+
+  "phone": "",
+
+  "mobile": "9866226234,9394226235",
+
+  "fax": "",
+
+  "email": [],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "kakathiya-kennel-association"
+
+},
+
+{
+
+  "clubName": "KOLLAM KENNEL CLUB",
+
+  "secretaryName": "Dr. B. Aravind",
+
+  "designation": "Hony Secretary",
+
+  "address": "Brahmaswam, Amman Nagar 137A, Pattathanam",
+
+  "city": "Kollam",
+
+  "state": "Kerala",
+
+  "country": "India",
+
+  "zipcode": "691021",
+
+  "phone": "",
+
+  "mobile": "9847120119",
+
+  "fax": "",
+
+  "email": [
+
+    "kollamkennelclub@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "kollam-kennel-club"
+
+},
+
+{
+
+  "clubName": "KARAVALI CANINE CLUB",
+
+  "secretaryName": "Mr. Suhas Shetty K",
+
+  "designation": "Hony Secretary",
+
+  "address": "Padma, 76, No. 5/7882, NGO Colony, Bailoor 6th Cross",
+
+  "city": "Udupi",
+
+  "state": "Karnataka",
+
+  "country": "India",
+
+  "zipcode": "576101",
+
+  "phone": "",
+
+  "mobile": "9901728045",
+
+  "fax": "",
+
+  "email": [
+
+    "karavalicanineclub2023@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "karavali-canine-club"
+
+},
+
+{
+
+  "clubName": "CANINE CLUB OF MYSORE",
+
+  "secretaryName": "Mr. B. P. Manjunath",
+
+  "designation": "President",
+
+  "address": "#269, D-1, Lakshmi Vilas Road, Near Jaganmohan Palace, Devaraja Mohalla",
+
+  "city": "Mysuru",
+
+  "state": "Karnataka",
+
+  "country": "India",
+
+  "zipcode": "570004",
+
+  "phone": "",
+
+  "mobile": "9844079165",
+
+  "fax": "",
+
+  "email": [
+
+    "canineclubofmysore@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "canine-club-of-mysore"
+
+},
+
+ 
+
+{
+
+  "clubName": "SOCIETY FOR INDIAN BREEDS OF DOGS",
+
+  "secretaryName": "Dr. D. T. Jayaramaiah",
+
+  "designation": "President",
+
+  "address": "No. 642, 4th Cross, I-Block, Ramakrishna Nagar",
+
+  "city": "Mysuru",
+
+  "state": "Karnataka",
+
+  "country": "India",
+
+  "zipcode": "570022",
+
+  "phone": "",
+
+  "mobile": "9448643250",
+
+  "fax": "",
+
+  "email": [
+
+    "jayaram.vet@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "society-for-indian-breeds-of-dogs"
+
+},
+
+{
+
+  "clubName": "CAPITAL KENNEL CLUB",
+
+  "secretaryName": "Mr. Shyam Mehta",
+
+  "designation": "Hony Secretary",
+
+  "address": "619 B, Hamilton Court, DLF Phase-IV",
+
+  "city": "Gurgaon",
+
+  "state": "Haryana",
+
+  "country": "India",
+
+  "zipcode": "122002",
+
+  "phone": "",
+
+  "mobile": "8130588771",
+
+  "fax": "",
+
+  "email": [
+
+    "nextstep2662@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "capital-kennel-club"
+
+},
+
+{
+
+  "clubName": "CHHATTISGARH KENNEL CLUB",
+
+  "secretaryName": "Dr. T. Mitra",
+
+  "designation": "Hony Secretary",
+
+  "address": "North Vasundhara Nagar, Nagar Palika Road, In Front of Kanya Shala, PO Bhilai-3, District Durg",
+
+  "city": "Bhilai",
+
+  "state": "Chhattisgarh",
+
+  "country": "India",
+
+  "zipcode": "490021",
+
+  "phone": "",
+
+  "mobile": "9229862074,9826174338",
+
+  "fax": "",
+
+  "email": [
+
+    "turbasu_bhi@yahoo.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "chhattisgarh-kennel-club"
+
+},
+
+{
+
+  "clubName": "PUDUCHERRY CANINE CLUB",
+
+  "secretaryName": "Mr. Dominique Royal R",
+
+  "designation": "Hony Secretary",
+
+  "address": "No. 43, Kannia Koil Street, Bahour",
+
+  "city": "Puducherry",
+
+  "state": "Puducherry",
+
+  "country": "India",
+
+  "zipcode": "607402",
+
+  "phone": "",
+
+  "mobile": "9786932145",
+
+  "fax": "",
+
+  "email": [
+
+    "sunilv.dom@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "puducherry-canine-club"
+
+},
+
+{
+
+  "clubName": "PUNE CITY CANINE ASSOCIATION",
+
+  "secretaryName": "Mr. Mahesh Amale",
+
+  "designation": "Hony Secretary",
+
+  "address": "\"Renaissance\", 1st Floor, 1277-A, Jangli Maharaj Road, Above United Colors of Benetton",
+
+  "city": "Pune",
+
+  "state": "Maharashtra",
+
+  "country": "India",
+
+  "zipcode": "411004",
+
+  "phone": "",
+
+  "mobile": "9860113999",
+
+  "fax": "",
+
+  "email": [
+
+    "punecitycanine@gmail.com"
+
+  ],
+
+  "website": "",
+
+  "description": "",
+
+  "logo": "",
+
+  "banner": "",
+
+  "status": "ACTIVE",
+
+  "featured": false,
+
+  "slug": "pune-city-canine-association"
+
+}
+
+]

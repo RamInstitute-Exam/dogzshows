@@ -8,7 +8,7 @@ import { getClubBySlug, getAllClubs } from '@/lib/server-api';
 
 function ClubDetailPageContent() {
   const searchParams = useSearchParams();
-  const paramVal = searchParams.get('id');
+  const paramVal = searchParams.get('slug');
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 

@@ -18,17 +18,17 @@ export default function RegisterJudgeForm() {
     name: '',
     email: '',
     phone: '',
+    mobile: '',
     gender: 'MALE',
     address: '',
     zipCode: '',
     city: '',
     state: '',
     country: 'India',
-    experience: '',
     bio: '',
     specialization: '',
-    certifications: '',
     photoUrl: '',
+    source: '',
     status: 'ACTIVE',
     isFeatured: false
   });
@@ -84,8 +84,7 @@ export default function RegisterJudgeForm() {
     setLoading(true);
     try {
       const payload = {
-        ...formData,
-        experience: formData.experience ? String(formData.experience) : '0'
+        ...formData
       };
       const res = await api.post('/judges', payload);
       if (res.success) {
@@ -104,7 +103,7 @@ export default function RegisterJudgeForm() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4 pb-8">
+    <div className="w-full max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-6 space-y-6">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-card px-6 py-4 rounded-2xl border border-border shadow-md">
         <div className="flex items-center gap-4">
@@ -124,77 +123,80 @@ export default function RegisterJudgeForm() {
         </Button>
       </div>
 
-      <div className="space-y-4">
-        {/* Profile Image Section */}
-        <div className="bg-card p-6 rounded-2xl border border-border shadow-xl flex flex-col items-center justify-center">
-          <ImageUploader
-            currentImage={formData.photoUrl}
-            onUploadSuccess={(url) => setFormData(prev => ({ ...prev, photoUrl: url }))}
-            onRemove={() => setFormData(prev => ({ ...prev, photoUrl: '' }))}
-            folder="judges"
-            label=""
-            aspectRatio={4/5}
-            helpText="PNG • JPG • WEBP. Max 10 MB."
-            dropzoneClassName="w-[160px] md:w-[180px] lg:w-[220px] aspect-[4/5] rounded-[12px] border-2 border-dashed border-yellow-500/50 hover:border-yellow-500 bg-card/50 hover:bg-card shadow-md p-4 flex flex-col items-center justify-center cursor-pointer transition-all text-center mx-auto"
-            previewClassName="w-[160px] md:w-[180px] lg:w-[220px] aspect-[4/5] rounded-[12px] border-2 border-yellow-500 shadow-md overflow-hidden relative group bg-card mx-auto"
-            imageClassName="w-full h-full object-cover"
-          />
-          <h3 className="font-bold text-foreground mt-4 text-lg">Judge Profile Portrait</h3>
-          <p className="text-xs text-muted-foreground text-center mt-1">This will be the visual identity of the judge profile.</p>
-        </div>
+      <div className="space-y-6">
+        
+        {/* Top Section: Photo + Basic Info */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Profile Image Section */}
+          <div className="bg-card p-6 rounded-2xl border border-border shadow-xl flex flex-col items-center justify-center xl:col-span-1">
+            <ImageUploader
+              currentImage={formData.photoUrl}
+              onUploadSuccess={(url) => setFormData(prev => ({ ...prev, photoUrl: url }))}
+              onRemove={() => setFormData(prev => ({ ...prev, photoUrl: '' }))}
+              folder="judges"
+              label=""
+              aspectRatio={4/5}
+              helpText="PNG • JPG • WEBP. Max 10 MB."
+              dropzoneClassName="w-[160px] md:w-[180px] lg:w-[220px] aspect-[4/5] rounded-[12px] border-2 border-dashed border-yellow-500/50 hover:border-yellow-500 bg-card/50 hover:bg-card shadow-md p-4 flex flex-col items-center justify-center cursor-pointer transition-all text-center mx-auto"
+              previewClassName="w-[160px] md:w-[180px] lg:w-[220px] aspect-[4/5] rounded-[12px] border-2 border-yellow-500 shadow-md overflow-hidden relative group bg-card mx-auto"
+              imageClassName="w-full h-full object-cover"
+            />
+            <h3 className="font-bold text-foreground mt-4 text-lg">Judge Profile Portrait</h3>
+            <p className="text-xs text-muted-foreground text-center mt-1">This will be the visual identity of the judge profile.</p>
+          </div>
 
-        {/* Identity & Credentials */}
-        <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
-          <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
-            <User className="w-5 h-5 text-blue-500" /> Account & Personal Details
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Full Name *</label>
-              <input required type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="E.g. Dr. John Doe" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Email Address (Optional)</label>
-              <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="E.g. johndoe@gmail.com" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Phone Number</label>
-              <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="E.g. +919876543210" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Gender</label>
-              <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm">
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
-              </select>
+          {/* Identity & Credentials */}
+          <div className="bg-card p-6 rounded-2xl border border-border shadow-xl xl:col-span-2 space-y-4">
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
+              <User className="w-5 h-5 text-blue-500" /> Account & Personal Details
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Full Name *</label>
+                <input required type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="E.g. Dr. John Doe" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Email Address (Optional)</label>
+                <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="E.g. johndoe@gmail.com" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Mobile Number</label>
+                <input type="text" name="mobile" value={formData.mobile || ''} onChange={handleInputChange} placeholder="E.g. 9876543210" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Gender</label>
+                <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm">
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Biography & Experience */}
+        {/* Biography & Specialization */}
         <div className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
-            <Award className="w-5 h-5 text-blue-500" /> Biography & Professional Experience
+            <Award className="w-5 h-5 text-blue-500" /> Biography & Professional Details
           </h2>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Specialization</label>
                 <input type="text" name="specialization" value={formData.specialization} onChange={handleInputChange} placeholder="E.g. Golden Retrievers, Toy Breeds" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
-              <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Years of Judging Experience</label>
-                <input type="number" name="experience" value={formData.experience} onChange={handleInputChange} placeholder="E.g. 12" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
-              </div>
             </div>
-            <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Certifications / Licenses</label>
-              <input type="text" name="certifications" value={formData.certifications} onChange={handleInputChange} placeholder="E.g. FCI License #492, AKC All Breed Certification" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
-            </div>
+
             <div>
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Biography / Summary</label>
               <textarea name="bio" value={formData.bio} onChange={handleInputChange} rows={4} placeholder="Describe the judge's professional career..." className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm leading-relaxed" />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Source / Content Provider <span className="text-muted-foreground font-normal normal-case tracking-normal">(Optional)</span></label>
+              <input type="text" name="source" value={formData.source} onChange={handleInputChange} placeholder="e.g. KCI India, Westminster Kennel Club, Photo Courtesy: John Smith" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+              <p className="text-xs text-muted-foreground mt-1.5">Used for photo credits or content attribution displayed on the public profile.</p>
             </div>
           </div>
         </div>
@@ -204,8 +206,8 @@ export default function RegisterJudgeForm() {
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-4">
             <MapPin className="w-5 h-5 text-blue-500" /> Location Information
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="md:col-span-2 lg:col-span-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+            <div className="md:col-span-2 2xl:col-span-1">
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">ZIP / Postal Code</label>
               <input type="text" name="zipCode" value={formData.zipCode} onChange={handleZipChange} placeholder="E.g. 641001" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               {formData.city && formData.state && (
@@ -214,7 +216,7 @@ export default function RegisterJudgeForm() {
                 </p>
               )}
             </div>
-            <div className="md:col-span-2 lg:col-span-1">
+            <div className="md:col-span-2 2xl:col-span-2">
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Street Address</label>
               <input type="text" name="address" value={formData.address} onChange={handleInputChange} placeholder="E.g. Apartment, Road, Landmark" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
             </div>
@@ -238,7 +240,7 @@ export default function RegisterJudgeForm() {
           <h3 className="font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
             <Shield className="w-5 h-5 text-blue-500" /> Platform Configuration
           </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
             <div>
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Status</label>
               <select name="status" value={formData.status} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none text-sm font-semibold">
