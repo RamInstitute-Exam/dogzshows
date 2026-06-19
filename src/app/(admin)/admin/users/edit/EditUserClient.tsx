@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, UploadCloud, Shield, CheckCircle, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -135,10 +136,9 @@ export default function EditUserForm() {
               <p className="text-muted-foreground text-sm mt-1">Modify account details and role access.</p>
             </div>
           </div>
-          <Button onClick={handleSubmit} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold px-6">
-            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          <AdminButton onClick={handleSubmit} loading={saving} variant="primary" leftIcon={saving ? undefined : <Save className="w-4 h-4" />}>
             Save Changes
-          </Button>
+          </AdminButton>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

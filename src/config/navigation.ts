@@ -60,6 +60,10 @@ export const ADMIN_ROUTES = [
   ]},
   { name: 'CMS', icon: LayoutTemplate, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
     { name: 'Homepage Banner', href: '/admin/cms/homepage-banners' },
+    { name: 'Homepage Show Photos', href: '/admin/cms/show-photos' },
+    { name: 'Homepage Outdoor Photos', href: '/admin/cms/outdoor-photos' },
+    { name: 'Sliding Photo Sections', href: '/admin/cms/sliding-sections' },
+    { name: 'About Home Section', href: '/admin/cms/about' },
     { name: 'Featured Sections', href: '/admin/cms/featured' },
     { name: 'SEO', href: '/admin/cms/seo' },
     { name: 'Footer', href: '/admin/cms/footer' },

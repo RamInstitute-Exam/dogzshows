@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { useGlobalCMS } from '@/hooks/useCMS';
+import PublicContainer from '@/components/layout/PublicContainer';
 
 export default function Footer() {
   const { data } = useGlobalCMS();
@@ -46,7 +47,7 @@ export default function Footer() {
     <footer 
       className="w-full relative z-10 overflow-hidden border-t border-border bg-white dark:bg-[#0A0A0A]"
     >
-      <div className="w-full max-w-[1440px] mx-auto pt-[80px] pb-[40px] px-6 sm:px-10">
+      <PublicContainer className="pt-[80px] pb-[40px]">
 
         {/* HEADER */}
         <div className="flex flex-col lg:flex-row justify-between items-center gap-6 mb-12 pb-12 border-b border-border">
@@ -78,7 +79,7 @@ export default function Footer() {
             ))}
             <Link 
               href="/login" 
-              className="w-full sm:w-auto mt-4 sm:mt-0 bg-[#F4C542] hover:bg-yellow-400 text-black px-8 h-[42px] rounded-full flex items-center justify-center font-bold text-sm shadow-[0_0_15px_rgba(244,197,66,0.3)] transition-all"
+              className="w-full sm:w-auto mt-4 sm:mt-0 bg-primary hover:opacity-90 text-primary-foreground px-8 h-[42px] rounded-full flex items-center justify-center font-bold text-sm shadow-md transition-all"
             >
               Login
             </Link>
@@ -135,7 +136,7 @@ export default function Footer() {
             <h4 className="text-foreground text-[20px] font-bold mb-6 tracking-[1px] text-left w-full">CONTACT</h4>
             <ul className="space-y-5 flex flex-col w-full items-start">
               <li className="flex flex-row items-start justify-start gap-3">
-                <Phone className="w-5 h-5 text-[#F4C542] shrink-0" />
+                <Phone className="w-5 h-5 text-primary shrink-0" />
                 <span className="text-muted-foreground text-sm font-medium text-left">{contact?.phone || '+91 98765 43210'}</span>
               </li>
               <li className="flex flex-row items-start justify-start gap-3">
@@ -171,7 +172,7 @@ export default function Footer() {
           </p>
         </div>
 
-      </div>
+      </PublicContainer>
     </footer>
   );
 }

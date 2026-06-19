@@ -99,7 +99,7 @@ export default function RegistrationsListing() {
                 <RefreshCw className="w-4 h-4" />
               </Button>
               <Link href="/admin/events/registrations/create">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
                   <Plus className="w-4 h-4 mr-2" /> Manual Entry
                 </Button>
               </Link>

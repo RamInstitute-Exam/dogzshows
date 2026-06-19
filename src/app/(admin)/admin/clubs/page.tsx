@@ -257,6 +257,14 @@ export default function ClubManagement() {
       )
     },
     { header: 'Location', accessor: (c) => (c.city && c.state) ? `${c.city}, ${c.state}` : c.country || '-' },
+    { 
+      header: 'Club Type', 
+      accessor: (c) => (
+        <span className="px-2.5 py-0.5 bg-accent text-xs rounded-full border border-border font-semibold text-muted-foreground whitespace-nowrap">
+          {c.clubType || 'All Breeds'}
+        </span>
+      ) 
+    },
     {
       header: 'Actions',
       className: 'text-right',
@@ -474,6 +482,10 @@ export default function ClubManagement() {
                   <span className="text-sm font-semibold text-foreground">{selectedClub.secretary || '-'}</span>
                 </div>
                 <div>
+                  <span className="block text-xs font-bold text-muted-foreground uppercase">Club Type</span>
+                  <span className="text-sm font-semibold text-foreground">{selectedClub.clubType || 'All Breeds'}</span>
+                </div>
+                <div>
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Email Address</span>
                   <span className="text-sm font-semibold text-foreground">{selectedClub.email || '-'}</span>
                 </div>
@@ -527,7 +539,7 @@ export default function ClubManagement() {
                   </Button>
                 )}
               </div>
-              <Button onClick={() => setIsViewModalOpen(false)} className="bg-blue-600 text-foreground hover:bg-blue-700 font-bold px-6">
+              <Button onClick={() => setIsViewModalOpen(false)} className="bg-blue-600 text-white hover:bg-blue-700 font-bold px-6">
                 Close
               </Button>
             </div>

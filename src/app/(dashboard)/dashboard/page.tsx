@@ -30,7 +30,7 @@ function UserDashboardComponent() {
   const stats = statsData || null;
 
   const statCards = [
-    { title: 'Total Dogs', value: stats?.totalDogs || 0, icon: Dog, color: 'from-[#F59E0B] to-[#FB923C]' },
+    { title: 'Total Dogs', value: stats?.totalDogs || 0, icon: Dog, color: 'from-primary to-muted-foreground' },
     { title: 'Upcoming Events', value: stats?.upcomingEvents || 0, icon: Calendar, color: 'from-[#38BDF8] to-[#0EA5E9]' },
     { title: 'Pending Registrations', value: stats?.pendingRegistrations || 0, icon: Activity, color: 'from-[#F43F5E] to-[#E11D48]' },
     { title: 'Certificates', value: stats?.certificates || 0, icon: FileText, color: 'from-[#10B981] to-[#059669]' },
@@ -63,7 +63,7 @@ function UserDashboardComponent() {
             </Button>
           </Link>
           <Link href="/dashboard/dogs/create">
-            <Button className="bg-brand-orange hover:bg-orange-600 text-foreground">
+            <Button className="bg-primary hover:opacity-90 text-primary-foreground">
               <Plus className="w-4 h-4 mr-2"/> Add New Dog
             </Button>
           </Link>
@@ -120,8 +120,8 @@ function UserDashboardComponent() {
               {stats.recentRegistrations.map((reg: any) => (
                 <div key={reg.id} className="flex items-start justify-between p-4 rounded-xl border border-border hover:bg-input transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-brand-orange/20 flex items-center justify-center">
-                      <Dog className="w-5 h-5 text-brand-orange" />
+                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                      <Dog className="w-5 h-5 text-primary" />
                     </div>
                     <div>
                       <p className="font-bold text-foreground">{reg.dog?.name || 'Unknown Dog'}</p>
@@ -145,7 +145,7 @@ function UserDashboardComponent() {
               <h3 className="text-lg font-bold text-foreground mb-2">No active registrations</h3>
               <p className="text-muted-foreground max-w-sm mb-6">You haven't registered any dogs for upcoming events yet. Check out the Events page to get started!</p>
               <Link href="/events">
-                <Button variant="outline" className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-foreground transition-all">Browse Events</Button>
+                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all">Browse Events</Button>
               </Link>
             </div>
           )}
@@ -155,16 +155,16 @@ function UserDashboardComponent() {
           <h2 className="text-xl font-bold text-foreground mb-6">Quick Links</h2>
           <div className="space-y-3">
             <Link href="/dashboard/dogs" className="flex items-center justify-between p-4 rounded-xl bg-card hover:bg-input border border-border transition-colors group">
-              <span className="font-bold text-foreground group-hover:text-brand-orange transition-colors">Manage Dogs</span>
-              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-brand-orange transition-colors" />
+              <span className="font-bold text-foreground group-hover:text-primary transition-colors">Manage Dogs</span>
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </Link>
             <Link href="/dashboard/certificates" className="flex items-center justify-between p-4 rounded-xl bg-card hover:bg-input border border-border transition-colors group">
-              <span className="font-bold text-foreground group-hover:text-brand-orange transition-colors">My Certificates</span>
-              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-brand-orange transition-colors" />
+              <span className="font-bold text-foreground group-hover:text-primary transition-colors">My Certificates</span>
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </Link>
             <Link href="/dashboard/qr-pass" className="flex items-center justify-between p-4 rounded-xl bg-card hover:bg-input border border-border transition-colors group">
-              <span className="font-bold text-foreground group-hover:text-brand-orange transition-colors">Digital QR Pass</span>
-              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-brand-orange transition-colors" />
+              <span className="font-bold text-foreground group-hover:text-primary transition-colors">Digital QR Pass</span>
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </Link>
           </div>
         </div>

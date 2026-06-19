@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, Keyboard } from 'swiper/modules';
 import { getImageUrl } from '@/lib/api';
@@ -14,13 +14,11 @@ import 'swiper/css/pagination';
 export interface HeroBannerData {
   id: string;
   title: string;
-  subtitle?: string | null;
-  desktopImage: string;
-  mobileImage?: string | null;
-  buttonText?: string | null;
-  buttonLink?: string | null;
+  imageUrl: string;
+  redirectUrl?: string | null;
+  openNewTab?: boolean;
   displayOrder: number;
-  isActive: boolean;
+  status: string;
 }
 
 interface HeroSliderProps {
@@ -36,29 +34,35 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
   }, []);
 
   if (!banners || banners.length === 0) {
-    return null;
+    return (
+      <section className="w-full h-[280px] sm:h-[340px] md:h-[460px] lg:h-[600px] xl:h-[680px] flex items-center justify-center bg-accent/10 border-b border-border/50">
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 mx-auto bg-muted rounded-full flex items-center justify-center">
+            <ImageIcon className="w-10 h-10 text-muted-foreground opacity-50" />
+          </div>
+          <h2 className="text-xl font-bold text-muted-foreground">No homepage banners available.</h2>
+        </div>
+      </section>
+    );
   }
 
   if (!isMounted) {
     return (
       <section className="hero-section">
         <div className="hero-carousel-container w-full h-[280px] sm:h-[340px] md:h-[460px] lg:h-[600px] xl:h-[680px] bg-muted/10 animate-pulse flex items-center justify-center">
-          <div className="w-10 h-10 border-4 border-[#F59E0B] border-t-transparent rounded-full animate-spin opacity-50" />
         </div>
       </section>
     );
   }
 
   return (
-    <section className="hero-section">
-      <div className={`hero-carousel-container transition-opacity duration-500 ${isInitialized ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="hero-edge-fade-left" />
-        <div className="hero-edge-fade-right" />
+    <section className="hero-section bg-black">
+      <div className={`hero-carousel-container relative transition-opacity duration-700 ${isInitialized ? 'opacity-100' : 'opacity-0'}`}>
         <Swiper
           onInit={() => setTimeout(() => setIsInitialized(true), 50)}
           modules={[Autoplay, Navigation, Pagination, Keyboard]}
           centeredSlides={true}
-          loop={true}
+          loop={banners.length > 1}
           speed={500}
           grabCursor={true}
           autoplay={{
@@ -77,38 +81,44 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             bulletClass: 'hero-dot',
             bulletActiveClass: 'hero-dot-active',
           }}
-          breakpoints={{
-            320: {
-              slidesPerView: 1,
-              spaceBetween: 0,
-            },
-            768: {
-              slidesPerView: 1.2,
-              spaceBetween: 16,
-            },
-            1024: {
-              slidesPerView: 1.35,
-              spaceBetween: 24,
-            },
-          }}
+          slidesPerView={1}
+          spaceBetween={0}
           className="hero-swiper"
         >
-          {banners.map((slide, index) => (
-            <SwiperSlide key={slide.id || index} className="hero-slide-item">
-              <div className="hero-slide-wrapper">
+          {banners.map((slide, index) => {
+            const innerContent = (
+              <div className="hero-slide-wrapper group relative block w-full h-full">
                 <Image
-                  src={getImageUrl(slide.desktopImage)}
-                  alt={slide.title || 'Dog Show Championship'}
+                  src={getImageUrl(slide.imageUrl)}
+                  alt={slide.title || 'JuzDog Championship'}
                   fill
                   priority={index === 0}
                   loading={index === 0 ? 'eager' : 'lazy'}
-                  sizes="(max-width: 768px) 100vw, 75vw"
-                  quality={90}
-                  className="hero-image"
+                  sizes="100vw"
+                  className="object-cover object-center w-full h-full hero-image"
+                  placeholder="blur"
+                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                 />
               </div>
-            </SwiperSlide>
-          ))}
+            );
+
+            return (
+              <SwiperSlide key={slide.id || index} className="hero-slide-item">
+                {slide.redirectUrl ? (
+                  <a 
+                    href={slide.redirectUrl} 
+                    target={slide.openNewTab ? "_blank" : "_self"} 
+                    rel={slide.openNewTab ? "noopener noreferrer" : ""}
+                    className="block w-full"
+                  >
+                    {innerContent}
+                  </a>
+                ) : (
+                  innerContent
+                )}
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
 
         {/* Navigation Arrows */}
@@ -147,8 +157,10 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
 
         .hero-carousel-container {
           position: relative;
-          width: 100%;
+          width: 100vw;
+          height: 720px;
           overflow: hidden;
+          background: #000;
         }
 
         .hero-swiper {
@@ -156,156 +168,170 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           overflow: visible !important;
         }
 
-        .hero-slide-item {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.5s ease-in-out;
+        /* Custom Fade/Stack logic overriding Swiper's horizontal translation */
+        .hero-swiper .swiper-wrapper {
+          transform: none !important;
         }
 
+        .hero-slide-item {
+          position: absolute !important;
+          left: 0;
+          top: 0;
+          width: 100vw;
+          height: 100%;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.7s ease;
+          display: flex;
+          justify-content: center;
+        }
+
+        .hero-slide-item.swiper-slide-active {
+          opacity: 1;
+          pointer-events: auto;
+          position: absolute !important;
+          z-index: 10;
+        }
+
+        .hero-slide-item.swiper-slide-prev,
+        .hero-slide-item.swiper-slide-next {
+          opacity: 1;
+          z-index: 5;
+        }
+
+        /* Default Wrapper (Incoming/Hidden state) */
         .hero-slide-wrapper {
-          position: relative;
-          width: 100%;
-          height: 280px;
+          position: absolute;
+          left: 50%;
+          top: 0;
+          transform: translateX(-50%) scale(0.96);
+          width: 78vw;
+          max-width: 1450px;
+          height: 720px;
+          border-radius: 34px;
+          overflow: hidden;
+          transition: all 0.7s ease;
+          opacity: 0;
+        }
+
+        /* CENTER ACTIVE SLIDE */
+        .swiper-slide-active .hero-slide-wrapper {
+          opacity: 1;
+          transform: translateX(-50%) scale(1);
+          z-index: 5;
+        }
+
+        /* LEFT PREVIEW */
+        .swiper-slide-prev .hero-slide-wrapper {
+          position: absolute;
+          left: -120px;
+          top: 40px;
+          width: 420px;
+          height: 640px;
           border-radius: 28px;
           overflow: hidden;
-          transition: all 0.5s ease;
-          
-          /* Non-active state (Left/Right Previews) */
-          filter: blur(6px) brightness(0.6);
-          transform: scale(0.85);
-          opacity: 0.85;
-          pointer-events: none;
+          opacity: 0.28;
+          filter: blur(10px);
+          transform: scale(0.95);
+          z-index: 1;
+          margin: 0;
         }
 
-        @media (min-width: 640px) {
-          .hero-slide-wrapper {
-            height: 340px;
-          }
-        }
-        @media (min-width: 768px) {
-          .hero-slide-wrapper {
-            height: 460px;
-          }
-        }
-        @media (min-width: 1024px) {
-          .hero-slide-wrapper {
-            height: 600px;
-          }
-        }
-        @media (min-width: 1280px) {
-          .hero-slide-wrapper {
-            height: 680px;
-          }
+        /* RIGHT PREVIEW */
+        .swiper-slide-next .hero-slide-wrapper {
+          position: absolute;
+          right: -120px;
+          left: auto;
+          top: 40px;
+          width: 420px;
+          height: 640px;
+          border-radius: 28px;
+          overflow: hidden;
+          opacity: 0.28;
+          filter: blur(10px);
+          transform: scale(0.95);
+          z-index: 1;
+          margin: 0;
         }
 
-        /* Active center slide */
-        .hero-slide-item.swiper-slide-active .hero-slide-wrapper {
-          filter: none;
-          opacity: 1;
-          transform: scale(1);
-          pointer-events: auto;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-          border-radius: 32px;
+        /* Responsive Heights & Hidden Previews */
+        @media (max-width: 1439px) {
+          .hero-carousel-container { height: 620px; }
+          .hero-slide-wrapper { height: 620px; }
+          .swiper-slide-prev .hero-slide-wrapper,
+          .swiper-slide-next .hero-slide-wrapper { height: 540px; top: 40px; }
+        }
+
+        @media (max-width: 1024px) {
+          .hero-carousel-container { height: 500px; }
+          .hero-slide-wrapper { height: 500px; }
+          .swiper-slide-prev .hero-slide-wrapper,
+          .swiper-slide-next .hero-slide-wrapper { height: 420px; top: 40px; }
+        }
+
+        @media (max-width: 767px) {
+          .hero-carousel-container { height: 340px; }
+          .hero-slide-wrapper { 
+            width: 100vw;
+            max-width: 100vw; 
+            height: 340px; 
+            border-radius: 0; 
+          }
+          .swiper-slide-prev .hero-slide-wrapper,
+          .swiper-slide-next .hero-slide-wrapper {
+            display: none !important;
+          }
         }
 
         .hero-image {
-          object-fit: cover !important;
-          object-position: center !important;
+          display: block;
+          transition: transform 0.5s ease;
+          transform: scale(1);
         }
 
-        /* Edge Fade Overlays */
-        .hero-edge-fade-left,
-        .hero-edge-fade-right {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 40px;
-          z-index: 10;
-          pointer-events: none;
-        }
-        @media (min-width: 768px) {
-          .hero-edge-fade-left,
-          .hero-edge-fade-right {
-            width: 80px;
-          }
-        }
-        @media (min-width: 1024px) {
-          .hero-edge-fade-left,
-          .hero-edge-fade-right {
-            width: 120px;
-          }
-        }
-        @media (max-width: 767px) {
-          .hero-edge-fade-left,
-          .hero-edge-fade-right {
-            display: none;
-          }
-        }
-
-        .hero-edge-fade-left {
-          left: 0;
-          background: linear-gradient(90deg, rgba(255, 255, 255, 0.85), transparent);
-        }
-        .dark .hero-edge-fade-left {
-          background: linear-gradient(90deg, rgba(0, 0, 0, 0.85), transparent);
-        }
-
-        .hero-edge-fade-right {
-          right: 0;
-          background: linear-gradient(270deg, rgba(255, 255, 255, 0.85), transparent);
-        }
-        .dark .hero-edge-fade-right {
-          background: linear-gradient(270deg, rgba(0, 0, 0, 0.85), transparent);
+        .hero-slide-item.swiper-slide-active .hero-image {
+          transform: scale(1.03);
         }
 
         .hero-arrow {
           position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
           z-index: 20;
-          width: 72px;
-          height: 72px;
+          width: 82px;
+          height: 82px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.18);
+          background: rgba(0,0,0,.35);
+          backdrop-filter: blur(18px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          outline: none;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.3s ease;
+          top: 50%;
+          transform: translateY(-50%);
         }
 
         .hero-arrow:hover {
-          background: #F4B321;
-          border-color: #F4B321;
-          color: #000000;
           transform: translateY(-50%) scale(1.08);
+          background: rgba(0,0,0,.55);
         }
 
-        @media (min-width: 1024px) {
-          .hero-prev {
-            left: calc(12.5% - 35px);
-          }
-          .hero-next {
-            right: calc(12.5% - 35px);
-          }
+        .hero-prev {
+          left: 40px;
         }
 
-        @media (max-width: 1023px) {
+        .hero-next {
+          right: 40px;
+        }
+
+        @media (max-width: 767px) {
           .hero-arrow {
             width: 50px;
             height: 50px;
           }
-          .hero-prev {
-            left: 16px;
-          }
-          .hero-next {
-            right: 16px;
-          }
+          .hero-prev { left: 16px; }
+          .hero-next { right: 16px; }
         }
 
         .hero-dots {
@@ -330,7 +356,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
         }
 
         .hero-dot-active {
-          background: #F59E0B;
+          background: var(--primary);
           width: 32px;
           border-radius: 999px;
         }

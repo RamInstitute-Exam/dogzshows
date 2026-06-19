@@ -1,42 +1,115 @@
 'use client';
 
-import { MapPin, Trophy } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { MapPin, Trophy, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function EventJudges({ judges }: { judges: any[] }) {
+function JudgeAvatar({ judge }: { judge: any }) {
+  const name: string = judge?.name ?? 'J';
+  const initials = name
+    .split(' ')
+    .map((w: string) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+  const hasPhoto = judge?.image && judge.image !== '/images/hero_banner.png' && !judge.image.includes('placeholder');
+
+  if (hasPhoto) {
+    return (
+      <img
+        src={judge.image}
+        alt={name}
+        className="w-full h-full object-cover"
+        loading="lazy"
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = 'none';
+          const parent = (e.target as HTMLImageElement).parentElement;
+          if (parent) {
+            parent.innerHTML = `<span style="font-size:1.25rem;font-weight:800;color:#f97316">${initials}</span>`;
+            parent.style.display = 'flex';
+            parent.style.alignItems = 'center';
+            parent.style.justifyContent = 'center';
+            parent.style.background = 'rgba(249,115,22,0.12)';
+          }
+        }}
+      />
+    );
+  }
+
   return (
-    <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
-      <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">Esteemed Judges</h2>
+    <div className="w-full h-full flex items-center justify-center" style={{ background: 'rgba(249,115,22,0.12)' }}>
+      <span className="text-2xl font-extrabold" style={{ color: '#f97316' }}>{initials || '?'}</span>
+    </div>
+  );
+}
+
+export default function EventJudges({ judges }: { judges: any[] }) {
+  // Guard: hide section if no judges
+  if (!judges || judges.length === 0) return null;
+
+  return (
+    <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-border mb-[80px]">
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">
+        Esteemed Judges
+        <span className="ml-3 text-base font-bold text-muted-foreground">({judges.length})</span>
+      </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {judges.map((judge, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {judges.map((judge: any, i: number) => (
           <motion.div 
-            key={judge.id} 
+            key={judge?.id ?? i}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="group p-6 bg-card rounded-[20px] border border-border hover:border-brand-orange/50 transition-colors text-center"
+            transition={{ delay: i * 0.08 }}
+            className="group p-6 bg-card rounded-[20px] border border-border hover:border-brand-orange/50 transition-all duration-300 text-center hover:shadow-lg"
           >
-            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden mb-6 border-4 border-border shadow-lg group-hover:scale-105 transition-transform duration-300">
-              <img src={judge.image} alt={judge.name} className="w-full h-full object-cover" />
+            {/* Avatar — bg always uses rgba to work in both themes */}
+            <div
+              className="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300"
+              style={{ background: 'rgba(249,115,22,0.10)' }}
+            >
+              <JudgeAvatar judge={judge} />
             </div>
-            <h4 className="font-extrabold text-foreground text-xl mb-2">{judge.name}</h4>
-            
-            <div className="flex items-center justify-center gap-4 mb-4 text-sm font-semibold text-muted-foreground">
-              <span className="flex items-center gap-1"><MapPin className="w-4 h-4 text-muted-foreground" /> {judge.country}</span>
-              <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-              <span>{judge.experience} Exp</span>
+
+            {/* Name */}
+            <h4 className="font-extrabold text-foreground text-lg mb-2 leading-tight">
+              {judge?.name ?? 'Unknown Judge'}
+            </h4>
+
+            {/* Country / Experience */}
+            <div className="flex items-center justify-center gap-3 mb-4 text-sm font-semibold text-muted-foreground flex-wrap">
+              {judge?.country && (
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                  {judge.country}
+                </span>
+              )}
+              {judge?.country && judge?.experience && (
+                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+              )}
+              {judge?.experience && judge.experience !== 'N/A' && (
+                <span>{judge.experience} Exp</span>
+              )}
             </div>
-            
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-50 text-brand-orange font-bold text-xs rounded-lg mb-6">
-              <Trophy className="w-3.5 h-3.5" /> {judge.groups}
-            </div>
-            
-            <Button variant="outline" className="w-full rounded-xl border-border text-muted-foreground font-bold hover:bg-card hover:text-brand-orange hover:border-brand-orange/50 transition-all">
-              View Profile
-            </Button>
+
+            {/* Groups badge — explicit orange, works in both themes */}
+            {judge?.groups && (
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 font-bold text-xs rounded-lg"
+                style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.25)' }}
+              >
+                <Trophy className="w-3.5 h-3.5" /> {judge.groups}
+              </div>
+            )}
+
+            {/* Chief Judge badge */}
+            {judge?.isChiefJudge && (
+              <div className="mt-3 inline-block px-3 py-1 bg-brand-orange text-white font-bold text-xs rounded-full">
+                Chief Judge
+              </div>
+            )}
           </motion.div>
         ))}
       </div>

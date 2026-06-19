@@ -78,7 +78,7 @@ export default function WinnersListing() {
               <Button variant="outline" onClick={fetchWinners} className="border-border text-foreground hover:bg-accent">
                 <RefreshCw className="w-4 h-4" />
               </Button>
-              <Button className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold" onClick={() => alert('Winner records are generated automatically via the Competition Engine or Scoring App.')}>
+              <Button className="bg-[#16A34A] hover:bg-[#15803D] text-white font-bold" onClick={() => alert('Winner records are generated automatically via the Competition Engine or Scoring App.')}>
                 <Plus className="w-4 h-4 mr-2" /> Manual Award
               </Button>
             </div>

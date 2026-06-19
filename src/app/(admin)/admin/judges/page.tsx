@@ -487,7 +487,7 @@ export default function JudgeManagement() {
                   </Button>
                 )}
               </div>
-              <Button onClick={() => setIsViewModalOpen(false)} className="bg-blue-600 text-foreground hover:bg-blue-700 font-bold px-6">
+              <Button onClick={() => setIsViewModalOpen(false)} className="bg-blue-600 text-white hover:bg-blue-700 font-bold px-6">
                 Close
               </Button>
             </div>

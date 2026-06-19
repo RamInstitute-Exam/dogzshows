@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Dog, Trophy, Calendar, Users, DollarSign, Activity } from 'lucide-react';
+import PublicContainer from '@/components/layout/PublicContainer';
 
 const DEFAULT_STATS = [
-  { label: 'Registered Dogs', value: 15000, suffix: '+', icon: Dog, color: 'text-[#F59E0B]', key: 'registered_dogs' },
+  { label: 'Registered Dogs', value: 15000, suffix: '+', icon: Dog, color: 'text-primary', key: 'registered_dogs' },
   { label: 'Dog Shows', value: 250, suffix: '+', icon: Calendar, color: 'text-[#38BDF8]', key: 'dog_shows' },
   { label: 'Verified Judges', value: 500, suffix: '+', icon: Activity, color: 'text-[#22C55E]', key: 'verified_judges' },
-  { label: 'Active Users', value: 12000, suffix: '+', icon: Users, color: 'text-[#F59E0B]', key: 'active_users' },
+  { label: 'Active Users', value: 12000, suffix: '+', icon: Users, color: 'text-primary', key: 'active_users' },
   { label: 'Breeds Supported', value: 350, suffix: '+', icon: Trophy, color: 'text-[#38BDF8]', key: 'breeds_supported' },
 ];
 
@@ -64,8 +65,8 @@ export default function StatsCounter({ statsData }: StatsCounterProps) {
 
   return (
     <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background relative z-20 border-y border-border pt-0">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+      <PublicContainer>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
           {stats.map((stat, i) => (
             <motion.div 
               key={i}
@@ -86,7 +87,7 @@ export default function StatsCounter({ statsData }: StatsCounterProps) {
             </motion.div>
           ))}
         </div>
-      </div>
+      </PublicContainer>
     </section>
   );
 }

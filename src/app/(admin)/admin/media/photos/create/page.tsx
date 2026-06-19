@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Save, ArrowLeft, Loader2, ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -97,10 +98,9 @@ export default function AddPhotoForm() {
             <p className="text-muted-foreground text-sm mt-1">Direct upload to AWS S3 with metadata indexing.</p>
           </div>
         </div>
-        <Button onClick={handleSubmit} disabled={loading} className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold">
-          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+        <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={<Save className="w-4 h-4" />}>
           Upload to S3
-        </Button>
+        </AdminButton>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">

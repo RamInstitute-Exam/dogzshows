@@ -61,7 +61,7 @@ export default function ClubCategoriesPage() {
             <h2 className="text-xl font-bold text-foreground mb-4">Add New</h2>
             <form className="flex gap-4 flex-wrap" onSubmit={handleAdd}>
               <input name="name" type="text" placeholder="name" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
-              <Button type="submit" className="bg-brand-orange text-foreground">Add</Button>
+              <Button type="submit" className="admin-btn admin-btn-primary admin-btn-sm">Add</Button>
             </form>
           </div>
 

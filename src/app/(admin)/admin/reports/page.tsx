@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Download, Loader2, Plus, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import { config } from '@/lib/config';
 import api from '@/services/api';
 
@@ -66,7 +67,7 @@ export default function ReportsDashboard() {
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">Financial Report</h3>
               <p className="text-muted-foreground text-sm mb-6 relative z-10">Generate a comprehensive PDF breakdown of all settled payments and pending refunds.</p>
-              <Button onClick={() => generateReport('FINANCIAL')} disabled={generating} className="w-full bg-blue-600 hover:bg-blue-700 text-foreground font-bold relative z-10">
+              <Button onClick={() => generateReport('FINANCIAL')} disabled={generating} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold relative z-10">
                 {generating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                 Generate Report
               </Button>
@@ -78,7 +79,7 @@ export default function ReportsDashboard() {
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">Registration Export</h3>
               <p className="text-muted-foreground text-sm mb-6 relative z-10">Export a complete CSV list of all active event registrations and dog entries.</p>
-              <Button onClick={() => generateReport('REGISTRATION')} disabled={generating} className="w-full bg-purple-600 hover:bg-purple-700 text-foreground font-bold relative z-10">
+              <Button onClick={() => generateReport('REGISTRATION')} disabled={generating} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold relative z-10">
                 {generating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                 Export CSV
               </Button>
@@ -90,10 +91,9 @@ export default function ReportsDashboard() {
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">KCI Directory</h3>
               <p className="text-muted-foreground text-sm mb-6 relative z-10">Extract a full list of all verified dogs and their KCI / Microchip mappings.</p>
-              <Button onClick={() => generateReport('KCI_DIRECTORY')} disabled={generating} className="w-full bg-brand-orange hover:bg-orange-600 text-foreground font-bold relative z-10">
-                {generating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+              <AdminButton onClick={() => generateReport('KCI_DIRECTORY')} loading={generating} variant="primary" className="w-full relative z-10" leftIcon={<Plus className="w-4 h-4" />}>
                 Generate Directory
-              </Button>
+              </AdminButton>
             </motion.div>
           </div>
 

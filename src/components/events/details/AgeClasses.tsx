@@ -4,12 +4,15 @@ import { Shield, Sparkles, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AgeClasses({ classes }: { classes: any[] }) {
+  // Guard: hide section if no classes
+  if (!classes || classes.length === 0) return null;
+
   return (
     <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
       <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">Age Classes</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {classes.map((cls, i) => (
+        {classes.map((cls: any, i: number) => (
           <motion.div 
             key={i}
             initial={{ opacity: 0, scale: 0.95 }}

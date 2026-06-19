@@ -4,6 +4,9 @@ import { CheckCircle2, Clock, MapPin, ClipboardCheck, Play, Award, Gift } from '
 import { motion } from 'framer-motion';
 
 export default function EventTimeline({ timeline }: { timeline: any[] }) {
+  // Guard: hide section if no timeline data
+  if (!timeline || timeline.length === 0) return null;
+
   const getIcon = (i: number) => {
     switch (i) {
       case 0: return <ClipboardCheck className="w-5 h-5" />;
@@ -20,7 +23,7 @@ export default function EventTimeline({ timeline }: { timeline: any[] }) {
       <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-10">Event Timeline</h2>
       
       <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[3px] before:bg-gradient-to-b before:from-brand-orange/20 before:via-brand-orange before:to-brand-orange/20">
-        {timeline.map((item, i) => (
+        {timeline.map((item: any, i: number) => (
           <motion.div 
             key={i} 
             initial={{ opacity: 0, y: 20 }}
@@ -36,10 +39,17 @@ export default function EventTimeline({ timeline }: { timeline: any[] }) {
             {/* Content Box */}
             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-6 rounded-[20px] bg-card border border-border shadow-sm group-hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="font-bold text-foreground text-xl">{item.title}</h4>
-                <span className="text-brand-orange font-bold text-sm bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100">{item.time}</span>
+                <h4 className="font-bold text-foreground text-xl">{item?.title ?? '-'}</h4>
+                {item?.time && (
+                  <span
+                    className="font-bold text-sm px-3 py-1.5 rounded-lg"
+                    style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.2)' }}
+                  >
+                    {item.time}
+                  </span>
+                )}
               </div>
-              <p className="text-muted-foreground font-medium leading-relaxed">{item.description}</p>
+              <p className="text-muted-foreground font-medium leading-relaxed">{item?.description ?? ''}</p>
             </div>
           </motion.div>
         ))}

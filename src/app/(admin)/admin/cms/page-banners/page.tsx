@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import { Plus, Edit, Trash2, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
@@ -118,7 +119,7 @@ export default function PageBannersCMS() {
                 }); 
                 setIsModalOpen(true); 
               }}
-              className="bg-brand-orange hover:bg-orange-600 text-foreground"
+              className="admin-btn admin-btn-primary admin-btn-md"
             >
               <Plus className="w-4 h-4 mr-2" /> Add New Banner
             </Button>
@@ -260,9 +261,9 @@ export default function PageBannersCMS() {
                     <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="border-border hover:bg-input">
                       Cancel
                     </Button>
-                    <Button type="submit" className="bg-brand-orange hover:bg-orange-600 text-foreground">
-                      Save Banner
-                    </Button>
+                    <AdminButton type="submit" variant="primary">
+                      Save
+                    </AdminButton>
                   </div>
                 </form>
               </motion.div>

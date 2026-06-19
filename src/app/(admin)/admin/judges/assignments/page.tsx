@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Loader2, Users, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import { config } from '@/lib/config';
 import api from '@/services/api';
 
@@ -43,7 +44,7 @@ export default function JudgeAssignments() {
             </div>
             
             <div className="flex gap-4 w-full md:w-auto">
-              <Button className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold whitespace-nowrap">
+              <AdminButton variant="primary" size="md">
                 Assign Judge to Event
               </Button>
             </div>

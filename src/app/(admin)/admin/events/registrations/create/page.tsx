@@ -84,7 +84,7 @@ export default function ManualRegistrationForm() {
                 <p className="text-muted-foreground text-sm mt-1">Register a dog manually without online payment.</p>
               </div>
             </div>
-            <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold">
+            <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
               {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
               Save Entry
             </Button>

@@ -28,7 +28,7 @@ export default function SystemSettings() {
             </h1>
             <p className="text-muted-foreground font-medium mt-1">Configure global application variables, API keys, and integrations.</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
             <Save className="w-4 h-4 mr-2" /> Save All Changes
           </Button>
         </div>

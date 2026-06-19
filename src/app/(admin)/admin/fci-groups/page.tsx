@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, RefreshCw, Layers, Edit, Trash2, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import { config } from '@/lib/config';
 import api from '@/services/api';
 
@@ -59,10 +60,9 @@ export default function FciGroupsMaster() {
                   className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-brand-orange transition-all"
                 />
               </div>
-              <Button onClick={fetchGroups} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-foreground font-bold">
-                {loading ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+              <AdminButton onClick={fetchGroups} loading={loading} variant="secondary" size="md" leftIcon={<RefreshCw className="w-4 h-4" />}>
                 Refresh
-              </Button>
+              </AdminButton>
             </div>
           </div>
 
@@ -86,7 +86,7 @@ export default function FciGroupsMaster() {
               <input name="groupNumber" type="number" placeholder="Group #" required className="bg-accent border border-border text-foreground p-2 rounded" />
               <input name="name" type="text" placeholder="Group Name" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
               <input name="description" type="text" placeholder="Description" className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
-              <Button type="submit" className="bg-brand-orange text-foreground">Add</Button>
+              <AdminButton type="submit" variant="primary" size="sm">Add</AdminButton>
             </form>
           </div>
 

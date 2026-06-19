@@ -37,10 +37,16 @@ export const useAuthStore = create<AuthState>()(
         }
         set({ user: null, accessToken: null, isAuthenticated: false });
       },
-      setMockRole: (role: string) => set({ 
-        user: { id: 'mock-1', email: 'mock@juzdog.com', firstName: role, lastName: 'User', roles: [role] },
-        isAuthenticated: true 
-      }),
+      setMockRole: (role: string) => {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('token', 'mock-token-' + role.toLowerCase());
+        }
+        set({ 
+          user: { id: 'mock-1', email: 'mock@juzdog.com', firstName: role, lastName: 'User', roles: [role] },
+          accessToken: 'mock-token-' + role.toLowerCase(),
+          isAuthenticated: true 
+        });
+      },
     }),
     {
       name: 'juzdog-auth-storage',

@@ -2,15 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import HeroSlider from '@/components/home/HeroSlider';
-import FeaturedShowsSlider from '@/components/home/FeaturedShowsSlider';
+import FeaturedClubsSlider from '@/components/home/FeaturedClubsSlider';
+import AboutUsSection from '@/components/home/AboutUsSection';
+import PremiumOutdoorPhotos from '@/components/home/PremiumOutdoorPhotos';
+import SlidingPhotoSections from '@/components/home/SlidingPhotoSections';
 import FeaturedMediaGallery from '@/components/home/FeaturedMediaGallery';
 import FeaturedJudgesSlider from '@/components/home/FeaturedJudgesSlider';
 import FCIGroupGrid from '@/components/home/FCIGroupGrid';
-import StatsCounter from '@/components/home/StatsCounter';
-import Testimonials from '@/components/home/Testimonials';
-import Sponsors from '@/components/home/Sponsors';
-import FAQ from '@/components/home/FAQ';
+import UpcomingEventsCarousel from '@/components/home/UpcomingEventsCarousel';
 import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 
 import {
   getHeroSlides,
@@ -19,99 +20,106 @@ import {
   getFeaturedVideos,
   getFeaturedJudges,
   getFCIGroups,
-  getStats,
-  getTestimonials,
-  getSponsors,
 } from '@/lib/server-api';
+
+const SectionSkeleton = ({ height = 'h-64' }) => (
+  <PublicContainer className="py-16 space-y-4">
+    <div className="w-48 h-8 bg-accent animate-pulse rounded mb-8" />
+    <div className={`w-full ${height} bg-accent/30 animate-pulse rounded-2xl`} />
+  </PublicContainer>
+);
 
 export default function Home() {
   const [banners, setBanners] = useState<any[]>([]);
-  const [shows, setShows] = useState<any[]>([]);
-  const [photos, setPhotos] = useState<any[]>([]);
-  const [videos, setVideos] = useState<any[]>([]);
   const [judges, setJudges] = useState<any[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
-  const [stats, setStats] = useState<any[]>([]);
-  const [testimonials, setTestimonials] = useState<any[]>([]);
-  const [sponsors, setSponsors] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [photos, setPhotos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<any[]>([]);
+  
+  const [loadingP1, setLoadingP1] = useState(true);
+  const [loadingP2, setLoadingP2] = useState(true);
 
   useEffect(() => {
-    async function loadData() {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    async function loadPriorityData() {
       try {
-        const [
-          bannersRes,
-          showsRes,
-          photosRes,
-          videosRes,
-          judgesRes,
-          groupsRes,
-          statsRes,
-          testimonialsRes,
-          sponsorsRes,
-        ] = await Promise.all([
-          getHeroSlides().catch(() => ({ success: false, data: [] })),
-          getFeaturedShows().catch(() => ({ success: false, data: [] })),
-          getFeaturedPhotos().catch(() => ({ success: false, data: [] })),
-          getFeaturedVideos().catch(() => ({ success: false, data: [] })),
+        // Priority 1: Hero Banner
+        const [bannersRes] = await Promise.all([
+          getHeroSlides().catch(() => ({ success: false, data: [] }))
+        ]);
+        setBanners(bannersRes?.data || []);
+        setLoadingP1(false);
+
+        // Priority 2: Other Data
+        const [judgesRes, groupsRes, photosRes, videosRes] = await Promise.all([
           getFeaturedJudges().catch(() => ({ success: false, data: [] })),
           getFCIGroups().catch(() => ({ success: false, data: [] })),
-          getStats().catch(() => ({ success: false, data: [] })),
-          getTestimonials().catch(() => ({ success: false, data: [] })),
-          getSponsors().catch(() => ({ success: false, data: [] })),
+          getFeaturedPhotos().catch(() => ({ success: false, data: [] })),
+          getFeaturedVideos().catch(() => ({ success: false, data: [] }))
         ]);
-
-        setBanners(bannersRes?.data || []);
-        setShows(showsRes?.data || []);
-        setPhotos(photosRes?.data || []);
-        setVideos(videosRes?.data || []);
         setJudges(judgesRes?.data || []);
         setGroups(groupsRes?.data || []);
-        setStats(statsRes?.data || []);
-        setTestimonials(testimonialsRes?.data || []);
-        setSponsors(sponsorsRes?.data || []);
+        setPhotos(photosRes?.data || []);
+        setVideos(videosRes?.data || []);
+        setLoadingP2(false);
+
       } catch (error) {
         console.error("Error loading homepage data:", error);
-      } finally {
-        setLoading(false);
+        setLoadingP1(false);
+        setLoadingP2(false);
       }
     }
 
-    loadData();
+    loadPriorityData();
   }, []);
 
   return (
     <PageContainer>
-
       {/* 1. Hero Banner Slider */}
-      {banners.length > 0 && <HeroSlider banners={banners} />}
+      {loadingP1 ? (
+        <div className="w-full h-[60vh] bg-accent/20 animate-pulse" />
+      ) : (
+        banners.length > 0 && <HeroSlider banners={banners} />
+      )}
+      
+      {/* 2. Premium Personal Photos */}
+      <SlidingPhotoSections />
 
-      {/* 2. Featured Dog Shows */}
-      <FeaturedShowsSlider shows={shows} />
+      {/* 3. Outdoor Photos */}
+      <PremiumOutdoorPhotos />
 
-      {/* 3. Featured Photography + 4. Featured Videography */}
-      <FeaturedMediaGallery 
-        photos={photos} 
-        videos={videos} 
-      />
+      {/* 4. Upcoming Show Calendars (Card Listing) */}
+      <UpcomingEventsCarousel />
 
-      {/* 5. Featured Judges */}
-      <FeaturedJudgesSlider judges={judges} />
+      {/* 5. Featured Kennel Clubs (Card Listing) - Hidden per user request */}
 
-      {/* 6. Featured KCI Clubs / FCI Breed Groups */}
-      <FCIGroupGrid groups={groups} />
+      {/* 5. Featured Kennel Clubs (Card Listing) */}
+      <FeaturedClubsSlider />
 
-      {/* 7. Statistics Counter */}
-      <StatsCounter statsData={stats} />
+      {/* 6. Elite International Judges (Card Listing) */}
+      {loadingP2 ? (
+        <SectionSkeleton height="h-64" />
+      ) : (
+        <FeaturedJudgesSlider judges={judges} />
+      )}
 
-      {/* 8. Testimonials */}
-      <Testimonials testimonialsData={testimonials} />
+      {/* 7. About JuzDog Media */}
+      <AboutUsSection />
 
-      {/* 9. Sponsors */}
-      <Sponsors sponsorsData={sponsors} />
-
-      {/* 10. FAQ */}
-      <FAQ />
+      {/* 8. Latest Photography & Videography Showcase */}
+      {loadingP2 ? (
+        <SectionSkeleton height="h-96" />
+      ) : (
+        <FeaturedMediaGallery 
+          photos={photos} 
+          videos={videos} 
+        />
+      )}
 
     </PageContainer>
   );

@@ -15,8 +15,8 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="nav-icon-btn nav-icon-btn--theme" aria-hidden="true">
-        <div className="w-5 h-5 opacity-0" />
+      <div className="flex items-center gap-3 opacity-0" aria-hidden="true">
+        <div className="w-24 h-6" />
       </div>
     );
   }
@@ -24,35 +24,26 @@ export function ThemeToggle() {
   const isDark = theme === 'dark';
 
   return (
-    <button
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="nav-icon-btn nav-icon-btn--theme"
-      aria-label="Toggle theme"
-    >
-      <motion.div
-        initial={false}
-        animate={{
-          scale: isDark ? 1 : 0,
-          opacity: isDark ? 1 : 0,
-          rotate: isDark ? 0 : 90,
-        }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="absolute inset-0 flex items-center justify-center text-[#F5C84C]"
+    <div className="flex items-center gap-3">
+      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${!isDark ? 'text-brand-orange' : 'text-muted-foreground'}`}>
+        <Sun className="w-4 h-4" />
+        <span className="hidden sm:inline">Light</span>
+      </span>
+      
+      <button
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        className="relative inline-flex h-6 w-11 items-center rounded-full bg-border transition-colors hover:bg-border/80 focus:outline-none"
+        aria-label="Toggle theme"
       >
-        <Moon className="w-5 h-5" />
-      </motion.div>
-      <motion.div
-        initial={false}
-        animate={{
-          scale: isDark ? 0 : 1,
-          opacity: isDark ? 0 : 1,
-          rotate: isDark ? -90 : 0,
-        }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="absolute inset-0 flex items-center justify-center text-[#F5C84C]"
-      >
-        <Sun className="w-5 h-5" />
-      </motion.div>
-    </button>
+        <span
+          className={`inline-block h-4 w-4 transform rounded-full bg-foreground transition-transform duration-250 ease-in-out ${isDark ? 'translate-x-6' : 'translate-x-1'}`}
+        />
+      </button>
+
+      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${isDark ? 'text-brand-orange' : 'text-muted-foreground'}`}>
+        <span className="hidden sm:inline">Dark</span>
+        <Moon className="w-4 h-4" />
+      </span>
+    </div>
   );
 }

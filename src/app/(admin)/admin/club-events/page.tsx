@@ -69,7 +69,7 @@ export default function ClubEventsPage() {
               <input name="venue" type="text" placeholder="venue" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
               <input name="startDate" type="text" placeholder="startDate" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
               <input name="endDate" type="text" placeholder="endDate" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
-              <Button type="submit" className="bg-brand-orange text-foreground">Add</Button>
+              <Button type="submit" className="admin-btn admin-btn-primary admin-btn-sm">Add</Button>
             </form>
           </div>
 

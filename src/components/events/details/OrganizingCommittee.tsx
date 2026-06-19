@@ -23,12 +23,18 @@ export default function OrganizingCommittee({ secretaries }: { secretaries: any[
           >
             <div className="space-y-4">
               <div className="flex items-center gap-4 border-b border-border pb-4">
-                <div className="w-12 h-12 rounded-full bg-orange-50 border border-brand-orange/20 flex items-center justify-center text-brand-orange shrink-0">
-                  <User className="w-6 h-6" />
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.2)' }}
+                >
+                  <User className="w-6 h-6" style={{ color: '#f97316' }} />
                 </div>
                 <div>
                   <h4 className="font-extrabold text-lg text-foreground leading-tight">{sec.name}</h4>
-                  <span className="inline-block mt-1 text-[11px] font-black uppercase tracking-wider text-brand-orange bg-orange-50 px-2 py-0.5 rounded">
+                  <span
+                    className="inline-block mt-1 text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded"
+                    style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.2)' }}
+                  >
                     {sec.designation || 'Hony. Secretary'}
                   </span>
                 </div>

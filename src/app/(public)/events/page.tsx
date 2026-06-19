@@ -7,6 +7,7 @@ import { Calendar, MapPin, Search, Filter, Trophy, ArrowRight, Share2, Heart, Aw
 import Link from 'next/link';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 import api from '@/lib/api';
 
 export default function EventsPage() {
@@ -57,9 +58,34 @@ export default function EventsPage() {
         state: selectedState,
         status: selectedStatus,
       });
-      const res = await api.get(`/public/shows?${queryParams.toString()}`);
+
+      let endpoint = '/public/shows/upcoming';
+      if (selectedStatus === 'COMPLETED') {
+        endpoint = '/public/shows/completed';
+      } else if (selectedStatus) {
+        endpoint = '/public/shows';
+      }
+
+      const res = await api.get(`${endpoint}?${queryParams.toString()}`);
       if (res.success) {
-        setEvents(res.data || res.items || []);
+        let fetchedEvents = res.data || res.items || [];
+        
+        // Guarantee strict ascending chronological sorting & push past events to the bottom
+        fetchedEvents = [...fetchedEvents].sort((a: any, b: any) => {
+          const aDate = new Date(a.startDate).getTime();
+          const bDate = new Date(b.startDate).getTime();
+          const now = new Date().setHours(0, 0, 0, 0);
+          
+          const aIsPast = aDate < now;
+          const bIsPast = bDate < now;
+          
+          if (aIsPast && !bIsPast) return 1;
+          if (!aIsPast && bIsPast) return -1;
+          
+          return aDate - bDate;
+        });
+
+        setEvents(fetchedEvents);
         setTotalPages(res.totalPages || 1);
       }
     } catch (err) {
@@ -112,7 +138,7 @@ export default function EventsPage() {
       />
 
       {/* Filter / Search Bar */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 mb-12 mt-12">
+      <PublicContainer className="mb-12 mt-12">
         <div className="bg-card rounded-[24px] p-5 shadow-sm border border-border flex flex-wrap gap-4 items-center">
           <div className="flex-1 min-w-[250px] relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -121,7 +147,7 @@ export default function EventsPage() {
               placeholder="Search Event Name or Club..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 outline-none transition-all font-medium text-foreground"
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-foreground"
             />
           </div>
           
@@ -130,7 +156,7 @@ export default function EventsPage() {
             <select
               value={selectedClub}
               onChange={(e) => { setSelectedClub(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
             >
               <option value="">All Clubs</option>
               {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -140,7 +166,7 @@ export default function EventsPage() {
             <select
               value={selectedState}
               onChange={(e) => { setSelectedState(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
             >
               <option value="">All States</option>
               {uniqueStates.map(s => <option key={s} value={s}>{s}</option>)}
@@ -150,7 +176,7 @@ export default function EventsPage() {
             <select
               value={selectedStatus}
               onChange={(e) => { setSelectedStatus(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
             >
               <option value="">All Statuses</option>
               <option value="DRAFT">Draft</option>
@@ -177,10 +203,10 @@ export default function EventsPage() {
             </Button>
           </div>
         </div>
-      </div>
+      </PublicContainer>
 
       {/* Shows Grid */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-20">
+      <PublicContainer className="pb-20">
         <div className="flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Dog Show Events</h2>
@@ -189,13 +215,13 @@ export default function EventsPage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
               <div key={i} className="bg-card rounded-[24px] overflow-hidden shadow-sm border border-border h-[450px] animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
             {events.length === 0 ? (
               <div className="col-span-full text-center text-muted-foreground py-24 font-bold text-lg">
                 No dog shows match the selected filters.
@@ -206,69 +232,60 @@ export default function EventsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-card rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col group relative text-foreground"
               >
-                <div className="h-[220px] bg-accent relative overflow-hidden flex flex-col justify-between p-5">
-                  <img 
-                    src={event.bannerUrl || '/images/events_banner.png'} 
-                    alt={event.name} 
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  />
-                  <div className="absolute inset-0 bg-black/40" />
-                  
-                  <div className="flex justify-between items-start relative z-10 w-full">
-                    <span className={`inline-block text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
-                      {getStatusText(event.status)}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="p-6 flex flex-col flex-1 relative">
-                  {/* Date Badge */}
-                  <div className="absolute -top-10 right-6 bg-card rounded-xl shadow-lg border border-border p-2.5 text-center min-w-[75px] z-10">
-                    <span className="block text-brand-orange font-black text-xl leading-none">{new Date(event.startDate).getDate()}</span>
-                    <span className="block text-muted-foreground font-black text-xs uppercase mt-0.5">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</span>
-                  </div>
-
-                  <div className="space-y-4 mb-6 flex-1 pr-12">
-                    <div>
-                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-brand-orange transition-colors line-clamp-2">{event.name}</h3>
-                      <p className="text-sm font-semibold text-muted-foreground">{event.club?.name || 'TBA'}</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-y-2 text-sm text-muted-foreground font-semibold">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-brand-orange shrink-0" /> 
-                        <span className="truncate">{event.city ? `${event.city}, ${event.state || ''}` : event.venue || 'TBA'}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Trophy className="w-4 h-4 text-brand-orange shrink-0" /> 
-                        <span className="truncate">{event.type || 'Championship Show'}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-brand-orange shrink-0" /> 
-                        <span>Entry Fee: ₹{event.entryFee}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-brand-orange shrink-0" /> 
-                        <span>Closing Date: {formatDate(event.registrationWindowEnd)}</span>
-                      </div>
+                <Link
+                  href={`/events/detail?slug=${event.slug}`}
+                  className="bg-card rounded-[24px] overflow-hidden border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col group relative text-foreground h-full cursor-pointer block"
+                >
+                  <div className="h-[220px] bg-accent relative overflow-hidden flex flex-col justify-between p-5 w-full">
+                    <img 
+                      src={event.bannerUrl || '/images/events_banner.png'} 
+                      alt={event.name} 
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    />
+                    <div className="absolute inset-0 bg-black/40" />
+                    
+                    <div className="flex justify-between items-start relative z-10 w-full">
+                      <span className={`inline-block text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
+                        {getStatusText(event.status)}
+                      </span>
                     </div>
                   </div>
                   
-                  <div className="pt-4 border-t border-border flex gap-3 mt-auto">
-                    <Link href={`/events/detail?slug=${event.slug}`} className="flex-1">
-                      <Button variant="outline" className="w-full rounded-xl h-12 font-bold text-muted-foreground border-border hover:bg-card">
-                        View Details
-                      </Button>
-                    </Link>
-                    <Link href={`/register-event?id=${event.id}`} className="flex-1">
-                      <Button className="w-full bg-brand-orange hover:bg-orange-600 text-foreground rounded-xl h-12 shadow-md shadow-brand-orange/20 font-bold">
-                        Register
-                      </Button>
-                    </Link>
+                  <div className="p-6 flex flex-col flex-1 relative w-full">
+                    {/* Date Badge */}
+                    <div className="absolute -top-10 right-6 bg-card rounded-xl shadow-lg border border-border p-2.5 text-center min-w-[75px] z-10">
+                      <span className="block text-primary font-black text-xl leading-none">{new Date(event.startDate).getDate()}</span>
+                      <span className="block text-muted-foreground font-black text-xs uppercase mt-0.5">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</span>
+                    </div>
+
+                    <div className="space-y-4 flex-1 pr-6">
+                      <div>
+                        <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">{event.name}</h3>
+                        <p className="text-sm font-semibold text-muted-foreground">{event.club?.name || 'TBA'}</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-y-2 text-sm text-muted-foreground font-semibold">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-primary shrink-0" /> 
+                          <span className="truncate">{event.city ? `${event.city}, ${event.state || ''}` : event.venue || 'TBA'}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Trophy className="w-4 h-4 text-primary shrink-0" /> 
+                          <span className="truncate">{event.type || 'Championship Show'}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="w-4 h-4 text-primary shrink-0" /> 
+                          <span>Entry Fee: ₹{event.entryFee}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-primary shrink-0" /> 
+                          <span>Closing Date: {formatDate(event.registrationWindowEnd)}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -296,7 +313,7 @@ export default function EventsPage() {
             </Button>
           </div>
         )}
-      </div>
+      </PublicContainer>
     </PageContainer>
   );
 }

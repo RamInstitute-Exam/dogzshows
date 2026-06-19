@@ -69,7 +69,7 @@ export default function CommitteeMembersPage() {
               <input name="designation" type="text" placeholder="designation" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
               <input name="email" type="text" placeholder="email" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
               <input name="phone" type="text" placeholder="phone" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
-              <Button type="submit" className="bg-brand-orange text-foreground">Add</Button>
+              <Button type="submit" className="admin-btn admin-btn-primary admin-btn-sm">Add</Button>
             </form>
           </div>
 

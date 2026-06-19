@@ -9,7 +9,7 @@ export default function AboutEvent({ event }: { event: any }) {
       
       {/* Description Section */}
       <div className="mb-10">
-        <p className="text-muted-foreground leading-relaxed text-lg font-medium">{event.about}</p>
+        <p className="text-muted-foreground leading-relaxed text-lg font-medium">{event?.about ?? event?.description ?? 'No description available.'}</p>
       </div>
 
       {/* Grid Sections */}
@@ -49,14 +49,18 @@ export default function AboutEvent({ event }: { event: any }) {
           <Shield className="w-6 h-6 text-red-500" />
           <h3 className="text-xl font-bold text-foreground">Strict Competition Rules</h3>
         </div>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {event.rules.map((rule: string, i: number) => (
-            <li key={i} className="flex gap-3">
-              <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
-              <span className="text-muted-foreground font-medium">{rule}</span>
-            </li>
-          ))}
-        </ul>
+        {(!event?.rules || event.rules.length === 0) ? (
+          <p className="text-muted-foreground font-medium italic">No competition rules listed for this event.</p>
+        ) : (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {(event.rules as string[]).map((rule: string, i: number) => (
+              <li key={i} className="flex gap-3">
+                <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+                <span className="text-muted-foreground font-medium">{rule}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 
 interface JudgeDetailClientProps {
   judge: any;
@@ -42,14 +43,14 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
       {/* Premium Hero */}
       <section className="relative pt-6 md:pt-8 pb-12 overflow-hidden bg-black border-b border-border">
         <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#F59E0B]/10 blur-[100px]"></div>
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#FB923C]/10 blur-[100px]"></div>
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[100px]"></div>
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-muted/10 blur-[100px]"></div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+        <PublicContainer className="relative z-10">
           <button 
             onClick={() => router.push('/judges')}
-            className="flex items-center text-sm font-bold text-muted-foreground hover:text-[#F59E0B] transition-colors mb-8 group"
+            className="flex items-center text-sm font-bold text-muted-foreground hover:text-primary transition-colors mb-8 group"
           >
             <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Back to Panel
           </button>
@@ -66,7 +67,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                 <span className="text-[#64748b] text-[72px]">{getInitials(judge.name)}</span>
               )}
               {judge.isFeatured && (
-                <div className="absolute bottom-2 right-6 bg-[#F59E0B] text-white p-1.5 rounded-full border-2 border-[#020817]">
+                <div className="absolute bottom-2 right-6 bg-primary text-primary-foreground p-1.5 rounded-full border-2 border-[#020817]">
                   <Star className="w-5 h-5 fill-current" />
                 </div>
               )}
@@ -79,7 +80,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
               className="flex-grow"
             >
               <div className="flex flex-wrap items-center gap-3 mb-4">
-                <span className="px-3 py-1 bg-[#F59E0B]/20 text-[#F59E0B] rounded-full text-xs font-bold uppercase tracking-wider border border-[#F59E0B]/30 flex items-center gap-1.5">
+                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-wider border border-primary/20 flex items-center gap-1.5">
                   <Award className="w-3.5 h-3.5" /> KCI Approved Judge
                 </span>
               </div>
@@ -89,24 +90,24 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
               <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-gray-400">
                 {(judge.city || judge.state || judge.country) && (
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#F59E0B]" />
+                    <MapPin className="w-4 h-4 text-primary" />
                     {[judge.city, judge.state, judge.country].filter(Boolean).join(', ')}
                   </div>
                 )}
                 {judge.email && (
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-[#F59E0B]" />
+                    <Mail className="w-4 h-4 text-primary" />
                     <a href={`mailto:${judge.email}`} className="hover:text-white transition-colors">{judge.email}</a>
                   </div>
                 )}
               </div>
             </motion.div>
           </div>
-        </div>
+        </PublicContainer>
       </section>
 
       {/* Content Area */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PublicContainer className="py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
           {/* Main Content */}
@@ -119,7 +120,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-3 text-sm font-bold uppercase tracking-wider whitespace-nowrap border-b-2 transition-colors ${
                     activeTab === tab 
-                      ? 'border-[#F59E0B] text-[#F59E0B]' 
+                      ? 'border-primary text-primary' 
                       : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -148,7 +149,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
             <div className="sticky top-[120px] space-y-6">
               <div className="bg-card border border-border rounded-3xl p-6 shadow-lg">
                 <h3 className="text-lg font-bold font-outfit mb-6 flex items-center gap-2">
-                  <UserCircle className="w-5 h-5 text-[#F59E0B]" /> Quick Facts
+                  <UserCircle className="w-5 h-5 text-primary" /> Quick Facts
                 </h3>
                 
                 <ul className="space-y-4">
@@ -175,7 +176,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                       <Phone className="w-5 h-5 shrink-0 text-muted-foreground mt-0.5" />
                       <div>
                         <p className="font-bold text-foreground">Phone</p>
-                        <a href={`tel:${judge.phone}`} className="text-[#F59E0B] hover:underline">{judge.phone}</a>
+                        <a href={`tel:${judge.phone}`} className="text-primary hover:underline">{judge.phone}</a>
                       </div>
                     </li>
                   )}
@@ -184,7 +185,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                       <Mail className="w-5 h-5 shrink-0 text-muted-foreground mt-0.5" />
                       <div className="break-all">
                         <p className="font-bold text-foreground">Email</p>
-                        <a href={`mailto:${judge.email}`} className="text-[#F59E0B] hover:underline">{judge.email}</a>
+                        <a href={`mailto:${judge.email}`} className="text-primary hover:underline">{judge.email}</a>
                       </div>
                     </li>
                   )}
@@ -202,7 +203,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
           </div>
 
         </div>
-      </section>
+      </PublicContainer>
     </PageContainer>
   );
 }

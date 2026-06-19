@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Quote, Star } from 'lucide-react';
-
+import PublicContainer from '@/components/layout/PublicContainer';
 
 
 interface TestimonialsProps {
@@ -15,7 +15,7 @@ export default function Testimonials({ testimonialsData }: TestimonialsProps) {
 
   return (
     <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background border-y border-border pt-0">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <PublicContainer>
         
         <div className="text-center mb-16">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
@@ -26,7 +26,7 @@ export default function Testimonials({ testimonialsData }: TestimonialsProps) {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {testimonials.map((t, i) => (
             <motion.div 
               key={i}
@@ -63,7 +63,7 @@ export default function Testimonials({ testimonialsData }: TestimonialsProps) {
           ))}
         </div>
 
-      </div>
+      </PublicContainer>
     </section>
   );
 }

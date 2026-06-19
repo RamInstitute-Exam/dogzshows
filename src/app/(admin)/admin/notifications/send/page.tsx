@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, RefreshCw, BellRing, Mail, Smartphone, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import api from '@/services/api';
 
 export default function SendNotification() {
@@ -28,10 +29,9 @@ export default function SendNotification() {
               </h1>
               <p className="text-muted-foreground font-medium mt-1">Dispatch alerts, SMS, or Emails to specific user segments.</p>
             </div>
-            <Button onClick={handleSend} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-foreground font-bold">
-              {loading ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
-              Dispatch Broadcast
-            </Button>
+            <AdminButton onClick={handleSend} loading={loading} variant="primary">
+              Send Notification
+            </AdminButton>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 ga">

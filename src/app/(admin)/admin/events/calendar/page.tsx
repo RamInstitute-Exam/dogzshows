@@ -182,7 +182,7 @@ export default function CalendarPage() {
             
             <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
               <Link href="/admin/events/create">
-                <Button className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold shadow-md shadow-brand-orange/20 rounded-xl px-5 h-[46px]">
+                <Button className="bg-[#111827] hover:bg-black text-white font-bold shadow-md rounded-xl px-5 h-[46px] dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6]">
                   <Plus className="w-5 h-5 mr-2" /> Add Show
                 </Button>
               </Link>
@@ -408,7 +408,7 @@ export default function CalendarPage() {
                             <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-brand-orange" /> {event.startTime || '09:00 AM'} - {event.endTime || '06:00 PM'}</span>
                           </div>
                         </div>
-                        <Button className="mt-4 sm:mt-0 bg-brand-orange text-foreground hover:bg-orange-600 font-bold">Details</Button>
+                        <Button className="mt-4 sm:mt-0 bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] font-bold">Details</Button>
                       </div>
                     ))
                   )}
@@ -609,7 +609,7 @@ export default function CalendarPage() {
                   <Trash2 className="w-4 h-4 mr-2" /> Delete
                 </Button>
                 <Link href={`/events/detail?slug=${selectedEvent.slug}`} target="_blank" className="flex-1">
-                  <Button className="w-full bg-brand-orange text-foreground hover:bg-orange-600 font-bold h-12 rounded-xl">
+                  <Button className="w-full bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] font-bold h-12 rounded-xl">
                     <ExternalLink className="w-4 h-4 mr-2" /> Website
                   </Button>
                 </Link>

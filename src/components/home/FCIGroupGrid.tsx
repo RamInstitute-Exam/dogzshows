@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import PublicContainer from '@/components/layout/PublicContainer';
 
 export interface FCIGroup {
   id: string;
@@ -37,12 +38,12 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
 
   return (
     <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background pt-0">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <PublicContainer>
         
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-8 sm:mb-16">
           <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="text-brand-orange font-bold text-[10px] sm:text-sm tracking-widest uppercase mb-2 sm:mb-4">Official FCI Breed Groups</div>
+            <div className="text-primary font-bold text-[10px] sm:text-sm tracking-widest uppercase mb-2 sm:mb-4">Official FCI Breed Groups</div>
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-4 leading-tight">Explore all internationally recognized breed classifications used across championships worldwide.</h2>
           </motion.div>
           
@@ -52,7 +53,7 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
               placeholder="Search breed groups..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 sm:h-16 pl-12 sm:pl-16 bg-card border-border text-foreground rounded-xl sm:rounded-[20px] focus-visible:ring-brand-orange/50 text-sm sm:text-lg placeholder:text-muted-foreground shadow-lg"
+              className="w-full h-12 sm:h-16 pl-12 sm:pl-16 bg-card border-border text-foreground rounded-xl sm:rounded-[20px] focus-visible:ring-primary/50 text-sm sm:text-lg placeholder:text-muted-foreground shadow-lg"
             />
           </motion.div>
         </div>
@@ -62,7 +63,7 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
             No groups found
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
             {filteredGroups.map((group, i) => (
               <Link href={`/group-details?slug=${group.slug}`} key={group.id}>
                 <motion.div
@@ -70,7 +71,7 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="group luxury-card relative w-full h-[240px] sm:h-[320px] lg:h-[380px] overflow-hidden cursor-pointer"
+                  className="group luxury-card relative w-full h-[240px] sm:h-[320px] lg:h-[380px] overflow-hidden cursor-pointer border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease rounded-[2rem] bg-card"
                 >
                   {/* Background Image */}
                   {group.cardImage && (
@@ -88,7 +89,7 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
                   <div className="relative z-20 flex flex-col h-full justify-between p-3 sm:p-4">
                     {/* Top Left */}
                     <div>
-                      <span className="inline-block px-2 py-1 bg-brand-orange/90 backdrop-blur text-white text-[10px] font-black tracking-widest uppercase rounded-lg shadow-lg border border-white/20">
+                      <span className="inline-block px-2 py-1 bg-primary text-primary-foreground backdrop-blur text-[10px] font-black tracking-widest uppercase rounded-lg shadow-lg border border-white/20">
                         Group {group.groupNumber}
                       </span>
                     </div>
@@ -104,7 +105,7 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
                           <span className="text-white/90 text-[10px] sm:text-xs font-semibold">{group._count?.breeds || 0} Breeds</span>
                           <span className="hidden sm:inline-block text-white/60 text-[10px] font-bold uppercase tracking-widest">FCI Certified</span>
                         </div>
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center transition-all duration-300 group-hover:bg-brand-orange group-hover:border-brand-orange group-hover:scale-110 shrink-0">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center transition-all duration-300 group-hover:bg-primary group-hover:border-primary group-hover:scale-110 shrink-0">
                           <ArrowRight className="w-4 h-4 text-white" />
                         </div>
                       </div>
@@ -115,7 +116,7 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
             ))}
           </div>
         )}
-      </div>
+      </PublicContainer>
     </section>
   );
 }

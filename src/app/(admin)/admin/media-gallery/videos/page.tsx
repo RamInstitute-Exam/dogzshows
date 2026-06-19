@@ -122,7 +122,7 @@ export default function VideosManagement() {
     {
       header: 'Featured',
       accessor: (v) => (
-        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${v.featured ? 'bg-[#F59E0B]/20 text-[#F59E0B]' : 'bg-accent text-muted-foreground'}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${v.featured ? 'bg-primary/20 text-primary' : 'bg-accent text-muted-foreground'}`}>
           {v.featured ? 'Yes' : 'No'}
         </span>
       )

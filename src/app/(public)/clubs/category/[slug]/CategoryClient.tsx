@@ -9,6 +9,7 @@ import {
   Tent, Users, CalendarDays, CheckCircle2, FolderOpen
 } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 import api from '@/lib/api';
 
 function CategoryPageContent() {
@@ -103,7 +104,7 @@ function CategoryPageContent() {
         <div className="absolute inset-0 opacity-20 pointer-events-none">
           <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-brand-orange/20 blur-[120px]" />
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+        <PublicContainer className="relative z-10">
           <Link
             href="/clubs"
             className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-brand-orange transition-colors mb-8 group"
@@ -127,12 +128,12 @@ function CategoryPageContent() {
               Browse all registered kennel clubs in the <span className="text-brand-orange font-semibold capitalize">{categoryName}</span> category.
             </p>
           </motion.div>
-        </div>
+        </PublicContainer>
       </section>
 
       {/* Search Bar */}
       <section className="py-5 border-b border-border bg-card/50 backdrop-blur-md sticky top-[var(--nav-height,84px)] z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PublicContainer>
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
@@ -143,12 +144,12 @@ function CategoryPageContent() {
               className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-brand-orange outline-none text-foreground"
             />
           </div>
-        </div>
+        </PublicContainer>
       </section>
 
       {/* Listing */}
       <section className="py-12 bg-background min-h-[500px]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PublicContainer>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">
               Results{' '}
@@ -159,13 +160,13 @@ function CategoryPageContent() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
                 <div key={i} className="animate-pulse bg-card rounded-2xl border border-border h-[380px]" />
               ))}
             </div>
           ) : clubs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
               {clubs.map((club, idx) => (
                 <motion.div
                   key={club.id}
@@ -295,7 +296,7 @@ function CategoryPageContent() {
               </button>
             </div>
           )}
-        </div>
+        </PublicContainer>
       </section>
     </PageContainer>
   );

@@ -138,7 +138,7 @@ export default function CompetitionRatings() {
                               <Button 
                                 size="sm" 
                                 onClick={() => handleScore(match.id, true, 'Best in Show')}
-                                className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold"
+                                className="bg-[#16A34A] hover:bg-[#15803D] text-white font-bold"
                               >
                                 <Award className="w-4 h-4 mr-1" /> Winner
                               </Button>

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, UploadCloud, Shield, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -87,10 +88,9 @@ export default function CreateUserForm() {
                 <p className="text-muted-foreground text-sm mt-1">Add a new member or administrator to the platform.</p>
               </div>
             </div>
-            <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold">
-              {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-              Save User
-            </Button>
+            <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={loading ? undefined : <Save className="w-4 h-4" />}>
+              Create User
+            </AdminButton>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

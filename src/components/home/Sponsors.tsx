@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-
+import PublicContainer from '@/components/layout/PublicContainer';
 
 
 interface SponsorsProps {
@@ -15,9 +15,9 @@ export default function Sponsors({ sponsorsData }: SponsorsProps) {
 
   return (
     <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background border-y border-border pt-0">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mb-8 text-center">
+      <PublicContainer className="mb-8 text-center">
         <p className="text-sm font-bold text-[#94a3b8] uppercase tracking-widest">Proudly Supported By</p>
-      </div>
+      </PublicContainer>
 
       <div className="relative flex overflow-x-hidden group">
         <div className="animate-marquee flex items-center whitespace-nowrap group-hover:pause">

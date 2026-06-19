@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-brand-orange: #FF9800;
-  --color-brand-orange-hover: #FFB020;
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-hover: var(--brand-orange-hover);
   --color-brand-dark: #000000;
   --color-brand-secondary: #050505;
   --color-brand-card: #0A0A0A;
@@ -274,7 +274,7 @@ summary {
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 34px;
+  gap: 48px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -310,7 +310,7 @@ summary {
 
 .nav-menu-link:hover,
 .nav-menu-link.active {
-  color: #F4C542;
+  color: var(--nav-text-active);
 }
 
 /* Gold underline on hover */
@@ -321,7 +321,7 @@ summary {
   left: 0;
   width: 100%;
   height: 3px;
-  background: #F4C542;
+  background: var(--nav-text-active);
   border-radius: 20px;
   transform: scaleX(0);
   transform-origin: right;
@@ -339,7 +339,7 @@ summary {
 }
 
 .nav-menu-link:focus-visible {
-  outline: 2px solid #F4C542;
+  outline: 2px solid var(--nav-text-active);
   outline-offset: 4px;
   border-radius: 4px;
 }
@@ -415,7 +415,7 @@ summary {
 }
 
 .navbar-btn-premium:focus-visible {
-  outline: 2px solid #F4C542;
+  outline: 2px solid var(--nav-text-active);
   outline-offset: 3px;
 }
 
@@ -437,14 +437,14 @@ summary {
 /* ── Sign Up — gold filled */
 .navbar-btn-signup {
   padding: 0 30px;
-  background: #F4C542;
-  color: #000000;
-  border: 2px solid #F4C542;
+  background: var(--btn-signup-bg);
+  color: var(--button-text);
+  border: 2px solid var(--btn-signup-border);
 }
 
 .navbar-btn-signup:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(244, 197, 66, 0.35);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   filter: brightness(1.05);
 }
 
@@ -465,14 +465,14 @@ summary {
 /* ── Dashboard — gold filled */
 .navbar-btn-dashboard {
   padding: 0 28px;
-  background: #F4C542;
-  color: #000000;
-  border: 2px solid #F4C542;
+  background: var(--btn-signup-bg);
+  color: var(--button-text);
+  border: 2px solid var(--btn-signup-border);
 }
 
 .navbar-btn-dashboard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(244, 197, 66, 0.35);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* ── Dropdown panel ─────────────────────────────────────────────────── */
@@ -519,8 +519,8 @@ summary {
 }
 
 .nav-dropdown-item:hover {
-  background: #F4C542;
-  color: #000000;
+  background: var(--nav-text-active);
+  color: var(--primary-foreground);
 }
 
 /* ── Badge ──────────────────────────────────────────────────────────── */
@@ -531,8 +531,8 @@ summary {
   border-radius: 999px;
   font-size: 10px;
   font-weight: 700;
-  background: rgba(244, 197, 66, 0.15);
-  color: #F4C542;
+  background: color-mix(in srgb, var(--nav-text-active) 15%, transparent);
+  color: var(--nav-text-active);
   white-space: nowrap;
   line-height: 1.6;
 }
@@ -565,7 +565,7 @@ button:hover .bell-icon-animate {
 }
 
 .navbar-avatar:hover {
-  border-color: #F4C542;
+  border-color: var(--nav-text-active);
 }
 
 /* ── Mobile nav link ────────────────────────────────────────────────── */
@@ -678,52 +678,64 @@ button:hover .bell-icon-animate {
 }
 
 :root {
-  --background: #F8FAFC;
-  --foreground: #111827;
-  --card: #FFFFFF;
-  --card-foreground: #111827;
-  --popover: #FFFFFF;
-  --popover-foreground: #111827;
-  --primary: #F5C84C;
-  --primary-foreground: #111827;
-  --secondary: #F1F5F9;
-  --secondary-foreground: #0F172A;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #F1F5F9;
-  --accent-foreground: #0F172A;
-  --border: #E2E8F0;
-  --input: #FFFFFF;
-  --ring: #F5C84C;
+  --bg-primary: #ffffff;
+  --bg-card: #f8f8f8;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --button-bg: #111111;
+  --button-text: #ffffff;
+  --icon-color: #111111;
+  --border-color: #e5e5e5;
+  --accent-color: #111111;
+
+  /* Theme mappings */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-primary);
+  --popover-foreground: var(--text-primary);
+  --border: var(--border-color);
+  --input: var(--bg-primary);
+  --ring: var(--button-bg);
   --radius: 0.625rem;
+
+  --primary: var(--button-bg);
+  --primary-foreground: var(--button-text);
+  --muted: var(--bg-card);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--bg-card);
+  --accent-foreground: var(--text-primary);
+
+  --brand-orange: var(--accent-color);
+  --brand-orange-hover: var(--text-secondary);
 
   /* Header/Navbar light theme variables */
   --nav-height: 84px;
-  --nav-bg: #FFFFFF;
-  --nav-border: #E2E8F0;
-  --nav-text: #374151;
-  --nav-text-active: #D4A017;
-  --nav-dropdown-bg: #FFFFFF;
-  --nav-search-icon: #111827;
+  --nav-bg: var(--bg-primary);
+  --nav-border: var(--border-color);
+  --nav-text: var(--text-secondary);
+  --nav-text-active: var(--accent-color);
+  --nav-dropdown-bg: var(--bg-card);
+  --nav-search-icon: var(--icon-color);
 
-  /* Ghost buttons — light mode: dark text/border on white bg */
-  --nav-ghost-color: #111827;
-  --nav-ghost-border: rgba(0, 0, 0, 0.32);
-  --nav-ghost-hover-bg: #111827;
-  --nav-ghost-hover-color: #FFFFFF;
+  /* Ghost buttons — light mode */
+  --nav-ghost-color: var(--text-primary);
+  --nav-ghost-border: var(--border-color);
+  --nav-ghost-hover-bg: var(--button-bg);
+  --nav-ghost-hover-color: var(--button-text);
 
-  --btn-login-bg: #000000;
-  --btn-login-text: #FFFFFF;
-  --btn-login-border: #000000;
+  --btn-login-bg: var(--button-bg);
+  --btn-login-text: var(--button-text);
+  --btn-login-border: var(--button-bg);
 
-  --btn-signup-bg: #F4C542;
-  /* Gold */
-  --btn-signup-text: #000000;
-  --btn-signup-border: #F4C542;
+  --btn-signup-bg: var(--button-bg);
+  --btn-signup-text: var(--button-text);
+  --btn-signup-border: var(--button-bg);
 
-  --btn-register-bg: #000000;
-  --btn-register-text: #FFFFFF;
-  --btn-register-border: #000000;
+  --btn-register-bg: transparent;
+  --btn-register-text: var(--text-primary);
+  --btn-register-border: var(--border-color);
 }
 
 @media (max-width: 1023px) {
@@ -739,52 +751,62 @@ button:hover .bell-icon-animate {
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #FFFFFF;
-  --card: #0A0A0A;
-  --card-foreground: #FFFFFF;
-  --popover: #0A0A0A;
-  --popover-foreground: #FFFFFF;
-  --primary: #F5C84C;
-  --primary-foreground: #000000;
-  --secondary: #111111;
-  --secondary-foreground: #F8FAFC;
-  --muted: #111111;
-  --muted-foreground: #9CA3AF;
-  --accent: #111111;
-  --accent-foreground: #F8FAFC;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: #000000;
-  --ring: #F5C84C;
+  --bg-primary: #000000;
+  --bg-card: #111111;
+  --text-primary: #ffffff;
+  --text-secondary: #b5b5b5;
+  --button-bg: #ffffff;
+  --button-text: #000000;
+  --icon-color: #ffffff;
+  --border-color: #2a2a2a;
+  --accent-color: #ffffff;
+
+  /* Theme mappings */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-card);
+  --popover-foreground: var(--text-primary);
+  --border: var(--border-color);
+  --input: var(--bg-primary);
+  --ring: var(--button-bg);
+
+  --primary: var(--button-bg);
+  --primary-foreground: var(--button-text);
+  --muted: var(--bg-card);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--bg-card);
+  --accent-foreground: var(--text-primary);
+
+  --brand-orange: var(--accent-color);
+  --brand-orange-hover: var(--text-secondary);
 
   /* Header/Navbar dark theme variables */
-  --nav-bg: #000000;
-  --nav-border: rgba(255, 255, 255, 0.08);
-  --nav-text: #E5E7EB;
-  --nav-text-active: #F4C542;
-  --nav-dropdown-bg: #0A0A0A;
-  --nav-search-icon: #FFFFFF;
+  --nav-bg: var(--bg-primary);
+  --nav-border: var(--border-color);
+  --nav-text: var(--text-secondary);
+  --nav-text-active: var(--accent-color);
+  --nav-dropdown-bg: var(--bg-card);
+  --nav-search-icon: var(--icon-color);
 
-  /* Ghost buttons — dark mode: white text/border on dark bg */
-  --nav-ghost-color: #FFFFFF;
-  --nav-ghost-border: rgba(255, 255, 255, 0.45);
-  --nav-ghost-hover-bg: #FFFFFF;
-  --nav-ghost-hover-color: #000000;
+  /* Ghost buttons — dark mode */
+  --nav-ghost-color: var(--text-primary);
+  --nav-ghost-border: var(--border-color);
+  --nav-ghost-hover-bg: var(--button-bg);
+  --nav-ghost-hover-color: var(--button-text);
 
-  --btn-login-bg: #FFFFFF;
-  --btn-login-text: #000000;
-  --btn-login-border: #FFFFFF;
+  --btn-login-bg: var(--button-bg);
+  --btn-login-text: var(--button-text);
+  --btn-login-border: var(--button-bg);
 
-  --btn-signup-bg: #F4C542;
-  /* Gold */
-  --btn-signup-text: #000000;
-  --btn-signup-border: #F4C542;
+  --btn-signup-bg: var(--button-bg);
+  --btn-signup-text: var(--button-text);
+  --btn-signup-border: var(--button-bg);
 
   --btn-register-bg: transparent;
-  --btn-register-text: #FFFFFF;
-  --btn-register-border: #FFFFFF;
+  --btn-register-text: var(--text-primary);
+  --btn-register-border: var(--border-color);
 }
 
 @layer base {
@@ -950,9 +972,9 @@ button:hover .bell-icon-animate {
 
 .mobile-drawer-container .navbar-btn-signup,
 .mobile-drawer-container .navbar-btn-dashboard {
-  background: #F4C542 !important;
-  color: #000000 !important;
-  border-color: #F4C542 !important;
+  background: var(--btn-signup-bg) !important;
+  color: var(--button-text) !important;
+  border-color: var(--btn-signup-border) !important;
 }
 
 /* ─── Netflix-style Featured Dog Shows Slider ─── */
@@ -1060,4 +1082,143 @@ html, body {
 #__next, main {
   width: 100%;
   overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN PANEL — GLOBAL THEME-AWARE BUTTON SYSTEM
+   Guarantees: black bg → white text | white bg → black text
+   NEVER allows: black bg + black text | white bg + white text
+═══════════════════════════════════════════════════════════════ */
+
+/* ── CSS Custom properties ─────────────────────────────────────
+   Light mode uses dark (#111827) buttons with white text.
+   Dark  mode uses light (#FFFFFF) buttons with dark text.
+   ─────────────────────────────────────────────────────────── */
+:root {
+  /* Primary action button */
+  --admin-btn-primary-bg:          #111827;
+  --admin-btn-primary-text:        #FFFFFF;
+  --admin-btn-primary-hover-bg:    #000000;
+  --admin-btn-primary-hover-shadow: 0 4px 14px rgba(0,0,0,0.30);
+
+  /* Secondary / outline button */
+  --admin-btn-secondary-bg:        #FFFFFF;
+  --admin-btn-secondary-text:      #111827;
+  --admin-btn-secondary-border:    #D1D5DB;
+  --admin-btn-secondary-hover-bg:  #F9FAFB;
+
+  /* Danger button */
+  --admin-btn-danger-bg:           #DC2626;
+  --admin-btn-danger-text:         #FFFFFF;
+  --admin-btn-danger-hover-bg:     #B91C1C;
+
+  /* Success button */
+  --admin-btn-success-bg:          #16A34A;
+  --admin-btn-success-text:        #FFFFFF;
+  --admin-btn-success-hover-bg:    #15803D;
+}
+
+.dark {
+  /* Primary action button — inverted in dark mode */
+  --admin-btn-primary-bg:          #FFFFFF;
+  --admin-btn-primary-text:        #111827;
+  --admin-btn-primary-hover-bg:    #F3F4F6;
+  --admin-btn-primary-hover-shadow: 0 4px 14px rgba(255,255,255,0.12);
+
+  /* Secondary / outline button */
+  --admin-btn-secondary-bg:        transparent;
+  --admin-btn-secondary-text:      #FFFFFF;
+  --admin-btn-secondary-border:    rgba(255,255,255,0.15);
+  --admin-btn-secondary-hover-bg:  rgba(255,255,255,0.06);
+
+  /* Danger button — brighter red in dark mode */
+  --admin-btn-danger-bg:           #EF4444;
+  --admin-btn-danger-text:         #FFFFFF;
+  --admin-btn-danger-hover-bg:     #DC2626;
+
+  /* Success button — brighter green in dark mode */
+  --admin-btn-success-bg:          #22C55E;
+  --admin-btn-success-text:        #111827;
+  --admin-btn-success-hover-bg:    #16A34A;
+}
+
+/* ── Utility classes ───────────────────────────────────────── */
+@layer utilities {
+  /* Primary */
+  .admin-btn-primary {
+    background-color: var(--admin-btn-primary-bg);
+    color:            var(--admin-btn-primary-text);
+    border:           1px solid transparent;
+    transition:       background-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  }
+  .admin-btn-primary:hover:not(:disabled) {
+    background-color: var(--admin-btn-primary-hover-bg);
+    box-shadow:       var(--admin-btn-primary-hover-shadow);
+    transform:        scale(1.02);
+  }
+
+  /* Secondary */
+  .admin-btn-secondary {
+    background-color: var(--admin-btn-secondary-bg);
+    color:            var(--admin-btn-secondary-text);
+    border:           1px solid var(--admin-btn-secondary-border);
+    transition:       background-color 0.25s ease, transform 0.2s ease;
+  }
+  .admin-btn-secondary:hover:not(:disabled) {
+    background-color: var(--admin-btn-secondary-hover-bg);
+  }
+
+  /* Danger */
+  .admin-btn-danger {
+    background-color: var(--admin-btn-danger-bg);
+    color:            var(--admin-btn-danger-text);
+    border:           1px solid transparent;
+    transition:       background-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  }
+  .admin-btn-danger:hover:not(:disabled) {
+    background-color: var(--admin-btn-danger-hover-bg);
+    box-shadow:       0 4px 14px rgba(220, 38, 38, 0.35);
+    transform:        scale(1.02);
+  }
+
+  /* Success */
+  .admin-btn-success {
+    background-color: var(--admin-btn-success-bg);
+    color:            var(--admin-btn-success-text);
+    border:           1px solid transparent;
+    transition:       background-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  }
+  .admin-btn-success:hover:not(:disabled) {
+    background-color: var(--admin-btn-success-hover-bg);
+    box-shadow:       0 4px 14px rgba(22, 163, 74, 0.35);
+    transform:        scale(1.02);
+  }
+
+  /* Common base for all admin buttons */
+  .admin-btn {
+    display:          inline-flex;
+    align-items:      center;
+    justify-content:  center;
+    gap:              0.5rem;
+    font-weight:      600;
+    border-radius:    0.75rem;   /* rounded-xl */
+    cursor:           pointer;
+    white-space:      nowrap;
+    outline:          none;
+    user-select:      none;
+  }
+  .admin-btn:disabled {
+    opacity:          0.5;
+    cursor:           not-allowed;
+    pointer-events:   none;
+  }
+  .admin-btn:focus-visible {
+    outline:          2px solid var(--admin-btn-primary-bg);
+    outline-offset:   2px;
+  }
+
+  /* Sizes */
+  .admin-btn-sm  { height: 2rem;  padding: 0 0.75rem; font-size: 0.75rem; }
+  .admin-btn-md  { height: 2.5rem; padding: 0 1rem;   font-size: 0.875rem; }
+  .admin-btn-lg  { height: 3rem;  padding: 0 1.5rem;  font-size: 1rem; }
 }

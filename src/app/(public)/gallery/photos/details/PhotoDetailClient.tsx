@@ -71,7 +71,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
         <div className="flex-grow flex flex-col items-center justify-center gap-4 text-[#94A3B8] p-8">
           <Camera className="w-16 h-16 opacity-30" />
           <p className="text-xl font-semibold text-white">Photography not found</p>
-          <Link href="/gallery/photos" className="text-[#F4C542] hover:underline font-bold">← Return to Gallery</Link>
+          <Link href="/gallery/photos" className="text-primary hover:underline font-bold">← Return to Gallery</Link>
         </div>
       </PageContainer>
     );
@@ -121,7 +121,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
             <div className="flex-1 flex items-center justify-center relative px-4 sm:px-16" onClick={() => setLightboxOpen(false)}>
               <button 
                 onClick={handlePrev}
-                className="absolute left-4 sm:left-8 p-4 bg-black/50 hover:bg-[#F4C542] hover:text-black rounded-full backdrop-blur-md transition-all z-10 border border-white/10"
+                className="absolute left-4 sm:left-8 p-4 bg-black/50 hover:bg-primary hover:text-primary-foreground rounded-full backdrop-blur-md transition-all z-10 border border-white/10"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -140,7 +140,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
 
               <button 
                 onClick={handleNext}
-                className="absolute right-4 sm:right-8 p-4 bg-black/50 hover:bg-[#F4C542] hover:text-black rounded-full backdrop-blur-md transition-all z-10 border border-white/10"
+                className="absolute right-4 sm:right-8 p-4 bg-black/50 hover:bg-primary hover:text-primary-foreground rounded-full backdrop-blur-md transition-all z-10 border border-white/10"
               >
                 <ChevronRight className="w-6 h-6" />
               </button>
@@ -153,11 +153,11 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
         
         {/* BREADCRUMB */}
         <nav className="flex items-center gap-2 text-xs font-semibold text-[#94A3B8] mb-8 tracking-wider uppercase">
-          <Link href="/" className="hover:text-[#F4C542] transition-colors">Home</Link>
+          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="w-3 h-3" />
-          <Link href="/gallery/photos" className="hover:text-[#F4C542] transition-colors">Media Gallery</Link>
+          <Link href="/gallery/photos" className="hover:text-primary transition-colors">Media Gallery</Link>
           <ChevronRight className="w-3 h-3" />
-          <span className="text-[#F4C542] truncate max-w-[200px] sm:max-w-none">{photo.title}</span>
+          <span className="text-primary truncate max-w-[200px] sm:max-w-none">{photo.title}</span>
         </nav>
 
         {/* 75 / 25 SPLIT LAYOUT */}
@@ -183,7 +183,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
 
               {/* Quick Actions Overlay */}
               <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-3">
-                <div className="p-3 bg-black/40 backdrop-blur-md rounded-full text-white hover:bg-[#F4C542] hover:text-black transition-colors shadow-lg">
+                <div className="p-3 bg-black/40 backdrop-blur-md rounded-full text-white hover:bg-primary hover:text-primary-foreground transition-colors shadow-lg">
                   <ZoomIn className="w-5 h-5" />
                 </div>
               </div>
@@ -209,7 +209,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                     const isActive = p.slug === photo.slug;
                     return (
                       <Link href={`/gallery/show-photos/details?slug=${p.slug}`} key={p.id} className="snap-start shrink-0">
-                        <div className={`relative w-[140px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${isActive ? 'ring-2 ring-[#F4C542] ring-offset-2 ring-offset-[#020817] shadow-[0_0_20px_rgba(244,197,66,0.3)]' : 'opacity-50 hover:opacity-100 border border-white/10'}`}>
+                        <div className={`relative w-[140px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#020817] shadow-md' : 'opacity-50 hover:opacity-100 border border-white/10'}`}>
                           <img src={p.cdnUrl} alt={p.title} className="w-full h-full object-cover" />
                         </div>
                       </Link>
@@ -230,7 +230,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
             {/* Header */}
             <div>
               {photo.category?.name && (
-                <span className="inline-block bg-[#F4C542]/20 text-[#F4C542] text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-[0.2em] mb-4 border border-[#F4C542]/30">
+                <span className="inline-block bg-primary/10 text-primary text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-[0.2em] mb-4 border border-primary/20">
                   {photo.category.name}
                 </span>
               )}
@@ -253,7 +253,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                   style={{ minHeight: '80px', height: 'auto', padding: '16px 18px' }}
                 >
                   <div className="flex items-center gap-2 text-[#94A3B8] text-xs font-semibold uppercase tracking-wider">
-                    <User className="w-3.5 h-3.5 text-[#F4C542]" /> Photographer
+                    <User className="w-3.5 h-3.5 text-primary" /> Photographer
                   </div>
                   <span 
                     className="text-sm font-bold text-white"
@@ -270,7 +270,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                   style={{ minHeight: '80px', height: 'auto', padding: '16px 18px' }}
                 >
                   <div className="flex items-center gap-2 text-[#94A3B8] text-xs font-semibold uppercase tracking-wider">
-                    <MapPin className="w-3.5 h-3.5 text-[#F4C542]" /> Location
+                    <MapPin className="w-3.5 h-3.5 text-primary" /> Location
                   </div>
                   <span 
                     className="text-sm font-bold text-white"
@@ -287,7 +287,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                   style={{ minHeight: '80px', height: 'auto', padding: '16px 18px' }}
                 >
                   <div className="flex items-center gap-2 text-[#94A3B8] text-xs font-semibold uppercase tracking-wider">
-                    <Tag className="w-3.5 h-3.5 text-[#F4C542]" /> Breed
+                    <Tag className="w-3.5 h-3.5 text-primary" /> Breed
                   </div>
                   <span 
                     className="text-sm font-bold text-white"
@@ -304,7 +304,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                   style={{ minHeight: '80px', height: 'auto', padding: '16px 18px' }}
                 >
                   <div className="flex items-center gap-2 text-[#94A3B8] text-xs font-semibold uppercase tracking-wider">
-                    <Camera className="w-3.5 h-3.5 text-[#F4C542]" /> Album
+                    <Camera className="w-3.5 h-3.5 text-primary" /> Album
                   </div>
                   <span 
                     className="text-sm font-bold text-white"
@@ -320,7 +320,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                 style={{ minHeight: '80px', height: 'auto', padding: '16px 18px' }}
               >
                 <div className="flex items-center gap-2 text-[#94A3B8] text-xs font-semibold uppercase tracking-wider">
-                  <Calendar className="w-3.5 h-3.5 text-[#F4C542]" /> Date
+                  <Calendar className="w-3.5 h-3.5 text-primary" /> Date
                 </div>
                 <span 
                   className="text-sm font-bold text-white"
@@ -335,7 +335,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                 style={{ minHeight: '80px', height: 'auto', padding: '16px 18px' }}
               >
                 <div className="flex items-center gap-2 text-[#94A3B8] text-xs font-semibold uppercase tracking-wider">
-                  <Eye className="w-3.5 h-3.5 text-[#F4C542]" /> Views
+                  <Eye className="w-3.5 h-3.5 text-primary" /> Views
                 </div>
                 <span 
                   className="text-sm font-bold text-white"
@@ -374,7 +374,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                   <Share2 className="w-4 h-4" /> Share
                 </button>
                 <button
-                  className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-[16px] text-xs font-bold text-[#F4C542] transition-all hover:-translate-y-0.5"
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-[16px] text-xs font-bold text-primary transition-all hover:-translate-y-0.5"
                   onClick={() => alert("Added to favorites!")}
                 >
                   <Heart className="w-4 h-4" /> Favorite

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, ImagePlus, Globe, Shield, User, MapPin, AlignLeft, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
@@ -16,6 +17,7 @@ export default function RegisterClubForm() {
   
   const [formData, setFormData] = useState({
     name: '',
+    clubType: 'All Breeds',
     registrationNumber: '',
     president: '',
     secretary: '',
@@ -91,10 +93,9 @@ export default function RegisterClubForm() {
             <p className="text-muted-foreground text-sm mt-1">Add a new kennel club or regional chapter and auto-create login credentials.</p>
           </div>
         </div>
-        <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/10">
-          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-          Save Club Profile
-        </Button>
+        <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={loading ? undefined : <Save className="w-4 h-4" />}>
+          Save Club
+        </AdminButton>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -127,6 +128,17 @@ export default function RegisterClubForm() {
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Club Name *</label>
                 <input required type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="E.g. Kennel Club of India" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Club Type *</label>
+                <select required name="clubType" value={formData.clubType} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm cursor-pointer">
+                  <option value="All Breeds">All Breeds</option>
+                  <option value="Specialty">Specialty</option>
+                  <option value="Kennel">Kennel</option>
+                  <option value="State">State</option>
+                  <option value="Breed Club">Breed Club</option>
+                  <option value="Regional Club">Regional Club</option>
+                </select>
               </div>
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Registration Number</label>

@@ -123,7 +123,7 @@ export default function PhotosManagement() {
     {
       header: 'Featured',
       accessor: (p) => (
-        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${p.featured ? 'bg-[#F59E0B]/20 text-[#F59E0B]' : 'bg-accent text-muted-foreground'}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${p.featured ? 'bg-primary/20 text-primary' : 'bg-accent text-muted-foreground'}`}>
           {p.featured ? 'Yes' : 'No'}
         </span>
       )

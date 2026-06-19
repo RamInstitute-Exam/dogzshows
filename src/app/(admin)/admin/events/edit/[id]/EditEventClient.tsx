@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, ImagePlus, CalendarDays, Settings, Info, MapPin, Trash2, Star, Plus, ChevronUp, ChevronDown, Move, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import api from '@/lib/api';
@@ -478,10 +479,9 @@ export default function EditEventClient() {
                 <option value="ONGOING">Ongoing</option>
                 <option value="COMPLETED">Completed</option>
               </select>
-              <Button onClick={handleSubmit} disabled={loading} className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold rounded-xl px-5">
-                {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+              <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={loading ? undefined : <Save className="w-4 h-4" />}>
                 Save Changes
-              </Button>
+              </AdminButton>
             </div>
           </div>
 
@@ -796,13 +796,15 @@ export default function EditEventClient() {
                           <h3 className="text-xl font-bold text-foreground">Club Secretary & Contact Details</h3>
                           <p className="text-xs text-muted-foreground mt-0.5">Add Hony. Secretary, Joint Secretaries, and coordinators with complete contact details.</p>
                         </div>
-                        <Button
+                        <AdminButton
                           type="button"
+                          variant="primary"
+                          size="sm"
                           onClick={handleAddSecretary}
-                          className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold rounded-xl text-xs h-10 px-4 flex items-center gap-1.5"
+                          leftIcon={<Plus className="w-4 h-4" />}
                         >
-                          <Plus className="w-4 h-4" /> Add Another Secretary
-                        </Button>
+                          Add Another Secretary
+                        </AdminButton>
                       </div>
 
                       <div className="space-y-6">

@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Camera, Eye, User, X, Share2, ZoomIn } from 'lucide-react';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 
 interface PhotosClientProps {
   initialPhotos?: any[];
@@ -15,6 +17,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [selectedPhoto, setSelectedPhoto] = useState<any | null>(null);
+  const pathname = usePathname();
 
   const categories = ['All', ...Array.from(new Set((initialPhotos || []).map((p: any) => p.category?.name).filter(Boolean)))];
 
@@ -39,7 +42,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
   return (
     <PageContainer>
       {/* Filters */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8">
+      <PublicContainer className="py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-card border border-border rounded-[1.5rem] p-5">
           {/* Category Pills */}
           <div className="flex gap-2 overflow-x-auto hide-scrollbar w-full md:w-auto pb-1">
@@ -49,8 +52,8 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                 onClick={() => setActiveFilter(cat as string)}
                 className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all border ${
                   activeFilter === cat
-                    ? 'bg-brand-orange text-foreground border-brand-orange shadow-md'
-                    : 'bg-background text-muted-foreground border-border hover:border-brand-orange hover:text-foreground'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md'
+                    : 'bg-background text-muted-foreground border-border hover:border-primary hover:text-foreground'
                 }`}
               >
                 {cat as string}
@@ -66,21 +69,22 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
               placeholder="Search photos, photographers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-foreground outline-none focus:border-brand-orange transition-colors"
+              className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-foreground outline-none focus:border-primary transition-colors"
             />
           </div>
         </div>
-      </div>
+      </PublicContainer>
 
       {/* Grid */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 pb-16">
+      <PublicContainer className="pb-16">
         {filtered.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground bg-card rounded-[2rem] border border-border border-dashed">
             <Camera className="w-16 h-16 mx-auto mb-4 opacity-30" />
-            <p className="text-xl font-semibold">No media items match your search or filters.</p>
+            <p className="text-xl font-semibold">No Outdoor Photos Available</p>
+            <p className="text-sm text-muted-foreground mt-2">Please check back later or modify your search.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
             {filtered.map((photo: any, index: number) => (
               <motion.div
                 key={photo.id}
@@ -88,48 +92,51 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: (index % 12) * 0.04 }}
-                className="group bg-card border border-border rounded-[1.5rem] overflow-hidden cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
-                onClick={() => setSelectedPhoto(photo)}
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-accent">
-                  <img
-                    src={photo.s3Url || photo.imageUrl || photo.cdnUrl}
-                    alt={photo.altText || photo.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-brand-orange flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
-                      <ZoomIn className="w-5 h-5 text-foreground" />
+                <Link
+                  href={`${pathname === '/gallery/show-photos' ? '/gallery/show-photos' : '/gallery/photos'}/details?slug=${photo.slug}`}
+                  className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col h-full cursor-pointer block"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-accent w-full">
+                    <img
+                      src={photo.s3Url || photo.imageUrl || photo.cdnUrl}
+                      alt={photo.altText || photo.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                        <ZoomIn className="w-5 h-5 text-primary-foreground" />
+                      </div>
+                    </div>
+                    {photo.category?.name && (
+                      <span className="absolute top-4 left-4 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                        {photo.category.name}
+                      </span>
+                    )}
+                    {photo.featured && (
+                      <span className="absolute top-4 right-4 bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-5 w-full flex-1 flex flex-col justify-between">
+                    <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1 text-base">
+                      {photo.title}
+                    </h3>
+                    <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
+                      {photo.photographer && (
+                        <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" />{photo.photographer}</span>
+                      )}
+                      <span className="flex items-center gap-1 ml-auto"><Eye className="w-3.5 h-3.5" />{photo.views || 0}</span>
                     </div>
                   </div>
-                  {photo.category?.name && (
-                    <span className="absolute top-4 left-4 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                      {photo.category.name}
-                    </span>
-                  )}
-                  {photo.featured && (
-                    <span className="absolute top-4 right-4 bg-brand-orange text-foreground text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                      Featured
-                    </span>
-                  )}
-                </div>
-                <div className="p-5">
-                  <h3 className="font-bold text-foreground group-hover:text-brand-orange transition-colors line-clamp-1 text-base">
-                    {photo.title}
-                  </h3>
-                  <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
-                    {photo.photographer && (
-                      <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" />{photo.photographer}</span>
-                    )}
-                    <span className="flex items-center gap-1 ml-auto"><Eye className="w-3.5 h-3.5" />{photo.views || 0}</span>
-                  </div>
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>
         )}
-      </div>
+      </PublicContainer>
 
       {/* Lightbox */}
       <AnimatePresence>
@@ -169,12 +176,12 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
               <div className="w-full md:w-80 p-8 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border bg-card overflow-y-auto">
                 <div className="space-y-5">
                   {selectedPhoto.category?.name && (
-                    <span className="inline-block bg-brand-orange/15 text-brand-orange text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <span className="inline-block bg-primary/15 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                       {selectedPhoto.category.name}
                     </span>
                   )}
                   <Link href={`/gallery/show-photos/details?slug=${selectedPhoto.slug}`}>
-                    <h2 className="text-xl font-extrabold text-foreground leading-snug hover:text-brand-orange hover:underline">{selectedPhoto.title}</h2>
+                    <h2 className="text-xl font-extrabold text-foreground leading-snug hover:text-primary hover:underline">{selectedPhoto.title}</h2>
                   </Link>
                   {selectedPhoto.description && (
                     <p className="text-sm text-muted-foreground leading-relaxed">{selectedPhoto.description}</p>

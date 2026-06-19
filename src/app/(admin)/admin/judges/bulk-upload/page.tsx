@@ -7,6 +7,7 @@ import {
   FileText, RotateCcw, Filter
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { toast } from 'sonner';
@@ -446,14 +447,14 @@ export default function BulkUploadJudges() {
               <Button onClick={handleReset} variant="outline" className="px-6 font-bold">
                 <X className="w-4 h-4 mr-2" /> Cancel
               </Button>
-              <Button
+              <AdminButton
                 onClick={handleImport}
-                className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-8 h-11 rounded-xl shadow-lg shadow-orange-500/20"
+                variant="primary"
                 disabled={parsedRecords.length - parseErrors.length === 0}
+                leftIcon={<ChevronRight className="w-4 h-4" />}
               >
-                <ChevronRight className="w-4 h-4 mr-2" />
                 Import {parsedRecords.length - parseErrors.length} Judges
-              </Button>
+              </AdminButton>
             </div>
           </div>
         </div>

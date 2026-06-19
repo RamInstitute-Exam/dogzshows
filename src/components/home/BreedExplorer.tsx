@@ -30,7 +30,7 @@ export default function BreedExplorer() {
             <input 
               type="text" 
               placeholder="Search breeds..." 
-              className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-card border border-border rounded-full focus:ring-2 focus:ring-[#F59E0B] outline-none text-sm sm:text-base text-foreground"
+              className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-card border border-border rounded-full focus:ring-2 focus:ring-primary outline-none text-sm sm:text-base text-foreground"
             />
           </div>
         </div>
@@ -42,7 +42,7 @@ export default function BreedExplorer() {
               <button
                 key={breed.name}
                 onClick={() => setActiveTab(breed.name)}
-                className={`text-left px-4 py-2 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold whitespace-nowrap transition-all duration-300 ${activeTab === breed.name ? 'bg-[#F59E0B] text-foreground shadow-lg shadow-[#F59E0B]/20' : 'bg-card text-muted-foreground hover:bg-input'}`}
+                className={`text-left px-4 py-2 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold whitespace-nowrap transition-all duration-300 ${activeTab === breed.name ? 'bg-primary text-primary-foreground shadow-md' : 'bg-card text-muted-foreground hover:bg-input'}`}
               >
                 {breed.name}
               </button>

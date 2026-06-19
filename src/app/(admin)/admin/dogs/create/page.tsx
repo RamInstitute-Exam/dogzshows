@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, ImagePlus, Dog, FileText, HeartPulse, UserCircle, QrCode, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -98,10 +99,9 @@ export default function AddDogForm() {
                 <p className="text-muted-foreground text-sm mt-1">Complete dog profile, bloodline, medical, and ownership data.</p>
               </div>
             </div>
-            <Button onClick={handleSubmit} disabled={loading} className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold">
-              {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+            <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={<Save className="w-4 h-4" />}>
               Save Record
-            </Button>
+            </AdminButton>
           </div>
 
           <div className="flex flex-col md:flex-row gap-6">

@@ -178,7 +178,7 @@ function NavItem({ menu, pathname }: { menu: NavMenuItem; pathname: string }) {
           {active && (
             <motion.span
               layoutId="nav-active"
-              className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#f4c542] rounded-[20px]"
+              className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--nav-text-active)] rounded-[20px]"
               transition={{ type: 'spring', stiffness: 380, damping: 30 }}
             />
           )}
@@ -200,7 +200,7 @@ function NavItem({ menu, pathname }: { menu: NavMenuItem; pathname: string }) {
           {active && (
             <motion.span
               layoutId="nav-active"
-              className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#f4c542] rounded-[20px]"
+              className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--nav-text-active)] rounded-[20px]"
               transition={{ type: 'spring', stiffness: 380, damping: 30 }}
             />
           )}
@@ -251,17 +251,17 @@ function MobileMenuItem({
         fontSize: '18px',
         fontWeight: 600,
         borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        color: active ? '#F4C542' : 'rgba(255, 255, 255, 0.9)',
+        color: active ? 'var(--nav-text-active)' : 'rgba(255, 255, 255, 0.9)',
       }
     : {
         height: '48px',
         fontSize: '16px',
         fontWeight: 500,
-        color: active ? '#F4C542' : 'rgba(255, 255, 255, 0.7)',
+        color: active ? 'var(--nav-text-active)' : 'rgba(255, 255, 255, 0.7)',
         paddingLeft: `${depth * 20}px`,
       };
 
-  const linkClass = "flex items-center justify-between w-full transition-colors duration-150 hover:text-[#F4C542] bg-transparent border-none text-left cursor-pointer";
+  const linkClass = "flex items-center justify-between w-full transition-colors duration-150 hover:text-[var(--nav-text-active)] bg-transparent border-none text-left cursor-pointer";
 
   if (!hasChildren) {
     return (
@@ -276,7 +276,7 @@ function MobileMenuItem({
         <span className="flex items-center gap-2">
           {menu.name}
           {menu.badge && (
-            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#F4C542]/15 text-[#F4C542]">
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--nav-text-active)]/15 text-[var(--nav-text-active)]">
               {menu.badge}
             </span>
           )}
@@ -296,7 +296,7 @@ function MobileMenuItem({
         <span className="flex items-center gap-2">
           {menu.name}
           {menu.badge && (
-            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#F4C542]/15 text-[#F4C542]">
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--nav-text-active)]/15 text-[var(--nav-text-active)]">
               {menu.badge}
             </span>
           )}
@@ -418,6 +418,7 @@ export default function Navbar() {
                 >
                   Login
                 </button>
+                {/*
                 <button
                   onClick={() => openModal('REGISTER')}
                   className="!hidden lg:!inline-flex navbar-btn-premium navbar-btn-signup"
@@ -430,6 +431,7 @@ export default function Navbar() {
                 >
                   Register Dog
                 </Link>
+                */}
               </>
             )}
 
@@ -555,6 +557,7 @@ export default function Navbar() {
                       >
                         Login
                       </button>
+                      {/*
                       <button
                         onClick={() => { setIsMobileOpen(false); openModal('REGISTER'); }}
                         className="navbar-btn-premium navbar-btn-signup w-full"
@@ -568,6 +571,7 @@ export default function Navbar() {
                       >
                         Register Dog
                       </Link>
+                      */}
                     </>
                   )}
                 </div>

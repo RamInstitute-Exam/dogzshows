@@ -166,7 +166,7 @@ export default function RegisterForEventClient() {
               email: "user@example.com",
             },
             theme: {
-              color: "#F59E0B"
+              color: "var(--primary)"
             }
           };
 
@@ -210,8 +210,8 @@ export default function RegisterForEventClient() {
 
         {/* Event Summary Card */}
         <div className="bg-card rounded-2xl p-6 border border-border shadow-lg flex flex-col md:flex-row gap-6 items-start md:items-center">
-          <div className="w-16 h-16 rounded-2xl bg-brand-orange/10 flex items-center justify-center shrink-0">
-            <Calendar className="w-8 h-8 text-brand-orange" />
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+            <Calendar className="w-8 h-8 text-primary" />
           </div>
           <div className="flex-1">
             <h3 className="text-xl font-bold text-foreground mb-2">{event.name}</h3>
@@ -222,7 +222,7 @@ export default function RegisterForEventClient() {
           </div>
           <div className="text-right shrink-0">
             <p className="text-sm text-muted-foreground mb-1">Entry Fee</p>
-            <p className="text-2xl font-black text-brand-orange">₹{event.entryFee || 0}</p>
+            <p className="text-2xl font-black text-primary">₹{event.entryFee || 0}</p>
           </div>
         </div>
 
@@ -235,7 +235,7 @@ export default function RegisterForEventClient() {
                 <Dog className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-foreground font-medium mb-4">You have no dogs registered in your profile.</p>
                 <Link href="/dashboard/dogs/create">
-                  <Button className="bg-brand-orange hover:bg-orange-600 text-white">Register a Dog First</Button>
+                  <Button className="bg-primary hover:opacity-90 text-primary-foreground">Register a Dog First</Button>
                 </Link>
               </div>
             ) : (
@@ -244,16 +244,16 @@ export default function RegisterForEventClient() {
                   <div
                     key={dog.id}
                     onClick={() => checkEligibility(dog.id)}
-                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-4 ${selectedDog === dog.id ? 'border-brand-orange bg-brand-orange/5' : 'border-border bg-card hover:border-[rgba(255,255,255,0.2)]'}`}
+                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-4 ${selectedDog === dog.id ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-[rgba(255,255,255,0.2)]'}`}
                   >
                     <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shrink-0">
-                      <Dog className={`w-6 h-6 ${selectedDog === dog.id ? 'text-brand-orange' : 'text-muted-foreground'}`} />
+                      <Dog className={`w-6 h-6 ${selectedDog === dog.id ? 'text-primary' : 'text-muted-foreground'}`} />
                     </div>
                     <div>
                       <p className="font-bold text-foreground">{dog.name}</p>
                       <p className="text-xs text-muted-foreground">KCI: {dog.kciNumber || 'N/A'} • {dog.breed?.name}</p>
                     </div>
-                    {selectedDog === dog.id && <CheckCircle2 className="w-5 h-5 text-brand-orange ml-auto" />}
+                    {selectedDog === dog.id && <CheckCircle2 className="w-5 h-5 text-primary ml-auto" />}
                   </div>
                 ))}
               </div>
@@ -284,7 +284,7 @@ export default function RegisterForEventClient() {
                     </select>
 
                     <div className="mt-8 flex justify-end">
-                      <Button onClick={() => setStep(2)} disabled={!selectedClass} className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-8">
+                      <Button onClick={() => setStep(2)} disabled={!selectedClass} className="bg-primary hover:opacity-90 text-primary-foreground font-bold px-8">
                         Proceed to Payment
                       </Button>
                     </div>
@@ -316,7 +316,7 @@ export default function RegisterForEventClient() {
               </div>
 
               <div className="bg-accent/50 rounded-lg p-4 flex items-center gap-4 border border-[rgba(255,255,255,0.05)]">
-                <CreditCard className="w-8 h-8 text-brand-orange" />
+                <CreditCard className="w-8 h-8 text-primary" />
                 <div>
                   <p className="font-bold text-foreground">Razorpay Secure Checkout</p>
                   <p className="text-xs text-muted-foreground">You will be redirected to Razorpay to complete your transaction securely.</p>

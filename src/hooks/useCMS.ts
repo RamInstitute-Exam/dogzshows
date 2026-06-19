@@ -29,7 +29,7 @@ export function useEventsCMS() {
   return useQuery({
     queryKey: ['cms', 'events'],
     queryFn: async () => {
-      return api.get('/public/events');
+      return api.get('/public/events/upcoming');
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,

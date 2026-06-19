@@ -91,7 +91,7 @@ export default function BreadcrumbBanner({
               Home
             </Link>
             <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[rgba(255,255,255,0.25)]" />
-            <span className="text-[#F59E0B] font-medium">{data.breadcrumbTitle}</span>
+            <span className="text-primary font-medium">{data.breadcrumbTitle}</span>
           </nav>
 
           {/* Title */}

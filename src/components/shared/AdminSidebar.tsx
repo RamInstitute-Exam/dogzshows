@@ -21,7 +21,18 @@ export default function AdminSidebar() {
     { name: 'FCI Groups', href: '/admin/fci-groups', icon: Trophy },
     { name: 'Breeds Master', href: '/admin/breeds', icon: Dog },
     { name: 'Age Classes', href: '/admin/age-classes', icon: Calendar },
-    { name: 'Media Gallery', href: '/admin/gallery', icon: LayoutDashboard },
+    {
+      name: 'CMS Gallery',
+      icon: LayoutDashboard,
+      subItems: [
+        { name: 'Media Gallery', href: '/admin/gallery' },
+        { name: 'Featured Clubs', href: '/admin/cms/featured-clubs' },
+        { name: 'Show Photos', href: '/admin/cms/show-photos' },
+        { name: 'Outdoor Photos', href: '/admin/cms/outdoor-photos' },
+        { name: 'Sliding Photo Sections', href: '/admin/cms/sliding-sections' },
+        { name: 'About Home Section', href: '/admin/cms/about' },
+      ]
+    },
     { name: 'Settings & CMS', href: '/admin/settings', icon: Settings },
   ];
 
@@ -32,19 +43,47 @@ export default function AdminSidebar() {
           <img src="/Untitled-1.png" alt="JuzDog Admin" className="h-[46px] w-auto transition-all hover:opacity-90" />
         </Link>
       </div>
-      
+
       <div className="flex-1 py-6 flex flex-col gap-2 px-3 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          if (item.subItems) {
+            return (
+              <details key={item.name} className="group">
+                <summary className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium flex-1">{item.name}</span>
+                  <span className="text-[10px] transition-transform duration-200 group-open:rotate-180">▼</span>
+                </summary>
+                <div className="ml-6 mt-1 flex flex-col gap-1 border-l-2 border-border pl-2">
+                  {item.subItems.map((subItem) => {
+                    const isSubActive = pathname === subItem.href || pathname.startsWith(`${subItem.href}/`);
+                    return (
+                      <Link
+                        key={subItem.name}
+                        href={subItem.href}
+                        className={`block px-3 py-2 rounded-lg text-sm transition-colors ${isSubActive
+                          ? 'bg-brand-orange text-foreground font-semibold'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                        }`}
+                      >
+                        {subItem.name}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </details>
+            );
+          }
+
+          const isActive = item.href && (pathname === item.href || pathname.startsWith(`${item.href}/`));
           return (
             <Link
               key={item.name}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                isActive 
-                  ? 'bg-brand-orange text-foreground' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-              }`}
+              href={item.href!}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive
+                ? 'bg-brand-orange text-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                }`}
             >
               <item.icon className="w-5 h-5" />
               <span className="font-medium">{item.name}</span>

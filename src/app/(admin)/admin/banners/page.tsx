@@ -9,6 +9,7 @@ import {
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 
 interface HeroBanner {
   id: string;
@@ -271,12 +272,15 @@ export default function BannerManagement() {
             Manage the homepage center-focused 3D carousel banners, scheduling, and ordering.
           </p>
         </div>
-        <Button 
+        <AdminButton 
+          variant="primary"
+          size="md"
           onClick={openCreate}
-          className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold rounded-xl shadow-lg px-5 py-5 flex items-center gap-2 w-full sm:w-auto"
+          leftIcon={<Plus className="w-5 h-5" />}
+          className="w-full sm:w-auto"
         >
-          <Plus className="w-5 h-5" /> Add New Banner
-        </Button>
+          Add New Banner
+        </AdminButton>
       </div>
 
       {/* Search Bar & Stats */}
@@ -745,20 +749,19 @@ export default function BannerManagement() {
 
                 {/* Form buttons */}
                 <div className="flex justify-end gap-3 pt-4 border-t border-border">
-                  <Button 
+                  <AdminButton 
                     type="button" 
-                    variant="outline" 
+                    variant="secondary"
                     onClick={() => setIsModalOpen(false)}
-                    className="border-border rounded-xl px-5 py-2 hover:bg-muted"
                   >
                     Cancel
-                  </Button>
-                  <Button 
+                  </AdminButton>
+                  <AdminButton 
                     type="submit" 
-                    className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold rounded-xl px-6 py-2 shadow-lg"
+                    variant="primary"
                   >
                     Save Banner
-                  </Button>
+                  </AdminButton>
                 </div>
               </form>
             </motion.div>

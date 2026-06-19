@@ -2,12 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Filter, ChevronDown, CheckCircle2, ChevronLeft, ChevronRight, Loader2, Tent, Users, CalendarDays, Award } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 import api from '@/lib/api';
 
 export default function ClubsClient() {
+  const searchParams = useSearchParams();
+  const typeParam = searchParams.get('type') || '';
+
   const [clubs, setClubs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -32,6 +37,7 @@ export default function ClubsClient() {
       if (stateFilter) url += `&state=${encodeURIComponent(stateFilter)}`;
       if (breedFilter) url += `&breed=${encodeURIComponent(breedFilter)}`;
       if (kciApproved) url += `&kciApproved=true`;
+      if (typeParam) url += `&type=${encodeURIComponent(typeParam)}`;
       
       const res = await api.get(url);
       if (res.success) {
@@ -55,8 +61,12 @@ export default function ClubsClient() {
   }, [search]);
 
   useEffect(() => {
+    setPage(1);
+  }, [typeParam]);
+
+  useEffect(() => {
     fetchClubs();
-  }, [page, debouncedSearch, stateFilter, breedFilter, kciApproved, sortBy]);
+  }, [page, debouncedSearch, stateFilter, breedFilter, kciApproved, sortBy, typeParam]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -72,21 +82,31 @@ export default function ClubsClient() {
         <div className="absolute inset-0 opacity-20 pointer-events-none">
           <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-brand-orange/20 blur-[120px]"></div>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center">
+        <PublicContainer className="relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-white">
-              Club <span className="text-brand-orange">Directory</span>
+              {typeParam.toLowerCase() === 'all-breeds' ? (
+                <>All Breeds <span className="text-brand-orange">Clubs</span></>
+              ) : typeParam.toLowerCase() === 'specialty' ? (
+                <>Specialty <span className="text-brand-orange">Clubs</span></>
+              ) : typeParam.toLowerCase() === 'kennel' ? (
+                <>Kennel <span className="text-brand-orange">Clubs</span></>
+              ) : typeParam.toLowerCase() === 'state' ? (
+                <>State <span className="text-brand-orange">Clubs</span></>
+              ) : (
+                <>Club <span className="text-brand-orange">Directory</span></>
+              )}
             </h1>
             <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
               Discover registered kennel clubs across India. Connect with local chapters for events, dog shows, and community support.
             </p>
           </motion.div>
-        </div>
+        </PublicContainer>
       </section>
 
       {/* Filters Bar */}
       <section className="py-6 border-b border-border bg-card/50 backdrop-blur-md sticky top-[var(--nav-height, 84px)] z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PublicContainer>
           <div className="flex flex-col lg:flex-row items-center gap-4 justify-between">
             {/* Search */}
             <div className="relative w-full lg:max-w-md">
@@ -159,111 +179,91 @@ export default function ClubsClient() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </PublicContainer>
       </section>
 
       {/* Listing Section */}
       <section className="py-12 bg-background min-h-[500px]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PublicContainer>
           
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">Results <span className="text-muted-foreground font-normal text-sm ml-2">({totalCount} clubs found)</span></h2>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="animate-pulse bg-card rounded-2xl border border-border h-[400px]"></div>
+            <div className="grid grid-cols-1 min-[576px]:grid-cols-2 md:grid-cols-3 min-[1200px]:grid-cols-4 min-[1440px]:grid-cols-5 gap-6 w-full">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => (
+                <div key={i} className="animate-pulse bg-card rounded-2xl border border-border h-[340px]"></div>
               ))}
             </div>
           ) : clubs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 min-[576px]:grid-cols-2 md:grid-cols-3 min-[1200px]:grid-cols-4 min-[1440px]:grid-cols-5 gap-6 w-full">
               {clubs.map((club, idx) => (
-                <motion.div 
+                <motion.div
                   key={club.id}
+                  className="h-full"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.05 }}
-                  className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
                 >
-                  <div className="relative h-40 bg-accent overflow-hidden">
-                    {club.bannerUrl ? (
-                      <img src={club.bannerUrl} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-brand-orange/20 to-orange-600/10 flex items-center justify-center">
-                        <Tent className="w-12 h-12 text-brand-orange/40" />
+                  <Link
+                    href={`/clubs/${club.slug || club.id}`}
+                    className="group relative flex flex-col h-full bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#222222] rounded-2xl p-6 transition-all duration-[350ms] ease-in-out cursor-pointer hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl dark:hover:shadow-[0_10px_30px_rgba(255,255,255,0.06)]"
+                  >
+                    {/* Status Badge */}
+                    {club.kciApproved && (
+                      <div className="absolute top-4 right-4 z-10 bg-green-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> KCI Approved
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                    
-                    {/* Badges */}
-                    <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
-                      {club.kciApproved && (
-                        <div className="bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 backdrop-blur-md">
-                          <CheckCircle2 className="w-3 h-3" /> KCI Approved
-                        </div>
-                      )}
-                      {club.establishedYear && (
-                        <div className="bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm border border-white/10">
-                          Est. {club.establishedYear}
-                        </div>
-                      )}
+
+                    {/* Logo Area */}
+                    <div className="flex justify-center pt-6 pb-4 relative">
+                      <div className="w-[90px] h-[90px] rounded-full bg-white dark:bg-[#111111] border-[3px] border-[#E5E7EB] dark:border-[#222222] group-hover:border-brand-orange shadow-md overflow-hidden flex items-center justify-center transition-all duration-[350ms] ease group-hover:scale-108 group-hover:rotate-[5deg] shrink-0">
+                        {club.logoUrl ? (
+                          <img src={club.logoUrl} alt={club.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <Tent className="w-10 h-10 text-brand-orange/60" />
+                        )}
+                      </div>
                     </div>
 
-                    {/* Logo */}
-                    <div className="absolute -bottom-6 left-6 w-16 h-16 rounded-xl bg-card border-4 border-card shadow-lg overflow-hidden flex items-center justify-center z-10">
-                      {club.logoUrl ? (
-                        <img src={club.logoUrl} alt={club.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="bg-brand-orange text-white font-bold text-xl flex items-center justify-center w-full h-full">
-                          {club.name.substring(0,2).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="p-6 pt-10 flex-1 flex flex-col">
-                    <h3 className="text-xl font-extrabold text-foreground mb-1 line-clamp-1 group-hover:text-brand-orange transition-colors">
-                      <Link href={`/clubs/${club.slug || club.id}`} className="focus:outline-none before:absolute before:inset-0">
+                    {/* Content Section */}
+                    <div className="flex-grow flex flex-col items-center text-center">
+                      <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2 line-clamp-2 min-h-[3rem] flex items-center justify-center text-center font-outfit">
                         {club.name}
-                      </Link>
-                    </h3>
-                    
-                    <div className="flex items-center text-sm text-muted-foreground mb-4">
-                      <MapPin className="w-3.5 h-3.5 mr-1 text-brand-orange" />
-                      <span className="line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-6 flex-1">
-                      {club.description || 'A registered kennel club organizing dog shows and events.'}
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-3 mb-6">
-                      <div className="bg-accent/50 rounded-xl p-3 flex flex-col items-center justify-center border border-border/50">
-                        <div className="flex items-center gap-1.5 text-brand-orange mb-1">
-                          <Users className="w-4 h-4" />
-                          <span className="font-bold text-lg leading-none">{club.memberCount || 0}</span>
-                        </div>
-                        <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Members</span>
+                      </h3>
+                      
+                      <div className="flex items-center text-sm text-muted-foreground mb-4 justify-center">
+                        <MapPin className="w-3.5 h-3.5 mr-1 text-brand-orange" />
+                        <span className="line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
                       </div>
-                      <div className="bg-accent/50 rounded-xl p-3 flex flex-col items-center justify-center border border-border/50">
-                        <div className="flex items-center gap-1.5 text-blue-500 mb-1">
-                          <CalendarDays className="w-4 h-4" />
-                          <span className="font-bold text-lg leading-none">{club.eventCount || 0}</span>
-                        </div>
-                        <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Events</span>
-                      </div>
-                    </div>
 
-                    <div className="mt-auto">
-                      <Link
-                        href={`/clubs/${club.slug || club.id}`}
-                        className="block w-full py-2.5 bg-accent text-foreground font-semibold rounded-xl text-center group-hover:bg-brand-orange group-hover:text-white transition-colors flex items-center justify-center gap-2"
-                      >
-                        View Profile
-                      </Link>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-6 text-center min-h-[2.5rem] overflow-hidden">
+                        {club.description || 'A registered kennel club organizing dog shows and events.'}
+                      </p>
+
+                      {/* Stats Section */}
+                      {((club.memberCount || 0) > 0 || (club.eventCount || 0) > 0) && (
+                        <div className="grid grid-cols-2 gap-3 w-full mt-auto">
+                          <div className="bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-xl p-2.5 flex flex-col items-center justify-center border border-[#E5E7EB] dark:border-[#222222]">
+                            <div className="flex items-center gap-1.5 text-brand-orange mb-0.5">
+                              <Users className="w-4 h-4" />
+                              <span className="font-bold text-base leading-none">{club.memberCount || 0}</span>
+                            </div>
+                            <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Members</span>
+                          </div>
+                          <div className="bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-xl p-2.5 flex flex-col items-center justify-center border border-[#E5E7EB] dark:border-[#222222]">
+                            <div className="flex items-center gap-1.5 text-blue-500 mb-0.5">
+                              <CalendarDays className="w-4 h-4" />
+                              <span className="font-bold text-base leading-none">{club.eventCount || 0}</span>
+                            </div>
+                            <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Events</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>
@@ -272,16 +272,22 @@ export default function ClubsClient() {
               <div className="w-24 h-24 bg-accent rounded-full flex items-center justify-center mb-6 border border-border">
                 <Tent className="w-10 h-10 text-muted-foreground opacity-50" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-2">No Clubs Found</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-2">
+                {typeParam ? "No clubs available in this category." : "No Clubs Found"}
+              </h3>
               <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                We couldn't find any clubs matching your current filters. Try adjusting your search terms or clearing the filters.
+                {typeParam 
+                  ? "Check back later or browse other categories." 
+                  : "We couldn't find any clubs matching your current filters. Try adjusting your search terms or clearing the filters."}
               </p>
-              <button 
-                onClick={() => { setSearch(''); setStateFilter(''); setBreedFilter(''); setKciApproved(false); }}
-                className="bg-foreground text-background font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
-              >
-                Clear All Filters
-              </button>
+              {!typeParam && (
+                <button 
+                  onClick={() => { setSearch(''); setStateFilter(''); setBreedFilter(''); setKciApproved(false); }}
+                  className="bg-foreground text-background font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
+                >
+                  Clear All Filters
+                </button>
+              )}
             </div>
           )}
 
@@ -321,7 +327,7 @@ export default function ClubsClient() {
               </button>
             </div>
           )}
-        </div>
+        </PublicContainer>
       </section>
     </PageContainer>
   );

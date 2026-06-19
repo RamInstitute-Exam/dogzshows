@@ -58,3 +58,24 @@ export async function getJudgeIds(): Promise<{ id: string }[]> {
   if (judges.length === 0) return [{ id: '_' }];
   return judges.map((j) => ({ id: String(j.id) }));
 }
+
+/** Fetch all show album IDs for /gallery/shows/[id] */
+export async function getShowAlbumIds(): Promise<{ id: string }[]> {
+  const albums = await safeFetch<{ id: string }>(`${API_BASE}/public/homepage-show-albums?limit=10000`);
+  if (albums.length === 0) return [{ id: '_' }];
+  return albums.map((a) => ({ id: String(a.id) }));
+}
+
+/** Fetch all outdoor album IDs for /gallery/outdoor/[id] */
+export async function getOutdoorAlbumIds(): Promise<{ id: string }[]> {
+  try {
+    const res = await fetch(`${API_BASE}/public/homepage-outdoor-photos?limit=10000`, { cache: 'no-store' });
+    if (!res.ok) return [{ id: '_' }];
+    const json = await res.json();
+    const albums = json?.data?.albums;
+    if (Array.isArray(albums) && albums.length > 0) {
+      return albums.map((a) => ({ id: String(a.id) }));
+    }
+  } catch {}
+  return [{ id: '_' }];
+}

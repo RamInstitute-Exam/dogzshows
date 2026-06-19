@@ -61,7 +61,7 @@ export default function WinnersPage() {
                     )}
                   </div>
                   <div className={`absolute -bottom-2 -right-2 p-2 rounded-full bg-card text-foreground shadow-sm border border-border`}>
-                    {i === 0 ? <Trophy className="w-5 h-5 text-[#F59E0B]" /> : <Medal className="w-5 h-5 text-muted-foreground" />}
+                    {i === 0 ? <Trophy className="w-5 h-5 text-primary" /> : <Medal className="w-5 h-5 text-muted-foreground" />}
                   </div>
                 </div>
 
@@ -71,7 +71,7 @@ export default function WinnersPage() {
                       {winner.awardTitle || 'Champion'}
                     </span>
                     <h3 className="text-2xl font-[800] text-foreground mb-1">{winner.dog?.name || 'Unknown Dog'}</h3>
-                    <p className="text-[#F59E0B] font-[700] text-sm mb-4">{winner.dog?.breed || 'Unknown Breed'}</p>
+                    <p className="text-primary font-[700] text-sm mb-4">{winner.dog?.breed || 'Unknown Breed'}</p>
                     
                     <div className="space-y-2 mb-6 text-sm text-muted-foreground font-[500]">
                       <p>Owner: <span className="text-foreground">{winner.dog?.owner ? `${winner.dog.owner.firstName} ${winner.dog.owner.lastName}` : 'Private'}</span></p>

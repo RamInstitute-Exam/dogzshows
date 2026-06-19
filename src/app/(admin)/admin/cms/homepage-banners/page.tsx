@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import { Plus, Edit, Trash2, GripVertical, Image as ImageIcon, ExternalLink, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
@@ -12,11 +13,10 @@ import api from '@/services/api';
 interface HomepageBanner {
   id: string;
   title: string;
-  desktopImage: string;
-  mobileImage?: string;
+  imageUrl: string;
   redirectUrl?: string;
-  targetBlank: boolean;
-  sortOrder: number;
+  openNewTab: boolean;
+  displayOrder: number;
   status: string;
   startDate?: string;
   endDate?: string;
@@ -49,8 +49,8 @@ export default function HomepageBannersAdmin() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentBanner?.title || !currentBanner?.desktopImage) {
-      toast.error('Title and Desktop Image are required');
+    if (!currentBanner?.title || !currentBanner?.imageUrl) {
+      toast.error('Title and Banner Image are required');
       return;
     }
 
@@ -107,9 +107,9 @@ export default function HomepageBannersAdmin() {
   const moveUp = async (index: number) => {
     if (index === 0) return;
     const newBanners = [...banners];
-    const temp = newBanners[index - 1].sortOrder;
-    newBanners[index - 1].sortOrder = newBanners[index].sortOrder;
-    newBanners[index].sortOrder = temp;
+    const temp = newBanners[index - 1].displayOrder;
+    newBanners[index - 1].displayOrder = newBanners[index].displayOrder;
+    newBanners[index].displayOrder = temp;
 
     // Swap in array for immediate UI update
     const item = newBanners[index];
@@ -124,9 +124,9 @@ export default function HomepageBannersAdmin() {
   const moveDown = async (index: number) => {
     if (index === banners.length - 1) return;
     const newBanners = [...banners];
-    const temp = newBanners[index + 1].sortOrder;
-    newBanners[index + 1].sortOrder = newBanners[index].sortOrder;
-    newBanners[index].sortOrder = temp;
+    const temp = newBanners[index + 1].displayOrder;
+    newBanners[index + 1].displayOrder = newBanners[index].displayOrder;
+    newBanners[index].displayOrder = temp;
 
     // Swap in array for immediate UI update
     const item = newBanners[index];
@@ -148,7 +148,7 @@ export default function HomepageBannersAdmin() {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
-            body: JSON.stringify({ sortOrder: b.sortOrder })
+            body: JSON.stringify({ displayOrder: b.displayOrder })
           })
         )
       );
@@ -167,19 +167,21 @@ export default function HomepageBannersAdmin() {
           </h1>
           <p className="text-muted-foreground">Manage full-screen hero sliders for the main homepage.</p>
         </div>
-        <Button
+        <AdminButton
+          variant="primary"
+          size="md"
           onClick={() => {
             setCurrentBanner({
               status: 'ACTIVE',
-              targetBlank: false,
-              sortOrder: banners.length
+              openNewTab: false,
+              displayOrder: banners.length
             });
             setIsModalOpen(true);
           }}
-          className="bg-brand-orange hover:bg-orange-600 text-[#000000]"
+          leftIcon={<Plus className="w-4 h-4" />}
         >
-          <Plus className="w-4 h-4 mr-2" /> Add New Banner
-        </Button>
+          Add New Banner
+        </AdminButton>
       </div>
 
       <div className="bg-card rounded-xl border border-border overflow-hidden">
@@ -205,12 +207,12 @@ export default function HomepageBannersAdmin() {
                   <td className="p-4">
                     <div className="flex flex-col gap-1 items-center">
                       <button onClick={() => moveUp(index)} disabled={index === 0} className="text-gray-500 hover:text-foreground disabled:opacity-30">▲</button>
-                      <span className="text-xs">{banner.sortOrder}</span>
+                      <span className="text-xs">{banner.displayOrder}</span>
                       <button onClick={() => moveDown(index)} disabled={index === banners.length - 1} className="text-gray-500 hover:text-foreground disabled:opacity-30">▼</button>
                     </div>
                   </td>
                   <td className="p-4">
-                    <img src={banner.desktopImage} alt={banner.title} className="w-32 h-16 object-cover rounded-md border border-border" />
+                    <img src={banner.imageUrl} alt={banner.title} className="w-32 h-16 object-cover rounded-md border border-border" />
                   </td>
                   <td className="p-4 font-bold text-foreground">
                     {banner.title}
@@ -268,27 +270,16 @@ export default function HomepageBannersAdmin() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
                   <ImageUploader
-                    currentImage={currentBanner?.desktopImage}
-                    onUploadSuccess={(url) => setCurrentBanner({ ...currentBanner, desktopImage: url })}
-                    onRemove={() => setCurrentBanner({ ...currentBanner, desktopImage: '' })}
+                    currentImage={currentBanner?.imageUrl}
+                    onUploadSuccess={(url) => setCurrentBanner({ ...currentBanner, imageUrl: url })}
+                    onRemove={() => setCurrentBanner({ ...currentBanner, imageUrl: '' })}
                     folder="cms-banners"
-                    label="Desktop Image (1920x900) *"
-                    aspectRatio={1920 / 900}
-                    helpText="Max 10 MB."
-                  />
-                </div>
-                <div>
-                  <ImageUploader
-                    currentImage={currentBanner?.mobileImage}
-                    onUploadSuccess={(url) => setCurrentBanner({ ...currentBanner, mobileImage: url })}
-                    onRemove={() => setCurrentBanner({ ...currentBanner, mobileImage: '' })}
-                    folder="cms-banners"
-                    label="Mobile Image (1080x1920)"
-                    aspectRatio={1080 / 1920}
-                    helpText="Max 10 MB."
+                    label="Banner Image (1920x1080 or 2400x1350) *"
+                    aspectRatio={1920 / 1080}
+                    helpText="Max 10 MB. This single image will adapt responsively to Desktop, Tablet, and Mobile views."
                   />
                 </div>
               </div>
@@ -307,12 +298,12 @@ export default function HomepageBannersAdmin() {
                 <div className="flex items-center gap-2 pt-6">
                   <input
                     type="checkbox"
-                    id="targetBlank"
-                    checked={currentBanner?.targetBlank ?? false}
-                    onChange={e => setCurrentBanner({ ...currentBanner, targetBlank: e.target.checked })}
+                    id="openNewTab"
+                    checked={currentBanner?.openNewTab ?? false}
+                    onChange={e => setCurrentBanner({ ...currentBanner, openNewTab: e.target.checked })}
                     className="w-4 h-4 accent-brand-orange"
                   />
-                  <label htmlFor="targetBlank" className="text-sm font-bold text-muted-foreground">Open link in new tab</label>
+                  <label htmlFor="openNewTab" className="text-sm font-bold text-muted-foreground">Open link in new tab</label>
                 </div>
               </div>
 
@@ -363,12 +354,12 @@ export default function HomepageBannersAdmin() {
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-border">
-                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="border-border hover:bg-input">
+                <AdminButton type="button" variant="secondary" onClick={() => setIsModalOpen(false)}>
                   Cancel
-                </Button>
-                <Button type="submit" className="bg-brand-orange hover:bg-orange-600 text-[#000000]">
+                </AdminButton>
+                <AdminButton type="submit" variant="primary">
                   Save Banner
-                </Button>
+                </AdminButton>
               </div>
             </form>
           </motion.div>

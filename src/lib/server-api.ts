@@ -35,11 +35,11 @@ export async function fetchServerData(endpoint: string, revalidate: number = 60)
 }
 
 export async function getHeroSlides() {
-  return fetchServerData('/banners?type=hero', 60);
+  return fetchServerData('/public/homepage-banners', 60);
 }
 
 export async function getFeaturedShows() {
-  return fetchServerData('/public/events', 60); // Optionally add ?featured=true
+  return fetchServerData('/public/events/upcoming', 60); // Optionally add ?featured=true
 }
 
 export async function getFeaturedPhotos() {

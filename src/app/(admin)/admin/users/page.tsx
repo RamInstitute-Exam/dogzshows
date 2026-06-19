@@ -97,7 +97,7 @@ export default function UserManagementListing() {
                 <RefreshCw className="w-4 h-4" />
               </Button>
               <Link href="/admin/users/create">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
                   <Plus className="w-4 h-4 mr-2" /> Create New
                 </Button>
               </Link>

@@ -7,6 +7,7 @@ import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 import { useJudges } from '@/hooks/useJudges';
 import { usePageBanner } from '@/hooks/useCMS';
 import { getImageUrl } from '@/lib/api';
@@ -81,7 +82,7 @@ function JudgesList() {
           }}
         />
 
-        <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 xl:px-12 py-10 flex flex-col justify-center h-full max-w-[1600px] mx-auto">
+        <PublicContainer className="relative z-10 w-full py-10 flex flex-col justify-center h-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -106,10 +107,10 @@ function JudgesList() {
               {customSubtitle}
             </p>
           </motion.div>
-        </div>
+        </PublicContainer>
       </section>
 
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-12">
+      <PublicContainer className="py-12">
         <div className="flex flex-col gap-8">
           
           {showFeaturedOnly && (
@@ -172,8 +173,8 @@ function JudgesList() {
           {/* Results Section */}
           <div className="min-h-[400px]">
             {isLoading ? (
-              <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
-                {[1,2,3,4,5,6,7,8].map((n) => (
+              <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : 'grid-cols-1'}`}>
+                {[1,2,3,4,5,6,7,8,9,10].map((n) => (
                   <div key={n} className={`bg-card border border-border rounded-[2rem] p-6 animate-pulse ${viewMode === 'list' ? 'flex items-center gap-6' : 'flex flex-col items-center'}`}>
                     <div className={`rounded-full bg-muted ${viewMode === 'list' ? 'w-24 h-24 shrink-0' : 'w-32 h-32 mb-6'}`} />
                     <div className={`flex flex-col gap-3 w-full ${viewMode === 'list' ? '' : 'items-center text-center'}`}>
@@ -204,72 +205,65 @@ function JudgesList() {
                 </button>
               </div>
             ) : (
-              <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
+              <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : 'grid-cols-1'}`}>
                 {judges.map((judge: any, i: number) => (
-                  <motion.div 
+                  <motion.div
                     key={judge.id}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.05, 0.5) }}
-                    className={`bg-card rounded-[2rem] p-6 sm:p-8 shadow-sm border border-border group hover:-translate-y-[6px] transition-all duration-300 ease hover:shadow-xl ${viewMode === 'list' ? 'flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-8 text-center sm:text-left' : 'flex flex-col items-center text-center'}`}
                   >
-                    <div className={`shrink-0 overflow-hidden relative border-[3px] border-[#1f2937] bg-[#f8fafc] shadow-[0_10px_30px_rgba(0,0,0,0.12)] rounded-[24px] ${viewMode === 'list' ? 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] sm:self-center' : 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] mb-[20px]'}`}>
-                      {judge.photoUrl ? (
-                        <img src={judge.photoUrl} alt={judge.name} className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
-                      ) : (
-                        <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center text-[#64748b] text-[64px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
-                          {judge.name?.[0]?.toUpperCase() || 'M'}
-                        </div>
-                      )}
-                      {judge.isFeatured && (
-                        <div className="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1">
-                          <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className={`flex flex-col flex-1 ${viewMode === 'list' ? 'justify-center' : 'w-full'}`}>
-                      <h3 className="text-2xl font-[800] text-foreground mb-1 flex items-center justify-center sm:justify-start gap-1.5">
-                        {judge.name}
+                    <Link
+                      href={`/judge-details?slug=${judge.slug || judge.id}`}
+                      className={`group bg-card rounded-[2rem] p-6 sm:p-8 shadow-sm border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease cursor-pointer block ${viewMode === 'list' ? 'flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-8 text-center sm:text-left' : 'flex flex-col items-center text-center'}`}
+                    >
+                      <div className={`shrink-0 overflow-hidden relative border-[3px] border-[#1f2937] bg-[#f8fafc] shadow-[0_10px_30px_rgba(0,0,0,0.12)] rounded-[24px] ${viewMode === 'list' ? 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] sm:self-center' : 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] mb-[20px]'}`}>
+                        {judge.photoUrl ? (
+                          <img src={judge.photoUrl} alt={judge.name} className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
+                        ) : (
+                          <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center text-[#64748b] text-[64px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
+                            {judge.name?.[0]?.toUpperCase() || 'M'}
+                          </div>
+                        )}
                         {judge.isFeatured && (
-                          <span title="Verified Judge">
-                            <Shield className="w-5 h-5 text-blue-500 shrink-0" />
-                          </span>
+                          <div className="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1">
+                            <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                          </div>
                         )}
-                      </h3>
-                      <p className={`text-[#F59E0B] font-[700] text-sm mb-3 flex items-center justify-center sm:justify-start gap-1.5`}>
-                        <MapPin className="w-3.5 h-3.5" />
-                        {judge.city ? `${judge.city}, ` : ''}{judge.state || judge.country || 'International'}
-                      </p>
+                      </div>
                       
-                      <div className={`flex gap-4 mb-4 py-3 border-y border-border ${viewMode === 'list' ? 'justify-start max-w-md' : 'justify-center w-full'}`}>
-                        <div className={`${viewMode === 'list' ? '' : 'w-full text-center'}`}>
-                          <p className="text-foreground font-[700] text-sm line-clamp-1">{judge.qualifications || judge.specialization || 'Professional Judge'}</p>
-                          <p className="small-label text-[10px]">Specialization</p>
-                        </div>
-                      </div>
-
-                      <p className={`text-xs text-muted-foreground line-clamp-3 mb-6 leading-relaxed ${viewMode === 'list' ? 'max-w-2xl' : ''}`}>
-                        {judge.bio || 'Certified all breed international judge with credentials in evaluating multiple groups and working class breeds. Brings years of expertise and professionalism to every show ring.'}
-                      </p>
-
-                      {judge.source && (
-                        <p className="text-[10px] text-muted-foreground/70 italic mb-3 truncate w-full" title={judge.source}>
-                          📷 {judge.source}
+                      <div className={`flex flex-col flex-1 ${viewMode === 'list' ? 'justify-center' : 'w-full'}`}>
+                        <h3 className="text-2xl font-[800] text-foreground mb-1 flex items-center justify-center sm:justify-start gap-1.5 group-hover:text-primary transition-colors">
+                          {judge.name}
+                          {judge.isFeatured && (
+                            <span title="Verified Judge">
+                              <Shield className="w-5 h-5 text-blue-500 shrink-0" />
+                            </span>
+                          )}
+                        </h3>
+                        <p className={`text-primary font-[700] text-sm mb-3 flex items-center justify-center sm:justify-start gap-1.5`}>
+                          <MapPin className="w-3.5 h-3.5" />
+                          {judge.city ? `${judge.city}, ` : ''}{judge.state || judge.country || 'International'}
                         </p>
-                      )}
+                        
+                        <div className={`flex gap-4 mb-4 py-3 border-y border-border ${viewMode === 'list' ? 'justify-start max-w-md' : 'justify-center w-full'}`}>
+                          <div className={`${viewMode === 'list' ? '' : 'w-full text-center'}`}>
+                            <p className="text-foreground font-[700] text-sm line-clamp-1">{judge.qualifications || judge.specialization || 'Professional Judge'}</p>
+                            <p className="small-label text-[10px]">Specialization</p>
+                          </div>
+                        </div>
 
-                      <div className={`flex gap-3 mt-auto ${viewMode === 'list' ? 'w-fit' : 'w-full'}`}>
-                        {viewMode === 'grid' && (
-                          <button className="flex-1 bg-accent/50 hover:bg-accent text-foreground font-[700] text-xs py-2.5 rounded-lg transition-colors border border-border">
-                            Contact
-                          </button>
+                        <p className={`text-xs text-muted-foreground line-clamp-3 mb-4 leading-relaxed ${viewMode === 'list' ? 'max-w-2xl' : ''}`}>
+                          {judge.bio || 'Certified all breed international judge with credentials in evaluating multiple groups and working class breeds. Brings years of expertise and professionalism to every show ring.'}
+                        </p>
+
+                        {judge.source && (
+                          <p className="text-[10px] text-muted-foreground/70 italic mb-2 truncate w-full" title={judge.source}>
+                            📷 {judge.source}
+                          </p>
                         )}
-                        <Link href={`/judge-details?slug=${judge.slug || judge.id}`} className={`${viewMode === 'list' ? 'px-8' : 'flex-1'} bg-brand-orange hover:bg-[#E88C05] text-white font-[700] text-xs py-2.5 rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-brand-orange/20`}>
-                          View Profile <ChevronRight className="w-3.5 h-3.5 ml-1" />
-                        </Link>
                       </div>
-                    </div>
+                    </Link>
                   </motion.div>
                 ))}
               </div>
@@ -310,7 +304,7 @@ function JudgesList() {
           )}
 
         </div>
-      </div>
+      </PublicContainer>
     </PageContainer>
   );
 }

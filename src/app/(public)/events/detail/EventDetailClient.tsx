@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, Loader2, ArrowLeft, Dog } from 'lucide-react';
-import { EventService } from '@/services/event.service';
+import { ChevronRight, Loader2, ArrowLeft, Dog, SearchX } from 'lucide-react';
 import { MOCK_EVENT_DETAIL, MOCK_EVENTS } from '@/lib/mock/eventsData';
 import PageContainer from '@/components/layout/PageContainer';
 import api from '@/lib/api';
@@ -27,52 +26,94 @@ import EventSidebar from '@/components/events/details/EventSidebar';
 
 export default function EventDetailClient() {
   const searchParams = useSearchParams();
-  const id = searchParams.get('id') || searchParams.get('slug');
-  const router = useRouter();
+  const slug = (searchParams.get('slug') || searchParams.get('id') || '').trim();
 
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (!id) {
+    if (!slug) {
+      console.log('[EventDetail] No slug provided in URL');
       setLoading(false);
+      setNotFound(true);
       return;
     }
+
     const fetchEvent = async () => {
       setLoading(true);
+      setNotFound(false);
+
+      console.log('[EventDetail] Fetching event for slug:', slug);
+
       try {
-        const response = await EventService.getEvent(id);
-        if (response.success && response.data) {
-          // Merge dynamic event details with fallback details from mock data to preserve rich styling fields
+        // Use the public shows endpoint — no auth required
+        const response = await api.get(`/public/shows/${encodeURIComponent(slug)}`);
+
+        console.log('[EventDetail] API response:', response);
+
+        if (response?.success && response?.data) {
+          const apiData = response.data;
+          console.log('[EventDetail] Fetched event:', apiData?.name, '| judges:', apiData?.judges?.length, '| secretaries:', apiData?.secretaries?.length);
+
+          // Merge with mock fallback fields to preserve rich styling data
+          // while using real data wherever it exists
           const mergedEvent = {
             ...MOCK_EVENT_DETAIL,
-            ...response.data,
-            timeline: response.data.timeline || MOCK_EVENT_DETAIL.timeline,
-            ageClasses: response.data.ageClasses || MOCK_EVENT_DETAIL.ageClasses,
-            judges: response.data.judges && response.data.judges.length > 0 ? response.data.judges : [],
-            secretaries: response.data.secretaries && response.data.secretaries.length > 0 ? response.data.secretaries : [],
-            faqs: response.data.faqs || MOCK_EVENT_DETAIL.faqs,
+            ...apiData,
+            // Keep real judges/secretaries; fall back to mock timeline/ageClasses/faqs if missing
+            judges: Array.isArray(apiData.judges) && apiData.judges.length > 0
+              ? apiData.judges
+              : [],
+            secretaries: Array.isArray(apiData.secretaries) && apiData.secretaries.length > 0
+              ? apiData.secretaries
+              : [],
+            timeline: Array.isArray(apiData.timeline) && apiData.timeline.length > 0
+              ? apiData.timeline
+              : (MOCK_EVENT_DETAIL.timeline || []),
+            ageClasses: Array.isArray(apiData.ageClasses) && apiData.ageClasses.length > 0
+              ? apiData.ageClasses
+              : (MOCK_EVENT_DETAIL.ageClasses || []),
+            faqs: Array.isArray(apiData.faqs) && apiData.faqs.length > 0
+              ? apiData.faqs
+              : (MOCK_EVENT_DETAIL.faqs || []),
+            rules: Array.isArray(apiData.rules) && apiData.rules.length > 0
+              ? apiData.rules
+              : (MOCK_EVENT_DETAIL.rules || []),
           };
+
+          console.log('[EventDetail] Merged event ready:', mergedEvent?.name);
           setEvent(mergedEvent);
         } else {
-          // Fallback if not found in backend DB (helpful for mock data test preview)
-          const matchedMock = MOCK_EVENTS.find(e => e.slug === id || String(e.id) === id);
+          // Try matching mock data as fallback (dev/preview use)
+          console.warn('[EventDetail] API returned no data, trying mock fallback for slug:', slug);
+          const matchedMock = MOCK_EVENTS.find(
+            (e) => e.slug?.trim() === slug || String(e.id) === slug
+          );
           if (matchedMock) {
             setEvent({ ...MOCK_EVENT_DETAIL, ...matchedMock });
+          } else {
+            setNotFound(true);
           }
         }
-      } catch (error) {
-        console.error('Failed to fetch event details', error);
-        const matchedMock = MOCK_EVENTS.find(e => e.slug === id || String(e.id) === id);
+      } catch (error: any) {
+        console.error('[EventDetail] Failed to fetch event:', error?.message || error);
+        // Try mock fallback on any error
+        const matchedMock = MOCK_EVENTS.find(
+          (e) => e.slug?.trim() === slug || String(e.id) === slug
+        );
         if (matchedMock) {
           setEvent({ ...MOCK_EVENT_DETAIL, ...matchedMock });
+        } else {
+          setNotFound(true);
         }
       } finally {
         setLoading(false);
       }
     };
+
     fetchEvent();
-  }, [id]);
+  }, [slug]);
 
   const [showEntries, setShowEntries] = useState<any[]>([]);
   const [loadingEntries, setLoadingEntries] = useState(false);
@@ -83,11 +124,11 @@ export default function EventDetailClient() {
       setLoadingEntries(true);
       try {
         const res = await api.get(`/public/entries?dogShowId=${event.id}`);
-        if (res.success) {
+        if (res?.success) {
           setShowEntries(res.data || []);
         }
       } catch (err) {
-        console.error('Failed to load show entries:', err);
+        console.error('[EventDetail] Failed to load show entries:', err);
       } finally {
         setLoadingEntries(false);
       }
@@ -95,42 +136,82 @@ export default function EventDetailClient() {
     fetchShowEntries();
   }, [event?.id]);
 
+  // ── Loading State ───────────────────────────────────────────────────────────
   if (loading) {
     return (
       <PageContainer>
-        <div className="flex flex-col justify-center items-center min-h-[70vh]">
-          <Loader2 className="w-12 h-12 text-orange-500 animate-spin mb-4" />
-          <p className="text-muted-foreground text-xs font-semibold">Loading event details...</p>
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
+          {/* Hero skeleton */}
+          <div className="w-full h-[450px] bg-card rounded-[24px] mb-8" />
+          {/* Stats skeleton */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 py-12">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-card h-[120px] rounded-[20px]" />
+            ))}
+          </div>
+          {/* Content skeleton */}
+          <div className="flex flex-col lg:flex-row gap-8 mt-8">
+            <div className="flex-1 space-y-6">
+              <div className="bg-card h-[300px] rounded-[24px]" />
+              <div className="bg-card h-[200px] rounded-[24px]" />
+            </div>
+            <div className="w-full lg:w-[30%] space-y-6">
+              <div className="bg-card h-[350px] rounded-[24px]" />
+            </div>
+          </div>
         </div>
       </PageContainer>
     );
   }
 
-  if (!event) {
+  // ── Not Found State ─────────────────────────────────────────────────────────
+  if (notFound || !event) {
     return (
       <PageContainer>
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Event Details Not Found</h1>
-          <p className="text-muted-foreground mb-8">The event you are looking for is not active or could not be loaded.</p>
-          <Link href="/events" className="inline-flex items-center text-[#F59E0B] font-bold">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Events Calendar
-          </Link>
+        <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
+          <div className="w-24 h-24 rounded-full bg-orange-50 flex items-center justify-center mb-6 border border-orange-100">
+            <SearchX className="w-12 h-12 text-brand-orange" />
+          </div>
+          <h1 className="text-3xl font-extrabold text-foreground mb-3">Event Not Found</h1>
+          <p className="text-muted-foreground font-medium max-w-md mb-8 text-lg">
+            This event may have been removed, renamed, or does not exist.
+            {slug && (
+              <span className="block mt-2 text-sm font-mono text-muted-foreground/60 break-all">
+                Slug: {slug}
+              </span>
+            )}
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-2 bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-md"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Events
+            </Link>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 bg-card hover:bg-accent border border-border text-foreground font-bold px-6 py-3 rounded-xl transition-colors"
+            >
+              Back Home
+            </Link>
+          </div>
         </div>
       </PageContainer>
     );
   }
 
+  // ── Event Found ─────────────────────────────────────────────────────────────
   return (
     <PageContainer>
       {/* Breadcrumb */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-          <Link href="/" className="hover:text-brand-orange transition-colors">Home</Link>
-          <ChevronRight className="w-4 h-4" />
-          <Link href="/events" className="hover:text-brand-orange transition-colors">Events</Link>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-foreground truncate max-w-[200px] sm:max-w-none">{event.name}</span>
+        <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground flex-wrap">
+          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+          <ChevronRight className="w-4 h-4 shrink-0" />
+          <Link href="/events" className="hover:text-primary transition-colors">Events</Link>
+          <ChevronRight className="w-4 h-4 shrink-0" />
+          <span className="text-foreground truncate max-w-[200px] sm:max-w-none">{event?.name ?? 'Event Details'}</span>
         </div>
       </div>
 
@@ -144,16 +225,16 @@ export default function EventDetailClient() {
         {/* 70/30 Split Layout */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mt-8">
           {/* Left Column (70%) */}
-          <div className="flex-1 w-full lg:w-[70%]">
+          <div className="flex-1 w-full lg:w-[70%] min-w-0">
             <AboutEvent event={event} />
-            <EventTimeline timeline={event.timeline} />
+            <EventTimeline timeline={event?.timeline ?? []} />
             <BreedCategories />
-            <AgeClasses classes={event.ageClasses} />
-            <EventJudges judges={event.judges} />
-            <OrganizingCommittee secretaries={event.secretaries} />
+            <AgeClasses classes={event?.ageClasses ?? []} />
+            <EventJudges judges={event?.judges ?? []} />
+            <OrganizingCommittee secretaries={event?.secretaries ?? []} />
             <EventVenue event={event} />
 
-            {/* Show Registered Entries Section */}
+            {/* Registered Entries Section */}
             <div className="bg-card rounded-[24px] p-8 border border-border shadow-sm mb-8 text-foreground">
               <h3 className="text-2xl font-black mb-6 flex items-center gap-2">
                 <Dog className="w-6 h-6 text-brand-orange" /> Registered Dog Entries ({showEntries.length})
@@ -169,11 +250,18 @@ export default function EventDetailClient() {
                   {showEntries.map((ent: any) => (
                     <div key={ent.id} className="p-4 bg-accent/15 border border-border rounded-2xl flex gap-4 items-center">
                       <div className="w-12 h-12 rounded-full overflow-hidden bg-accent shrink-0 border border-border">
-                        <img src={ent.dogPhoto || '/images/hero_banner.png'} alt={ent.dogName} className="w-full h-full object-cover" />
+                        <img
+                          src={ent.dogPhoto || '/images/hero_banner.png'}
+                          alt={ent.dogName ?? 'Dog'}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-bold text-foreground truncate">{ent.dogName}</p>
-                        <p className="text-xs text-muted-foreground truncate">{ent.breed} • {ent.category}</p>
+                        <p className="font-bold text-foreground truncate">{ent.dogName ?? '-'}</p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {[ent.breed, ent.category].filter(Boolean).join(' • ') || '-'}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -183,7 +271,7 @@ export default function EventDetailClient() {
 
             <EventGallery />
             <EventSponsors />
-            <EventFAQs faqs={event.faqs} />
+            <EventFAQs faqs={event?.faqs ?? []} />
             <RelatedEvents events={MOCK_EVENTS} />
           </div>
 

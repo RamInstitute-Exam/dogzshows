@@ -43,7 +43,7 @@ export default function RBACManagement() {
             <Button variant="outline" className="border-border hover:bg-accent text-foreground">
               <Filter className="w-4 h-4 mr-2" /> Filters
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
               <Plus className="w-4 h-4 mr-2" /> Create Role
             </Button>
           </div>

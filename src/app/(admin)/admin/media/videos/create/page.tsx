@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { Save, ArrowLeft, Loader2, Video as VideoIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -134,10 +135,9 @@ export default function AddVideoForm() {
             Cancel Upload
           </Button>
         ) : (
-          <Button onClick={handleSubmit} disabled={loading} className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold">
-            <Save className="w-4 h-4 mr-2" />
+          <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={<Save className="w-4 h-4" />}>
             Upload to S3
-          </Button>
+          </AdminButton>
         )}
       </div>
 

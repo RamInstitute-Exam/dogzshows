@@ -58,7 +58,7 @@ export default function SubAdmins() {
                   className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-xl text-foreground placeholder-[#7C8798] focus:outline-none focus:border-[rgba(255,255,255,0.2)] transition-all shadow-lg"
                 />
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-700 text-foreground font-bold whitespace-nowrap">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white font-bold whitespace-nowrap">
                 <UserCheck className="w-4 h-4 mr-2" /> Assign Sub Admin
               </Button>
             </div>

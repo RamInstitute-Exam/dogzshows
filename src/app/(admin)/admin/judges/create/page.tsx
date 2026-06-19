@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, ImagePlus, Globe, Award, Shield, User, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
@@ -117,10 +118,9 @@ export default function RegisterJudgeForm() {
             <p className="text-muted-foreground text-sm mt-1">Add a certified FCI/national judge profile.</p>
           </div>
         </div>
-        <Button onClick={handleSubmit} disabled={loading} type="button" className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/10">
-          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+        <AdminButton onClick={handleSubmit} loading={loading} type="button" variant="primary" leftIcon={loading ? undefined : <Save className="w-4 h-4" />}>
           Save Judge Profile
-        </Button>
+        </AdminButton>
       </div>
 
       <div className="space-y-6">

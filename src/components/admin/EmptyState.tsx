@@ -31,22 +31,22 @@ export default function EmptyState({
   icon
 }: EmptyStateProps) {
   return (
-    <div className="w-full min-h-[500px] flex flex-col items-center justify-center p-8 text-center bg-[#0A0A0A] border border-[rgba(255,255,255,0.08)] rounded-[20px] shadow-sm">
+    <div className="w-full min-h-[500px] flex flex-col items-center justify-center p-8 text-center bg-card border border-border rounded-[20px] shadow-sm">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
         className="flex flex-col items-center max-w-md"
       >
-        <div className="w-24 h-24 bg-[#F4C542]/10 rounded-full flex items-center justify-center mb-6">
-          {icon ? icon : <FolderSearch className="w-12 h-12 text-[#F4C542]" />}
+        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+          {icon ? icon : <FolderSearch className="w-12 h-12 text-primary" />}
         </div>
         
-        <h3 className="text-xl font-bold text-white mb-3">
+        <h3 className="text-xl font-bold text-foreground mb-3">
           {title}
         </h3>
         
-        <p className="text-[#94A3B8] text-sm leading-relaxed mb-8">
+        <p className="text-muted-foreground text-sm leading-relaxed mb-8">
           {description}
         </p>
         
@@ -55,7 +55,7 @@ export default function EmptyState({
             primaryAction.href ? (
               <Link 
                 href={primaryAction.href}
-                className="flex items-center gap-2 px-6 py-3 bg-[#F4C542] hover:bg-yellow-400 text-black font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5 shadow-[0_0_15px_rgba(244,197,66,0.3)]"
+                className="flex items-center gap-2 px-6 py-3 bg-primary hover:opacity-90 text-primary-foreground font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5 shadow-md"
               >
                 {primaryAction.icon || <Plus className="w-4 h-4" />}
                 {primaryAction.label}
@@ -63,7 +63,7 @@ export default function EmptyState({
             ) : (
               <button 
                 onClick={primaryAction.onClick}
-                className="flex items-center gap-2 px-6 py-3 bg-[#F4C542] hover:bg-yellow-400 text-black font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5 shadow-[0_0_15px_rgba(244,197,66,0.3)]"
+                className="flex items-center gap-2 px-6 py-3 bg-primary hover:opacity-90 text-primary-foreground font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5 shadow-md"
               >
                 {primaryAction.icon || <Plus className="w-4 h-4" />}
                 {primaryAction.label}
@@ -75,7 +75,7 @@ export default function EmptyState({
             secondaryAction.href ? (
               <Link 
                 href={secondaryAction.href}
-                className="flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm border border-white/10 rounded-xl transition-all hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent/80 text-foreground font-semibold text-sm border border-border rounded-xl transition-all hover:-translate-y-0.5"
               >
                 {secondaryAction.icon || <UploadCloud className="w-4 h-4" />}
                 {secondaryAction.label}
@@ -83,7 +83,7 @@ export default function EmptyState({
             ) : (
               <button 
                 onClick={secondaryAction.onClick}
-                className="flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm border border-white/10 rounded-xl transition-all hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent/80 text-foreground font-semibold text-sm border border-border rounded-xl transition-all hover:-translate-y-0.5"
               >
                 {secondaryAction.icon || <UploadCloud className="w-4 h-4" />}
                 {secondaryAction.label}

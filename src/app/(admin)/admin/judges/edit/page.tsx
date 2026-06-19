@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Save, ArrowLeft, Loader2, Award, Shield, User, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
@@ -174,10 +175,9 @@ function EditJudgeFormContent() {
             <p className="text-muted-foreground text-sm mt-1">Update profile information and settings.</p>
           </div>
         </div>
-        <Button onClick={handleSubmit} disabled={loading} type="button" className="bg-blue-600 hover:bg-blue-700 text-foreground font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/10">
-          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-          Save Changes
-        </Button>
+        <AdminButton onClick={handleSubmit} loading={loading} type="button" variant="primary" leftIcon={loading ? undefined : <Save className="w-4 h-4" />}>
+          Save Judge Profile
+        </AdminButton>
       </div>
 
       <div className="space-y-6">

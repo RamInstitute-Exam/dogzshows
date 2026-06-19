@@ -311,7 +311,7 @@ export default function BespokeEventManagement() {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center justify-center gap-2 h-11 px-4 text-sm font-bold rounded-xl border transition-all ${
               showFilters 
-                ? 'bg-brand-orange text-foreground border-brand-orange shadow-md' 
+                ? 'admin-btn-primary border-transparent shadow-md' 
                 : 'bg-card border-border text-foreground hover:bg-accent'
             }`}
           >
@@ -329,7 +329,7 @@ export default function BespokeEventManagement() {
           </button>
 
           <Link href="/admin/events/create" className="flex-grow sm:flex-grow-0">
-            <button className="w-full h-11 px-5 flex items-center justify-center gap-2 text-sm font-bold text-foreground bg-brand-orange hover:bg-brand-orange/90 rounded-xl transition-all shadow-md active:scale-95">
+            <button className="w-full h-11 px-5 flex items-center justify-center gap-2 text-sm font-bold bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] rounded-xl transition-all shadow-md active:scale-95">
               <Plus className="w-4.5 h-4.5" />
               Create Event
             </button>
@@ -851,7 +851,7 @@ export default function BespokeEventManagement() {
                           onClick={() => setPage(p)}
                           className={`h-9 w-9 text-xs font-black rounded-lg transition-all ${
                             p === page 
-                              ? 'bg-brand-orange text-foreground shadow-md' 
+                              ? 'admin-btn-primary shadow-md' 
                               : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                           }`}
                         >
@@ -1025,7 +1025,7 @@ export default function BespokeEventManagement() {
               {/* Actions Footer */}
               <div className="p-4 border-t border-border bg-muted/20 flex gap-3 flex-shrink-0">
                 <Link href={`/admin/events/edit?id=${activeEvent.id}`} className="flex-1">
-                  <button className="w-full py-2.5 bg-brand-orange text-foreground hover:bg-brand-orange/90 text-sm font-bold rounded-xl transition-all">
+                  <button className="w-full py-2.5 bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] text-sm font-bold rounded-xl transition-all">
                     Edit Details
                   </button>
                 </Link>
@@ -1085,7 +1085,7 @@ export default function BespokeEventManagement() {
                 <button onClick={() => setDuplicateConfirmEvent(null)} className="flex-1 py-2 bg-accent text-foreground hover:bg-accent/80 text-xs font-bold rounded-xl transition-colors">
                   Cancel
                 </button>
-                <button onClick={() => handleDuplicate(duplicateConfirmEvent.id)} className="flex-1 py-2 bg-brand-orange text-foreground hover:bg-brand-orange/90 text-xs font-bold rounded-xl transition-colors">
+                <button onClick={() => handleDuplicate(duplicateConfirmEvent.id)} className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-colors">
                   Confirm Duplicate
                 </button>
               </div>
@@ -1111,7 +1111,7 @@ export default function BespokeEventManagement() {
                 <button onClick={() => setBulkActionConfirm(null)} className="flex-1 py-2 bg-accent text-foreground hover:bg-accent/80 text-xs font-bold rounded-xl transition-colors">
                   Cancel
                 </button>
-                <button onClick={handleBulkAction} className="flex-1 py-2 bg-brand-orange text-foreground hover:bg-brand-orange/90 text-xs font-bold rounded-xl transition-colors">
+                <button onClick={handleBulkAction} className="flex-1 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl transition-colors">
                   Confirm Execution
                 </button>
               </div>

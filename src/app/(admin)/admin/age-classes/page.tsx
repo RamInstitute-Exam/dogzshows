@@ -84,7 +84,7 @@ export default function AgeClassesPage() {
               <input name="name" type="text" placeholder="Class Name (e.g. Junior)" required className="bg-accent border border-border text-foreground p-2 rounded flex-1" />
               <input name="minMonths" type="number" placeholder="Min Months" className="bg-accent border border-border text-foreground p-2 rounded w-32" />
               <input name="maxMonths" type="number" placeholder="Max Months" className="bg-accent border border-border text-foreground p-2 rounded w-32" />
-              <Button type="submit" className="bg-brand-orange text-foreground">Add</Button>
+              <Button type="submit" className="admin-btn admin-btn-primary admin-btn-sm">Add</Button>
             </form>
           </div>
 

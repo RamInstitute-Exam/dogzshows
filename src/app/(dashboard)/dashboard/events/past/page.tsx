@@ -87,7 +87,7 @@ export default function PastEvents() {
                   <h3 className="text-xl font-bold text-foreground leading-tight">{event.name}</h3>
                 </div>
                 <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center border border-border">
-                  <Trophy className="w-5 h-5 text-[#F59E0B]" />
+                  <Trophy className="w-5 h-5 text-primary" />
                 </div>
               </div>
               

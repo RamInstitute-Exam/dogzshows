@@ -357,7 +357,7 @@ export default function UniversalBulkUpload() {
           
           <button 
             onClick={() => handleDownload(`/bulk-upload/export/${selectedModule}?format=xlsx`, `${selectedModule}_export.xlsx`)}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-brand-orange text-foreground hover:bg-brand-orange/95 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] transition-colors"
           >
             <Download className="w-4 h-4" />
             Export Live Data
@@ -425,7 +425,7 @@ export default function UniversalBulkUpload() {
                       <p className="text-sm text-muted-foreground my-1">or</p>
                       <button 
                         onClick={() => fileInputRef.current?.click()}
-                        className="px-5 py-2 text-sm font-semibold rounded-xl bg-brand-orange text-foreground hover:bg-brand-orange/90 active:scale-95 transition-all shadow-md"
+                        className="px-5 py-2 text-sm font-semibold rounded-xl bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] active:scale-95 transition-all shadow-md"
                       >
                         Browse File
                       </button>
@@ -570,7 +570,7 @@ export default function UniversalBulkUpload() {
                 <button 
                   onClick={handleValidate}
                   disabled={loading || !file}
-                  className="w-full py-3 px-4 flex items-center justify-center gap-2 text-sm font-bold text-foreground bg-brand-orange hover:bg-brand-orange/90 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-md"
+                  className="w-full py-3 px-4 flex items-center justify-center gap-2 text-sm font-bold bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-md"
                 >
                   {loading ? (
                     <>
@@ -637,7 +637,7 @@ export default function UniversalBulkUpload() {
                 <div className="flex border border-border rounded-xl bg-card overflow-hidden">
                   <button 
                     onClick={() => setStatusFilter('all')} 
-                    className={`px-3 py-1.5 text-xs font-bold transition-colors ${statusFilter === 'all' ? 'bg-brand-orange text-foreground' : 'text-muted-foreground hover:bg-accent'}`}
+                    className={`px-3 py-1.5 text-xs font-bold transition-colors ${statusFilter === 'all' ? 'bg-[#111827] text-white dark:bg-white dark:text-[#111827]' : 'text-muted-foreground hover:bg-accent'}`}
                   >
                     All
                   </button>
@@ -742,7 +742,7 @@ export default function UniversalBulkUpload() {
               <button 
                 onClick={handleCommit}
                 disabled={loading || (stats.invalid > 0 && !options.continueOnWarnings)}
-                className="px-6 py-2.5 text-sm font-bold text-foreground bg-brand-orange hover:bg-brand-orange/90 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-md flex items-center gap-2"
+                className="px-6 py-2.5 text-sm font-bold bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-md flex items-center gap-2"
               >
                 {loading ? (
                   <>
@@ -807,7 +807,7 @@ export default function UniversalBulkUpload() {
               
               <button 
                 onClick={handleReset}
-                className="px-6 py-2.5 rounded-xl bg-brand-orange text-foreground hover:bg-brand-orange/90 flex items-center justify-center gap-2 font-bold text-sm transition-all shadow-md"
+                className="px-6 py-2.5 rounded-xl bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] flex items-center justify-center gap-2 font-bold text-sm transition-all shadow-md"
               >
                 Import New File
               </button>
