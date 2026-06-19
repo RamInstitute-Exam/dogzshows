@@ -14,7 +14,7 @@ import api, { getImageUrl } from '@/lib/api';
 
 // Inner component for the slideshow of a specific album
 const AlbumInnerSlideshow = ({ album }: { album: any }) => {
-  const swiperRef = useRef<SwiperType>();
+  const swiperRef = useRef<SwiperType | null>(null);
   
   // Combine cover image and nested images, removing duplicates
   const allImageUrls = [

@@ -1,0 +1,535 @@
+
+[
+  {
+    "clubName": "AGRA CANINE ASSOCIATION",
+    "secretaryName": "Mr. Shatrugen Dubey",
+    "designation": "Secretary",
+    "address": "C/o Mukul Asiwal, No.1, Lata Kunj Colony, Near Halwai Ki Bagichi, Old Mathura Road",
+    "city": "Agra",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "zipcode": "282002",
+    "phone": "",
+    "mobile": "7457000981",
+    "fax": "",
+    "email": [
+      "agracanineclub@gmail.com"
+    ],
+    "website": "https://agracanineclub.com",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "agra-canine-association"
+  },
+  {
+    "clubName": "VISAKHA KENNEL ASSOCIATION",
+    "secretaryName": "Mr. K. Sree Krishna",
+    "designation": "Secretary",
+    "address": "H.No.22, Tarakarama Layout, Rushikonda",
+    "city": "Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "zipcode": "530001",
+    "phone": "",
+    "mobile": "9949667799",
+    "fax": "",
+    "email": [],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "visakha-kennel-association"
+  },
+  {
+    "clubName": "THE NILGIRIS KENNEL ASSOCIATION",
+    "secretaryName": "Mr. Vivekand Lajapathie",
+    "designation": "Secretary",
+    "address": "No.73, Kumaran Illam, Rock Bee, Kamaraja Puram",
+    "city": "Coonoor",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "zipcode": "643101",
+    "phone": "",
+    "mobile": "9443856772",
+    "fax": "",
+    "email": [
+      "viveklajapathieinc@gmail.com"
+    ],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "the-nilgiris-kennel-association"
+  },
+  {
+    "clubName": "BELGAUM CANINE ASSOCIATION",
+    "secretaryName": "Mr. Ganesh Halgekar",
+    "designation": "Hony Secretary",
+    "address": "\"Umashankar\", Plot No.22 & 23, 10th Cross, Bhagya Nagar",
+    "city": "Belgaum",
+    "state": "Karnataka",
+    "country": "India",
+    "zipcode": "590011",
+    "phone": "",
+    "mobile": "9480909999",
+    "fax": "",
+    "email": [
+      "ganesh.halgekar@gmail.com"
+    ],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "belgaum-canine-association"
+  },
+  {
+    "clubName": "ROYAL KENNEL CLUB OF PANCHKULA",
+    "secretaryName": "Mr. Sikander Singh Thakur",
+    "designation": "General Secretary",
+    "address": "No.216, Amravati Enclave",
+    "city": "Panchkula",
+    "state": "Haryana",
+    "country": "India",
+    "zipcode": "134105",
+    "phone": "01733-270129",
+    "mobile": "9915268876",
+    "fax": "",
+    "email": [],
+    "website": "",
+    "description": "",
+    "logo": "",
+    "banner": "",
+    "status": "ACTIVE",
+    "featured": false,
+    "slug": "royal-kennel-club-of-panchkula"
+  },
+  {
+
+    "clubName": "KOTKAPURA KENNEL CLUB",
+
+    "secretaryName": "Dr. Ankit Chhibber",
+
+    "designation": "General Secretary",
+
+    "address": "Faridkot Road",
+
+    "city": "Kotkapura",
+
+    "state": "Punjab",
+
+    "country": "India",
+
+    "zipcode": "151204",
+
+    "phone": "",
+
+    "mobile": "7508585856",
+
+    "fax": "",
+
+    "email": "chhibberkennels@gmail.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "kotkapura-kennel-club"
+
+  },
+
+  {
+
+    "clubName": "COVAI MANCHESTER KENNEL CLUB",
+
+    "secretaryName": "Mr. R. Saravanakumar",
+
+    "designation": "Hony Secretary",
+
+    "address": "Aadhi International, 5/7, 8th Street, Lakshmi Vinayagar Kovil Street, Ganapathy",
+
+    "city": "Coimbatore",
+
+    "state": "Tamil Nadu",
+
+    "country": "India",
+
+    "zipcode": "641006",
+
+    "phone": "",
+
+    "mobile": "9585266566",
+
+    "fax": "",
+
+    "email": "cmkc2021@gmail.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "covai-manchester-kennel-club"
+
+  },
+
+  {
+
+    "clubName": "SOCIETY KENNEL CLUB OF PALWAL",
+
+    "secretaryName": "Mr. Akash Jakhad",
+
+    "designation": "Hony Secretary",
+
+    "address": "Ward No.2, Street No.3, Vill. Naya Gaon Fazalpur, Near Janauli Mode, P.O. Janauli",
+
+    "city": "Palwal",
+
+    "state": "Haryana",
+
+    "country": "India",
+
+    "zipcode": "121102",
+
+    "phone": "",
+
+    "mobile": "9050825381",
+
+    "fax": "",
+
+    "email": "",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "society-kennel-club-of-palwal"
+
+  },
+
+  {
+
+    "clubName": "DOBERMANN PINSCHER CONFEDERATION OF INDIA",
+
+    "secretaryName": "Mr. M. Gopalakrishnan",
+
+    "designation": "Hony Secretary",
+
+    "address": "Old No.5, New No.13/1, First Lane, Vijaya Raghava Road, T. Nagar",
+
+    "city": "Chennai",
+
+    "state": "Tamil Nadu",
+
+    "country": "India",
+
+    "zipcode": "600017",
+
+    "phone": "",
+
+    "mobile": "9840029090",
+
+    "fax": "",
+
+    "email": "",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "dobermann-pinscher-confederation-of-india"
+
+  },
+
+  {
+
+    "clubName": "AMBALA KENNEL CLUB",
+
+    "secretaryName": "Mr. Lokesh Datt Mehta",
+
+    "designation": "Hony Secretary",
+
+    "address": "10/141, Ajit Nagar, Mahesh Nagar",
+
+    "city": "Ambala Cantt",
+
+    "state": "Haryana",
+
+    "country": "India",
+
+    "zipcode": "133001",
+
+    "phone": "",
+
+    "mobile": "7503788888",
+
+    "fax": "",
+
+    "email": "ambalakennelclub2015@gmail.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "ambala-kennel-club"
+
+  },
+  {
+
+    "clubName": "KANPUR KENNEL WELFARE ASSOCIATION",
+
+    "secretaryName": "Mr. Saurabh Shukla",
+
+    "designation": "Hony Secretary",
+
+    "address": "128/30, H Block, Kidwai Nagar",
+
+    "city": "Kanpur",
+
+    "state": "Uttar Pradesh",
+
+    "country": "India",
+
+    "zipcode": "208011",
+
+    "phone": "",
+
+    "mobile": "7233088099",
+
+    "fax": "",
+
+    "email": "kkwaknp@gmail.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "kanpur-kennel-welfare-association"
+
+  },
+
+  {
+
+    "clubName": "KOHINOOR KENNEL CLUB (JALANDHAR)",
+
+    "secretaryName": "Mr. Roopak Dhir",
+
+    "designation": "Hony Secretary",
+
+    "address": "101, New Ishapuri, Near Urban Estate-2",
+
+    "city": "Jalandhar",
+
+    "state": "Punjab",
+
+    "country": "India",
+
+    "zipcode": "",
+
+    "phone": "",
+
+    "mobile": "9814430099",
+
+    "fax": "",
+
+    "email": "kohnloorkennelclub@hotmail.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "kohinoor-kennel-club-jalandhar"
+
+  },
+
+  {
+
+    "clubName": "SHVAN FOUNDATION KOLHAPUR",
+
+    "secretaryName": "Mr. Anirudhan Jadhav",
+
+    "designation": "Hony Secretary",
+
+    "address": "E Ward, Opp New Palace Main Gate, Kasbekar Park",
+
+    "city": "Kolhapur",
+
+    "state": "Maharashtra",
+
+    "country": "India",
+
+    "zipcode": "416003",
+
+    "phone": "",
+
+    "mobile": "8007046111",
+
+    "fax": "",
+
+    "email": "Shvanfoundationkop2023@gmail.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "shvan-foundation-kolhapur"
+
+  },
+
+  {
+
+    "clubName": "KENNEL FEDERATION OF SOLAPUR",
+
+    "secretaryName": "Ms. Akshata Swami",
+
+    "designation": "Hony Secretary",
+
+    "address": "Aditya Nagar",
+
+    "city": "Solapur",
+
+    "state": "Maharashtra",
+
+    "country": "India",
+
+    "zipcode": "413004",
+
+    "phone": "",
+
+    "mobile": "9823092271",
+
+    "fax": "",
+
+    "email": "kennelfederationofsolapur@gmail.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "kennel-federation-of-solapur"
+
+  },
+
+  {
+
+    "clubName": "ROYAL KENNEL CLUB SHIMLA",
+
+    "secretaryName": "Mr. Sidharth Sood",
+
+    "designation": "Hony Secretary",
+
+    "address": "18, 1st Floor, The Mall",
+
+    "city": "Shimla",
+
+    "state": "Himachal Pradesh",
+
+    "country": "India",
+
+    "zipcode": "171001",
+
+    "phone": "",
+
+    "mobile": "9318021210",
+
+    "fax": "",
+
+    "email": "sid_840@yahoo.com",
+
+    "website": "",
+
+    "description": "",
+
+    "logo": "",
+
+    "banner": "",
+
+    "status": "ACTIVE",
+
+    "featured": false,
+
+    "slug": "royal-kennel-club-shimla"
+
+  },
+
+
+]
+

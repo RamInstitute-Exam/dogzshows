@@ -111,7 +111,7 @@ export default function Home() {
       {/* 7. About JuzDog Media */}
       <AboutUsSection />
 
-      {/* 8. Latest Photography & Videography Showcase */}
+      {/* 8. Latest Photography & Videography Showcase - Hidden per user request
       {loadingP2 ? (
         <SectionSkeleton height="h-96" />
       ) : (
@@ -120,6 +120,7 @@ export default function Home() {
           videos={videos} 
         />
       )}
+      */}
 
     </PageContainer>
   );

@@ -10,7 +10,7 @@ import api, { getImageUrl } from '@/lib/api';
 export default function SlidingSectionsAdminPage() {
   const [sections, setSections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState<any>(null);
@@ -65,8 +65,8 @@ export default function SlidingSectionsAdminPage() {
 
     try {
       setIsUploading(true);
-      const newImages = [];
-      
+      const newImages: any[] = [];
+
       for (let i = 0; i < files.length; i++) {
         const formData = new FormData();
         formData.append('file', files[i]);
@@ -101,12 +101,12 @@ export default function SlidingSectionsAdminPage() {
   const onDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
-    
+
     const newImages = [...images];
     const draggedItem = newImages[draggedIndex];
     newImages.splice(draggedIndex, 1);
     newImages.splice(index, 0, draggedItem);
-    
+
     setImages(newImages);
     setDraggedIndex(index);
   };
@@ -206,7 +206,7 @@ export default function SlidingSectionsAdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
             <h2 className="text-2xl font-bold mb-6">{currentSection ? 'Edit Section' : 'Create Section'}</h2>
-            
+
             <form onSubmit={handleSave} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -235,14 +235,14 @@ export default function SlidingSectionsAdminPage() {
                   <label className="font-semibold text-sm">Gallery Images ({images.length})</label>
                   <div className="w-64"><Input type="file" accept="image/*" multiple onChange={handleUpload} disabled={isUploading} /></div>
                 </div>
-                
+
                 <p className="text-xs text-muted-foreground mb-4">Drag and drop images to reorder them.</p>
 
                 <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-3">
                   {images.map((img, index) => (
-                    <div 
-                      key={img.imageUrl + index} 
-                      draggable 
+                    <div
+                      key={img.imageUrl + index}
+                      draggable
                       onDragStart={(e) => onDragStart(e, index)}
                       onDragEnd={onDragEnd}
                       onDragOver={(e) => onDragOver(e, index)}

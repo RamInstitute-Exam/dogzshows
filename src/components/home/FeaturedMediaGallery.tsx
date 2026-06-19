@@ -91,7 +91,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                           </span>
                         )}
                         {photo.featured && (
-                          <span className="absolute top-4 right-4 bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                          <span className="absolute top-4 right-4 bg-brand-orange text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
                             ⭐ Featured
                           </span>
                         )}
@@ -171,7 +171,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
 
                         {/* Play overlay */}
                         <div className="absolute inset-0 bg-black/35 flex items-center justify-center group-hover:bg-black/55 transition-colors duration-300">
-                          <div className="w-16 h-16 rounded-full bg-primary shadow-2xl flex items-center justify-center scale-90 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-16 h-16 rounded-full bg-brand-orange shadow-2xl flex items-center justify-center scale-90 group-hover:scale-110 transition-transform duration-300">
                             <Play className="w-7 h-7 fill-current text-white ml-1" />
                           </div>
                         </div>
@@ -190,7 +190,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                           </span>
                         )}
                         {video.featured && (
-                          <span className="absolute top-4 right-4 bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                          <span className="absolute top-4 right-4 bg-brand-orange text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
                             ⭐ Featured
                           </span>
                         )}

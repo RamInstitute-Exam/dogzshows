@@ -707,8 +707,8 @@ button:hover .bell-icon-animate {
   --accent: var(--bg-card);
   --accent-foreground: var(--text-primary);
 
-  --brand-orange: var(--accent-color);
-  --brand-orange-hover: var(--text-secondary);
+  --brand-orange: #F97316;
+  --brand-orange-hover: #EA580C;
 
   /* Header/Navbar light theme variables */
   --nav-height: 84px;
@@ -779,8 +779,8 @@ button:hover .bell-icon-animate {
   --accent: var(--bg-card);
   --accent-foreground: var(--text-primary);
 
-  --brand-orange: var(--accent-color);
-  --brand-orange-hover: var(--text-secondary);
+  --brand-orange: #F97316;
+  --brand-orange-hover: #EA580C;
 
   /* Header/Navbar dark theme variables */
   --nav-bg: var(--bg-primary);

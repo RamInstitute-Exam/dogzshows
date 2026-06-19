@@ -46,7 +46,7 @@ export default function JudgeAssignments() {
             <div className="flex gap-4 w-full md:w-auto">
               <AdminButton variant="primary" size="md">
                 Assign Judge to Event
-              </Button>
+              </AdminButton>
             </div>
           </div>
 
