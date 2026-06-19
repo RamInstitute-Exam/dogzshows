@@ -104,7 +104,7 @@ export default function AuditLogsManagement() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-3">
-            <Terminal className="w-8 h-8 text-brand-orange" /> System Audit Logs
+            <Terminal className="w-8 h-8 text-foreground" /> System Audit Logs
           </h1>
           <p className="text-muted-foreground font-medium mt-1">
             Real-time tracking of administrative operations, state changes, login history, and device IPs.
@@ -128,7 +128,7 @@ export default function AuditLogsManagement() {
               placeholder="Search by action, IP, browser, user name or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all text-sm"
+              className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all text-sm"
             />
           </div>
 
@@ -150,7 +150,7 @@ export default function AuditLogsManagement() {
 
             <button 
               type="submit"
-              className="px-5 py-2.5 bg-brand-orange hover:bg-brand-orange/95 text-white font-bold rounded-xl shadow-md transition-all text-sm"
+              className="px-5 py-2.5 bg-foreground hover:bg-foreground/95 text-white font-bold rounded-xl shadow-md transition-all text-sm"
             >
               Search
             </button>
@@ -180,7 +180,7 @@ export default function AuditLogsManagement() {
             <select
               value={selectedEntity}
               onChange={(e) => { setSelectedEntity(e.target.value); setCurrentPage(1); }}
-              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-foreground text-xs font-semibold focus:border-brand-orange outline-none"
+              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-foreground text-xs font-semibold focus:border-border outline-none"
             >
               <option value="all">All Entities</option>
               {entities.map(e => <option key={e} value={e}>{e}</option>)}
@@ -193,7 +193,7 @@ export default function AuditLogsManagement() {
             <select
               value={selectedAction}
               onChange={(e) => { setSelectedAction(e.target.value); setCurrentPage(1); }}
-              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-foreground text-xs font-semibold focus:border-brand-orange outline-none"
+              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-foreground text-xs font-semibold focus:border-border outline-none"
             >
               <option value="all">All Actions</option>
               {actions.map(a => <option key={a} value={a}>{a.replace('_', ' ')}</option>)}
@@ -207,7 +207,7 @@ export default function AuditLogsManagement() {
               type="date"
               value={startDate}
               onChange={(e) => { setStartDate(e.target.value); setCurrentPage(1); }}
-              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-foreground text-xs focus:border-brand-orange outline-none"
+              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-foreground text-xs focus:border-border outline-none"
             />
           </div>
 
@@ -217,7 +217,7 @@ export default function AuditLogsManagement() {
               type="date"
               value={endDate}
               onChange={(e) => { setEndDate(e.target.value); setCurrentPage(1); }}
-              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-foreground text-xs focus:border-brand-orange outline-none"
+              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-foreground text-xs focus:border-border outline-none"
             />
           </div>
         </div>
@@ -242,7 +242,7 @@ export default function AuditLogsManagement() {
               {loading ? (
                 <tr>
                   <td colSpan={7} className="py-20 text-center">
-                    <RefreshCw className="w-8 h-8 animate-spin text-brand-orange  mb-3" />
+                    <RefreshCw className="w-8 h-8 animate-spin text-foreground  mb-3" />
                     <p className="text-muted-foreground font-semibold">Retrieving system operation logs...</p>
                   </td>
                 </tr>
@@ -332,7 +332,7 @@ export default function AuditLogsManagement() {
                       <td className="p-4 text-right">
                         <button 
                           onClick={() => handleOpenDetail(log)}
-                          className="p-2 bg-accent/60 hover:bg-accent text-muted-foreground hover:text-brand-orange rounded-lg transition-all"
+                          className="p-2 bg-accent/60 hover:bg-accent text-muted-foreground hover:text-foreground rounded-lg transition-all"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -365,7 +365,7 @@ export default function AuditLogsManagement() {
                   onClick={() => setCurrentPage(idx + 1)}
                   className={`px-3 py-1.5 text-xs font-extrabold rounded-lg border ${
                     currentPage === idx + 1 
-                      ? 'bg-brand-orange border-brand-orange text-white' 
+                      ? 'bg-foreground border-border text-white' 
                       : 'bg-card border-border text-foreground hover:bg-accent'
                   }`}
                 >
@@ -396,7 +396,7 @@ export default function AuditLogsManagement() {
             >
               <div className="p-6 border-b border-border flex justify-between items-center bg-accent/30">
                 <div className="flex items-center gap-3">
-                  <ArrowLeftRight className="w-5 h-5 text-brand-orange" />
+                  <ArrowLeftRight className="w-5 h-5 text-foreground" />
                   <div>
                     <h2 className="text-lg font-bold text-foreground">Operation Payload Diff: {selectedLog.action}</h2>
                     <p className="text-xs text-muted-foreground font-semibold">Compare state changes before and after the operation.</p>
@@ -466,7 +466,7 @@ export default function AuditLogsManagement() {
               <div className="p-6 border-t border-border flex justify-end">
                 <button 
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 bg-brand-orange hover:bg-brand-orange/95 text-white font-bold rounded-xl shadow-md transition-all text-sm"
+                  className="px-5 py-2.5 bg-foreground hover:bg-foreground/95 text-white font-bold rounded-xl shadow-md transition-all text-sm"
                 >
                   Close Viewer
                 </button>

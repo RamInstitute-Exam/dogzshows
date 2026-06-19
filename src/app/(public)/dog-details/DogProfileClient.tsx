@@ -34,7 +34,7 @@ export default function DogProfileClient({ id }: { id: string }) {
           <div className="flex-1 pb-2">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
               <div className="flex flex-wrap items-center gap-3 mb-2">
-                <span className="bg-brand-orange text-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                <span className="bg-foreground text-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                   Champion
                 </span>
                 <span className="bg-card/20 backdrop-blur text-foreground text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
@@ -58,7 +58,7 @@ export default function DogProfileClient({ id }: { id: string }) {
           <div className="lg:col-span-2 space-y-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card p-8 rounded-[2rem] shadow-sm border border-border">
               <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Info className="w-6 h-6 text-brand-orange" /> About
+                <Info className="w-6 h-6 text-foreground" /> About
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
@@ -83,7 +83,7 @@ export default function DogProfileClient({ id }: { id: string }) {
             {/* Achievements */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-card p-8 rounded-[2rem] shadow-sm border border-border">
               <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Trophy className="w-6 h-6 text-brand-orange" /> Achievements
+                <Trophy className="w-6 h-6 text-foreground" /> Achievements
               </h3>
               <div className="space-y-4">
                 {[
@@ -91,8 +91,8 @@ export default function DogProfileClient({ id }: { id: string }) {
                   { title: 'Best in Group', event: 'FCI CACIB International', date: 'Aug 2025' },
                   { title: 'Reserve Best in Show', event: 'Winter Classic Championship', date: 'Jan 2026' }
                 ].map((award, i) => (
-                  <div key={i} className="flex gap-4 p-4 rounded-2xl bg-card hover:bg-orange-50 transition-colors border border-border">
-                    <div className="bg-brand-orange/10 p-3 rounded-xl h-fit text-brand-orange">
+                  <div key={i} className="flex gap-4 p-4 rounded-2xl bg-card hover:bg-foreground/10 transition-colors border border-border">
+                    <div className="bg-foreground/10 p-3 rounded-xl h-fit text-foreground">
                       <Award className="w-6 h-6" />
                     </div>
                     <div>

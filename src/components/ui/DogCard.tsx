@@ -47,7 +47,7 @@ const DogCard: React.FC<DogCardProps> = ({
               </span>
             )}
           </div>
-          <button className="absolute top-4 right-4 p-2 bg-card/20 backdrop-blur-md rounded-full text-foreground hover:text-brand-orange transition-colors hover:bg-card/40">
+          <button className="absolute top-4 right-4 p-2 bg-card/20 backdrop-blur-md rounded-full text-foreground hover:text-foreground transition-colors hover:bg-card/40">
             <Heart size={20} />
           </button>
 
@@ -62,13 +62,13 @@ const DogCard: React.FC<DogCardProps> = ({
         <div className="p-5 flex flex-col flex-grow bg-card">
           <div className="flex justify-between items-center mb-4">
             <span className="text-brand-gray text-sm font-medium">{age}</span>
-            <span className="text-brand-orange font-bold text-lg">
+            <span className="text-foreground font-extrabold text-lg">
               {typeof price === 'number' ? `₹${price.toLocaleString()}` : price}
             </span>
           </div>
           
           <div className="flex items-center text-brand-gray/80 text-sm mt-auto pt-4 border-t border-border">
-            <MapPin size={16} className="mr-1 text-brand-orange" />
+            <MapPin size={16} className="mr-1 text-muted-foreground" />
             {location}
           </div>
         </div>

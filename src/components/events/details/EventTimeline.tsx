@@ -22,7 +22,7 @@ export default function EventTimeline({ timeline }: { timeline: any[] }) {
     <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-50 mb-[80px]">
       <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-10">Event Timeline</h2>
       
-      <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[3px] before:bg-gradient-to-b before:from-brand-orange/20 before:via-brand-orange before:to-brand-orange/20">
+      <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[3px] before:bg-gradient-to-b before:from-border/20 before:via-border before:to-border/20">
         {timeline.map((item: any, i: number) => (
           <motion.div 
             key={i} 
@@ -32,7 +32,7 @@ export default function EventTimeline({ timeline }: { timeline: any[] }) {
             className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group"
           >
             {/* Center Icon */}
-            <div className="flex items-center justify-center w-12 h-12 rounded-full border-4 border-border bg-brand-orange text-foreground shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full border-4 border-border bg-foreground text-foreground shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
               {getIcon(i)}
             </div>
             
@@ -43,7 +43,7 @@ export default function EventTimeline({ timeline }: { timeline: any[] }) {
                 {item?.time && (
                   <span
                     className="font-bold text-sm px-3 py-1.5 rounded-lg"
-                    style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.2)' }}
+                    style={{ background: 'rgba(255,255,255,0.12)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.2)' }}
                   >
                     {item.time}
                   </span>

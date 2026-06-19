@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import axiosInstance from '@/lib/axios';
+import Spinner from '@/components/common/loader/Spinner';
 
 interface PreviewRow {
   rowNumber: number;
@@ -337,7 +338,7 @@ export default function UniversalBulkUpload() {
             <select 
               value={selectedModule}
               onChange={(e) => handleModuleChange(e.target.value)}
-              className="text-xs bg-transparent border-none outline-none font-bold text-brand-orange cursor-pointer pr-4"
+              className="text-xs bg-transparent border-none outline-none font-bold text-foreground cursor-pointer pr-4"
             >
               {MODULES.map(m => (
                 <option key={m.id} value={m.id} className="bg-card text-foreground">{m.name}</option>
@@ -381,7 +382,7 @@ export default function UniversalBulkUpload() {
               <div 
                 className={`relative border-2 border-dashed rounded-2xl p-8 md:p-12 text-center transition-all ${
                   dragActive 
-                    ? 'border-brand-orange bg-brand-orange/5 shadow-inner' 
+                    ? 'border-border bg-foreground/5 shadow-inner' 
                     : file 
                       ? 'border-emerald-500/50 bg-emerald-500/5' 
                       : 'border-border bg-card hover:bg-accent/30'
@@ -400,7 +401,7 @@ export default function UniversalBulkUpload() {
                 />
                 
                 <div className="flex flex-col items-center justify-center space-y-4">
-                  <div className={`p-4 rounded-full ${file ? 'bg-emerald-500/10 text-emerald-500' : 'bg-brand-orange/10 text-brand-orange'}`}>
+                  <div className={`p-4 rounded-full ${file ? 'bg-emerald-500/10 text-emerald-500' : 'bg-foreground/10 text-foreground'}`}>
                     {file ? <Check className="w-8 h-8" /> : <Upload className="w-8 h-8" />}
                   </div>
                   
@@ -472,7 +473,7 @@ export default function UniversalBulkUpload() {
                     id="opt-skip"
                     checked={options.skipDuplicates}
                     onChange={() => handleOptionChange('skipDuplicates')}
-                    className="mt-1 h-4 w-4 rounded border-border text-brand-orange focus:ring-brand-orange/50"
+                    className="mt-1 h-4 w-4 rounded border-border text-foreground focus:ring-foreground/50"
                   />
                   <label htmlFor="opt-skip" className="text-sm font-medium text-foreground cursor-pointer">
                     Skip Duplicate Records
@@ -486,7 +487,7 @@ export default function UniversalBulkUpload() {
                     id="opt-update"
                     checked={options.updateExisting}
                     onChange={() => handleOptionChange('updateExisting')}
-                    className="mt-1 h-4 w-4 rounded border-border text-brand-orange focus:ring-brand-orange/50"
+                    className="mt-1 h-4 w-4 rounded border-border text-foreground focus:ring-foreground/50"
                   />
                   <label htmlFor="opt-update" className="text-sm font-medium text-foreground cursor-pointer">
                     Update Existing Records
@@ -500,7 +501,7 @@ export default function UniversalBulkUpload() {
                     id="opt-replace"
                     checked={options.replaceExisting}
                     onChange={() => handleOptionChange('replaceExisting')}
-                    className="mt-1 h-4 w-4 rounded border-border text-brand-orange focus:ring-brand-orange/50"
+                    className="mt-1 h-4 w-4 rounded border-border text-foreground focus:ring-foreground/50"
                   />
                   <label htmlFor="opt-replace" className="text-sm font-medium text-foreground cursor-pointer">
                     Replace Existing Records
@@ -514,7 +515,7 @@ export default function UniversalBulkUpload() {
                     id="opt-slug"
                     checked={options.autoGenerateSlug}
                     onChange={() => handleOptionChange('autoGenerateSlug')}
-                    className="mt-1 h-4 w-4 rounded border-border text-brand-orange focus:ring-brand-orange/50"
+                    className="mt-1 h-4 w-4 rounded border-border text-foreground focus:ring-foreground/50"
                   />
                   <label htmlFor="opt-slug" className="text-sm font-medium text-foreground cursor-pointer">
                     Auto Generate Slugs
@@ -528,7 +529,7 @@ export default function UniversalBulkUpload() {
                     id="opt-relations"
                     checked={options.autoCreateRelations}
                     onChange={() => handleOptionChange('autoCreateRelations')}
-                    className="mt-1 h-4 w-4 rounded border-border text-brand-orange focus:ring-brand-orange/50"
+                    className="mt-1 h-4 w-4 rounded border-border text-foreground focus:ring-foreground/50"
                   />
                   <label htmlFor="opt-relations" className="text-sm font-medium text-foreground cursor-pointer">
                     Auto Create Missing Relations
@@ -542,7 +543,7 @@ export default function UniversalBulkUpload() {
                     id="opt-empty"
                     checked={options.ignoreEmptyRows}
                     onChange={() => handleOptionChange('ignoreEmptyRows')}
-                    className="mt-1 h-4 w-4 rounded border-border text-brand-orange focus:ring-brand-orange/50"
+                    className="mt-1 h-4 w-4 rounded border-border text-foreground focus:ring-foreground/50"
                   />
                   <label htmlFor="opt-empty" className="text-sm font-medium text-foreground cursor-pointer">
                     Ignore Empty Rows
@@ -556,7 +557,7 @@ export default function UniversalBulkUpload() {
                     id="opt-warnings"
                     checked={options.continueOnWarnings}
                     onChange={() => handleOptionChange('continueOnWarnings')}
-                    className="mt-1 h-4 w-4 rounded border-border text-brand-orange focus:ring-brand-orange/50"
+                    className="mt-1 h-4 w-4 rounded border-border text-foreground focus:ring-foreground/50"
                   />
                   <label htmlFor="opt-warnings" className="text-sm font-medium text-foreground cursor-pointer">
                     Continue on Warnings
@@ -573,10 +574,7 @@ export default function UniversalBulkUpload() {
                   className="w-full py-3 px-4 flex items-center justify-center gap-2 text-sm font-bold bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-md"
                 >
                   {loading ? (
-                    <>
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                      Uploading & Parsing...
-                    </>
+                    <Spinner size="sm" />
                   ) : (
                     <>
                       <Play className="w-5 h-5" />
@@ -626,7 +624,7 @@ export default function UniversalBulkUpload() {
                   placeholder="Search parsed rows..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm bg-card border border-border focus:border-brand-orange rounded-xl outline-none"
+                  className="w-full pl-10 pr-4 py-2 text-sm bg-card border border-border focus:border-border rounded-xl outline-none"
                 />
               </div>
 
@@ -704,7 +702,7 @@ export default function UniversalBulkUpload() {
                               {row.errors.map((e, idx) => (
                                 <p key={idx} className="text-xs text-rose-400 flex items-start gap-1">
                                   <span className="mt-1 w-1.5 h-1.5 rounded-full bg-rose-500 flex-shrink-0"></span>
-                                  <span>{e}</span>
+                                  <span className="whitespace-pre-line">{e}</span>
                                 </p>
                               ))}
                               {row.warnings.map((w, idx) => (

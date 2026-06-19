@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/lib/axios';
+import Spinner from '@/components/common/loader/Spinner';
 
 interface AdminStats {
   totalDogs: number;
@@ -35,7 +36,7 @@ export default function AdminDashboard() {
 
   const statCards = [
     { title: 'Total Revenue', value: `₹${stats?.revenue?.toLocaleString() || 0}`, icon: DollarSign, color: 'from-[#10B981] to-[#059669]' },
-    { title: 'Total Dogs', value: stats?.totalDogs || 0, icon: Dog, color: 'from-[#F59E0B] to-[#FB923C]' },
+    { title: 'Total Dogs', value: stats?.totalDogs || 0, icon: Dog, color: 'from-[#FF007A] to-[#7E00FF]' },
     { title: 'Total Users', value: stats?.totalUsers || 0, icon: Users, color: 'from-[#8B5CF6] to-[#6D28D9]' },
     { title: 'Registrations', value: stats?.registrations || 0, icon: FileText, color: 'from-[#3B82F6] to-[#2563EB]' },
     { title: 'Upcoming Events', value: stats?.upcomingEvents || 0, icon: Calendar, color: 'from-[#38BDF8] to-[#0EA5E9]' },
@@ -108,11 +109,7 @@ export default function AdminDashboard() {
       >
         <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6 shadow-xl">
           <h2 className="text-xl font-bold text-foreground mb-6">Revenue & Registrations Overview</h2>
-          <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-border rounded-xl bg-[rgba(0,0,0,0.2)]">
-            <Activity className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
-            <h3 className="text-lg font-bold text-muted-foreground mb-2">ApexCharts Loading...</h3>
-            <p className="text-muted-foreground max-w-sm text-sm">Real-time chart data will be populated here.</p>
-          </div>
+          <Spinner className="py-20" />
         </div>
 
         <div className="bg-card rounded-2xl border border-border p-6 shadow-xl">
@@ -121,9 +118,9 @@ export default function AdminDashboard() {
             {stats?.recentRegistrations && stats.recentRegistrations.length > 0 ? (
               stats.recentRegistrations.map((reg: any) => (
                 <div key={reg.id} className="flex items-start gap-4 p-3 rounded-xl hover:bg-input transition-colors border border-transparent hover:border-border group">
-                  <div className="w-2 h-2 mt-2 rounded-full bg-brand-orange shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div>
+                  <div className="w-2 h-2 mt-2 rounded-full bg-foreground shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground group-hover:text-brand-orange transition-colors">
+                    <p className="text-sm font-semibold text-foreground group-hover:text-foreground transition-colors">
                       {reg.user?.firstName} registered {reg.dog?.name}
                     </p>
                     <p className="text-xs text-muted-foreground">{reg.event?.name}</p>

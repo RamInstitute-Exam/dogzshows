@@ -29,11 +29,11 @@ export default function BreedCategories() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
-            className="group bg-card rounded-[16px] p-5 border border-border cursor-pointer hover:border-brand-orange/50 transition-colors"
+            className="group bg-card rounded-[16px] p-5 border border-border cursor-pointer hover:border-border/50 transition-colors"
           >
             <summary className="flex items-center justify-between font-bold text-foreground">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-card rounded-full flex items-center justify-center text-brand-orange shadow-sm border border-border">
+                <div className="w-10 h-10 bg-card rounded-full flex items-center justify-center text-foreground shadow-sm border border-border">
                   <Trophy className="w-5 h-5" />
                 </div>
                 <div>
@@ -45,7 +45,7 @@ export default function BreedCategories() {
             </summary>
             <div className="mt-4 pt-4 border-t border-border">
               <p className="text-sm font-medium text-muted-foreground">Eligible Breeds: {group.count} recognized breeds in this group can participate.</p>
-              <button className="text-brand-orange text-sm font-bold mt-2 hover:underline">View All Breeds</button>
+              <button className="text-foreground text-sm font-bold mt-2 hover:underline">View All Breeds</button>
             </div>
           </motion.details>
         ))}

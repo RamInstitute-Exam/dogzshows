@@ -128,46 +128,46 @@ export default function AddPhotoForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Title *</label>
-            <input required type="text" name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input required type="text" name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Slug (Optional)</label>
-            <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div className="md:col-span-2 2xl:col-span-3">
             <label className="block text-sm font-medium text-muted-foreground mb-2">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Photographer Name</label>
-            <input type="text" name="photographer" value={formData.photographer} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input type="text" name="photographer" value={formData.photographer} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Breed</label>
-            <input type="text" name="breed" value={formData.breed} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input type="text" name="breed" value={formData.breed} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Location</label>
-            <input type="text" name="location" value={formData.location} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input type="text" name="location" value={formData.location} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Tags (JSON or comma separated)</label>
-            <input type="text" name="tags" value={formData.tags} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input type="text" name="tags" value={formData.tags} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
         </div>
 
         <div className="border-t border-border pt-6 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Title</label>
-            <input type="text" name="seoTitle" value={formData.seoTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input type="text" name="seoTitle" value={formData.seoTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Alt Text</label>
-            <input type="text" name="altText" value={formData.altText} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <input type="text" name="altText" value={formData.altText} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
           <div className="md:col-span-2 2xl:col-span-3">
             <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Description</label>
-            <textarea name="seoDescription" value={formData.seoDescription} onChange={handleInputChange} rows={2} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange" />
+            <textarea name="seoDescription" value={formData.seoDescription} onChange={handleInputChange} rows={2} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
           </div>
         </div>
 
@@ -178,7 +178,7 @@ export default function AddPhotoForm() {
           </label>
           <div className="flex-1">
             <label className="block text-sm font-medium text-muted-foreground mb-2">Status</label>
-            <select name="status" value={formData.status} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange">
+            <select name="status" value={formData.status} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border">
               <option value="ACTIVE">Active (Published)</option>
               <option value="DRAFT">Draft</option>
             </select>

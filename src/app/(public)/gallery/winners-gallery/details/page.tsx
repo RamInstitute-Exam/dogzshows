@@ -4,6 +4,7 @@ import { useSearchParams, notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import PhotoDetailClient from '../../show-photos/details/PhotoDetailClient';
 import { getPhotoBySlug, getAllPhotos } from '@/lib/server-api';
+import Spinner from '@/components/common/loader/Spinner';
 
 
 function PhotoDetailPageContent() {
@@ -29,7 +30,7 @@ function PhotoDetailPageContent() {
     fetchData();
   }, [paramVal]);
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <Spinner className="p-8" />;
   if (!data) return notFound();
 
   return <PhotoDetailClient initialPhotos={[data]} />;
@@ -37,7 +38,7 @@ function PhotoDetailPageContent() {
 
 export default function PhotoDetailPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+    <Suspense fallback={<Spinner className="p-8" />}>
       <PhotoDetailPageContent />
     </Suspense>
   );

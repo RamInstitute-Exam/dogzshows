@@ -53,7 +53,7 @@ export default function DogRegistrationForm() {
             <label className="block text-sm font-bold text-muted-foreground mb-2">Dog Name</label>
             <input 
               {...register('name')} 
-              className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-500 ring-red-500' : 'border-border focus:ring-brand-orange'} focus:outline-none focus:ring-2`} 
+              className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-500 ring-red-500' : 'border-border focus:ring-foreground'} focus:outline-none focus:ring-2`} 
               placeholder="e.g. Sir Maximus"
             />
             {errors.name && <p className="text-red-500 text-xs mt-1 font-bold">{errors.name.message}</p>}
@@ -62,7 +62,7 @@ export default function DogRegistrationForm() {
             <label className="block text-sm font-bold text-muted-foreground mb-2">Breed</label>
             <input 
               {...register('breed')} 
-              className={`w-full px-4 py-3 rounded-xl border ${errors.breed ? 'border-red-500 ring-red-500' : 'border-border focus:ring-brand-orange'} focus:outline-none focus:ring-2`} 
+              className={`w-full px-4 py-3 rounded-xl border ${errors.breed ? 'border-red-500 ring-red-500' : 'border-border focus:ring-foreground'} focus:outline-none focus:ring-2`} 
               placeholder="e.g. Golden Retriever"
             />
             {errors.breed && <p className="text-red-500 text-xs mt-1 font-bold">{errors.breed.message}</p>}
@@ -74,7 +74,7 @@ export default function DogRegistrationForm() {
             <label className="block text-sm font-bold text-muted-foreground mb-2">KCI Number</label>
             <input 
               {...register('kciNumber')} 
-              className={`w-full px-4 py-3 rounded-xl border ${errors.kciNumber ? 'border-red-500 ring-red-500' : 'border-border focus:ring-brand-orange'} focus:outline-none focus:ring-2`} 
+              className={`w-full px-4 py-3 rounded-xl border ${errors.kciNumber ? 'border-red-500 ring-red-500' : 'border-border focus:ring-foreground'} focus:outline-none focus:ring-2`} 
               placeholder="KCI-YYYY-XXXX"
             />
             {errors.kciNumber && <p className="text-red-500 text-xs mt-1 font-bold">{errors.kciNumber.message}</p>}
@@ -83,7 +83,7 @@ export default function DogRegistrationForm() {
             <label className="block text-sm font-bold text-muted-foreground mb-2">Microchip (15 digits)</label>
             <input 
               {...register('microchip')} 
-              className={`w-full px-4 py-3 rounded-xl border ${errors.microchip ? 'border-red-500 ring-red-500' : 'border-border focus:ring-brand-orange'} focus:outline-none focus:ring-2`} 
+              className={`w-full px-4 py-3 rounded-xl border ${errors.microchip ? 'border-red-500 ring-red-500' : 'border-border focus:ring-foreground'} focus:outline-none focus:ring-2`} 
               placeholder="981020000000000"
             />
             {errors.microchip && <p className="text-red-500 text-xs mt-1 font-bold">{errors.microchip.message}</p>}
@@ -95,7 +95,7 @@ export default function DogRegistrationForm() {
           <input 
             type="date"
             {...register('dob')} 
-            className={`w-full px-4 py-3 rounded-xl border ${errors.dob ? 'border-red-500 ring-red-500' : 'border-border focus:ring-brand-orange'} focus:outline-none focus:ring-2`} 
+            className={`w-full px-4 py-3 rounded-xl border ${errors.dob ? 'border-red-500 ring-red-500' : 'border-border focus:ring-foreground'} focus:outline-none focus:ring-2`} 
           />
           {errors.dob && <p className="text-red-500 text-xs mt-1 font-bold">{errors.dob.message}</p>}
         </div>
@@ -103,7 +103,7 @@ export default function DogRegistrationForm() {
         <Button 
           type="submit" 
           disabled={isSubmitting} 
-          className="w-full bg-brand-orange hover:bg-orange-600 h-14 rounded-xl text-lg font-bold mt-4"
+          className="w-full bg-foreground hover:bg-foreground h-14 rounded-xl text-lg font-bold mt-4"
         >
           {isSubmitting ? 'Registering...' : 'Complete Registration'}
         </Button>

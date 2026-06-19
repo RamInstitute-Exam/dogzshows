@@ -4,6 +4,7 @@ import { useSearchParams, notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import JudgeDetailClient from './JudgeDetailClient';
 import { getJudgeBySlug, getAllJudges } from '@/lib/server-api';
+import Spinner from '@/components/common/loader/Spinner';
 
 
 function JudgeDetailPageContent() {
@@ -30,7 +31,7 @@ function JudgeDetailPageContent() {
     fetchData();
   }, [paramVal]);
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <Spinner className="p-8" />;
   if (!data) return notFound();
 
   return <JudgeDetailClient judge={data} />;
@@ -38,7 +39,7 @@ function JudgeDetailPageContent() {
 
 export default function JudgeDetailPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+    <Suspense fallback={<Spinner className="p-8" />}>
       <JudgeDetailPageContent />
     </Suspense>
   );

@@ -251,7 +251,7 @@ export default function RoleManagement() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-3">
-            <Shield className="w-8 h-8 text-brand-orange" /> Role Management
+            <Shield className="w-8 h-8 text-foreground" /> Role Management
           </h1>
           <p className="text-muted-foreground font-medium mt-1">
             Configure dynamic enterprise roles, priority hierarchy, and fine-grained permissions.
@@ -259,7 +259,7 @@ export default function RoleManagement() {
         </div>
         <button 
           onClick={handleOpenCreate}
-          className="flex items-center gap-2 px-5 py-3 bg-brand-orange hover:bg-brand-orange/95 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-orange/20"
+          className="flex items-center gap-2 px-5 py-3 bg-foreground hover:bg-foreground/95 text-white font-bold rounded-xl transition-all shadow-lg shadow-black/20"
         >
           <Plus className="w-5 h-5" /> Create New Role
         </button>
@@ -274,7 +274,7 @@ export default function RoleManagement() {
             placeholder="Search roles by name or description..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all text-sm"
+            className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all text-sm"
           />
         </div>
         <button 
@@ -289,7 +289,7 @@ export default function RoleManagement() {
       <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
           <div className="col-span-full py-20 text-center bg-card rounded-3xl border border-border">
-            <RefreshCw className="w-10 h-10 animate-spin text-brand-orange  mb-4" />
+            <RefreshCw className="w-10 h-10 animate-spin text-foreground  mb-4" />
             <p className="text-muted-foreground font-semibold">Loading enterprise roles...</p>
           </div>
         ) : filteredRoles.length === 0 ? (
@@ -303,7 +303,7 @@ export default function RoleManagement() {
             <motion.div 
               key={role.id}
               layout
-              className="bg-card border border-border rounded-3xl p-6 shadow-md relative overflow-hidden group hover:border-brand-orange/40 hover:shadow-lg transition-all"
+              className="bg-card border border-border rounded-3xl p-6 shadow-md relative overflow-hidden group hover:border-border/40 hover:shadow-lg transition-all"
             >
               {/* Highlight bar with role color */}
               <div 
@@ -332,7 +332,7 @@ export default function RoleManagement() {
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold text-foreground flex items-center gap-2 group-hover:text-brand-orange transition-colors">
+              <h3 className="text-xl font-bold text-foreground flex items-center gap-2 group-hover:text-foreground transition-colors">
                 {role.displayName || role.name}
               </h3>
               <p className="text-xs text-muted-foreground font-semibold mt-0.5">System Identifier: <span className="font-mono text-foreground/80">{role.name}</span></p>
@@ -365,7 +365,7 @@ export default function RoleManagement() {
                 <button 
                   onClick={() => handleOpenEdit(role)}
                   title="Edit Role Matrix"
-                  className="p-2.5 bg-accent hover:bg-accent/80 text-muted-foreground hover:text-brand-orange rounded-xl transition-all"
+                  className="p-2.5 bg-accent hover:bg-accent/80 text-muted-foreground hover:text-foreground rounded-xl transition-all"
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
@@ -396,7 +396,7 @@ export default function RoleManagement() {
               {/* Modal Header */}
               <div className="p-6 border-b border-border flex justify-between items-center bg-accent/30">
                 <div className="flex items-center gap-3">
-                  <Shield className="w-6 h-6 text-brand-orange" />
+                  <Shield className="w-6 h-6 text-foreground" />
                   <div>
                     <h2 className="text-xl font-bold text-foreground">
                       {modalMode === 'create' && 'Create Custom Role'}
@@ -430,7 +430,7 @@ export default function RoleManagement() {
                       value={roleName}
                       disabled={modalMode === 'edit'}
                       onChange={(e) => setRoleName(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
-                      className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all disabled:opacity-50"
+                      className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all disabled:opacity-50"
                     />
                   </div>
 
@@ -445,7 +445,7 @@ export default function RoleManagement() {
                       placeholder="e.g. Event Manager"
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all"
+                      className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all"
                     />
                   </div>
 
@@ -466,7 +466,7 @@ export default function RoleManagement() {
                         value={color}
                         onChange={(e) => setColor(e.target.value)}
                         placeholder="#3B82F6"
-                        className="flex-1 px-4 py-2.5 bg-background border border-border rounded-xl text-foreground focus:border-brand-orange outline-none transition-all text-sm font-mono"
+                        className="flex-1 px-4 py-2.5 bg-background border border-border rounded-xl text-foreground focus:border-border outline-none transition-all text-sm font-mono"
                       />
                     </div>
                   </div>
@@ -483,7 +483,7 @@ export default function RoleManagement() {
                       placeholder="Describe what resources users belonging to this role can access..."
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all"
+                      className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all"
                     />
                   </div>
 
@@ -499,7 +499,7 @@ export default function RoleManagement() {
                         max="100"
                         value={priority}
                         onChange={(e) => setPriority(Number(e.target.value))}
-                        className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground focus:border-brand-orange outline-none transition-all"
+                        className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground focus:border-border outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -509,7 +509,7 @@ export default function RoleManagement() {
                       <select 
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground focus:border-brand-orange outline-none transition-all text-sm font-medium"
+                        className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground focus:border-border outline-none transition-all text-sm font-medium"
                       >
                         <option value="ACTIVE">ACTIVE</option>
                         <option value="INACTIVE">INACTIVE</option>
@@ -561,7 +561,7 @@ export default function RoleManagement() {
                                           type="checkbox"
                                           checked={!!selectedPermissions[perm.id]}
                                           onChange={() => handleTogglePermission(perm.id)}
-                                          className="w-4 h-4 rounded border-border text-brand-orange focus:ring-brand-orange cursor-pointer"
+                                          className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground cursor-pointer"
                                         />
                                       ) : (
                                         <span className="text-[10px] text-muted-foreground/45 font-bold uppercase">N/A</span>
@@ -576,7 +576,7 @@ export default function RoleManagement() {
                                     className={`px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider transition-all ${
                                       hasAllChecked 
                                         ? 'bg-red-500/10 text-red-500 border border-red-500/20' 
-                                        : 'bg-brand-orange/10 text-brand-orange border border-brand-orange/20'
+                                        : 'bg-foreground/10 text-foreground border border-border/20'
                                     }`}
                                   >
                                     {hasAllChecked ? 'Clear' : 'Select'}
@@ -602,7 +602,7 @@ export default function RoleManagement() {
                   </button>
                   <button 
                     type="submit"
-                    className="px-6 py-2.5 bg-brand-orange hover:bg-brand-orange/95 text-white font-bold rounded-xl shadow-lg transition-all"
+                    className="px-6 py-2.5 bg-foreground hover:bg-foreground/95 text-white font-bold rounded-xl shadow-lg transition-all"
                   >
                     {modalMode === 'edit' ? 'Save Changes' : 'Create Role'}
                   </button>

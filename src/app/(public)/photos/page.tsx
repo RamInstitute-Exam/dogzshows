@@ -77,7 +77,7 @@ export default function PhotoGallery() {
                 placeholder="Search photos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-64 pl-12 pr-4 py-3 rounded-full border border-border bg-card focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange shadow-sm font-medium transition-all text-foreground"
+                className="w-full sm:w-64 pl-12 pr-4 py-3 rounded-full border border-border bg-card focus:outline-none focus:ring-2 focus:ring-foreground/50 focus:border-border shadow-sm font-medium transition-all text-foreground"
               />
             </div>
             
@@ -93,7 +93,7 @@ export default function PhotoGallery() {
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-2.5 rounded-full whitespace-nowrap font-semibold transition-all duration-300 ${
                 activeCategory === category 
-                  ? 'bg-brand-orange text-foreground shadow-md shadow-brand-orange/20' 
+                  ? 'bg-foreground text-foreground shadow-md shadow-black/20' 
                   : 'bg-card text-muted-foreground hover:bg-input border border-transparent'
               }`}
             >
@@ -105,7 +105,7 @@ export default function PhotoGallery() {
         {/* Masonry Grid */}
         {isLoading ? (
           <div className="flex justify-center items-center py-24">
-            <Loader2 className="w-12 h-12 text-brand-orange animate-spin" />
+            <Loader2 className="w-12 h-12 text-foreground animate-spin" />
           </div>
         ) : photos.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground bg-card rounded-[2rem] border border-border border-dashed">
@@ -139,14 +139,14 @@ export default function PhotoGallery() {
                     {/* Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                       <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <span className="text-brand-orange text-xs font-bold uppercase tracking-wider mb-2 block">
+                        <span className="text-foreground text-xs font-bold uppercase tracking-wider mb-2 block">
                           {photo.category?.name || photo.category}
                         </span>
                         <h3 className="text-foreground font-bold font-outfit text-lg mb-1 leading-snug">{photo.title}</h3>
                         <p className="text-muted-foreground text-sm font-medium">{photo.location}</p>
                         
                         <div className="flex gap-2 mt-4">
-                          <button className="w-10 h-10 rounded-full bg-card/20 hover:bg-brand-orange backdrop-blur text-white flex items-center justify-center transition-colors" onClick={(e) => { e.stopPropagation(); }}>
+                          <button className="w-10 h-10 rounded-full bg-card/20 hover:bg-foreground backdrop-blur text-white flex items-center justify-center transition-colors" onClick={(e) => { e.stopPropagation(); }}>
                             <Share2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -196,11 +196,11 @@ export default function PhotoGallery() {
               <div className="p-6 md:p-8 md:w-1/3 lg:w-1/4 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border bg-card overflow-y-auto min-h-0 flex-grow md:flex-grow-0">
                 <div className="space-y-6">
                   <div>
-                    <span className="bg-brand-orange/20 text-brand-orange px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block">
+                    <span className="bg-foreground/20 text-foreground px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block">
                       {selectedPhoto.category?.name || selectedPhoto.category}
                     </span>
                     <Link href={`/gallery/show-photos/details?slug=${selectedPhoto.slug}`}>
-                      <h2 className="text-xl md:text-2xl font-bold font-outfit text-foreground leading-snug hover:text-brand-orange transition-colors">{selectedPhoto.title}</h2>
+                      <h2 className="text-xl md:text-2xl font-bold font-outfit text-foreground leading-snug hover:text-foreground transition-colors">{selectedPhoto.title}</h2>
                     </Link>
                     <p className="text-sm font-semibold text-muted-foreground mt-2">Location: {selectedPhoto.location}</p>
                   </div>

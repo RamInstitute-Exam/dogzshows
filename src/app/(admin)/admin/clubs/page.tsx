@@ -212,7 +212,7 @@ export default function ClubManagement() {
       header: (
         <input 
           type="checkbox" 
-          className="w-4 h-4 rounded border-border bg-background checked:bg-brand-orange cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-4 h-4 rounded border-border bg-background checked:bg-foreground cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           checked={data.length > 0 && data.every(c => selectedIds.has(c.id))}
           onChange={handleSelectAll}
           disabled={data.length === 0}
@@ -221,7 +221,7 @@ export default function ClubManagement() {
       accessor: (c) => (
         <input 
           type="checkbox" 
-          className="w-4 h-4 rounded border-border bg-background checked:bg-brand-orange cursor-pointer"
+          className="w-4 h-4 rounded border-border bg-background checked:bg-foreground cursor-pointer"
           checked={selectedIds.has(c.id)}
           onChange={() => handleSelect(c.id)}
         />
@@ -244,10 +244,10 @@ export default function ClubManagement() {
       header: 'Club Name', 
       accessor: (c) => (
         <div className="flex flex-col">
-          <span className="font-extrabold text-foreground group-hover:text-brand-orange transition-colors flex items-center gap-1.5">
+          <span className="font-extrabold text-foreground group-hover:text-foreground transition-colors flex items-center gap-1.5">
             {c.name}
             {c.isFeatured && (
-              <span className="px-1.5 py-0.5 bg-brand-orange/10 text-brand-orange rounded text-[9px] font-extrabold tracking-wider flex items-center gap-0.5">
+              <span className="px-1.5 py-0.5 bg-foreground/10 text-foreground rounded text-[9px] font-extrabold tracking-wider flex items-center gap-0.5">
                 <Sparkles className="w-2.5 h-2.5" /> FEATURED
               </span>
             )}
@@ -305,7 +305,7 @@ export default function ClubManagement() {
               variant="outline" 
               size="sm" 
               onClick={() => handleToggleStatus(c, false)} 
-              className="text-orange-500 hover:bg-orange-500/10 hover:text-orange-400 border-orange-500/20 h-8 px-2 rounded-lg text-xs flex items-center gap-1"
+              className="text-foreground hover:bg-foreground/10 hover:text-foreground border-border/20 h-8 px-2 rounded-lg text-xs flex items-center gap-1"
             >
               <Ban className="w-3 h-3" /> Suspend
             </Button>
@@ -331,10 +331,10 @@ export default function ClubManagement() {
       {/* Bulk Action Toolbar */}
       {selectedIds.size > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in slide-in-from-bottom-10 fade-in duration-300">
-          <div className="bg-[#111827] border border-brand-orange/30 shadow-2xl shadow-brand-orange/10 px-6 py-4 rounded-full flex items-center gap-6">
+          <div className="bg-[#111827] border border-border/30 shadow-2xl shadow-black/20/10 px-6 py-4 rounded-full flex items-center gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-brand-orange/20 flex items-center justify-center border border-brand-orange/30">
-                <span className="text-brand-orange font-black text-sm">{selectedIds.size}</span>
+              <div className="w-8 h-8 rounded-full bg-foreground/20 flex items-center justify-center border border-border/30">
+                <span className="text-foreground font-black text-sm">{selectedIds.size}</span>
               </div>
               <span className="text-white font-semibold text-sm">Clubs Selected</span>
             </div>
@@ -354,7 +354,7 @@ export default function ClubManagement() {
                 variant="ghost" 
                 size="sm" 
                 onClick={handleExport}
-                className="text-brand-orange hover:text-brand-orange hover:bg-brand-orange/10 rounded-full px-4"
+                className="text-foreground hover:text-foreground hover:bg-foreground/10 rounded-full px-4"
               >
                 <Download className="w-4 h-4 mr-2" /> Export
               </Button>
@@ -505,7 +505,7 @@ export default function ClubManagement() {
                   <span className="block text-xs font-bold text-muted-foreground uppercase">Social Channels</span>
                   <span className="text-sm font-semibold text-foreground flex gap-3">
                     {selectedClub.facebook && <a href={selectedClub.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500">Facebook</a>}
-                    {selectedClub.instagram && <a href={selectedClub.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-pink-500">Instagram</a>}
+                    {selectedClub.instagram && <a href={selectedClub.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">Instagram</a>}
                     {!selectedClub.facebook && !selectedClub.instagram && '-'}
                   </span>
                 </div>
@@ -530,7 +530,7 @@ export default function ClubManagement() {
             <div className="flex justify-between items-center p-6 border-t border-border bg-accent/30">
               <div className="flex gap-2">
                 {selectedClub.isActive ? (
-                  <Button variant="outline" size="sm" onClick={() => handleToggleStatus(selectedClub, false)} className="text-orange-500 border-orange-500/20">
+                  <Button variant="outline" size="sm" onClick={() => handleToggleStatus(selectedClub, false)} className="text-foreground border-border/20">
                     Suspend Club
                   </Button>
                 ) : (

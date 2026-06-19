@@ -18,10 +18,10 @@ export default function AgeClasses({ classes }: { classes: any[] }) {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="flex items-center gap-4 p-5 bg-card border border-border rounded-[16px] hover:border-brand-orange/30 transition-colors"
+            className="flex items-center gap-4 p-5 bg-card border border-border rounded-[16px] hover:border-border/30 transition-colors"
           >
             <div className="w-12 h-12 bg-card rounded-xl shadow-sm flex items-center justify-center shrink-0">
-              {i < 2 ? <Sparkles className="w-6 h-6 text-yellow-500" /> : i === classes.length - 2 ? <Award className="w-6 h-6 text-brand-orange" /> : <Shield className="w-6 h-6 text-blue-500" />}
+              {i < 2 ? <Sparkles className="w-6 h-6 text-yellow-500" /> : i === classes.length - 2 ? <Award className="w-6 h-6 text-foreground" /> : <Shield className="w-6 h-6 text-blue-500" />}
             </div>
             <div>
               <h4 className="font-extrabold text-foreground text-lg">{cls.name}</h4>

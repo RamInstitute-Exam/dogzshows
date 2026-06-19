@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -169,13 +170,25 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative w-full aspect-[4/3] md:aspect-auto md:h-[75vh] 2xl:h-[85vh] bg-[#0A0A0A] rounded-[32px] overflow-hidden group border border-white/5 cursor-zoom-in shadow-2xl"
+              className="relative w-full aspect-auto md:h-[75vh] 2xl:h-[85vh] bg-[#0A0A0A] rounded-[32px] overflow-hidden group border border-white/5 cursor-zoom-in shadow-2xl"
               onClick={() => setLightboxOpen(true)}
             >
-              <img
+              <Image
                 src={photo.cdnUrl}
                 alt={photo.altText || photo.title}
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                fill={false}
+                width={800}
+                height={1200}
+                quality={100}
+                unoptimized
+                sizes="100vw"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  objectPosition: "center"
+                }}
+                className="gallery-image transition-transform duration-1000 group-hover:scale-105"
               />
               
               {/* Elegant dark gradient overlay */}
@@ -209,8 +222,8 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                     const isActive = p.slug === photo.slug;
                     return (
                       <Link href={`/gallery/show-photos/details?slug=${p.slug}`} key={p.id} className="snap-start shrink-0">
-                        <div className={`relative w-[140px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#020817] shadow-md' : 'opacity-50 hover:opacity-100 border border-white/10'}`}>
-                          <img src={p.cdnUrl} alt={p.title} className="w-full h-full object-cover" />
+                        <div className={`relative w-[140px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 bg-black ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#020817] shadow-md' : 'opacity-50 hover:opacity-100 border border-white/10'}`}>
+                          <img src={p.cdnUrl} alt={p.title} className="w-full h-full object-contain" />
                         </div>
                       </Link>
                     );

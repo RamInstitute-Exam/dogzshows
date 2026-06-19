@@ -214,7 +214,7 @@ export default function PermissionsManagement() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-3">
-            <Key className="w-8 h-8 text-brand-orange" /> Permissions Master
+            <Key className="w-8 h-8 text-foreground" /> Permissions Master
           </h1>
           <p className="text-muted-foreground font-medium mt-1">
             Browse and manage all granular security permission identifiers mapped to your modules.
@@ -229,7 +229,7 @@ export default function PermissionsManagement() {
           </button>
           <button 
             onClick={handleOpenCreate}
-            className="flex items-center gap-2 px-5 py-2.5 bg-brand-orange hover:bg-brand-orange/95 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-orange/20"
+            className="flex items-center gap-2 px-5 py-2.5 bg-foreground hover:bg-foreground/95 text-white font-bold rounded-xl transition-all shadow-lg shadow-black/20"
           >
             <Plus className="w-5 h-5" /> Add Permission
           </button>
@@ -245,7 +245,7 @@ export default function PermissionsManagement() {
             placeholder="Search permissions by name or description..."
             value={searchTerm}
             onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-            className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all text-sm"
+            className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all text-sm"
           />
         </div>
         
@@ -302,7 +302,7 @@ export default function PermissionsManagement() {
                     type="checkbox"
                     checked={currentItems.length > 0 && currentItems.every(item => selectedIds[item.id])}
                     onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="w-4 h-4 rounded border-border text-brand-orange focus:ring-brand-orange cursor-pointer"
+                    className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground cursor-pointer"
                   />
                 </th>
                 <th className="p-4 font-bold text-muted-foreground uppercase tracking-wider text-xs">Permission Name</th>
@@ -316,7 +316,7 @@ export default function PermissionsManagement() {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="py-20 text-center">
-                    <RefreshCw className="w-8 h-8 animate-spin text-brand-orange  mb-3" />
+                    <RefreshCw className="w-8 h-8 animate-spin text-foreground  mb-3" />
                     <p className="text-muted-foreground font-semibold">Fetching security key descriptors...</p>
                   </td>
                 </tr>
@@ -338,14 +338,14 @@ export default function PermissionsManagement() {
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.02 }}
-                      className={`hover:bg-accent/10 transition-colors ${isChecked ? 'bg-brand-orange/5' : ''}`}
+                      className={`hover:bg-accent/10 transition-colors ${isChecked ? 'bg-foreground/5' : ''}`}
                     >
                       <td className="p-4 text-center">
                         <input 
                           type="checkbox"
                           checked={isChecked}
                           onChange={(e) => handleSelectOne(perm.id, e.target.checked)}
-                          className="w-4 h-4 rounded border-border text-brand-orange focus:ring-brand-orange cursor-pointer"
+                          className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground cursor-pointer"
                         />
                       </td>
                       <td className="p-4">
@@ -368,7 +368,7 @@ export default function PermissionsManagement() {
                         <div className="flex justify-end gap-1">
                           <button 
                             onClick={() => handleOpenEdit(perm)}
-                            className="p-2 bg-accent/60 hover:bg-accent text-muted-foreground hover:text-brand-orange rounded-lg transition-all"
+                            className="p-2 bg-accent/60 hover:bg-accent text-muted-foreground hover:text-foreground rounded-lg transition-all"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -408,7 +408,7 @@ export default function PermissionsManagement() {
                   onClick={() => paginate(idx + 1)}
                   className={`px-3 py-1.5 text-xs font-extrabold rounded-lg border ${
                     currentPage === idx + 1 
-                      ? 'bg-brand-orange border-brand-orange text-white' 
+                      ? 'bg-foreground border-border text-white' 
                       : 'bg-card border-border text-foreground hover:bg-accent'
                   }`}
                 >
@@ -439,7 +439,7 @@ export default function PermissionsManagement() {
             >
               <div className="p-6 border-b border-border flex justify-between items-center bg-accent/30">
                 <div className="flex items-center gap-3">
-                  <Key className="w-5 h-5 text-brand-orange" />
+                  <Key className="w-5 h-5 text-foreground" />
                   <h2 className="text-lg font-bold text-foreground">
                     {modalMode === 'create' ? 'Create Custom Permission' : 'Edit Description'}
                   </h2>
@@ -464,7 +464,7 @@ export default function PermissionsManagement() {
                     value={permName}
                     disabled={modalMode === 'edit'}
                     onChange={(e) => setPermName(e.target.value.toLowerCase().replace(/[^a-z0-9:-]/g, ''))}
-                    className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all disabled:opacity-50 font-mono text-sm"
+                    className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all disabled:opacity-50 font-mono text-sm"
                   />
                 </div>
 
@@ -477,7 +477,7 @@ export default function PermissionsManagement() {
                     placeholder="Write a sentence details what access this permission token overrides..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-brand-orange outline-none transition-all text-sm"
+                    className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-border outline-none transition-all text-sm"
                   />
                 </div>
 
@@ -491,7 +491,7 @@ export default function PermissionsManagement() {
                   </button>
                   <button 
                     type="submit"
-                    className="px-5 py-2.5 bg-brand-orange hover:bg-brand-orange/95 text-white font-bold rounded-lg shadow-md transition-all text-sm"
+                    className="px-5 py-2.5 bg-foreground hover:bg-foreground/95 text-white font-bold rounded-lg shadow-md transition-all text-sm"
                   >
                     {modalMode === 'edit' ? 'Save Changes' : 'Create Permission'}
                   </button>

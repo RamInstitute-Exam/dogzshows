@@ -160,11 +160,11 @@ export default function RegisterForm() {
 
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-10">
-            <div className="bg-brand-orange p-2 rounded-xl shadow-sm">
-              <Dog className="h-6 w-6 text-foreground" />
+            <div className="bg-foreground p-2 rounded-xl shadow-sm">
+              <Dog className="h-6 w-6 text-white" />
             </div>
             <span className="font-outfit font-extrabold text-2xl tracking-tight text-foreground">
-              Juz<span className="text-brand-orange">dog</span>
+              Juz<span className="text-foreground">dog</span>
             </span>
           </div>
 
@@ -174,7 +174,7 @@ export default function RegisterForm() {
           <ul className="space-y-4">
             {["OTP Verification", "KCI Registration", "Dog Registration", "Event Participation", "Instant Certificates"].map((feature, i) => (
               <li key={i} className="flex items-center gap-3 text-[15px] font-medium text-gray-200">
-                <CheckCircle2 className="w-[18px] h-[18px] text-brand-orange shrink-0" />
+                <CheckCircle2 className="w-[18px] h-[18px] text-foreground shrink-0" />
                 {feature}
               </li>
             ))}
@@ -182,14 +182,14 @@ export default function RegisterForm() {
         </div>
         
         <div className="relative z-10 bg-card/10 backdrop-blur-md rounded-[16px] p-5 border border-border mt-auto">
-          <div className="flex gap-1 text-brand-orange mb-3">
+          <div className="flex gap-1 text-yellow-400 mb-3">
             {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-[14px] h-[14px] fill-current" />)}
           </div>
           <p className="text-[13px] italic text-gray-200 mb-4 leading-relaxed">
             "The OCR certificate upload saved me hours of manual work. This is the platform the dog show community has been waiting for."
           </p>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-brand-orange flex items-center justify-center font-bold text-xs">VS</div>
+            <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center font-bold text-xs text-white">VS</div>
             <div>
               <p className="text-[13px] font-bold">Vikram Singh</p>
               <p className="text-[11px] text-muted-foreground">Verified Breeder</p>
@@ -206,7 +206,7 @@ export default function RegisterForm() {
           <div className="mb-8 relative w-full max-w-full px-4 mx-auto">
             <div className="absolute top-1/2 left-0 w-full h-[2px] bg-input -translate-y-1/2 z-0"></div>
             <div 
-              className="absolute top-1/2 left-0 h-[2px] bg-brand-orange -translate-y-1/2 z-0 transition-all duration-500 ease-out" 
+              className="absolute top-1/2 left-0 h-[2px] bg-foreground -translate-y-1/2 z-0 transition-all duration-500 ease-out" 
               style={{ width: `${((step - 1) / 3) * 100}%` }}
             ></div>
             
@@ -215,10 +215,10 @@ export default function RegisterForm() {
                 const s = idx + 1;
                 return (
                   <div key={s} className="flex flex-col items-center gap-[6px]">
-                    <div className={`w-[28px] h-[28px] rounded-full flex items-center justify-center text-[11px] font-bold transition-all duration-300 shadow-sm ${step >= s ? 'bg-brand-orange text-foreground ring-4 ring-orange-50' : 'bg-card text-muted-foreground border border-border'}`}>
+                    <div className={`w-[28px] h-[28px] rounded-full flex items-center justify-center text-[11px] font-bold transition-all duration-300 shadow-sm ${step >= s ? 'bg-foreground text-background ring-4 ring-border/15' : 'bg-card text-muted-foreground border border-border'}`}>
                       {step > s ? <CheckCircle2 className="w-[14px] h-[14px]" /> : s}
                     </div>
-                    <span className={`text-[10px] hidden sm:block font-bold uppercase tracking-wider ${step >= s ? 'text-brand-orange' : 'text-muted-foreground'}`}>{label}</span>
+                    <span className={`text-[10px] hidden sm:block font-bold uppercase tracking-wider ${step >= s ? 'text-foreground' : 'text-muted-foreground'}`}>{label}</span>
                   </div>
                 );
               })}
@@ -238,7 +238,7 @@ export default function RegisterForm() {
                 <div className="grid grid-cols-1 gap-4">
                   {/* Row 1 */}
                   <div className="grid grid-cols-1 md:grid-cols-[80px_1fr_1fr] gap-4">
-                    <select name="title" value={formData.title} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-3 text-[14px] font-medium outline-none focus:ring-2 focus:ring-brand-orange/20">
+                    <select name="title" value={formData.title} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-3 text-[14px] font-medium outline-none focus:ring-2 focus:ring-foreground/20">
                       <option value="Mr">Mr</option>
                       <option value="Mrs">Mrs</option>
                       <option value="Ms">Ms</option>
@@ -251,7 +251,7 @@ export default function RegisterForm() {
                   {/* Row 2 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input required type="date" name="dob" value={formData.dob} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border text-[14px] px-4" />
-                    <select name="gender" value={formData.gender} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] font-medium outline-none focus:ring-2 focus:ring-brand-orange/20">
+                    <select name="gender" value={formData.gender} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] font-medium outline-none focus:ring-2 focus:ring-foreground/20">
                       <option value="MALE">Male</option>
                       <option value="FEMALE">Female</option>
                       <option value="OTHER">Other</option>
@@ -284,7 +284,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="mt-6">
-                  <Button type="button" onClick={handleSendOtp} disabled={loading || !formData.phone || !formData.password} className="w-full h-[56px] rounded-[14px] bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-600 text-foreground font-bold text-[15px] shadow-[0_8px_20px_rgba(245,158,11,0.25)] transition-all hover:-translate-y-0.5">
+                  <Button type="button" onClick={handleSendOtp} disabled={loading || !formData.phone || !formData.password} className="w-full btn-primary-luxury">
                     {loading ? 'Sending OTP...' : 'Send OTP & Continue'}
                   </Button>
                 </div>
@@ -294,8 +294,8 @@ export default function RegisterForm() {
             {/* STEP 2: OTP Verification */}
             {step === 2 && (
               <motion.form key="step2" onSubmit={handleVerifyOtp} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="space-y-6 w-full max-w-full px-4 mx-auto text-center py-6">
-                <div className="w-[64px] h-[64px] bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-[28px] h-[28px] text-brand-orange" />
+                <div className="w-[64px] h-[64px] bg-foreground/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Lock className="w-[28px] h-[28px] text-foreground" />
                 </div>
                 <h2 className="text-[24px] font-extrabold text-foreground tracking-tight">Verify Mobile</h2>
                 <p className="text-[14px] text-muted-foreground">
@@ -306,7 +306,7 @@ export default function RegisterForm() {
                   <Input required name="otp" value={formData.otp} onChange={handleChange} type="text" maxLength={6} placeholder="••••••" className="text-center text-[24px] tracking-[0.5em] font-bold rounded-[12px] bg-card h-[64px] w-full" />
                 </div>
 
-                <Button type="submit" disabled={loading || formData.otp.length !== 6} className="w-full h-[56px] rounded-[14px] bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-600 text-foreground font-bold text-[15px] shadow-[0_8px_20px_rgba(245,158,11,0.25)] transition-all hover:-translate-y-0.5 mt-2">
+                <Button type="submit" disabled={loading || formData.otp.length !== 6} className="w-full btn-primary-luxury mt-2">
                   {loading ? 'Verifying...' : 'Verify OTP'}
                 </Button>
 
@@ -314,7 +314,7 @@ export default function RegisterForm() {
                   {countdown > 0 ? (
                     <p className="text-[13px] font-bold text-muted-foreground">Resend OTP in 0:{countdown.toString().padStart(2, '0')}</p>
                   ) : (
-                    <button type="button" onClick={handleSendOtp} className="text-[13px] font-bold text-brand-orange hover:underline">Resend OTP</button>
+                    <button type="button" onClick={handleSendOtp} className="text-[13px] font-bold text-foreground hover:text-foreground hover:underline">Resend OTP</button>
                   )}
                 </div>
               </motion.form>
@@ -369,7 +369,7 @@ export default function RegisterForm() {
                     <Input name="breederLicenseNo" value={formData.breederLicenseNo} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Breeder License No" />
                   </div>
                   
-                  <select name="experienceInDogShows" value={formData.experienceInDogShows} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] outline-none focus:ring-2 focus:ring-brand-orange/20">
+                  <select name="experienceInDogShows" value={formData.experienceInDogShows} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] outline-none focus:ring-2 focus:ring-foreground/20">
                      <option value="">Select Experience Level</option>
                      <option value="BEGINNER">Beginner (0-2 years)</option>
                      <option value="INTERMEDIATE">Intermediate (2-5 years)</option>
@@ -379,23 +379,23 @@ export default function RegisterForm() {
                   <div className="bg-card p-4 rounded-[12px] space-y-3 border border-border mt-2">
                     <div className="grid grid-cols-3 gap-2">
                        <label className="flex items-center gap-2 text-[13px] font-medium text-muted-foreground">
-                         <input type="checkbox" name="prefSms" checked={formData.prefSms} onChange={handleChange} className="w-[16px] h-[16px] text-brand-orange rounded-[4px] border-border" /> SMS
+                         <input type="checkbox" name="prefSms" checked={formData.prefSms} onChange={handleChange} className="w-[16px] h-[16px] text-foreground rounded-[4px] border-border accent-foreground" /> SMS
                        </label>
                        <label className="flex items-center gap-2 text-[13px] font-medium text-muted-foreground">
-                         <input type="checkbox" name="prefEmail" checked={formData.prefEmail} onChange={handleChange} className="w-[16px] h-[16px] text-brand-orange rounded-[4px] border-border" /> Email
+                         <input type="checkbox" name="prefEmail" checked={formData.prefEmail} onChange={handleChange} className="w-[16px] h-[16px] text-foreground rounded-[4px] border-border accent-foreground" /> Email
                        </label>
                        <label className="flex items-center gap-2 text-[13px] font-medium text-muted-foreground">
-                         <input type="checkbox" name="prefWhatsapp" checked={formData.prefWhatsapp} onChange={handleChange} className="w-[16px] h-[16px] text-brand-orange rounded-[4px] border-border" /> WhatsApp
+                         <input type="checkbox" name="prefWhatsapp" checked={formData.prefWhatsapp} onChange={handleChange} className="w-[16px] h-[16px] text-foreground rounded-[4px] border-border accent-foreground" /> WhatsApp
                        </label>
                     </div>
                   </div>
 
                   <div className="space-y-2 pt-2">
                      <label className="flex items-center gap-2 text-[13px] font-bold text-foreground">
-                       <input required type="checkbox" name="termsAccepted" checked={formData.termsAccepted} onChange={handleChange} className="w-[16px] h-[16px] text-brand-orange rounded-[4px] border-border" /> I accept the Terms & Conditions *
+                       <input required type="checkbox" name="termsAccepted" checked={formData.termsAccepted} onChange={handleChange} className="w-[16px] h-[16px] text-foreground rounded-[4px] border-border accent-foreground" /> I accept the Terms & Conditions *
                      </label>
                      <label className="flex items-center gap-2 text-[13px] font-bold text-foreground">
-                       <input required type="checkbox" name="privacyAccepted" checked={formData.privacyAccepted} onChange={handleChange} className="w-[16px] h-[16px] text-brand-orange rounded-[4px] border-border" /> I accept the Privacy Policy *
+                       <input required type="checkbox" name="privacyAccepted" checked={formData.privacyAccepted} onChange={handleChange} className="w-[16px] h-[16px] text-foreground rounded-[4px] border-border accent-foreground" /> I accept the Privacy Policy *
                      </label>
                   </div>
                 </div>
@@ -404,7 +404,7 @@ export default function RegisterForm() {
                   <Button type="button" onClick={() => setStep(3)} variant="outline" disabled={loading} className="flex-[0.4] h-[56px] rounded-[14px] font-bold border-border hover:bg-card text-[15px]">
                      Back
                   </Button>
-                  <Button type="submit" disabled={loading} className="flex-[1] h-[56px] rounded-[14px] bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-600 text-foreground font-bold text-[15px] shadow-[0_8px_20px_rgba(245,158,11,0.25)] transition-all hover:-translate-y-0.5">
+                  <Button type="submit" disabled={loading} className="flex-[1] btn-primary-luxury">
                     {loading ? 'Creating...' : 'Create Account'}
                   </Button>
                 </div>
@@ -435,7 +435,7 @@ export default function RegisterForm() {
           <div className="mt-8 text-center border-t border-border pt-6">
             <p className="text-[14px] text-muted-foreground font-medium">
               Already have an account?{' '}
-              <button type="button" onClick={() => setView('LOGIN')} className="text-foreground font-bold hover:text-brand-orange transition-colors">
+              <button type="button" onClick={() => setView('LOGIN')} className="text-foreground font-bold hover:text-foreground transition-colors">
                 Login
               </button>
             </p>

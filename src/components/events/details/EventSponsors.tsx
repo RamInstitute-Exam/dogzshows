@@ -14,7 +14,7 @@ export default function EventSponsors() {
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {sponsors.map((sponsor, i) => (
-          <div key={i} className="flex flex-col items-center justify-center p-6 bg-card rounded-2xl border border-border hover:border-brand-orange/30 transition-colors">
+          <div key={i} className="flex flex-col items-center justify-center p-6 bg-card rounded-2xl border border-border hover:border-border/30 transition-colors">
             <div className="h-12 w-full flex items-center justify-center font-extrabold text-muted-foreground text-2xl tracking-wider uppercase mb-2">
               {sponsor.name}
             </div>

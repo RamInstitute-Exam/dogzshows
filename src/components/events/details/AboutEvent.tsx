@@ -16,7 +16,7 @@ export default function AboutEvent({ event }: { event: any }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <Target className="w-6 h-6 text-brand-orange" />
+            <Target className="w-6 h-6 text-foreground" />
             <h3 className="text-xl font-bold text-foreground">Objectives</h3>
           </div>
           <ul className="space-y-3">
@@ -30,7 +30,7 @@ export default function AboutEvent({ event }: { event: any }) {
         
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <Sparkles className="w-6 h-6 text-brand-orange" />
+            <Sparkles className="w-6 h-6 text-foreground" />
             <h3 className="text-xl font-bold text-foreground">Highlights</h3>
           </div>
           <ul className="space-y-3">

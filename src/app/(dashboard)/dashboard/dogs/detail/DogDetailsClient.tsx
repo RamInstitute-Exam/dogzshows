@@ -137,12 +137,12 @@ export default function DogDetailsClient({ id }: { id: string }) {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-2xl border border-border p-6 shadow-xl">
-            <h2 className="text-xl font-bold text-foreground mb-6 flex items-center"><History className="w-5 h-5 mr-2 text-brand-orange" /> Timeline & Events</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6 flex items-center"><History className="w-5 h-5 mr-2 text-foreground" /> Timeline & Events</h2>
             <div className="space-y-6">
               {[1, 2, 3].map((item) => (
                 <div key={item} className="flex gap-4">
                   <div className="flex flex-col items-center">
-                    <div className="w-3 h-3 rounded-full bg-brand-orange ring-4 ring-brand-orange/20" />
+                    <div className="w-3 h-3 rounded-full bg-foreground ring-4 ring-border/20" />
                     <div className="w-px h-full bg-[rgba(255,255,255,0.1)] mt-2" />
                   </div>
                   <div className="pb-6">
@@ -158,12 +158,12 @@ export default function DogDetailsClient({ id }: { id: string }) {
 
         {/* Right Col: Badges & QR */}
         <div className="space-y-6">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-gradient-to-br from-brand-orange to-orange-600 rounded-2xl p-6 shadow-2xl text-foreground flex flex-col items-center text-center relative overflow-hidden">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-foreground rounded-2xl p-6 shadow-2xl text-foreground flex flex-col items-center text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2" />
             <QrCode className="w-24 h-24 mb-4 opacity-90" />
             <h3 className="text-xl font-bold mb-1">Digital QR Pass</h3>
-            <p className="text-orange-100 text-sm opacity-80 mb-4">Scan for immediate verify at shows.</p>
-            <Button variant="secondary" className="w-full bg-card text-brand-orange hover:bg-gray-50 font-bold">Download Pass</Button>
+            <p className="text-muted-foreground text-sm opacity-80 mb-4">Scan for immediate verify at shows.</p>
+            <Button variant="secondary" className="w-full bg-card text-foreground hover:bg-gray-50 font-bold">Download Pass</Button>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }} className="bg-card rounded-2xl border border-border p-6 shadow-xl">

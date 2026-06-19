@@ -58,7 +58,7 @@ export default function VideoGallery() {
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-2.5 rounded-full whitespace-nowrap font-semibold transition-all duration-300 ${
                 activeCategory === category 
-                  ? 'bg-brand-orange text-foreground shadow-lg' 
+                  ? 'bg-foreground text-foreground shadow-lg' 
                   : 'bg-card text-muted-foreground hover:bg-input border border-transparent'
               }`}
             >
@@ -70,7 +70,7 @@ export default function VideoGallery() {
         {/* Video Grid */}
         {isLoading ? (
           <div className="flex justify-center items-center py-24">
-            <Loader2 className="w-12 h-12 text-brand-orange animate-spin" />
+            <Loader2 className="w-12 h-12 text-foreground animate-spin" />
           </div>
         ) : videos.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground bg-card rounded-[2rem] border border-border border-dashed">
@@ -102,7 +102,7 @@ export default function VideoGallery() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-brand-orange/90 backdrop-blur text-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <div className="w-16 h-16 rounded-full bg-foreground/90 backdrop-blur text-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                           <Play className="w-6 h-6 fill-current ml-1 text-white" />
                         </div>
                       </div>
@@ -112,10 +112,10 @@ export default function VideoGallery() {
                     </div>
                     
                     <div className="p-6">
-                      <span className="text-brand-orange text-xs font-bold uppercase tracking-wider mb-2 block">
+                      <span className="text-foreground text-xs font-bold uppercase tracking-wider mb-2 block">
                         {video.category?.name || video.category}
                       </span>
-                      <h3 className="text-xl font-bold font-outfit text-foreground mb-4 line-clamp-2 group-hover:text-brand-orange transition-colors">{video.title}</h3>
+                      <h3 className="text-xl font-bold font-outfit text-foreground mb-4 line-clamp-2 group-hover:text-foreground transition-colors">{video.title}</h3>
                       <div className="flex items-center text-muted-foreground text-sm font-medium gap-4">
                         <span className="flex items-center gap-1.5"><Eye className="w-4 h-4" /> {video.views || 0}</span>
                         <span className="flex items-center gap-1.5">
@@ -167,12 +167,12 @@ export default function VideoGallery() {
                 </div>
                 <div className="mt-6 text-foreground">
                   <Link href={`/gallery/show-videos/details?slug=${activeVideo.slug}`}>
-                    <h2 className="text-2xl font-bold font-outfit mb-2 hover:underline hover:text-brand-orange transition-colors">{activeVideo.title}</h2>
+                    <h2 className="text-2xl font-bold font-outfit mb-2 hover:underline hover:text-foreground transition-colors">{activeVideo.title}</h2>
                   </Link>
                   <div className="flex items-center text-muted-foreground text-sm font-medium gap-6">
                     <span>{activeVideo.views || 0} views</span>
                     <span>{activeVideo.createdAt ? new Date(activeVideo.createdAt).toLocaleDateString() : 'Recent'}</span>
-                    <span className="bg-brand-orange/20 text-brand-orange px-2 py-0.5 rounded-md">
+                    <span className="bg-foreground/20 text-foreground px-2 py-0.5 rounded-md">
                       {activeVideo.category?.name || activeVideo.category}
                     </span>
                   </div>
@@ -202,7 +202,7 @@ export default function VideoGallery() {
                         </div>
                       </div>
                       <div className="flex flex-col py-1">
-                        <h4 className="text-foreground text-sm font-bold line-clamp-2 group-hover:text-brand-orange transition-colors leading-snug">{video.title}</h4>
+                        <h4 className="text-foreground text-sm font-bold line-clamp-2 group-hover:text-foreground transition-colors leading-snug">{video.title}</h4>
                         <p className="text-muted-foreground text-xs mt-1">{video.views || 0} • {video.createdAt ? new Date(video.createdAt).toLocaleDateString() : 'Recent'}</p>
                       </div>
                     </div>

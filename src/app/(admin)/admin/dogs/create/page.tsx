@@ -115,7 +115,7 @@ export default function AddDogForm() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                       activeTab === tab.id 
-                        ? 'bg-brand-orange text-foreground shadow-lg' 
+                        ? 'bg-foreground text-foreground shadow-lg' 
                         : 'text-muted-foreground hover:bg-card hover:text-foreground'
                     }`}
                   >
@@ -135,38 +135,38 @@ export default function AddDogForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Dog Name *</label>
-                        <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Breed UUID *</label>
-                        <input required type="text" name="breedId" value={formData.breedId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="Enter Breed ID..." />
+                        <input required type="text" name="breedId" value={formData.breedId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="Enter Breed ID..." />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">KCI Number</label>
-                        <input type="text" name="kciNumber" value={formData.kciNumber} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="kciNumber" value={formData.kciNumber} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Microchip Number</label>
-                        <input type="text" name="microchipNumber" value={formData.microchipNumber} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="microchipNumber" value={formData.microchipNumber} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Gender</label>
-                        <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none appearance-none">
+                        <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none appearance-none">
                           <option value="MALE">Male (Dog)</option>
                           <option value="FEMALE">Female (Bitch)</option>
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Date of Birth</label>
-                        <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Colour & Markings</label>
-                        <input type="text" name="color" value={formData.color} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="color" value={formData.color} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div className="md:col-span-2 2xl:col-span-3 flex gap-4 items-end mt-4">
                         <label className="flex items-center gap-3 cursor-pointer p-3 border border-border rounded-lg bg-card w-full">
-                          <input type="checkbox" name="isImported" checked={formData.isImported} onChange={handleInputChange} className="w-5 h-5 rounded bg-accent border-none text-brand-orange focus:ring-brand-orange" />
+                          <input type="checkbox" name="isImported" checked={formData.isImported} onChange={handleInputChange} className="w-5 h-5 rounded bg-accent border-none text-foreground focus:ring-foreground" />
                           <span className="text-foreground font-medium">Is Imported?</span>
                         </label>
                         <label className="flex items-center gap-3 cursor-pointer p-3 border border-yellow-500/20 rounded-lg bg-yellow-500/5 w-full">
@@ -184,23 +184,23 @@ export default function AddDogForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Sire (Father) Name</label>
-                        <input type="text" name="sireName" value={formData.sireName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="sireName" value={formData.sireName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Dam (Mother) Name</label>
-                        <input type="text" name="damName" value={formData.damName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="damName" value={formData.damName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div className="md:col-span-2 2xl:col-span-3">
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Bloodline Details</label>
-                        <textarea name="bloodline" value={formData.bloodline} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <textarea name="bloodline" value={formData.bloodline} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Breeder Name</label>
-                        <input type="text" name="breederName" value={formData.breederName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="breederName" value={formData.breederName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Kennel Name</label>
-                        <input type="text" name="kennelName" value={formData.kennelName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="kennelName" value={formData.kennelName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                     </div>
                   </motion.div>
@@ -212,19 +212,19 @@ export default function AddDogForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Owner Full Name</label>
-                        <input type="text" name="ownerName" value={formData.ownerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="ownerName" value={formData.ownerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Owner Email</label>
-                        <input type="email" name="ownerEmail" value={formData.ownerEmail} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="email" name="ownerEmail" value={formData.ownerEmail} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">Owner Phone</label>
-                        <input type="text" name="ownerPhone" value={formData.ownerPhone} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="ownerPhone" value={formData.ownerPhone} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">City/Region</label>
-                        <input type="text" name="ownerCity" value={formData.ownerCity} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="ownerCity" value={formData.ownerCity} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                     </div>
                   </motion.div>
@@ -235,7 +235,7 @@ export default function AddDogForm() {
                     <ImagePlus className="w-16 h-16 text-[#1E293B]  mb-4" />
                     <h3 className="text-xl font-bold text-foreground mb-2">Media & Files Upload</h3>
                     <p className="text-muted-foreground mb-6">Drag and drop files to attach certificates, photos, and medical records.</p>
-                    <Button variant="outline" className="border-brand-orange text-brand-orange hover:bg-brand-orange/10">Browse Files</Button>
+                    <Button variant="outline" className="border-border text-foreground hover:bg-foreground/10">Browse Files</Button>
                   </motion.div>
                 )}
 

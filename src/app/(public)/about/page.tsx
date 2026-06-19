@@ -39,7 +39,7 @@ export default function AboutPage() {
               transition={{ delay: i * 0.1 }}
               className="bg-card p-8 rounded-[2rem] border border-border shadow-sm flex gap-6 premium-hover"
             >
-              <div className="bg-brand-orange/10 p-4 rounded-2xl h-fit text-brand-orange shrink-0">
+              <div className="bg-foreground/10 p-4 rounded-2xl h-fit text-foreground shrink-0">
                 <item.icon className="w-8 h-8" />
               </div>
               <div>

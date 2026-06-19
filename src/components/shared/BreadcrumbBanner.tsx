@@ -52,7 +52,7 @@ export default function BreadcrumbBanner({
       };
 
   return (
-    <section className="relative w-full h-[200px] md:h-[260px] lg:h-[300px] xl:h-[340px] flex items-center overflow-hidden bg-background">
+    <section className="relative w-full h-[140px] md:h-[260px] lg:h-[300px] xl:h-[340px] flex items-center overflow-hidden bg-background">
       {/* Background Image with Zoom Animation */}
       <motion.div
         initial={{ scale: 1.1 }}
@@ -79,7 +79,7 @@ export default function BreadcrumbBanner({
       />
 
       {/* Content Container */}
-      <div className="relative z-10 w-full  px-4 sm:px-6 md:px-8 xl:px-8 py-10 sm:py-15 md:py-20 flex flex-col justify-center h-full">
+      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 xl:px-8 py-6 sm:py-15 md:py-20 flex flex-col justify-center h-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

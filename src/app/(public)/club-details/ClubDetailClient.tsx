@@ -26,7 +26,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
       <PageContainer>
         <section className="min-h-[80vh] flex flex-col items-center justify-center py-20 px-4 bg-black relative overflow-hidden text-center border-b border-border">
           <div className="absolute inset-0 opacity-20 pointer-events-none">
-            <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-brand-orange/20 blur-[120px]"></div>
+            <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-foreground/20 blur-[120px]"></div>
           </div>
 
           <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center">
@@ -35,7 +35,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
             </div>
 
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-white font-outfit">
-              🏢 Club <span className="text-brand-orange">Not Found</span>
+              🏢 Club <span className="text-foreground">Not Found</span>
             </h1>
 
             <p className="text-lg md:text-xl text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">
@@ -43,7 +43,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
             </p>
 
             <div className="flex items-center gap-4">
-              <Link href="/clubs" className="px-8 py-3 bg-brand-orange text-white font-bold rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20">
+              <Link href="/clubs" className="px-8 py-3 bg-foreground text-white font-bold rounded-xl hover:bg-foreground transition-colors shadow-lg shadow-black/20">
                 Browse All Clubs
               </Link>
               <Link href="/" className="px-8 py-3 bg-card border border-border text-foreground font-bold rounded-xl hover:bg-accent transition-colors">
@@ -64,13 +64,13 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                       {rec.bannerUrl ? (
                         <img src={getImageUrl(rec.bannerUrl)} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-brand-orange/20 to-orange-600/10 flex items-center justify-center">
-                          <Tent className="w-8 h-8 text-brand-orange/40" />
+                        <div className="w-full h-full bg-muted/40 flex items-center justify-center">
+                          <Tent className="w-8 h-8 text-foreground/40" />
                         </div>
                       )}
                     </div>
                     <div className="p-5">
-                      <h3 className="font-bold text-foreground line-clamp-1 mb-1 group-hover:text-brand-orange transition-colors">{rec.name}</h3>
+                      <h3 className="font-bold text-foreground line-clamp-1 mb-1 group-hover:text-foreground transition-colors">{rec.name}</h3>
                       <div className="flex items-center text-xs text-muted-foreground">
                         <MapPin className="w-3.5 h-3.5 mr-1" /> {rec.city ? `${rec.city}, ` : ''}{rec.state || 'India'}
                       </div>
@@ -125,7 +125,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
               {club.logoUrl ? (
                 <img src={getImageUrl(club.logoUrl)} alt={club.name} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-muted-foreground bg-brand-orange w-full h-full flex items-center justify-center text-white">{getInitials(club.name)}</span>
+                <span className="text-muted-foreground bg-foreground w-full h-full flex items-center justify-center text-white">{getInitials(club.name)}</span>
               )}
             </motion.div>
 
@@ -142,7 +142,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                   </span>
                 )}
                 {club.clubType && (
-                  <span className="px-3 py-1 bg-brand-orange/20 text-brand-orange rounded-full text-xs font-bold uppercase tracking-wider border border-brand-orange/30 backdrop-blur-md">
+                  <span className="px-3 py-1 bg-foreground/20 text-foreground rounded-full text-xs font-bold uppercase tracking-wider border border-border/30 backdrop-blur-md">
                     {club.clubType}
                   </span>
                 )}
@@ -182,7 +182,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === tab.id
-                    ? 'border-brand-orange text-brand-orange'
+                    ? 'border-border text-foreground'
                     : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                   }`}
               >
@@ -251,12 +251,12 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                                 <img src={getImageUrl(evt.bannerUrl)} alt={evt.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                               </div>
                             ) : (
-                              <div className="h-40 bg-gradient-to-br from-brand-orange/20 to-orange-600/10 flex items-center justify-center">
-                                <Tent className="w-10 h-10 text-brand-orange/40" />
+                              <div className="h-40 bg-muted/40 flex items-center justify-center">
+                                <Tent className="w-10 h-10 text-foreground/40" />
                               </div>
                             )}
                             <div className="p-6">
-                              <h3 className="font-extrabold text-lg text-foreground mb-2 line-clamp-1 group-hover:text-brand-orange transition-colors">{evt.name}</h3>
+                              <h3 className="font-extrabold text-lg text-foreground mb-2 line-clamp-1 group-hover:text-foreground transition-colors">{evt.name}</h3>
                               <div className="flex items-center text-sm text-muted-foreground mb-1"><Calendar className="w-4 h-4 mr-2" /> {new Date(evt.startDate).toLocaleDateString()}</div>
                               <div className="flex items-center text-sm text-muted-foreground"><MapPin className="w-4 h-4 mr-2" /> {evt.venue}</div>
                             </div>
@@ -311,7 +311,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                           </div>
                           <div>
                             <h3 className="font-bold text-foreground">{member.name}</h3>
-                            <div className="text-brand-orange text-sm font-semibold mb-1">{member.designation}</div>
+                            <div className="text-foreground text-sm font-semibold mb-1">{member.designation}</div>
                             {member.email && <div className="text-xs text-muted-foreground">{member.email}</div>}
                           </div>
                         </div>

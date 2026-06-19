@@ -139,7 +139,7 @@ export default function CreateDogWizard() {
       <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-accent -z-10" />
       {[1, 2, 3, 4, 5, 6].map(i => (
         <div key={i} className={`flex flex-col items-center gap-2 ${step >= i ? 'opacity-100' : 'opacity-40'}`}>
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs md:text-sm font-bold border-2 transition-all ${step === i ? 'bg-brand-orange border-brand-orange text-white shadow-[0_0_15px_rgba(245,158,11,0.5)]' : step > i ? 'bg-green-500 border-green-500 text-white' : 'bg-card border-border text-muted-foreground'}`}>
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs md:text-sm font-bold border-2 transition-all ${step === i ? 'bg-foreground border-border text-white shadow-[0_0_15px_rgba(245,158,11,0.5)]' : step > i ? 'bg-green-500 border-green-500 text-white' : 'bg-card border-border text-muted-foreground'}`}>
             {step > i ? <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5" /> : i}
           </div>
           <span className="text-[10px] md:text-xs font-bold text-muted-foreground hidden md:block">
@@ -164,7 +164,7 @@ export default function CreateDogWizard() {
           <Link href="/dashboard/dogs">
             <Button variant="outline" className="border-border">Go to Dogs Directory</Button>
           </Link>
-          <Button onClick={() => window.location.reload()} className="bg-brand-orange hover:bg-orange-600 text-white">Register Another Dog</Button>
+          <Button onClick={() => window.location.reload()} className="bg-foreground hover:bg-foreground text-white">Register Another Dog</Button>
         </div>
       </div>
     );
@@ -184,10 +184,10 @@ export default function CreateDogWizard() {
             {/* ----------------- STEP 1: Basic Info ----------------- */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                <div className="bg-input p-4 rounded-xl border border-brand-orange/20 mb-6">
-                  <h3 className="text-foreground font-bold mb-2 flex items-center gap-2"><Upload className="w-4 h-4 text-brand-orange"/> Auto-Fill via KCI Certificate (OCR)</h3>
+                <div className="bg-input p-4 rounded-xl border border-border/20 mb-6">
+                  <h3 className="text-foreground font-bold mb-2 flex items-center gap-2"><Upload className="w-4 h-4 text-foreground"/> Auto-Fill via KCI Certificate (OCR)</h3>
                   <p className="text-sm text-muted-foreground mb-4">Upload a high-quality photo of your KCI Certificate to automatically extract details.</p>
-                  <input type="file" onChange={handleOcrUpload} className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-orange/10 file:text-brand-orange hover:file:bg-brand-orange/20 cursor-pointer"/>
+                  <input type="file" onChange={handleOcrUpload} className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-foreground/10 file:text-foreground hover:file:bg-foreground/20 cursor-pointer"/>
                   {ocrConfidence && (
                     <div className="mt-3 flex items-center gap-2 text-xs text-[#22C55E]">
                       <CheckCircle2 className="w-4 h-4"/> Extracted with {ocrConfidence}% confidence.
@@ -221,7 +221,7 @@ export default function CreateDogWizard() {
                     <label className="block text-sm font-bold text-muted-foreground mb-1">Date of Birth</label>
                     <input type="date" value={formData.dob} onChange={e => setFormData({...formData, dob: e.target.value})} className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground color-scheme-dark"/>
                     {formData.dob && (
-                      <p className="text-xs text-brand-orange mt-1">Calculated Class: <span className="font-bold">{determineAgeClass(formData.dob)}</span></p>
+                      <p className="text-xs text-foreground mt-1">Calculated Class: <span className="font-bold">{determineAgeClass(formData.dob)}</span></p>
                     )}
                   </div>
                   <div>
@@ -238,11 +238,11 @@ export default function CreateDogWizard() {
                   </div>
                   <div className="flex items-center gap-4 mt-6">
                     <label className="flex items-center gap-2 cursor-pointer text-foreground font-semibold">
-                      <input type="checkbox" checked={formData.isChampion} onChange={e => setFormData({...formData, isChampion: e.target.checked})} className="w-5 h-5 rounded border-border text-brand-orange focus:ring-brand-orange bg-card"/>
+                      <input type="checkbox" checked={formData.isChampion} onChange={e => setFormData({...formData, isChampion: e.target.checked})} className="w-5 h-5 rounded border-border text-foreground focus:ring-foreground bg-card"/>
                       Is Champion?
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer text-foreground font-semibold">
-                      <input type="checkbox" checked={formData.isImported} onChange={e => setFormData({...formData, isImported: e.target.checked})} className="w-5 h-5 rounded border-border text-brand-orange focus:ring-brand-orange bg-card"/>
+                      <input type="checkbox" checked={formData.isImported} onChange={e => setFormData({...formData, isImported: e.target.checked})} className="w-5 h-5 rounded border-border text-foreground focus:ring-foreground bg-card"/>
                       Is Imported?
                     </label>
                   </div>
@@ -347,14 +347,14 @@ export default function CreateDogWizard() {
                     <ImageIcon className="w-10 h-10 text-muted-foreground mb-4" />
                     <p className="font-bold text-foreground mb-1">Dog Photos</p>
                     <p className="text-xs text-muted-foreground mb-4">Upload primary display pictures</p>
-                    <Button variant="outline" size="sm" onClick={() => mockFileUpload('photos')} className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white">Upload Photos</Button>
+                    <Button variant="outline" size="sm" onClick={() => mockFileUpload('photos')} className="border-border text-foreground hover:bg-foreground hover:text-white">Upload Photos</Button>
                     {formData.photos.length > 0 && <span className="mt-2 text-xs text-green-500 font-bold"><CheckCircle2 className="inline w-3 h-3"/> Uploaded</span>}
                   </div>
                   <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-input transition-colors">
                     <FileText className="w-10 h-10 text-muted-foreground mb-4" />
                     <p className="font-bold text-foreground mb-1">KCI Certificate (Front)</p>
                     <p className="text-xs text-muted-foreground mb-4">Upload original certificate</p>
-                    <Button variant="outline" size="sm" onClick={() => mockFileUpload('certificateFrontUrl')} className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white">Upload Certificate</Button>
+                    <Button variant="outline" size="sm" onClick={() => mockFileUpload('certificateFrontUrl')} className="border-border text-foreground hover:bg-foreground hover:text-white">Upload Certificate</Button>
                     {formData.certificateFrontUrl && <span className="mt-2 text-xs text-green-500 font-bold"><CheckCircle2 className="inline w-3 h-3"/> Uploaded</span>}
                   </div>
                 </div>
@@ -372,7 +372,7 @@ export default function CreateDogWizard() {
                     </div>
                     <div>
                       <h4 className="text-2xl font-bold text-foreground">{formData.name || 'Unnamed Dog'}</h4>
-                      <p className="text-brand-orange font-bold text-sm">KCI: {formData.kciNumber || 'N/A'}</p>
+                      <p className="text-foreground font-bold text-sm">KCI: {formData.kciNumber || 'N/A'}</p>
                     </div>
                   </div>
 
@@ -419,7 +419,7 @@ export default function CreateDogWizard() {
             </Button>
             
             {step < 6 ? (
-              <Button onClick={nextStep} className="bg-brand-orange hover:bg-orange-600 text-white font-bold">
+              <Button onClick={nextStep} className="bg-foreground hover:bg-foreground text-white font-bold">
                 Next Step <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             ) : (

@@ -49,7 +49,7 @@ export default function LoginClient() {
   return (
     <div className="flex-grow min-h-[85vh] flex items-center justify-center py-16 px-4 relative overflow-hidden bg-black">
       {/* Dynamic Back-glow shapes */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-foreground/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Glassmorphic Form Card */}
@@ -57,7 +57,7 @@ export default function LoginClient() {
         
         {/* Logo Badge */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg mb-4">
+          <div className="w-14 h-14 bg-foreground rounded-2xl flex items-center justify-center shadow-lg mb-4">
             <Dog className="h-8 w-8 text-foreground" />
           </div>
           <h2 className="text-muted-foregroundxl font-extrabold tracking-tight">Welcome Back</h2>
@@ -84,7 +84,7 @@ export default function LoginClient() {
               <input
                 type="email"
                 required
-                className="w-full bg-card/5 border border-border focus:border-orange-500 rounded-xl pl-10 pr-4 py-3.5 focus:outline-none transition-all text-xs font-semibold placeholder-gray-500 focus:bg-card/10 text-foreground"
+                className="w-full bg-card/5 border border-border focus:border-border rounded-xl pl-10 pr-4 py-3.5 focus:outline-none transition-all text-xs font-semibold placeholder-gray-500 focus:bg-card/10 text-foreground"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -99,7 +99,7 @@ export default function LoginClient() {
               <input
                 type="password"
                 required
-                className="w-full bg-card/5 border border-border focus:border-orange-500 rounded-xl pl-10 pr-4 py-3.5 focus:outline-none transition-all text-xs font-semibold placeholder-gray-500 focus:bg-card/10 text-foreground"
+                className="w-full bg-card/5 border border-border focus:border-border rounded-xl pl-10 pr-4 py-3.5 focus:outline-none transition-all text-xs font-semibold placeholder-gray-500 focus:bg-card/10 text-foreground"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -111,14 +111,14 @@ export default function LoginClient() {
             <label className="flex items-center text-muted-foreground font-semibold cursor-pointer select-none">
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded bg-card/5 border-border text-orange-500 focus:ring-0 mr-2"
+                className="h-4 w-4 rounded bg-card/5 border-border text-foreground focus:ring-0 mr-2"
               />
               <span>Remember me</span>
             </label>
             <a 
               href="#" 
               onClick={handleForgotPassword}
-              className="font-bold text-orange-400 hover:text-orange-500 transition-colors"
+              className="font-bold text-foreground hover:text-foreground transition-colors"
             >
               Forgot password?
             </a>
@@ -127,7 +127,7 @@ export default function LoginClient() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center py-3.5 px-4 border border-transparent text-xs font-bold rounded-xl text-foreground bg-orange-500 hover:bg-orange-600 disabled:opacity-70 transition-all shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 cursor-pointer mt-6"
+            className="w-full flex items-center justify-center py-3.5 px-4 border border-transparent text-xs font-bold rounded-xl text-foreground bg-foreground/100 hover:bg-foreground disabled:opacity-70 transition-all shadow-lg shadow-black/20 hover:shadow-black/20/40 cursor-pointer mt-6"
           >
             {loading ? (
               <Loader2 className="h-4.5 w-4.5 animate-spin" />
@@ -172,7 +172,7 @@ export default function LoginClient() {
 
         <p className="text-center text-xs text-muted-foreground mt-8 font-semibold">
           Don't have an account yet?{' '}
-          <Link href="/register" className="font-extrabold text-orange-400 hover:text-orange-500 transition-colors">
+          <Link href="/register" className="font-extrabold text-foreground hover:text-foreground transition-colors">
             Sign up now
           </Link>
         </p>

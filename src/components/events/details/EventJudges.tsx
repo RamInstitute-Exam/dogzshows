@@ -26,11 +26,11 @@ function JudgeAvatar({ judge }: { judge: any }) {
           (e.target as HTMLImageElement).style.display = 'none';
           const parent = (e.target as HTMLImageElement).parentElement;
           if (parent) {
-            parent.innerHTML = `<span style="font-size:1.25rem;font-weight:800;color:#f97316">${initials}</span>`;
+            parent.innerHTML = `<span style="font-size:1.25rem;font-weight:800;color:#FFFFFF">${initials}</span>`;
             parent.style.display = 'flex';
             parent.style.alignItems = 'center';
             parent.style.justifyContent = 'center';
-            parent.style.background = 'rgba(249,115,22,0.12)';
+            parent.style.background = 'rgba(255,255,255,0.12)';
           }
         }}
       />
@@ -38,8 +38,8 @@ function JudgeAvatar({ judge }: { judge: any }) {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center" style={{ background: 'rgba(249,115,22,0.12)' }}>
-      <span className="text-2xl font-extrabold" style={{ color: '#f97316' }}>{initials || '?'}</span>
+    <div className="w-full h-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
+      <span className="text-2xl font-extrabold" style={{ color: '#FFFFFF' }}>{initials || '?'}</span>
     </div>
   );
 }
@@ -63,12 +63,12 @@ export default function EventJudges({ judges }: { judges: any[] }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="group p-6 bg-card rounded-[20px] border border-border hover:border-brand-orange/50 transition-all duration-300 text-center hover:shadow-lg"
+            className="group p-6 bg-card rounded-[20px] border border-border hover:border-border/50 transition-all duration-300 text-center hover:shadow-lg"
           >
             {/* Avatar — bg always uses rgba to work in both themes */}
             <div
               className="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300"
-              style={{ background: 'rgba(249,115,22,0.10)' }}
+              style={{ background: 'rgba(255,255,255,0.10)' }}
             >
               <JudgeAvatar judge={judge} />
             </div>
@@ -98,7 +98,7 @@ export default function EventJudges({ judges }: { judges: any[] }) {
             {judge?.groups && (
               <div
                 className="inline-flex items-center gap-2 px-3 py-1.5 font-bold text-xs rounded-lg"
-                style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.25)' }}
+                style={{ background: 'rgba(255,255,255,0.12)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.25)' }}
               >
                 <Trophy className="w-3.5 h-3.5" /> {judge.groups}
               </div>
@@ -106,7 +106,7 @@ export default function EventJudges({ judges }: { judges: any[] }) {
 
             {/* Chief Judge badge */}
             {judge?.isChiefJudge && (
-              <div className="mt-3 inline-block px-3 py-1 bg-brand-orange text-white font-bold text-xs rounded-full">
+              <div className="mt-3 inline-block px-3 py-1 bg-foreground text-white font-bold text-xs rounded-full">
                 Chief Judge
               </div>
             )}

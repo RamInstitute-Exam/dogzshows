@@ -4,6 +4,7 @@ import { useSearchParams, notFound } from 'next/navigation';
 import { MOCK_EVENT_DETAIL } from '@/lib/mock/eventsData';
 import PageContainer from '@/components/layout/PageContainer';
 import EventHero from '@/components/events/details/EventHero';
+import Spinner from '@/components/common/loader/Spinner';
 
 function EventDetailsPageContent() {
   const searchParams = useSearchParams();
@@ -21,7 +22,7 @@ function EventDetailsPageContent() {
     setLoading(false);
   }, [slug]);
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <Spinner className="p-8" />;
   if (!data) return notFound();
 
   return (
@@ -33,7 +34,7 @@ function EventDetailsPageContent() {
 
 export default function EventDetailsPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+    <Suspense fallback={<Spinner className="p-8" />}>
       <EventDetailsPageContent />
     </Suspense>
   );

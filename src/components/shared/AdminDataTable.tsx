@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, Filter, Download, Plus, RefreshCw, Loader2, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Spinner from '@/components/common/loader/Spinner';
 
 export interface ColumnDefinition<T> {
   header: string | React.ReactNode;
@@ -154,8 +155,7 @@ export function AdminDataTable<T>({
               {loading ? (
                 <tr>
                   <td colSpan={columns.length + (onEdit || onDelete ? 1 : 0)} className="py-12 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500  mb-4" />
-                    <p className="text-muted-foreground">Loading data...</p>
+                    <Spinner size="md" />
                   </td>
                 </tr>
               ) : data.length === 0 ? (

@@ -291,7 +291,7 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
             {!isLoaded && (
               <div className="absolute inset-0 flex items-center justify-center z-10 rounded-[20px] overflow-hidden">
                 <div className="absolute inset-0 bg-white/5 animate-pulse" />
-                <div className="w-10 h-10 border-4 border-white/20 border-t-brand-orange rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-white/20 border-t-foreground rounded-full animate-spin" />
               </div>
             )}
 
@@ -366,7 +366,7 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
                     onClick={() => setCurrentIndex(idx)}
                     className={`relative w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden cursor-pointer transition-all shrink-0 focus:outline-none ${
                       isActive 
-                        ? 'ring-2 ring-brand-orange ring-offset-2 ring-offset-black scale-105 opacity-100 z-10' 
+                        ? 'ring-2 ring-border ring-offset-2 ring-offset-black scale-105 opacity-100 z-10' 
                         : 'opacity-40 hover:opacity-80 scale-95'
                     }`}
                     aria-label={`Go to image ${idx + 1}`}

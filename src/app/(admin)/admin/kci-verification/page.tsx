@@ -85,7 +85,7 @@ export default function AdminKciVerification() {
     { 
       header: 'Actions', 
       accessor: (cert) => (
-        <Button onClick={() => setSelectedCert(cert)} variant="outline" size="sm" className="h-8 border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white">
+        <Button onClick={() => setSelectedCert(cert)} variant="outline" size="sm" className="h-8 border-border text-foreground hover:bg-foreground hover:text-white">
           <Eye className="w-4 h-4 mr-2" /> Review
         </Button>
       ) 
@@ -134,7 +134,7 @@ export default function AdminKciVerification() {
                   <div>
                     <span className="block text-muted-foreground mb-1">OCR Confidence</span>
                     <div className="w-full bg-card rounded-full h-2 overflow-hidden border border-border">
-                      <div className="bg-brand-orange h-full" style={{ width: `${selectedCert.ocrConfidence || 0}%` }}></div>
+                      <div className="bg-foreground h-full" style={{ width: `${selectedCert.ocrConfidence || 0}%` }}></div>
                     </div>
                     <span className="text-xs text-muted-foreground mt-1 block">{selectedCert.ocrConfidence || 0}% Match</span>
                   </div>

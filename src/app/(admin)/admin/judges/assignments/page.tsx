@@ -38,7 +38,7 @@ export default function JudgeAssignments() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <Users className="w-8 h-8 text-brand-orange" /> Judge Assignments
+                <Users className="w-8 h-8 text-foreground" /> Judge Assignments
               </h1>
               <p className="text-muted-foreground font-medium mt-1">Map judges to specific events and FCI groups.</p>
             </div>
@@ -75,7 +75,7 @@ export default function JudgeAssignments() {
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Assigned Event</p>
                       <p className="text-sm font-bold text-muted-foreground flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-brand-orange" /> {assignment.event?.name}
+                        <Calendar className="w-4 h-4 text-foreground" /> {assignment.event?.name}
                       </p>
                     </div>
                     <div>

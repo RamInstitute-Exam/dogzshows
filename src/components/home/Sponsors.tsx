@@ -30,7 +30,7 @@ export default function Sponsors({ sponsorsData }: SponsorsProps) {
                   className="h-10 object-contain grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"
                 />
               ) : (
-                <span className="text-2xl font-extrabold text-muted-foreground transition-colors hover:text-brand-orange cursor-pointer">
+                <span className="text-2xl font-extrabold text-muted-foreground transition-colors hover:text-foreground cursor-pointer">
                   {sponsor.name}
                 </span>
               )}

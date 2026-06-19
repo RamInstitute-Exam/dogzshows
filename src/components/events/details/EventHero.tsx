@@ -15,7 +15,7 @@ export default function EventHero({ event }: { event: any }) {
   const entryFee = event?.entryFee != null ? `₹${event.entryFee}` : '-';
 
   return (
-    <div className="relative w-full min-h-[620px] overflow-hidden flex items-center">
+    <div className="relative w-full min-h-[320px] md:min-h-[620px] overflow-hidden flex items-center">
       
       {/* ── Background Image (always present) ── */}
       <div className="absolute inset-0 z-0">
@@ -79,7 +79,7 @@ export default function EventHero({ event }: { event: any }) {
       `}</style>
 
       {/* ── Content ── */}
-      <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 py-24 md:py-28">
+      <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 py-8 md:py-28">
 
         {/* Left: Text Content */}
         <motion.div
@@ -90,7 +90,7 @@ export default function EventHero({ event }: { event: any }) {
           {/* Badges */}
           <div className="flex gap-3 mb-6 flex-wrap">
             {/* Status badge — always orange bg, white text → visible on any bg */}
-            <span className="px-4 py-1.5 bg-brand-orange text-white font-bold text-xs uppercase tracking-widest rounded-full shadow-md">
+            <span className="px-4 py-1.5 bg-foreground text-white font-bold text-xs uppercase tracking-widest rounded-full shadow-md">
               {event?.status ?? 'Open'}
             </span>
             {/* Type badge — adaptive border + text */}
@@ -137,9 +137,9 @@ export default function EventHero({ event }: { event: any }) {
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: 'rgba(249,115,22,0.18)', border: '1px solid rgba(249,115,22,0.35)' }}
+                style={{ background: 'var(--hero-border)', border: '1px solid var(--hero-badge-border)' }}
               >
-                <Calendar className="w-5 h-5 text-[#f97316]" />
+                <Calendar className="w-5 h-5" style={{ color: 'var(--hero-meta)' }} />
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--hero-label)' }}>
@@ -152,9 +152,9 @@ export default function EventHero({ event }: { event: any }) {
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: 'rgba(249,115,22,0.18)', border: '1px solid rgba(249,115,22,0.35)' }}
+                style={{ background: 'var(--hero-border)', border: '1px solid var(--hero-badge-border)' }}
               >
-                <MapPin className="w-5 h-5 text-[#f97316]" />
+                <MapPin className="w-5 h-5" style={{ color: 'var(--hero-meta)' }} />
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--hero-label)' }}>
@@ -165,38 +165,47 @@ export default function EventHero({ event }: { event: any }) {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Primary: always orange */}
-            <button className="h-[52px] px-8 bg-[#f97316] hover:bg-[#ea6c0a] text-white font-bold text-base rounded-[14px] shadow-[0_0_28px_rgba(249,115,22,0.35)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_36px_rgba(249,115,22,0.5)]">
-              Register Now
-            </button>
-            {/* Secondary: adaptive */}
-            <button
-              className="h-[52px] px-6 font-bold text-base rounded-[14px] flex items-center gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
-              style={{
-                color: 'var(--hero-btn-sec-text)',
-                border: '1.5px solid var(--hero-btn-sec-border)',
-                background: 'transparent',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hero-btn-sec-hover)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-            >
-              <Download className="w-4 h-4" /> Schedule
-            </button>
-            <button
-              className="h-[52px] px-6 font-bold text-base rounded-[14px] flex items-center gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
-              style={{
-                color: 'var(--hero-btn-sec-text)',
-                border: '1.5px solid var(--hero-btn-sec-border)',
-                background: 'transparent',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hero-btn-sec-hover)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-            >
-              <Share2 className="w-4 h-4" /> Share
-            </button>
-          </div>
+          {/* Action Buttons - Temporarily hidden */}
+          {false && (
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              {/* Primary CTA: theme-aware – dark bg + white text in dark mode, dark bg + white text in light mode */}
+              <button
+                className="w-full sm:w-auto h-[52px] px-8 font-bold text-base rounded-[14px] transition-all duration-300 hover:scale-[1.02] hover:opacity-90"
+                style={{
+                  background: 'var(--hero-card-text)',
+                  color: 'var(--hero-overlay-start)',
+                  boxShadow: '0 0 28px rgba(0,0,0,0.25)',
+                }}
+              >
+                Register Now
+              </button>
+              {/* Secondary: adaptive */}
+              <button
+                className="w-full sm:w-auto h-[52px] px-6 font-bold text-base rounded-[14px] flex items-center justify-center gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
+                style={{
+                  color: 'var(--hero-btn-sec-text)',
+                  border: '1.5px solid var(--hero-btn-sec-border)',
+                  background: 'transparent',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hero-btn-sec-hover)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+              >
+                <Download className="w-4 h-4" /> Schedule
+              </button>
+              <button
+                className="w-full sm:w-auto h-[52px] px-6 font-bold text-base rounded-[14px] flex items-center justify-center gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
+                style={{
+                  color: 'var(--hero-btn-sec-text)',
+                  border: '1.5px solid var(--hero-btn-sec-border)',
+                  background: 'transparent',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hero-btn-sec-hover)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+              >
+                <Share2 className="w-4 h-4" /> Share
+              </button>
+            </div>
+          )}
         </motion.div>
 
         {/* Right: Snapshot Card */}
@@ -226,7 +235,7 @@ export default function EventHero({ event }: { event: any }) {
             {([
               { icon: Timer,  label: 'Registration Ends', value: closingDate,                   size: 'text-sm' },
               { icon: Users,  label: 'Slots Left',        value: event?.availableSlots ?? '-',  size: 'text-sm' },
-              { icon: Award,  label: 'Prize Pool',        value: event?.prizePool ?? '-',       size: 'text-lg text-[#f97316]' },
+              { icon: Award,  label: 'Prize Pool',        value: event?.prizePool ?? '-',       size: 'text-lg text-foreground' },
               { icon: Trophy, label: 'Entry Fee',         value: entryFee,                       size: 'text-2xl font-extrabold' },
             ] as const).map(({ icon: Icon, label, value, size }, idx, arr) => (
               <div
@@ -235,9 +244,9 @@ export default function EventHero({ event }: { event: any }) {
                 style={idx < arr.length - 1 ? { borderBottom: '1px solid var(--hero-card-border)' } : {}}
               >
                 <div className="flex items-center gap-3 text-sm font-medium" style={{ color: 'var(--hero-card-muted)' }}>
-                  <Icon className="w-4 h-4 text-[#f97316] shrink-0" /> {label}
+                  <Icon className="w-4 h-4 text-foreground shrink-0" /> {label}
                 </div>
-                <span className={`font-bold ${size}`} style={{ color: size.includes('#f97316') ? '#f97316' : 'var(--hero-card-text)' }}>
+                <span className={`font-bold ${size}`} style={{ color: size.includes('#FFFFFF') ? '#FFFFFF' : 'var(--hero-card-text)' }}>
                   {value as string}
                 </span>
               </div>

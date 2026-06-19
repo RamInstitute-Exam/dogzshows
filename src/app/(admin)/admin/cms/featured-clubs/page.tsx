@@ -147,7 +147,7 @@ export default function FeaturedClubsAdmin() {
           <h1 className="text-2xl font-bold text-gray-900">Featured Clubs</h1>
           <p className="text-gray-500 mt-1">Manage the featured clubs displayed on the Home Page.</p>
         </div>
-        <Button onClick={handleOpenAddModal} className="bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl h-12 px-6">
+        <Button onClick={handleOpenAddModal} className="bg-foreground hover:bg-foreground text-white rounded-xl h-12 px-6">
           <Plus className="w-5 h-5 mr-2" />
           Add Featured Club
         </Button>
@@ -173,7 +173,7 @@ export default function FeaturedClubsAdmin() {
               <tbody className="divide-y divide-gray-100 text-sm">
                 {clubs.map((club) => (
                   <tr key={club.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="p-4 font-mono font-bold text-brand-orange">{club.displayOrder || 0}</td>
+                    <td className="p-4 font-mono font-bold text-foreground">{club.displayOrder || 0}</td>
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
@@ -243,12 +243,12 @@ export default function FeaturedClubsAdmin() {
             </div>
             <div className="max-h-[400px] overflow-y-auto space-y-2 pr-2">
               {filteredSearch.map(club => (
-                <div key={club.id} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:border-brand-orange/30 transition-colors">
+                <div key={club.id} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:border-border/30 transition-colors">
                   <div>
                     <p className="font-bold text-gray-900">{club.name}</p>
                     <p className="text-sm text-gray-500">{[club.city, club.state].filter(Boolean).join(', ')}</p>
                   </div>
-                  <Button size="sm" onClick={() => handleAddFeatured(club.id)} className="bg-brand-orange hover:bg-brand-orange/90 text-white rounded-lg">
+                  <Button size="sm" onClick={() => handleAddFeatured(club.id)} className="bg-foreground hover:bg-foreground text-white rounded-lg">
                     Add
                   </Button>
                 </div>
@@ -308,7 +308,7 @@ export default function FeaturedClubsAdmin() {
             
             <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
               <Button variant="outline" onClick={() => setIsEditModalOpen(false)} className="h-12 rounded-xl">Cancel</Button>
-              <Button onClick={handleUpdate} className="bg-brand-orange hover:bg-brand-orange/90 text-white h-12 px-8 rounded-xl">Save Changes</Button>
+              <Button onClick={handleUpdate} className="bg-foreground hover:bg-foreground text-white h-12 px-8 rounded-xl">Save Changes</Button>
             </div>
           </div>
         </DialogContent>

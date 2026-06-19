@@ -8,6 +8,8 @@ import { Search, MapPin, Filter, ChevronDown, CheckCircle2, ChevronLeft, Chevron
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import api from '@/lib/api';
+import Image from 'next/image';
+import { getImageUrl } from '@/lib/api';
 
 export default function ClubsClient() {
   const searchParams = useSearchParams();
@@ -24,20 +26,26 @@ export default function ClubsClient() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [stateFilter, setStateFilter] = useState('');
+  const [cityFilter, setCityFilter] = useState('');
   const [breedFilter, setBreedFilter] = useState('');
   const [kciApproved, setKciApproved] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState('newest');
 
+  const [availableStates, setAvailableStates] = useState<string[]>([]);
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+
   const fetchClubs = async () => {
     setLoading(true);
     try {
-      let url = `/public/clubs?page=${page}&limit=12&status=ACTIVE`;
+      let url = `/public/clubs?page=${page}&limit=20&status=ACTIVE`;
       if (debouncedSearch) url += `&search=${encodeURIComponent(debouncedSearch)}`;
       if (stateFilter) url += `&state=${encodeURIComponent(stateFilter)}`;
+      if (cityFilter) url += `&city=${encodeURIComponent(cityFilter)}`;
       if (breedFilter) url += `&breed=${encodeURIComponent(breedFilter)}`;
       if (kciApproved) url += `&kciApproved=true`;
       if (typeParam) url += `&type=${encodeURIComponent(typeParam)}`;
+      if (sortBy) url += `&sortBy=${encodeURIComponent(sortBy)}`;
       
       const res = await api.get(url);
       if (res.success) {
@@ -53,6 +61,21 @@ export default function ClubsClient() {
   };
 
   useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const res = await api.get('/public/clubs/locations');
+        if (res.success && res.data) {
+          setAvailableStates(res.data.states || []);
+          setAvailableCities(res.data.cities || []);
+        }
+      } catch (error) {
+        console.error('Failed to load locations:', error);
+      }
+    };
+    fetchLocations();
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
       setPage(1);
@@ -66,7 +89,7 @@ export default function ClubsClient() {
 
   useEffect(() => {
     fetchClubs();
-  }, [page, debouncedSearch, stateFilter, breedFilter, kciApproved, sortBy, typeParam]);
+  }, [page, debouncedSearch, stateFilter, cityFilter, breedFilter, kciApproved, sortBy, typeParam]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -80,21 +103,21 @@ export default function ClubsClient() {
       {/* Hero Section */}
       <section className="relative py-16 md:py-24 overflow-hidden border-b border-border bg-black">
         <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-brand-orange/20 blur-[120px]"></div>
+          <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-foreground/20 blur-[120px]"></div>
         </div>
         <PublicContainer className="relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-white">
               {typeParam.toLowerCase() === 'all-breeds' ? (
-                <>All Breeds <span className="text-brand-orange">Clubs</span></>
+                <>All Breeds <span className="text-foreground">Clubs</span></>
               ) : typeParam.toLowerCase() === 'specialty' ? (
-                <>Specialty <span className="text-brand-orange">Clubs</span></>
+                <>Specialty <span className="text-foreground">Clubs</span></>
               ) : typeParam.toLowerCase() === 'kennel' ? (
-                <>Kennel <span className="text-brand-orange">Clubs</span></>
+                <>Kennel <span className="text-foreground">Clubs</span></>
               ) : typeParam.toLowerCase() === 'state' ? (
-                <>State <span className="text-brand-orange">Clubs</span></>
+                <>State <span className="text-foreground">Clubs</span></>
               ) : (
-                <>Club <span className="text-brand-orange">Directory</span></>
+                <>Club <span className="text-foreground">Directory</span></>
               )}
             </h1>
             <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
@@ -116,7 +139,7 @@ export default function ClubsClient() {
                 placeholder="Search clubs..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-brand-orange outline-none text-foreground"
+                className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none text-foreground"
               />
             </div>
 
@@ -124,7 +147,7 @@ export default function ClubsClient() {
             <div className="flex items-center gap-3 w-full lg:w-auto">
               <button 
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`flex items-center gap-2 px-4 py-2.5 border rounded-xl font-medium transition-colors flex-1 lg:flex-none justify-center ${isFilterOpen ? 'bg-brand-orange text-white border-brand-orange' : 'bg-background border-border text-foreground hover:bg-accent'}`}
+                className={`flex items-center gap-2 px-4 py-2.5 border rounded-xl font-medium transition-colors flex-1 lg:flex-none justify-center ${isFilterOpen ? 'bg-foreground text-white border-border' : 'bg-background border-border text-foreground hover:bg-accent'}`}
               >
                 <Filter className="w-4 h-4" /> Filters
               </button>
@@ -133,7 +156,7 @@ export default function ClubsClient() {
                 <select 
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-4 py-2.5 appearance-none bg-background border border-border rounded-xl font-medium text-foreground focus:ring-2 focus:ring-brand-orange outline-none"
+                  className="w-full px-4 py-2.5 appearance-none bg-background border border-border rounded-xl font-medium text-foreground focus:ring-2 focus:ring-foreground outline-none"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -151,25 +174,33 @@ export default function ClubsClient() {
                 initial={{ height: 0, opacity: 0 }} 
                 animate={{ height: 'auto', opacity: 1 }} 
                 exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden mt-4 pt-4 border-t border-border grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                className="overflow-hidden mt-4 pt-4 border-t border-border grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
               >
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase">State</label>
                   <select value={stateFilter} onChange={(e) => { setStateFilter(e.target.value); setPage(1); }} className="w-full p-2.5 bg-background border border-border rounded-lg text-sm text-foreground">
                     <option value="">All States</option>
-                    <option value="Maharashtra">Maharashtra</option>
-                    <option value="Karnataka">Karnataka</option>
-                    <option value="Delhi">Delhi</option>
-                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    {availableStates.map(state => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase">City</label>
+                  <select value={cityFilter} onChange={(e) => { setCityFilter(e.target.value); setPage(1); }} className="w-full p-2.5 bg-background border border-border rounded-lg text-sm text-foreground">
+                    <option value="">All Cities</option>
+                    {availableCities.map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase">Breed Focus</label>
                   <input type="text" value={breedFilter} onChange={(e) => { setBreedFilter(e.target.value); setPage(1); }} placeholder="e.g. German Shepherd" className="w-full p-2.5 bg-background border border-border rounded-lg text-sm text-foreground" />
                 </div>
-                <div className="flex items-end pb-1">
+                <div className="flex items-end pb-2.5">
                   <label className="flex items-center gap-2 cursor-pointer group">
-                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${kciApproved ? 'bg-brand-orange border-brand-orange' : 'border-border group-hover:border-brand-orange'}`}>
+                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${kciApproved ? 'bg-foreground border-border' : 'border-border group-hover:border-border'}`}>
                       {kciApproved && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                     </div>
                     <span className="text-sm font-medium text-foreground">KCI Approved Only</span>
@@ -219,11 +250,18 @@ export default function ClubsClient() {
 
                     {/* Logo Area */}
                     <div className="flex justify-center pt-6 pb-4 relative">
-                      <div className="w-[90px] h-[90px] rounded-full bg-white dark:bg-[#111111] border-[3px] border-[#E5E7EB] dark:border-[#222222] group-hover:border-brand-orange shadow-md overflow-hidden flex items-center justify-center transition-all duration-[350ms] ease group-hover:scale-108 group-hover:rotate-[5deg] shrink-0">
+                      <div className="w-[90px] h-[90px] rounded-full bg-white dark:bg-[#111111] border-[3px] border-[#E5E7EB] dark:border-[#222222] group-hover:border-border shadow-md overflow-hidden flex items-center justify-center transition-all duration-[350ms] ease group-hover:scale-108 group-hover:rotate-[5deg] shrink-0 relative">
                         {club.logoUrl ? (
-                          <img src={club.logoUrl} alt={club.name} className="w-full h-full object-cover" />
+                          <Image 
+                            src={getImageUrl(club.logoUrl)} 
+                            alt={club.name} 
+                            width={90} 
+                            height={90} 
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
                         ) : (
-                          <Tent className="w-10 h-10 text-brand-orange/60" />
+                          <Tent className="w-10 h-10 text-foreground/60" />
                         )}
                       </div>
                     </div>
@@ -235,7 +273,7 @@ export default function ClubsClient() {
                       </h3>
                       
                       <div className="flex items-center text-sm text-muted-foreground mb-4 justify-center">
-                        <MapPin className="w-3.5 h-3.5 mr-1 text-brand-orange" />
+                        <MapPin className="w-3.5 h-3.5 mr-1 text-foreground" />
                         <span className="line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
                       </div>
 
@@ -247,7 +285,7 @@ export default function ClubsClient() {
                       {((club.memberCount || 0) > 0 || (club.eventCount || 0) > 0) && (
                         <div className="grid grid-cols-2 gap-3 w-full mt-auto">
                           <div className="bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-xl p-2.5 flex flex-col items-center justify-center border border-[#E5E7EB] dark:border-[#222222]">
-                            <div className="flex items-center gap-1.5 text-brand-orange mb-0.5">
+                            <div className="flex items-center gap-1.5 text-foreground mb-0.5">
                               <Users className="w-4 h-4" />
                               <span className="font-bold text-base leading-none">{club.memberCount || 0}</span>
                             </div>
@@ -282,7 +320,7 @@ export default function ClubsClient() {
               </p>
               {!typeParam && (
                 <button 
-                  onClick={() => { setSearch(''); setStateFilter(''); setBreedFilter(''); setKciApproved(false); }}
+                  onClick={() => { setSearch(''); setStateFilter(''); setCityFilter(''); setBreedFilter(''); setKciApproved(false); }}
                   className="bg-foreground text-background font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
                 >
                   Clear All Filters
@@ -309,7 +347,7 @@ export default function ClubsClient() {
                     onClick={() => handlePageChange(i + 1)}
                     className={`w-10 h-10 rounded-lg text-sm font-bold transition-colors ${
                       page === i + 1 
-                        ? 'bg-brand-orange text-white border-transparent' 
+                        ? 'bg-foreground text-white border-transparent' 
                         : 'border border-border bg-card text-foreground hover:bg-accent'
                     }`}
                   >

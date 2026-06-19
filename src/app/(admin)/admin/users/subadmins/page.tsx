@@ -42,7 +42,7 @@ export default function SubAdmins() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <ShieldAlert className="w-8 h-8 text-purple-500" /> Sub Admin Directory
+                <ShieldAlert className="w-8 h-8 text-foreground" /> Sub Admin Directory
               </h1>
               <p className="text-muted-foreground font-medium mt-1">Manage delegated administrators and their module access.</p>
             </div>
@@ -79,7 +79,7 @@ export default function SubAdmins() {
                   {loading ? (
                     <tr>
                       <td colSpan={4} className="py-12 text-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-purple-500  mb-4" />
+                        <Loader2 className="w-8 h-8 animate-spin text-foreground  mb-4" />
                         <p className="text-muted-foreground">Loading directory...</p>
                       </td>
                     </tr>
@@ -101,11 +101,11 @@ export default function SubAdmins() {
                       >
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 font-bold border border-purple-500/20">
+                            <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-foreground font-bold border border-border">
                               {(admin.firstName || 'A').charAt(0)}
                             </div>
                             <div>
-                              <p className="font-bold text-foreground group-hover:text-purple-400 transition-colors">{admin.firstName} {admin.lastName}</p>
+                              <p className="font-bold text-foreground group-hover:text-foreground transition-colors">{admin.firstName} {admin.lastName}</p>
                               <p className="text-xs text-muted-foreground">Since {new Date(admin.createdAt).toLocaleDateString()}</p>
                             </div>
                           </div>

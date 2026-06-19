@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Calendar, Camera, ImageIcon } from 'lucide-react';
 import Masonry from 'react-masonry-css';
 import api, { getImageUrl } from '@/lib/api';
@@ -9,8 +9,9 @@ import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import ImageLightbox from '@/components/shared/ImageLightbox';
 
-export default function AlbumDetailsPage() {
-  const { slug } = useParams();
+function PublicAlbumDetailsPageContent() {
+  const searchParams = useSearchParams();
+  const slug = searchParams.get('slug');
   const router = useRouter();
   
   const [album, setAlbum] = useState<any>(null);
@@ -19,7 +20,10 @@ export default function AlbumDetailsPage() {
 
   useEffect(() => {
     async function fetchAlbumDetails() {
-      if (!slug) return;
+      if (!slug) {
+        setLoading(false);
+        return;
+      }
       try {
         const res = await api.get(`/public/media-gallery-mgmt/albums/${slug}`);
         if (res.success && res.data) {
@@ -36,30 +40,26 @@ export default function AlbumDetailsPage() {
 
   if (loading) {
     return (
-      <PageContainer>
-        <div className="min-h-[60vh] flex flex-col items-center justify-center">
-          <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
-          <p className="text-muted-foreground text-sm mt-4">Loading album details...</p>
-        </div>
-      </PageContainer>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <div className="w-12 h-12 border-4 border-border border-t-transparent rounded-full animate-spin" />
+        <p className="text-muted-foreground text-sm mt-4">Loading album details...</p>
+      </div>
     );
   }
 
   if (!album) {
     return (
-      <PageContainer>
-        <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-          <ImageIcon className="w-16 h-16 text-muted-foreground/30 mb-4" />
-          <h1 className="text-3xl font-bold text-foreground">Album Not Found</h1>
-          <p className="text-muted-foreground mt-2 mb-6">The photo album you are looking for does not exist or has been removed.</p>
-          <button 
-            onClick={() => router.back()} 
-            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand-orange text-white font-bold hover:bg-brand-orange/90 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Go Back
-          </button>
-        </div>
-      </PageContainer>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+        <ImageIcon className="w-16 h-16 text-muted-foreground/30 mb-4" />
+        <h1 className="text-3xl font-bold text-foreground">Album Not Found</h1>
+        <p className="text-muted-foreground mt-2 mb-6">The photo album you are looking for does not exist or has been removed.</p>
+        <button 
+          onClick={() => router.back()} 
+          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-foreground text-white font-bold hover:bg-foreground transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" /> Go Back
+        </button>
+      </div>
     );
   }
 
@@ -71,7 +71,7 @@ export default function AlbumDetailsPage() {
   };
 
   return (
-    <PageContainer>
+    <>
       {/* Album Header/Banner */}
       <div className="relative min-h-[350px] w-full flex items-end bg-[#050505] overflow-hidden border-b border-border/40 py-12">
         {/* Cover image blurred background */}
@@ -88,7 +88,7 @@ export default function AlbumDetailsPage() {
           <div className="space-y-6">
             <button 
               onClick={() => router.back()} 
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-brand-orange transition-colors"
+              className="group inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               Back to Gallery
@@ -96,12 +96,12 @@ export default function AlbumDetailsPage() {
 
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2.5">
-                <span className="bg-brand-orange/10 border border-brand-orange/20 text-brand-orange text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full">
+                <span className="bg-foreground/10 border border-border/20 text-foreground text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full">
                   {album.albumType === 'ALL_PHOTOS' ? 'All Photos' : 'Outdoor Photos'}
                 </span>
                 {album.eventName && (
                   <span className="bg-muted border border-border/40 text-muted-foreground text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full flex items-center gap-1">
-                    <Camera className="w-3 h-3 shrink-0 text-brand-orange" />
+                    <Camera className="w-3 h-3 shrink-0 text-foreground" />
                     {album.eventName}
                   </span>
                 )}
@@ -114,23 +114,23 @@ export default function AlbumDetailsPage() {
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs md:text-sm font-medium text-muted-foreground">
                 {album.location && (
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-brand-orange shrink-0" />
+                    <MapPin className="w-4 h-4 text-foreground shrink-0" />
                     <span>{album.location}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-brand-orange shrink-0" />
+                  <Calendar className="w-4 h-4 text-foreground shrink-0" />
                   <span>{new Date(album.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <ImageIcon className="w-4 h-4 text-brand-orange shrink-0" />
+                  <ImageIcon className="w-4 h-4 text-foreground shrink-0" />
                   <span>{album.images?.length || 0} Photos</span>
                 </div>
               </div>
             </div>
 
             {album.description && (
-              <p className="text-muted-foreground text-sm md:text-base max-w-3xl leading-relaxed border-l-2 border-brand-orange/50 pl-4 py-1">
+              <p className="text-muted-foreground text-sm md:text-base max-w-3xl leading-relaxed border-l-2 border-border/50 pl-4 py-1">
                 {album.description}
               </p>
             )}
@@ -155,7 +155,7 @@ export default function AlbumDetailsPage() {
             {album.images.map((img: any, index: number) => (
               <div 
                 key={img.id || index} 
-                className="mb-4 cursor-pointer overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-brand-orange/20 transition-all duration-300"
+                className="mb-4 cursor-pointer overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300"
                 onClick={() => setLightboxIndex(index)}
               >
                 <img 
@@ -179,6 +179,21 @@ export default function AlbumDetailsPage() {
         isOpen={lightboxIndex !== null} 
         onClose={() => setLightboxIndex(null)} 
       />
+    </>
+  );
+}
+
+export default function PublicAlbumDetailsPage() {
+  return (
+    <PageContainer>
+      <Suspense fallback={
+        <div className="min-h-[60vh] flex flex-col items-center justify-center">
+          <div className="w-12 h-12 border-4 border-border border-t-transparent rounded-full animate-spin" />
+          <p className="text-muted-foreground text-sm mt-4">Loading album details...</p>
+        </div>
+      }>
+        <PublicAlbumDetailsPageContent />
+      </Suspense>
     </PageContainer>
   );
 }

@@ -66,7 +66,7 @@ export default function ContactUs() {
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-card/10 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-brand-orange" />
+                    <Phone className="w-5 h-5 text-foreground" />
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">Phone</p>
@@ -76,7 +76,7 @@ export default function ContactUs() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-card/10 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-brand-orange" />
+                    <Mail className="w-5 h-5 text-foreground" />
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">Email</p>
@@ -86,7 +86,7 @@ export default function ContactUs() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-card/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-brand-orange" />
+                    <MapPin className="w-5 h-5 text-foreground" />
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">Office</p>
@@ -99,7 +99,7 @@ export default function ContactUs() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-card/10 flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-5 h-5 text-brand-orange" />
+                    <Clock className="w-5 h-5 text-foreground" />
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">Business Hours</p>
@@ -120,7 +120,7 @@ export default function ContactUs() {
               <img src="/images/hero_banner.png" alt="Map View" className="w-full h-full object-cover opacity-60" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="bg-card px-4 py-2 rounded-lg premium-shadow text-brand-dark font-bold text-sm flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-brand-orange" /> View on Google Maps
+                  <MapPin className="w-4 h-4 text-foreground" /> View on Google Maps
                 </div>
               </div>
             </div>
@@ -143,22 +143,22 @@ export default function ContactUs() {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="col-span-2 sm:col-span-1">
                     <label className="block text-sm font-bold text-muted-foreground mb-2">First Name</label>
-                    <input type="text" required value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all text-foreground" placeholder="John" />
+                    <input type="text" required value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all text-foreground" placeholder="John" />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
                     <label className="block text-sm font-bold text-muted-foreground mb-2">Last Name</label>
-                    <input type="text" required value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all text-foreground" placeholder="Doe" />
+                    <input type="text" required value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all text-foreground" placeholder="Doe" />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-muted-foreground mb-2">Email Address</label>
-                  <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all text-foreground" placeholder="john@example.com" />
+                  <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all text-foreground" placeholder="john@example.com" />
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-muted-foreground mb-2">Service Required</label>
-                  <select required value={formData.service} onChange={(e) => setFormData({...formData, service: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all appearance-none text-muted-foreground">
+                  <select required value={formData.service} onChange={(e) => setFormData({...formData, service: e.target.value})} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all appearance-none text-muted-foreground">
                     <option value="">Select a service...</option>
                     <option value="Dog Show Photography">Dog Show Photography Coverage</option>
                     <option value="Studio Portrait">Studio Pet Portrait</option>
@@ -170,7 +170,7 @@ export default function ContactUs() {
 
                 <div>
                   <label className="block text-sm font-bold text-muted-foreground mb-2">Message</label>
-                  <textarea required value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} rows={5} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all resize-none text-foreground" placeholder="Tell us about your event or dog..."></textarea>
+                  <textarea required value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} rows={5} className="w-full bg-card border border-border rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all resize-none text-foreground" placeholder="Tell us about your event or dog..."></textarea>
                 </div>
 
                 {status === 'error' && <p className="text-red-500 text-sm font-bold">Failed to send message. Please try again.</p>}
@@ -199,7 +199,7 @@ export default function ContactUs() {
               <div key={i} className="bg-card border border-border rounded-2xl p-6 premium-shadow">
                 <div className="flex justify-between items-center cursor-pointer">
                   <h3 className="font-bold text-brand-dark text-lg">{faq.q}</h3>
-                  <ChevronDown className="w-5 h-5 text-brand-orange" />
+                  <ChevronDown className="w-5 h-5 text-foreground" />
                 </div>
                 <div className="mt-4 text-muted-foreground font-medium leading-relaxed">
                   {faq.a}

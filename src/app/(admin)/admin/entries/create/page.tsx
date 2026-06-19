@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import api from '@/services/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import Spinner from '@/components/common/loader/Spinner';
 
 interface DocumentDropzoneProps {
   label: string;
@@ -96,7 +97,7 @@ function DocumentDropzone({ label, value, onChange, required }: DocumentDropzone
           onClick={() => fileInputRef.current?.click()}
           className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all
             h-[150px] lg:h-[220px]
-            ${isDragActive ? 'border-brand-orange bg-brand-orange/5' : 'border-border bg-card/50 hover:bg-card hover:border-brand-orange/50'}
+            ${isDragActive ? 'border-border bg-foreground/5' : 'border-border bg-card/50 hover:bg-card hover:border-border/50'}
             ${error ? 'border-red-500 bg-red-500/5' : ''}
           `}
         >
@@ -112,10 +113,7 @@ function DocumentDropzone({ label, value, onChange, required }: DocumentDropzone
           />
           
           {isUploading ? (
-            <div className="flex flex-col items-center gap-2">
-              <Loader2 className="w-8 h-8 text-brand-orange animate-spin" />
-              <p className="text-sm font-bold text-foreground">Uploading {label}...</p>
-            </div>
+            <Spinner size="md" className="py-4" />
           ) : (
             <div className="text-center p-6 space-y-2">
               <UploadCloud className="w-10 h-10 text-muted-foreground mx-auto" />
@@ -388,7 +386,7 @@ ${formData.remarks || ''}
                   name="dogName" 
                   value={formData.dogName} 
                   onChange={handleInputChange} 
-                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all ${errors.dogName ? 'border-red-500' : 'border-border'}`} 
+                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all ${errors.dogName ? 'border-red-500' : 'border-border'}`} 
                   placeholder="e.g., Majestic Cooper of Kennel" 
                 />
                 {errors.dogName && <p className="text-xs text-red-500 font-bold mt-1">{errors.dogName}</p>}
@@ -401,7 +399,7 @@ ${formData.remarks || ''}
                   name="registrationNumber" 
                   value={formData.registrationNumber} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g. KCI-12345/26" 
                 />
               </div>
@@ -414,7 +412,7 @@ ${formData.remarks || ''}
                   name="breed" 
                   value={formData.breed} 
                   onChange={handleInputChange} 
-                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all ${errors.breed ? 'border-red-500' : 'border-border'}`} 
+                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all ${errors.breed ? 'border-red-500' : 'border-border'}`} 
                   placeholder="e.g., Golden Retriever" 
                 />
                 {errors.breed && <p className="text-xs text-red-500 font-bold mt-1">{errors.breed}</p>}
@@ -426,7 +424,7 @@ ${formData.remarks || ''}
                   name="gender" 
                   value={formData.gender} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all"
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all"
                 >
                   <option value="MALE">Male</option>
                   <option value="FEMALE">Female</option>
@@ -440,7 +438,7 @@ ${formData.remarks || ''}
                   name="age" 
                   value={formData.age} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g., 2 Years" 
                 />
               </div>
@@ -452,7 +450,7 @@ ${formData.remarks || ''}
                   name="color" 
                   value={formData.color} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g. Golden, Fawn" 
                 />
               </div>
@@ -465,7 +463,7 @@ ${formData.remarks || ''}
                   name="ownerName" 
                   value={formData.ownerName} 
                   onChange={handleInputChange} 
-                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all ${errors.ownerName ? 'border-red-500' : 'border-border'}`} 
+                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all ${errors.ownerName ? 'border-red-500' : 'border-border'}`} 
                   placeholder="e.g., Ramesh Kumar" 
                 />
                 {errors.ownerName && <p className="text-xs text-red-500 font-bold mt-1">{errors.ownerName}</p>}
@@ -478,7 +476,7 @@ ${formData.remarks || ''}
                   name="handler" 
                   value={formData.handler} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g., Self, or Handler Name" 
                 />
               </div>
@@ -489,7 +487,7 @@ ${formData.remarks || ''}
                   name="category" 
                   value={formData.category} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all"
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all"
                 >
                   <option value="Puppy">Puppy</option>
                   <option value="Junior">Junior</option>
@@ -508,7 +506,7 @@ ${formData.remarks || ''}
                   name="dogShowId" 
                   value={formData.dogShowId} 
                   onChange={handleInputChange} 
-                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all ${errors.dogShowId ? 'border-red-500' : 'border-border'}`}
+                  className={`w-full h-12 rounded-xl border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all ${errors.dogShowId ? 'border-red-500' : 'border-border'}`}
                 >
                   <option value="">Select Show...</option>
                   {events.map(ev => <option key={ev.id} value={ev.id}>{ev.name}</option>)}
@@ -523,7 +521,7 @@ ${formData.remarks || ''}
                   name="judgeName" 
                   value={formData.judgeName} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g., Dr. Agnes Allen" 
                 />
               </div>
@@ -536,7 +534,7 @@ ${formData.remarks || ''}
                   name="entryFee" 
                   value={formData.entryFee} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                 />
               </div>
 
@@ -546,7 +544,7 @@ ${formData.remarks || ''}
                   name="status" 
                   value={formData.status} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all"
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all"
                 >
                   <option value="PENDING">Pending</option>
                   <option value="APPROVED">Approved</option>
@@ -561,7 +559,7 @@ ${formData.remarks || ''}
                   name="description" 
                   value={formData.description} 
                   onChange={handleInputChange} 
-                  className="w-full min-h-[160px] rounded-xl border border-border p-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full min-h-[160px] rounded-xl border border-border p-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="General notes regarding class qualification, certificates, etc." 
                 />
               </div>
@@ -572,7 +570,7 @@ ${formData.remarks || ''}
           {/* Card 2: Owner Details */}
           <div className="bg-card rounded-2xl shadow-sm border border-border p-6 space-y-6">
             <h2 className="text-xl font-bold border-b border-border pb-4 flex items-center gap-2">
-              <User className="w-5 h-5 text-purple-500" /> Owner Details
+              <User className="w-5 h-5 text-foreground" /> Owner Details
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
@@ -583,7 +581,7 @@ ${formData.remarks || ''}
                   name="address" 
                   value={formData.address} 
                   onChange={handleInputChange} 
-                  className="w-full min-h-[120px] rounded-xl border border-border p-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full min-h-[120px] rounded-xl border border-border p-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="Full address of the owner" 
                 />
               </div>
@@ -595,7 +593,7 @@ ${formData.remarks || ''}
                   name="city" 
                   value={formData.city} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g. Chennai" 
                 />
               </div>
@@ -607,7 +605,7 @@ ${formData.remarks || ''}
                   name="state" 
                   value={formData.state} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g. Tamil Nadu" 
                 />
               </div>
@@ -619,7 +617,7 @@ ${formData.remarks || ''}
                   name="country" 
                   value={formData.country} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="India" 
                 />
               </div>
@@ -631,7 +629,7 @@ ${formData.remarks || ''}
                   name="pincode" 
                   value={formData.pincode} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="600001" 
                 />
               </div>
@@ -643,7 +641,7 @@ ${formData.remarks || ''}
                   name="phone" 
                   value={formData.phone} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g., +91 98765 43210" 
                 />
               </div>
@@ -655,7 +653,7 @@ ${formData.remarks || ''}
                   name="email" 
                   value={formData.email} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="owner@domain.com" 
                 />
               </div>
@@ -678,7 +676,7 @@ ${formData.remarks || ''}
                   name="fatherName" 
                   value={formData.fatherName} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="Father's registered name" 
                 />
               </div>
@@ -690,7 +688,7 @@ ${formData.remarks || ''}
                   name="motherName" 
                   value={formData.motherName} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="Mother's registered name" 
                 />
               </div>
@@ -702,7 +700,7 @@ ${formData.remarks || ''}
                   name="breeder" 
                   value={formData.breeder} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="Breeder's registered name" 
                 />
               </div>
@@ -714,7 +712,7 @@ ${formData.remarks || ''}
                   name="microchip" 
                   value={formData.microchip} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="15-digit Microchip number" 
                 />
               </div>
@@ -726,7 +724,7 @@ ${formData.remarks || ''}
                   name="dob" 
                   value={formData.dob} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-muted-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-muted-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                 />
               </div>
 
@@ -737,7 +735,7 @@ ${formData.remarks || ''}
                   name="titles" 
                   value={formData.titles} 
                   onChange={handleInputChange} 
-                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                   placeholder="e.g. IN CH, GRAND CH" 
                 />
               </div>
@@ -748,7 +746,7 @@ ${formData.remarks || ''}
           {/* Card 4: Upload Documents */}
           <div className="bg-card rounded-2xl shadow-sm border border-border p-6 space-y-6">
             <h2 className="text-xl font-bold border-b border-border pb-4 flex items-center gap-2">
-              <UploadCloud className="w-5 h-5 text-brand-orange" /> Upload Documents
+              <UploadCloud className="w-5 h-5 text-foreground" /> Upload Documents
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -785,7 +783,7 @@ ${formData.remarks || ''}
                 name="remarks" 
                 value={formData.remarks} 
                 onChange={handleInputChange} 
-                className="w-full min-h-[160px] rounded-xl border border-border p-4 bg-background text-foreground focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all" 
+                className="w-full min-h-[160px] rounded-xl border border-border p-4 bg-background text-foreground focus:ring-2 focus:ring-foreground/20 focus:border-border outline-none transition-all" 
                 placeholder="Write any additional remarks or comments here..." 
               />
             </div>
@@ -886,7 +884,7 @@ ${formData.remarks || ''}
                     </div>
                     <div>
                       <span className="block font-bold text-muted-foreground text-xs uppercase">Registration / KCI Number</span>
-                      <span className="font-mono text-brand-orange font-bold">{formData.registrationNumber || '—'}</span>
+                      <span className="font-mono text-foreground font-bold">{formData.registrationNumber || '—'}</span>
                     </div>
                     <div>
                       <span className="block font-bold text-muted-foreground text-xs uppercase">Breed / Gender</span>
@@ -902,7 +900,7 @@ ${formData.remarks || ''}
                     </div>
                     <div>
                       <span className="block font-bold text-muted-foreground text-xs uppercase">Selected Event</span>
-                      <span className="font-bold text-brand-orange">{selectedShowName}</span>
+                      <span className="font-bold text-foreground">{selectedShowName}</span>
                     </div>
                   </div>
                 </div>

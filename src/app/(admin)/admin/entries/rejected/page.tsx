@@ -223,7 +223,7 @@ export default function RejectedEntriesPage() {
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Dog Show Event</span>
-                    <span className="text-sm font-bold text-foreground flex items-center gap-1.5 mt-0.5"><CalendarDays className="w-4 h-4 text-brand-orange" /> {selectedEntry.event?.name}</span>
+                    <span className="text-sm font-bold text-foreground flex items-center gap-1.5 mt-0.5"><CalendarDays className="w-4 h-4 text-foreground" /> {selectedEntry.event?.name}</span>
                   </div>
                 </div>
               </div>

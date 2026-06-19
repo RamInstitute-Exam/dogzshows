@@ -19,6 +19,7 @@ interface ImageUploaderProps {
   dropzoneClassName?: string;
   previewClassName?: string;
   imageClassName?: string;
+  highResolution?: boolean;
 }
 
 export default function ImageUploader({
@@ -33,6 +34,7 @@ export default function ImageUploader({
   dropzoneClassName,
   previewClassName,
   imageClassName,
+  highResolution = false,
 }: ImageUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(currentImage || null);
@@ -91,8 +93,8 @@ export default function ImageUploader({
     await new Promise(resolve => { image.onload = resolve; });
 
     const canvas = document.createElement('canvas');
-    canvas.width = 600;
-    canvas.height = Math.round(600 / aspectRatio);
+    canvas.width = highResolution ? pixelCrop.width : 600;
+    canvas.height = highResolution ? pixelCrop.height : Math.round(600 / aspectRatio);
     const ctx = canvas.getContext('2d');
 
     if (!ctx) {
@@ -111,15 +113,22 @@ export default function ImageUploader({
       canvas.height
     );
 
+    const fileType = highResolution ? 'image/png' : 'image/jpeg';
+    const fileExtension = highResolution ? '.png' : '.jpg';
+
     return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('Canvas is empty'));
           return;
         }
-        const croppedFile = new File([blob], fileName.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg', lastModified: Date.now() });
+        const croppedFile = new File(
+          [blob], 
+          fileName.replace(/\.[^/.]+$/, "") + fileExtension, 
+          { type: fileType, lastModified: Date.now() }
+        );
         resolve(croppedFile);
-      }, 'image/jpeg', 0.95);
+      }, fileType, highResolution ? 1.0 : 0.95);
     });
   };
 
@@ -131,7 +140,7 @@ export default function ImageUploader({
     try {
       const croppedFile = await getCroppedImg(preview, croppedAreaPixels, file.name);
       
-      if (croppedFile.size > 500 * 1024) {
+      if (!highResolution && croppedFile.size > 500 * 1024) {
         // further compress if larger than 500kb
         const options = {
           maxSizeMB: 0.5,
@@ -215,7 +224,7 @@ export default function ImageUploader({
           {...getRootProps()}
           className={dropzoneClassName || `
             border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all
-            ${isDragActive ? 'border-brand-orange bg-brand-orange/5' : 'border-border bg-card/50 hover:bg-card hover:border-brand-orange/50'}
+            ${isDragActive ? 'border-border bg-foreground/5' : 'border-border bg-card/50 hover:bg-card hover:border-border/50'}
             ${error ? 'border-red-500 bg-red-500/5' : ''}
           `}
         >
@@ -284,7 +293,7 @@ export default function ImageUploader({
                   step={0.1}
                   aria-labelledby="Zoom"
                   onChange={(e) => setZoom(Number(e.target.value))}
-                  className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-brand-orange"
+                  className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-foreground"
                 />
                 <ZoomIn className="w-5 h-5 text-muted-foreground" />
               </div>
@@ -311,7 +320,7 @@ export default function ImageUploader({
                   type="button"
                   onClick={handleApplyCrop}
                   disabled={isUploading}
-                  className="px-6 py-2.5 text-sm font-bold bg-brand-orange text-white rounded-xl flex items-center space-x-2 hover:bg-orange-600 shadow-lg shadow-brand-orange/20 transition-all disabled:opacity-70"
+                  className="px-6 py-2.5 text-sm font-bold bg-foreground text-white rounded-xl flex items-center space-x-2 hover:bg-foreground shadow-lg shadow-black/20 transition-all disabled:opacity-70"
                 >
                   {isUploading ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /><span>Processing image...</span></>
@@ -368,7 +377,7 @@ export default function ImageUploader({
               </div>
               <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-brand-orange transition-all duration-300"
+                  className="h-full bg-foreground transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>

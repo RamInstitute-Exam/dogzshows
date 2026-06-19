@@ -157,7 +157,7 @@ export default function AboutSectionAdminPage() {
             Redesign and manage the "About JuzDog" branding section and dynamic services grid.
           </p>
         </div>
-        <Button onClick={handleSaveSettings} disabled={isSaving} className="bg-brand-orange hover:bg-orange-600 font-bold px-6 py-5 rounded-xl transition-all shadow-lg flex items-center gap-2">
+        <Button onClick={handleSaveSettings} disabled={isSaving} className="bg-foreground hover:bg-foreground font-bold px-6 py-5 rounded-xl transition-all shadow-lg flex items-center gap-2">
           <Save className="w-5 h-5" />
           {isSaving ? 'Saving Changes...' : 'Save Settings'}
         </Button>
@@ -171,7 +171,7 @@ export default function AboutSectionAdminPage() {
           {/* General settings */}
           <div className="bg-card rounded-2xl border border-border p-6 shadow-sm space-y-6">
             <div className="flex items-center gap-2 pb-4 border-b border-border/50">
-              <Sparkles className="w-5 h-5 text-brand-orange" />
+              <Sparkles className="w-5 h-5 text-foreground" />
               <h2 className="text-xl font-bold">Copywriting & General Settings</h2>
             </div>
             
@@ -203,7 +203,7 @@ export default function AboutSectionAdminPage() {
                   value={settings.description} 
                   onChange={(e) => setSettings({ ...settings, description: e.target.value })} 
                   placeholder="Tell your brand story and services summary..." 
-                  className="w-full min-h-[120px] rounded-xl border border-border/80 bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
+                  className="w-full min-h-[120px] rounded-xl border border-border/80 bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-foreground"
                 />
               </div>
 
@@ -252,7 +252,7 @@ export default function AboutSectionAdminPage() {
                 <select 
                   value={settings.status}
                   onChange={(e) => setSettings({ ...settings, status: e.target.value })}
-                  className="w-full rounded-xl border border-border/80 bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
+                  className="w-full rounded-xl border border-border/80 bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-foreground"
                 >
                   <option value="ACTIVE">Active (Shown on Home Page)</option>
                   <option value="INACTIVE">Inactive (Hidden from Home Page)</option>
@@ -265,10 +265,10 @@ export default function AboutSectionAdminPage() {
           <div className="bg-card rounded-2xl border border-border p-6 shadow-sm space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-border/50">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-brand-orange" />
+                <Sparkles className="w-5 h-5 text-foreground" />
                 <h2 className="text-xl font-bold">Feature Cards Management</h2>
               </div>
-              <Button onClick={handleAddFeature} variant="outline" className="border-brand-orange/50 hover:bg-brand-orange/10 text-brand-orange font-bold rounded-xl flex items-center gap-1.5 text-xs">
+              <Button onClick={handleAddFeature} variant="outline" className="border-border/50 hover:bg-foreground/10 text-foreground font-bold rounded-xl flex items-center gap-1.5 text-xs">
                 <Plus className="w-4 h-4" /> Add Feature
               </Button>
             </div>
@@ -277,7 +277,7 @@ export default function AboutSectionAdminPage() {
               {features.map((feature, idx) => (
                 <div key={idx} className="border border-border/60 bg-background/50 rounded-xl p-4 space-y-3 relative group">
                   <div className="flex justify-between items-center gap-4">
-                    <span className="text-xs font-bold text-brand-orange bg-brand-orange/15 px-2 py-0.5 rounded-md">
+                    <span className="text-xs font-bold text-foreground bg-foreground/15 px-2 py-0.5 rounded-md">
                       Feature #{idx + 1}
                     </span>
                     <div className="flex items-center gap-1">
@@ -318,7 +318,7 @@ export default function AboutSectionAdminPage() {
                       <select 
                         value={feature.icon} 
                         onChange={(e) => handleUpdateFeature(idx, 'icon', e.target.value)}
-                        className="w-full rounded-lg border border-border/80 bg-background text-foreground px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
+                        className="w-full rounded-lg border border-border/80 bg-background text-foreground px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-foreground"
                       >
                         <option value="Camera">📸 Camera (Photography)</option>
                         <option value="Video">🎥 Video (Videography)</option>
@@ -333,7 +333,7 @@ export default function AboutSectionAdminPage() {
                       <textarea 
                         value={feature.description} 
                         onChange={(e) => handleUpdateFeature(idx, 'description', e.target.value)}
-                        className="w-full min-h-[60px] rounded-lg border border-border/80 bg-background text-foreground px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
+                        className="w-full min-h-[60px] rounded-lg border border-border/80 bg-background text-foreground px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-foreground"
                       />
                     </div>
                   </div>
@@ -353,7 +353,7 @@ export default function AboutSectionAdminPage() {
         <div className="space-y-6">
           <div className="bg-card rounded-2xl border border-border p-6 shadow-sm space-y-6">
             <div className="flex items-center gap-2 pb-4 border-b border-border/50">
-              <ImageIcon className="w-5 h-5 text-brand-orange" />
+              <ImageIcon className="w-5 h-5 text-foreground" />
               <h2 className="text-xl font-bold">Visual Grid Images</h2>
             </div>
             

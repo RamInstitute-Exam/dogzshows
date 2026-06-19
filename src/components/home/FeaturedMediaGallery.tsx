@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Play, Eye, User, Camera, Video, Clock, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -59,8 +60,8 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
               viewAllHref="/gallery/show-photos"
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-              {photos.slice(0, 10).map((photo: any, index: number) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {photos.slice(0, 8).map((photo: any, index: number) => (
                 <motion.div
                   key={photo.id}
                   initial={{ opacity: 0, y: 24 }}
@@ -69,14 +70,25 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                 >
                   <Link href={`/gallery/show-photos/details?slug=${photo.slug}`}>
-                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col cursor-pointer">
+                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between cursor-pointer w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto">
                       {/* Image */}
-                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-accent">
-                        <img
+                      <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
+                        <Image
                           src={photo.cdnUrl}
                           alt={photo.altText || photo.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          fill={false}
+                          width={800}
+                          height={1200}
+                          quality={100}
+                          unoptimized
+                          sizes="100vw"
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            objectFit: "contain",
+                            objectPosition: "center"
+                          }}
+                          className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                         />
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -91,33 +103,35 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                           </span>
                         )}
                         {photo.featured && (
-                          <span className="absolute top-4 right-4 bg-brand-orange text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                          <span className="absolute top-4 right-4 bg-foreground text-background text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                             ⭐ Featured
                           </span>
                         )}
                       </div>
 
                       {/* Info */}
-                      <div className="p-5 flex flex-col gap-3">
-                        <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1 text-base leading-snug">
-                          {photo.title}
-                        </h3>
+                      <div className="p-5 flex flex-col justify-between space-y-4">
+                        <div>
+                          <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1 text-base leading-snug">
+                            {photo.title}
+                          </h3>
 
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                          {photo.photographer && (
-                            <span className="flex items-center gap-1">
-                              <User className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate max-w-[100px]">{photo.photographer}</span>
-                            </span>
-                          )}
-                          {photo.album?.title && (
-                            <span className="truncate max-w-[120px] text-muted-foreground/70">
-                              {photo.album.title}
-                            </span>
-                          )}
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground mt-2">
+                            {photo.photographer && (
+                              <span className="flex items-center gap-1">
+                                <User className="w-3.5 h-3.5 shrink-0" />
+                                <span className="truncate max-w-[100px]">{photo.photographer}</span>
+                              </span>
+                            )}
+                            {photo.album?.title && (
+                              <span className="truncate max-w-[120px] text-muted-foreground/70">
+                                {photo.album.title}
+                              </span>
+                            )}
+                          </div>
                         </div>
 
-                        <div className="flex items-center justify-between border-t border-border pt-3 text-xs font-semibold text-muted-foreground">
+                        <div className="flex items-center justify-between border-t border-border pt-4 text-xs font-semibold text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Eye className="w-3.5 h-3.5" /> {photo.views || 0} views
                           </span>
@@ -153,7 +167,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                 >
                   <Link href={`/gallery/show-videos/details?slug=${video.slug}`}>
-                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col cursor-pointer">
+                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between cursor-pointer w-full lg:max-w-[380px] lg:max-h-[560px] md:max-w-[320px] md:max-h-[480px] max-md:w-full max-md:min-h-[420px] max-md:max-h-[560px] h-auto">
                       {/* Thumbnail */}
                       <div className="relative aspect-video w-full overflow-hidden bg-black">
                         {video.thumbnailUrl ? (
@@ -171,7 +185,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
 
                         {/* Play overlay */}
                         <div className="absolute inset-0 bg-black/35 flex items-center justify-center group-hover:bg-black/55 transition-colors duration-300">
-                          <div className="w-16 h-16 rounded-full bg-brand-orange shadow-2xl flex items-center justify-center scale-90 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-16 h-16 rounded-full bg-foreground shadow-2xl flex items-center justify-center scale-90 group-hover:scale-110 transition-transform duration-300">
                             <Play className="w-7 h-7 fill-current text-white ml-1" />
                           </div>
                         </div>
@@ -179,7 +193,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                         {/* Duration */}
                         {video.duration && (
                           <span className="absolute bottom-3 right-3 bg-black/85 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-md flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> {video.duration}
+                            <Clock className="w-3.5 h-3.5" /> {video.duration}
                           </span>
                         )}
 
@@ -190,7 +204,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                           </span>
                         )}
                         {video.featured && (
-                          <span className="absolute top-4 right-4 bg-brand-orange text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                          <span className="absolute top-4 right-4 bg-foreground text-background text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                             ⭐ Featured
                           </span>
                         )}

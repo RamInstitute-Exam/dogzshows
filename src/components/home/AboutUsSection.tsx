@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, Video, Trophy, Radio, Image as ImageIcon, Building2, HelpCircle, ArrowRight } from 'lucide-react';
+import { Camera, Video, Trophy, Radio, Image as ImageIcon, Building2, HelpCircle, ArrowRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import api, { getImageUrl } from '@/lib/api';
 
@@ -28,7 +28,7 @@ const renderIcon = (iconName: string) => {
 
 const iconStyles: Record<string, { bg: string; text: string }> = {
   Camera: { bg: 'from-blue-500/20 to-blue-500/5', text: 'text-blue-500' },
-  Video: { bg: 'from-pink-500/20 to-pink-500/5', text: 'text-pink-500' },
+  Video: { bg: 'from-foreground/10 to-foreground/5', text: 'text-foreground' },
   Trophy: { bg: 'from-amber-500/20 to-amber-500/5', text: 'text-amber-500' },
   Radio: { bg: 'from-red-500/20 to-red-500/5', text: 'text-red-500' },
   ImageIcon: { bg: 'from-indigo-500/20 to-indigo-500/5', text: 'text-indigo-500' },
@@ -53,7 +53,7 @@ export default function AboutUsSection() {
   if (loading) {
     return (
       <div className="w-full py-20 flex justify-center items-center">
-        <div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-foreground/20 border-t-foreground rounded-full animate-spin" />
       </div>
     );
   }
@@ -64,23 +64,13 @@ export default function AboutUsSection() {
 
   const renderHeading = (text: string) => {
     if (!text) return null;
-    const parts = text.split(/(Champion Moment\.)/g);
-    return parts.map((part, idx) => {
-      if (part === 'Champion Moment.') {
-        return (
-          <span key={idx} className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-yellow-400">
-            {part}
-          </span>
-        );
-      }
-      const lineParts = part.split('\n');
-      return lineParts.map((line, lIdx) => (
-        <span key={`${idx}-${lIdx}`}>
-          {line}
-          {lIdx < lineParts.length - 1 && <br />}
-        </span>
-      ));
-    });
+    const lineParts = text.split('\n');
+    return lineParts.map((line, lIdx) => (
+      <span key={lIdx}>
+        {line}
+        {lIdx < lineParts.length - 1 && <br />}
+      </span>
+    ));
   };
 
   const imagesList = data.images || [];
@@ -90,8 +80,8 @@ export default function AboutUsSection() {
       
       {/* Background Decorative Radial Glows */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-1/4 left-1/4 w-[30vw] h-[30vw] bg-brand-orange/5 dark:bg-brand-orange/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[35vw] h-[35vw] bg-yellow-400/5 dark:bg-yellow-400/3 rounded-full blur-[180px]" />
+        <div className="absolute top-1/4 left-1/4 w-[30vw] h-[30vw] bg-foreground/3 dark:bg-foreground/3 rounded-full blur-[150px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[35vw] h-[35vw] bg-purple-500/3 dark:bg-purple-500/2 rounded-full blur-[180px]" />
       </div>
 
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 xl:px-12 relative z-10">
@@ -106,11 +96,11 @@ export default function AboutUsSection() {
               transition={{ duration: 0.6 }}
               className="space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-sm font-bold text-brand-orange shadow-sm">
-                <span className="animate-pulse">✨</span> {data.sectionLabel || 'Professional Coverage'}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900 text-white border border-zinc-800 text-sm font-bold shadow-sm">
+                <span>✨</span> {data.sectionLabel || 'Professional Coverage'}
               </div>
               
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.05] tracking-tight">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-black dark:text-white leading-[1.05] tracking-tight">
                 {renderHeading(data.heading)}
               </h2>
               
@@ -136,7 +126,7 @@ export default function AboutUsSection() {
                       {renderIcon(feature.icon)}
                     </div>
                     <div className="space-y-1">
-                      <h4 className="text-lg font-bold text-foreground group-hover:text-brand-orange transition-colors">
+                      <h4 className="text-lg font-bold text-foreground group-hover:text-foreground transition-colors">
                         {feature.title}
                       </h4>
                       <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
@@ -148,7 +138,6 @@ export default function AboutUsSection() {
               })}
             </div>
 
-            {/* Call To Actions */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -158,17 +147,19 @@ export default function AboutUsSection() {
             >
               <Link 
                 href={data.primaryBtnLink || '/gallery'} 
-                className="group flex items-center justify-center gap-2 bg-brand-orange text-white px-8 py-4 rounded-[20px] font-bold text-lg shadow-[0_8px_20px_-8px_rgba(249,115,22,0.5)] hover:shadow-[0_8px_25px_rgba(249,115,22,0.6)] hover:bg-brand-orange/90 transition-all duration-300"
+                className="btn-primary-luxury group gap-2 px-8"
               >
-                📸 {data.primaryBtnText || 'Explore Media Gallery'}
+                <Camera className="w-5 h-5" />
+                {data.primaryBtnText || 'Explore Media Gallery'}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               
               <Link 
                 href={data.secondaryBtnLink || '/events'} 
-                className="group flex items-center justify-center gap-2 bg-card border border-border text-foreground hover:bg-accent/80 hover:border-brand-orange/30 px-8 py-4 rounded-[20px] font-bold text-lg transition-all duration-300 shadow-sm"
+                className="btn-primary-luxury group gap-2 px-8"
               >
-                📅 {data.secondaryBtnText || 'View Upcoming Shows'}
+                <Calendar className="w-5 h-5" />
+                {data.secondaryBtnText || 'View Upcoming Shows'}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
@@ -177,7 +168,7 @@ export default function AboutUsSection() {
           {/* Right Column: Staggered Masonry visual grid */}
           <div className="relative">
             {/* Soft radial glow backdrop */}
-            <div className="absolute inset-0 bg-gradient-radial from-brand-orange/10 dark:from-brand-orange/5 to-transparent blur-[120px] pointer-events-none -m-10" />
+            <div className="absolute inset-0 bg-gradient-radial from-foreground/3 to-transparent blur-[120px] pointer-events-none -m-10" />
 
             <div className="grid grid-cols-2 gap-4 sm:gap-6 items-center">
               
@@ -237,7 +228,7 @@ const ImageOrPlaceholder = ({ src, index }: { src: string | undefined; index: nu
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
-        <div className="flex flex-col items-center justify-center p-6 text-center w-full h-full bg-gradient-to-br from-brand-orange/10 via-transparent to-yellow-500/5 dark:from-brand-orange/5 dark:to-transparent">
+        <div className="flex flex-col items-center justify-center p-6 text-center w-full h-full bg-muted/20">
           <img
             src={fallbackLogo}
             alt="JuzDog Placeholder Logo"

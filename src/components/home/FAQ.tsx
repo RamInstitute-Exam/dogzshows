@@ -32,14 +32,14 @@ export default function FAQ() {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className={`border rounded-[1.5rem] transition-colors duration-300 ${isOpen ? 'border-brand-orange bg-brand-orange/10' : 'border-border bg-card hover:border-border'}`}
+                className={`border rounded-[1.5rem] transition-all duration-300 ${isOpen ? 'border-border/30 dark:border-border bg-card' : 'border-border bg-card hover:border-border'}`}
               >
                 <button 
                   className="w-full flex justify-between items-center p-6 text-left"
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                 >
                   <span className="font-bold text-lg text-foreground">{faq.q}</span>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-brand-orange text-foreground' : 'bg-background text-muted-foreground'}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-foreground text-background shadow-sm' : 'bg-background text-muted-foreground'}`}>
                     {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   </div>
                 </button>

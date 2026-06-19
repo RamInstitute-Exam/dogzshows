@@ -28,7 +28,7 @@ export default function RegistrationTimeline() {
         <div className="relative">
           {/* Connecting Line - Only visible on LG */}
           <div className="hidden lg:block absolute top-[40px] left-0 w-full h-1 bg-accent rounded-full" />
-          <div className="hidden lg:block absolute top-[40px] left-0 w-2/3 h-1 bg-brand-orange rounded-full" />
+          <div className="hidden lg:block absolute top-[40px] left-0 w-2/3 h-1 bg-foreground rounded-full" />
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
             {STEPS.map((step, i) => (
@@ -41,7 +41,7 @@ export default function RegistrationTimeline() {
                 className="luxury-card relative flex flex-col items-center text-center p-4 sm:p-6 group h-full"
               >
                 <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center border-[3px] relative z-10 mb-3 sm:mb-6 transition-transform hover:scale-110 shrink-0 ${
-                  i < 3 ? 'bg-brand-orange border-orange-400/30 text-foreground' : 'bg-accent border-gray-700 text-muted-foreground'
+                  i < 3 ? 'bg-foreground border-transparent text-white shadow-sm' : 'bg-accent border-border text-muted-foreground'
                 }`}>
                   <step.icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>

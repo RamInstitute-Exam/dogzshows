@@ -57,11 +57,11 @@ export default function KCIVerificationPage() {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <div className="relative flex-1 sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 text-sm bg-card border border-border rounded-xl focus:ring-2 focus:ring-brand-orange outline-none text-foreground" />
+            <input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 text-sm bg-card border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none text-foreground" />
           </div>
           <Button variant="outline" size="icon" className="rounded-xl border-border text-muted-foreground hover:text-foreground"><Filter className="w-4 h-4" /></Button>
           <Link href="/dashboard/dogs/create">
-            <Button className="bg-brand-orange hover:bg-orange-600 rounded-xl font-bold shadow-md text-foreground">Upload New</Button>
+            <Button className="bg-foreground hover:bg-foreground rounded-xl font-bold shadow-md text-foreground">Upload New</Button>
           </Link>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function KCIVerificationPage() {
             <h2 className="text-xl font-bold text-foreground mb-2">No Certificates Uploaded</h2>
             <p className="text-muted-foreground max-w-sm mb-6">You haven't uploaded any KCI certificates yet. Register a new dog and upload the certificate to begin verification.</p>
             <Link href="/dashboard/dogs/create">
-              <Button className="bg-brand-orange text-foreground font-bold hover:bg-orange-600 rounded-xl">Register Dog</Button>
+              <Button className="bg-foreground text-foreground font-bold hover:bg-foreground rounded-xl">Register Dog</Button>
             </Link>
           </div>
         ) : (
@@ -99,11 +99,11 @@ export default function KCIVerificationPage() {
                   <tr key={cert.id} className="hover:bg-accent transition-colors">
                     <td className="p-4">
                       <a href={cert.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 group">
-                        <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center overflow-hidden border border-border group-hover:border-brand-orange transition-colors">
+                        <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center overflow-hidden border border-border group-hover:border-border transition-colors">
                           <img src={cert.url} alt="Certificate" className="w-full h-full object-cover opacity-80 group-hover:opacity-100" onError={(e) => { e.currentTarget.style.display='none' }} />
                           <FileText className="w-5 h-5 text-muted-foreground absolute -z-10" />
                         </div>
-                        <span className="text-brand-orange font-bold text-xs hover:underline">View File</span>
+                        <span className="text-foreground font-bold text-xs hover:underline">View File</span>
                       </a>
                     </td>
                     <td className="p-4">

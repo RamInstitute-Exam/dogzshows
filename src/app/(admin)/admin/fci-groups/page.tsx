@@ -44,7 +44,7 @@ export default function FciGroupsMaster() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <Layers className="w-6 h-6 text-brand-orange" /> FCI Groups Master
+                <Layers className="w-6 h-6 text-foreground" /> FCI Groups Master
               </h1>
               <p className="text-muted-foreground font-medium mt-1">Manage standard FCI breed groups. Total: {totalCount}</p>
             </div>
@@ -57,7 +57,7 @@ export default function FciGroupsMaster() {
                   placeholder="Search group..." 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-brand-orange transition-all"
+                  className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-border transition-all"
                 />
               </div>
               <AdminButton onClick={fetchGroups} loading={loading} variant="secondary" size="md" leftIcon={<RefreshCw className="w-4 h-4" />}>

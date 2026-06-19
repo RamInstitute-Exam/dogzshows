@@ -2,6 +2,7 @@
 
 import { useGallery } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Share2, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
@@ -54,7 +55,7 @@ export default function GalleryPage() {
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-12">
         {loading ? (
           <div className="flex justify-center items-center min-h-[400px]">
-             <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+             <div className="w-12 h-12 border-4 border-border border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 space-y-6">
@@ -72,12 +73,24 @@ export default function GalleryPage() {
               >
                 <Link 
                   href={`/gallery/photos/details?slug=${photo.slug || photo.id}`}
-                  className={`relative flex flex-col rounded-[2rem] overflow-hidden group cursor-pointer border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease ${heightClass} w-full`}
+                  className={`relative flex flex-col rounded-[2rem] overflow-hidden group cursor-pointer border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease ${heightClass} w-full bg-black`}
                 >
-                  <img 
+                  <Image 
                     src={getImageUrl(photo.url)} 
                     alt={photo.title || 'Gallery Image'}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    fill={false}
+                    width={800}
+                    height={1200}
+                    quality={100}
+                    unoptimized
+                    sizes="100vw"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      objectPosition: "center"
+                    }}
+                    className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   

@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Camera, Play, ThumbsUp, Eye, X, Share2, Download, RefreshCw, ZoomIn, Clock } from 'lucide-react';
@@ -227,7 +229,7 @@ export default function MediaGalleryClient({
             No media items match your search or filters.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <AnimatePresence mode="popLayout">
               {activeTab === 'photos' ? (
                 // Photos Grid
@@ -242,14 +244,25 @@ export default function MediaGalleryClient({
                   >
                     <Link
                       href={`/gallery/${photo.category?.slug === 'show-photos' ? 'show-photos' : 'photos'}/details?slug=${photo.slug}`}
-                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between h-full block"
+                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto"
                     >
-                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-accent">
-                        <img
+                      <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
+                        <Image
                           src={getImageUrl(photo.imageUrl)}
                           alt={photo.altText || photo.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          fill={false}
+                          width={800}
+                          height={1200}
+                          quality={100}
+                          unoptimized
+                          sizes="100vw"
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            objectFit: "contain",
+                            objectPosition: "center"
+                          }}
+                          className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                           <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-lg">
@@ -299,7 +312,7 @@ export default function MediaGalleryClient({
                   >
                     <Link
                       href={`/gallery/${video.category?.slug === 'show-videos' ? 'show-videos' : 'videos'}/details?slug=${video.slug}`}
-                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between h-full block"
+                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto"
                     >
                       <div className="relative aspect-video w-full overflow-hidden bg-accent">
                         <img

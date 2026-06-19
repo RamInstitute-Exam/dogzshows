@@ -41,10 +41,10 @@ export default function AdminDashboard() {
     trend?: string;
     trendUp?: boolean;
   }[] = [
-    { title: 'Total Revenue', value: stats ? `₹${(stats.revenue || 0).toLocaleString()}` : '...', icon: IndianRupee, bg: 'bg-brand-orange/10', color: 'text-brand-orange' },
+    { title: 'Total Revenue', value: stats ? `₹${(stats.revenue || 0).toLocaleString()}` : '...', icon: IndianRupee, bg: 'bg-foreground/10', color: 'text-foreground' },
     { title: 'Total Events', value: stats?.totalEvents || '...', icon: Calendar, bg: 'bg-blue-500/10', color: 'text-blue-500' },
     { title: 'Registered Dogs', value: stats?.totalDogs || '...', icon: Dog, bg: 'bg-green-500/10', color: 'text-green-500' },
-    { title: 'Total Users', value: stats?.totalUsers || '...', icon: Users, bg: 'bg-purple-500/10', color: 'text-purple-500' },
+    { title: 'Total Users', value: stats?.totalUsers || '...', icon: Users, bg: 'bg-purple-500/10', color: 'text-foreground' },
   ];
 
   const chartOptions: any = {
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
       zoom: { enabled: false },
       animations: { enabled: false } 
     },
-    colors: ['#F97316'],
+    colors: ['#FFFFFF'],
     fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0, stops: [0, 90, 100] } },
     dataLabels: { enabled: false },
     stroke: { curve: 'smooth', width: 3 },
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
             <Card className="border border-border shadow-xl bg-card">
               <CardContent className="p-6">
                 <h3 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-brand-orange" /> Recent Activity
+                  <Activity className="w-5 h-5 text-foreground" /> Recent Activity
                 </h3>
                 <div className="space-y-4">
                   {loading ? (

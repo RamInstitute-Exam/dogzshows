@@ -69,7 +69,7 @@ export default function RegisteredEvents() {
           <h3 className="text-xl font-bold text-foreground mb-2">No Registered Events</h3>
           <p className="text-muted-foreground mb-6">You haven't registered any dogs for an upcoming event yet.</p>
           <Link href="/dashboard/events/upcoming">
-            <Button className="bg-brand-orange hover:bg-orange-600 text-foreground">Browse Upcoming Events</Button>
+            <Button className="bg-foreground hover:bg-foreground text-foreground">Browse Upcoming Events</Button>
           </Link>
         </div>
       ) : (
@@ -84,7 +84,7 @@ export default function RegisteredEvents() {
             >
               <div className="w-full md:w-auto md:flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold border ${reg.status === 'CONFIRMED' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-brand-orange/10 text-brand-orange border-brand-orange/20'}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold border ${reg.status === 'CONFIRMED' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-foreground/10 text-foreground border-border/20'}`}>
                     {reg.status}
                   </span>
                   <span className="text-sm font-bold text-muted-foreground">{new Date(reg.event.startDate).toLocaleDateString()}</span>
@@ -96,7 +96,7 @@ export default function RegisteredEvents() {
                 <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-lg border border-border inline-flex">
                   <span className="text-muted-foreground text-sm">Dog Entry:</span>
                   <span className="text-foreground font-bold">{reg.dog.name}</span>
-                  <span className="text-brand-orange text-xs uppercase ml-2">{reg.dog.kciNumber}</span>
+                  <span className="text-foreground text-xs uppercase ml-2">{reg.dog.kciNumber}</span>
                 </div>
               </div>
 

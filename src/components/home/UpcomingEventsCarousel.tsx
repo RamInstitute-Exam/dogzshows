@@ -1,10 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { useEventsCMS } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, Users, ArrowRight, Trophy, Tent } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Calendar, MapPin, Users, ArrowRight, Trophy, Tent, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import Image from 'next/image';
+import { getImageUrl } from '@/lib/api';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 interface EventData {
   id: string;
@@ -26,6 +33,9 @@ interface EventData {
 }
 
 export default function UpcomingEventsCarousel() {
+  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
+  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+
   const { data, isLoading } = useEventsCMS();
   let events: EventData[] = data?.success && Array.isArray(data.data) ? data.data : [];
 
@@ -46,6 +56,9 @@ export default function UpcomingEventsCarousel() {
     return aDate - bDate;
   });
 
+  // Limit to latest 10
+  events = events.slice(0, 10);
+
   // Skeleton Loader while API is loading
   if (isLoading) {
     return (
@@ -57,25 +70,22 @@ export default function UpcomingEventsCarousel() {
               <div className="h-4 w-32 bg-accent animate-pulse rounded" />
               <div className="h-10 bg-accent/40 animate-pulse rounded w-3/4" />
             </div>
-            <div className="h-[52px] w-40 bg-accent/20 animate-pulse rounded-[16px]" />
           </div>
 
           {/* Skeleton Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {[1, 2, 3, 4, 5].map((i) => (
               <div 
                 key={i} 
-                className="relative flex flex-col overflow-hidden h-[600px] animate-pulse bg-card border border-border rounded-[24px]"
+                className="relative flex flex-col overflow-hidden h-[450px] animate-pulse bg-card border border-border rounded-[24px]"
               >
-                <div className="h-[240px] w-full bg-accent/20 shrink-0" />
+                <div className="h-[200px] w-full bg-accent/20 shrink-0" />
                 <div className="p-6 flex-1 flex flex-col space-y-6">
                   <div className="h-6 bg-accent/20 rounded w-full" />
                   <div className="space-y-4">
                     <div className="h-12 bg-accent/10 rounded w-full" />
                     <div className="h-12 bg-accent/10 rounded w-full" />
                   </div>
-                  <div className="mt-auto h-24 bg-accent/10 rounded-2xl" />
-                  <div className="h-12 bg-accent/20 rounded-[16px]" />
                 </div>
               </div>
             ))}
@@ -97,137 +107,232 @@ export default function UpcomingEventsCarousel() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 sm:mb-16 gap-6">
           <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-[11px] font-black tracking-widest uppercase text-brand-orange mb-4 shadow-sm">
-              <Calendar className="w-3 h-3" /> Upcoming Shows
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-[11px] font-black tracking-widest uppercase text-muted-foreground mb-4 shadow-sm">
+              <Calendar className="w-3 h-3 text-foreground" /> Upcoming Shows
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight leading-[1.1]">
               Discover India's biggest <br className="hidden sm:block" />championship dog shows.
             </h2>
           </motion.div>
-          <Button className="h-12 sm:h-[56px] px-8 rounded-[16px] bg-white text-black hover:bg-gray-100 font-extrabold shadow-lg shadow-black/5 whitespace-nowrap text-sm sm:text-base transition-transform hover:scale-105 border border-gray-200">
-            View All Calendar <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
         </div>
 
-        {/* Event Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8">
-          {events.map((event, i) => {
-            
-            // Stable Pseudo-Random logic for UI demonstration of slots
-            const totalSlots = 100;
-            const slotsLeft = ((event.name.length * 13) % 40) + 5; // Between 5 and 44
-            const percentFilled = ((totalSlots - slotsLeft) / totalSlots) * 100;
-            
-            let progressColor = 'bg-green-500';
-            let statusText = 'Registration Open';
-            let dotColor = 'bg-green-500';
-            let pingColor = 'bg-green-400';
+        {/* Event Swiper Slider */}
+        <div className="relative !overflow-visible">
+          {/* Custom Navigation Buttons */}
+          <button
+            ref={(node) => setPrevEl(node)}
+            className="events-swiper-prev absolute -left-4 lg:-left-10 xl:-left-16 top-1/2 -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft size={22} />
+          </button>
 
-            if (slotsLeft < 15) {
-              progressColor = 'bg-red-500';
-              statusText = 'Last Few Slots';
-              dotColor = 'bg-red-500';
-              pingColor = 'bg-red-400';
-            } else if (slotsLeft < 30) {
-              progressColor = 'bg-yellow-500';
-              statusText = 'Filling Fast';
-              dotColor = 'bg-yellow-500';
-              pingColor = 'bg-yellow-400';
-            }
+          <Swiper
+            modules={[Autoplay, Navigation, Pagination]}
+            spaceBetween={24}
+            slidesPerView={1}
+            navigation={{
+              prevEl,
+              nextEl,
+            }}
+            onBeforeInit={(swiper) => {
+              // @ts-ignore
+              swiper.params.navigation.prevEl = prevEl;
+              // @ts-ignore
+              swiper.params.navigation.nextEl = nextEl;
+            }}
+            autoplay={{
+              delay: 4500,
+              disableOnInteraction: false,
+            }}
+            loop={events.length > 5}
+            breakpoints={{
+              320: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
+              1440: { slidesPerView: 5 },
+            }}
+            className="!pb-12 events-swiper !overflow-visible"
+          >
+            {events.map((event, i) => {
+              const startDate = new Date(event.startDate);
 
-            const startDate = new Date(event.startDate);
-
-            return (
-              <motion.div 
-                key={event.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
-                className="h-full"
-              >
-                <Link 
-                  href={`/events/detail?slug=${event.slug}`}
-                  className="group relative flex flex-col h-full overflow-hidden bg-card rounded-[24px] border border-border hover:border-brand-orange/40 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(249,115,22,0.15)] transition-all duration-500 ease-out cursor-pointer"
-                >
-                  {/* 1. Banner Image */}
-                  <div className="h-[200px] w-full relative overflow-hidden shrink-0 bg-accent">
-                    <img 
-                      src={event.cardImage || event.bannerUrl || '/images/events_banner.png'} 
-                      alt={event.name} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" 
-                      loading="lazy"
-                    />
-                    
-                    {/* Dark Gradient Overlay for text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                    
-                    {/* Floating Date Badge (Top Right) */}
-                    <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md rounded-[12px] shadow-2xl flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[56px] border border-black/5 transform group-hover:-translate-y-1 transition-transform duration-500">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-[-4px]">
-                        {startDate.toLocaleDateString('en-US', { month: 'short' })}
-                      </span>
-                      <span className="text-2xl font-black text-black leading-none mt-1">
-                        {startDate.getDate()}
-                      </span>
-                      <span className="text-[9px] font-extrabold text-gray-500 mt-[2px]">
-                        {startDate.getFullYear()}
-                      </span>
-                    </div>
-
-                    {/* Bottom Overlay Badges */}
-                    <div className="absolute bottom-4 left-4 flex gap-3 flex-wrap items-center">
-                      {/* Location Badge */}
-                      <div className="bg-black/40 backdrop-blur-md px-3.5 h-[34px] rounded-full text-white text-[13px] font-[600] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:bg-black/50 transition-all duration-300 cursor-default">
-                        <MapPin className="w-[14px] h-[14px] text-white/80" />
-                        <span className="truncate max-w-[140px]">{event.venue || 'TBA'}</span>
-                      </div>
-                      
-                      {/* Championship Badge */}
-                      <div className="bg-gradient-to-r from-[#e52d27] to-[#b31217] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(229,45,39,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(229,45,39,0.5)] transition-all duration-300 cursor-default">
-                        <Trophy className="w-[14px] h-[14px] text-white" />
-                        Championship
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 2. Body Container */}
-                  <div className="p-4 flex-1 flex flex-col">
-                    
-                    {/* Event Title */}
-                    <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-brand-orange transition-colors">
-                      {event.name}
-                    </h3>
-
-                    {/* Event Info Icons */}
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
-                        <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
-                          <Users className="w-3.5 h-3.5 text-brand-orange" />
+              return (
+                <SwiperSlide key={event.id}>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05, duration: 0.5, ease: "easeOut" }}
+                    className="h-full pb-4"
+                  >
+                    <Link 
+                      href={`/events/detail?slug=${event.slug}`}
+                      className="group relative flex flex-col h-[460px] overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer"
+                    >
+                      {/* 1. Banner Image */}
+                      <div className="h-[200px] w-full relative overflow-hidden shrink-0 bg-accent">
+                        <Image 
+                          src={getImageUrl(event.cardImage || event.bannerUrl)} 
+                          alt={event.name} 
+                          fill
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" 
+                          loading="lazy"
+                        />
+                        
+                        {/* Dark Gradient Overlay for text readability */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                        
+                        {/* Floating Date Badge (Top Right) */}
+                        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md rounded-[12px] shadow-2xl flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[56px] border border-black/5 transform group-hover:-translate-y-1 transition-transform duration-500 z-10">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground mb-[-4px]">
+                            {startDate.toLocaleDateString('en-US', { month: 'short' })}
+                          </span>
+                          <span className="text-2xl font-black text-black leading-none mt-1">
+                            {startDate.getDate()}
+                          </span>
+                          <span className="text-[9px] font-extrabold text-gray-500 mt-[2px]">
+                            {startDate.getFullYear()}
+                          </span>
                         </div>
-                        <div className="overflow-hidden">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Judging Panel</p>
-                          <p className="text-xs font-bold text-foreground truncate">{event.judgesCount ? `${event.judgesCount} International Judges` : 'TBA'}</p>
+
+                        {/* Bottom Overlay Badges */}
+                        <div className="absolute bottom-4 left-4 flex gap-3 flex-wrap items-center z-10">
+                          {/* Location Badge */}
+                          <div className="bg-black/40 backdrop-blur-md px-3.5 h-[34px] rounded-full text-white text-[13px] font-[600] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:bg-black/50 transition-all duration-300 cursor-default">
+                            <MapPin className="w-[14px] h-[14px] text-white/80" />
+                            <span className="truncate max-w-[140px]">{event.venue || 'TBA'}</span>
+                          </div>
+                          
+                          {/* Championship Badge */}
+                          <div className="bg-gradient-to-r from-[#e52d27] to-[#b31217] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(229,45,39,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(229,45,39,0.5)] transition-all duration-300 cursor-default">
+                            <Trophy className="w-[14px] h-[14px] text-white" />
+                            Championship
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
-                        <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
-                          <Tent className="w-3.5 h-3.5 text-[#38BDF8]" />
-                        </div>
-                        <div className="overflow-hidden">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Organizer</p>
-                          <p className="text-xs font-bold text-foreground truncate">{event.club?.name || 'KCI Affiliate'}</p>
+
+                      {/* 2. Body Container */}
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          {/* Event Title */}
+                          <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors">
+                            {event.name}
+                          </h3>
+
+                          {/* Event Info Icons */}
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
+                              <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
+                                <Users className="w-3.5 h-3.5 text-muted-foreground" />
+                              </div>
+                              <div className="overflow-hidden">
+                                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Judging Panel</p>
+                                <p className="text-xs font-bold text-foreground truncate">{event.judgesCount ? `${event.judgesCount} International Judges` : 'TBA'}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
+                              <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
+                                <Tent className="w-3.5 h-3.5 text-[#38BDF8]" />
+                              </div>
+                              <div className="overflow-hidden">
+                                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Organizer</p>
+                                <p className="text-xs font-bold text-foreground truncate">{event.club?.name || 'KCI Affiliate'}</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })}
+                    </Link>
+                  </motion.div>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+
+          <button
+            ref={(node) => setNextEl(node)}
+            className="events-swiper-next absolute -right-4 lg:-right-10 xl:-right-16 top-1/2 -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            aria-label="Next slide"
+          >
+            <ChevronRight size={22} />
+          </button>
         </div>
-        
+
+        {/* Centered View All Pill Button */}
+        <div className="flex flex-col items-center justify-center mt-12 gap-3 text-center">
+          <span className="text-sm font-medium text-muted-foreground">
+            Showing 10 Upcoming Shows
+          </span>
+          <Link
+            href="/events"
+            className="btn-primary-luxury group gap-2.5 px-8"
+          >
+            View All Shows
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+          </Link>
+        </div>
       </div>
+
+      <style jsx global>{`
+        /* Hide Swiper default navigation icons inside our custom buttons */
+        .events-swiper-prev.swiper-button-prev::after,
+        .events-swiper-next.swiper-button-next::after {
+          display: none !important;
+          content: "" !important;
+        }
+        
+        /* Prevent Swiper from overriding custom button positions and sizes */
+        .events-swiper-prev.swiper-button-prev,
+        .events-swiper-next.swiper-button-next {
+          position: absolute !important;
+          top: 50% !important;
+          transform: translateY(-50%) !important;
+          margin-top: 0 !important;
+          display: flex !important;
+          width: 48px !important;
+          height: 48px !important;
+          z-index: 20 !important;
+        }
+
+        .events-swiper-prev.swiper-button-prev {
+          left: -16px !important;
+        }
+
+        .events-swiper-next.swiper-button-next {
+          right: -16px !important;
+        }
+
+        @media (min-width: 1024px) {
+          .events-swiper-prev.swiper-button-prev,
+          .events-swiper-next.swiper-button-next {
+            width: 56px !important;
+            height: 56px !important;
+          }
+          .events-swiper-prev.swiper-button-prev {
+            left: -40px !important;
+          }
+          .events-swiper-next.swiper-button-next {
+            right: -40px !important;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .events-swiper-prev.swiper-button-prev {
+            left: -64px !important;
+          }
+          .events-swiper-next.swiper-button-next {
+            right: -64px !important;
+          }
+        }
+
+        /* Disable Swiper default styling affecting layout */
+        .events-swiper-prev.swiper-button-disabled,
+        .events-swiper-next.swiper-button-disabled {
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `}</style>
     </section>
   );
 }

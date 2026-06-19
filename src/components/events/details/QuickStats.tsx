@@ -27,9 +27,9 @@ export default function QuickStats({ event }: { event: any }) {
         >
           <div
             className="w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform"
-            style={{ background: 'rgba(249,115,22,0.12)' }}
+            style={{ background: 'rgba(255,255,255,0.12)' }}
           >
-            <stat.icon className="w-6 h-6" style={{ color: '#f97316' }} />
+            <stat.icon className="w-6 h-6" style={{ color: '#FFFFFF' }} />
           </div>
           <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">{stat.label}</p>
           <p className="text-xl font-extrabold text-foreground">{stat.value}</p>

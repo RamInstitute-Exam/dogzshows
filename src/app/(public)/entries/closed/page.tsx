@@ -58,7 +58,7 @@ export default function ClosedEntriesPage() {
               placeholder="Search Archives..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 outline-none transition-all font-medium text-foreground"
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-border focus:ring-2 focus:ring-foreground/20 outline-none transition-all font-medium text-foreground"
             />
           </div>
         </div>
@@ -101,27 +101,27 @@ export default function ClosedEntriesPage() {
                 
                 <div className="p-6 flex flex-col flex-grow relative">
                   <div className="absolute -top-10 right-6 bg-card rounded-xl shadow-lg border border-border p-2.5 text-center min-w-[75px] z-10">
-                    <span className="block text-brand-orange font-black text-xl leading-none">{new Date(event.startDate).getDate()}</span>
+                    <span className="block text-foreground font-black text-xl leading-none">{new Date(event.startDate).getDate()}</span>
                     <span className="block text-muted-foreground font-black text-xs uppercase mt-0.5">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</span>
                   </div>
 
                   <div className="space-y-4 mb-6 flex-grow pr-12">
                     <div>
-                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-brand-orange transition-colors line-clamp-2">{event.name}</h3>
+                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-foreground transition-colors line-clamp-2">{event.name}</h3>
                       <p className="text-sm font-semibold text-muted-foreground">{event.club?.name || 'TBA'}</p>
                     </div>
 
                     <div className="grid grid-cols-1 gap-y-2 text-sm text-muted-foreground font-semibold">
                       <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-brand-orange shrink-0" /> 
+                        <MapPin className="w-4 h-4 text-foreground shrink-0" /> 
                         <span className="truncate">{event.city ? `${event.city}, ${event.state || ''}` : event.venue || 'TBA'}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Trophy className="w-4 h-4 text-brand-orange shrink-0" /> 
+                        <Trophy className="w-4 h-4 text-foreground shrink-0" /> 
                         <span className="truncate">{event.type || 'Championship Show'}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Star className="w-4 h-4 text-brand-orange shrink-0" /> 
+                        <Star className="w-4 h-4 text-foreground shrink-0" /> 
                         <span>Status: Completed</span>
                       </div>
                     </div>

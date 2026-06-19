@@ -239,7 +239,7 @@ export default function BulkUploadJudges() {
           </Link>
           <div>
             <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
-              <Database className="w-6 h-6 text-brand-orange" />
+              <Database className="w-6 h-6 text-foreground" />
               Bulk Judge Import
             </h1>
             <p className="text-muted-foreground text-sm mt-0.5">
@@ -267,8 +267,8 @@ export default function BulkUploadJudges() {
             <div
               className={`border-2 border-dashed rounded-3xl p-12 text-center transition-all flex flex-col items-center justify-center min-h-[420px] cursor-pointer ${
                 dragActive
-                  ? 'border-brand-orange bg-brand-orange/5 scale-[1.01]'
-                  : 'border-border bg-card hover:border-brand-orange/50 hover:bg-accent/30'
+                  ? 'border-foreground bg-foreground/5 scale-[1.01]'
+                  : 'border-border bg-card hover:border-foreground/50 hover:bg-accent/30'
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -277,14 +277,14 @@ export default function BulkUploadJudges() {
               onClick={() => fileInputRef.current?.click()}
             >
               <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleChange} />
-              <div className="w-24 h-24 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center mb-6 shadow-2xl shadow-orange-500/20">
+              <div className="w-24 h-24 bg-foreground/10 text-foreground rounded-full flex items-center justify-center mb-6 shadow-2xl">
                 <UploadCloud className="w-12 h-12" />
               </div>
               <h3 className="text-2xl font-extrabold text-foreground mb-2">Drop JSON File Here</h3>
               <p className="text-muted-foreground text-sm max-w-xs mx-auto mb-6">
                 Accepts .json format. Max 5MB. Array of judge objects.
               </p>
-              <Button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-8 h-12 rounded-xl shadow-lg shadow-orange-500/20 pointer-events-none">
+              <Button className="bg-foreground hover:bg-foreground/90 text-background font-bold px-8 h-12 rounded-xl shadow-lg pointer-events-none">
                 Browse Files
               </Button>
             </div>
@@ -294,7 +294,7 @@ export default function BulkUploadJudges() {
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex-1">
               <h3 className="text-lg font-extrabold text-foreground mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-brand-orange" /> Import Guide
+                <FileText className="w-5 h-5 text-foreground" /> Import Guide
               </h3>
               <ol className="space-y-3 text-sm text-muted-foreground list-decimal pl-4">
                 <li>Download the JSON template using the <strong>Template</strong> button.</li>
@@ -312,7 +312,7 @@ export default function BulkUploadJudges() {
                 <div
                   onClick={() => setReplaceExisting(!replaceExisting)}
                   className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 transition-colors cursor-pointer ${
-                    replaceExisting ? 'bg-brand-orange border-brand-orange' : 'border-border'
+                    replaceExisting ? 'bg-foreground border-foreground' : 'border-border'
                   }`}
                 >
                   {replaceExisting && <CheckCircle2 className="w-3 h-3 text-white" />}
@@ -324,9 +324,9 @@ export default function BulkUploadJudges() {
               </label>
             </div>
 
-            <div className="bg-orange-500/10 border border-orange-500/20 p-4 rounded-2xl flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-orange-600">
+            <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-amber-700 dark:text-amber-400">
                 <strong>Warning:</strong> Replace mode permanently removes all existing judge records before importing. This action cannot be undone from the UI.
               </div>
             </div>
@@ -342,7 +342,7 @@ export default function BulkUploadJudges() {
             {[
               { label: 'Total Records', value: parsedRecords.length, color: 'text-foreground', bg: 'bg-card' },
               { label: 'Valid Records', value: parsedRecords.length - parseErrors.length, color: 'text-green-500', bg: 'bg-green-500/5' },
-              { label: 'Warnings', value: parseErrors.length, color: 'text-orange-500', bg: 'bg-orange-500/5' },
+              { label: 'Warnings', value: parseErrors.length, color: 'text-amber-500', bg: 'bg-amber-500/5' },
               { label: 'Replace Mode', value: replaceExisting ? 'ON' : 'OFF', color: replaceExisting ? 'text-red-500' : 'text-blue-500', bg: 'bg-card' },
             ].map((s) => (
               <div key={s.label} className={`${s.bg} rounded-2xl border border-border p-4`}>
@@ -354,14 +354,14 @@ export default function BulkUploadJudges() {
 
           {/* Validation Warnings */}
           {parseErrors.length > 0 && (
-            <div className="bg-orange-500/5 border border-orange-500/20 rounded-2xl p-4">
-              <div className="flex items-center gap-2 text-orange-500 font-bold mb-3">
+            <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4">
+              <div className="flex items-center gap-2 text-amber-500 font-bold mb-3">
                 <AlertCircle className="w-5 h-5" />
                 {parseErrors.length} Validation Warning{parseErrors.length > 1 ? 's' : ''} (records will be skipped)
               </div>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {parseErrors.map(e => (
-                  <div key={e.index} className="text-sm text-orange-600 flex gap-2">
+                  <div key={e.index} className="text-sm text-amber-700 dark:text-amber-400 flex gap-2">
                     <span className="font-bold">Row {e.index + 1}:</span>
                     <span>{e.errors.join(', ')}</span>
                   </div>
@@ -374,7 +374,7 @@ export default function BulkUploadJudges() {
           <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3 border-b border-border">
               <h3 className="font-extrabold text-foreground flex items-center gap-2">
-                <Eye className="w-5 h-5 text-brand-orange" /> Preview ({filteredRecords.length} shown)
+                <Eye className="w-5 h-5 text-foreground" /> Preview ({filteredRecords.length} shown)
               </h3>
               <div className="flex items-center gap-3">
                 <input
@@ -382,12 +382,12 @@ export default function BulkUploadJudges() {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="px-3 py-1.5 bg-background border border-border rounded-lg text-sm text-foreground w-44 outline-none focus:ring-2 focus:ring-brand-orange"
+                  className="px-3 py-1.5 bg-background border border-border rounded-lg text-sm text-foreground w-44 outline-none focus:ring-2 focus:ring-foreground"
                 />
                 <button
                   onClick={() => setShowFailedOnly(!showFailedOnly)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-                    showFailedOnly ? 'bg-orange-500 text-white border-orange-500' : 'border-border text-muted-foreground hover:bg-accent'
+                    showFailedOnly ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:bg-accent'
                   }`}
                 >
                   <Filter className="w-3.5 h-3.5" /> Warnings Only
@@ -410,7 +410,7 @@ export default function BulkUploadJudges() {
                 </thead>
                 <tbody className="divide-y divide-border/50">
                   {filteredRecords.map((rec) => (
-                    <tr key={rec._index} className={`hover:bg-accent/50 transition-colors ${rec._hasError ? 'bg-orange-500/5' : ''}`}>
+                    <tr key={rec._index} className={`hover:bg-accent/50 transition-colors ${rec._hasError ? 'bg-amber-500/5' : ''}`}>
                       <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{rec._index + 1}</td>
                       <td className="px-4 py-3 font-bold text-foreground">{rec.fullName || rec.name}</td>
                       <td className="px-4 py-3 text-muted-foreground text-xs">{rec.specialization || rec.description || '—'}</td>
@@ -423,7 +423,7 @@ export default function BulkUploadJudges() {
                       </td>
                       <td className="px-4 py-3">
                         {rec._hasError
-                          ? <AlertCircle className="w-4 h-4 text-orange-500" />
+                          ? <AlertCircle className="w-4 h-4 text-amber-500" />
                           : <CheckCircle2 className="w-4 h-4 text-green-500" />
                         }
                       </td>
@@ -463,7 +463,7 @@ export default function BulkUploadJudges() {
       {/* STAGE: IMPORTING */}
       {stage === 'importing' && (
         <div className="bg-card rounded-3xl border border-border shadow-xl p-16 flex flex-col items-center justify-center min-h-[500px] text-center">
-          <div className="w-28 h-28 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-orange-500/20">
+          <div className="w-28 h-28 bg-foreground/10 text-foreground rounded-full flex items-center justify-center mb-8 shadow-2xl">
             <Loader2 className="w-14 h-14 animate-spin" />
           </div>
           <h2 className="text-3xl font-extrabold text-foreground mb-3">Importing Judges…</h2>
@@ -477,7 +477,7 @@ export default function BulkUploadJudges() {
             </div>
             <div className="w-full bg-accent rounded-full h-3 overflow-hidden border border-border">
               <div
-                className="h-full bg-gradient-to-r from-brand-orange to-orange-400 rounded-full transition-all duration-300"
+                className="h-full bg-foreground rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -492,7 +492,7 @@ export default function BulkUploadJudges() {
           {/* Success Banner */}
           <div className="bg-card rounded-3xl border border-border shadow-xl p-12 flex flex-col items-center text-center">
             <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shadow-xl ${
-              importResult.failed === 0 ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'
+              importResult.failed === 0 ? 'bg-green-500/10 text-green-500' : 'bg-foreground/10 text-foreground'
             }`}>
               {importResult.failed === 0
                 ? <CheckCircle2 className="w-12 h-12" />
@@ -510,8 +510,8 @@ export default function BulkUploadJudges() {
                 { label: 'Imported', value: importResult.totalImported, color: 'text-green-500' },
                 { label: 'Skipped', value: importResult.skipped, color: 'text-blue-500' },
                 { label: 'Failed', value: importResult.failed, color: 'text-red-500' },
-                { label: 'Backup Saved', value: importResult.backupCount, color: 'text-purple-500' },
-                { label: 'Mode', value: importResult.existingDeleted ? 'Replace' : 'Append', color: 'text-brand-orange' },
+                { label: 'Backup Saved', value: importResult.backupCount, color: 'text-foreground' },
+                { label: 'Mode', value: importResult.existingDeleted ? 'Replace' : 'Append', color: 'text-foreground' },
               ].map(s => (
                 <div key={s.label} className="bg-accent/50 p-4 rounded-2xl border border-border text-left">
                   <div className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-1">{s.label}</div>

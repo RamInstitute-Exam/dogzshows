@@ -71,12 +71,12 @@ export default function ProfileDropdown() {
       {/* Trigger Button */}
       <button 
         onClick={toggleDropdown}
-        className="flex items-center gap-2 hover:bg-input p-1 pr-3 rounded-full border border-transparent hover:border-border transition-all focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent relative z-50"
+        className="flex items-center gap-2 hover:bg-input p-1 pr-3 rounded-full border border-transparent hover:border-border transition-all focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent relative z-50"
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
         <div className="relative">
-          <div className="w-9 h-9 rounded-full bg-brand-orange flex items-center justify-center text-foreground font-bold text-sm shadow-sm overflow-hidden">
+          <div className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-foreground font-bold text-sm shadow-sm overflow-hidden">
             {user?.profileImage ? (
               <img src={user.profileImage} alt={user.firstName} className="w-full h-full object-cover" />
             ) : (
@@ -90,7 +90,7 @@ export default function ProfileDropdown() {
           <p className="text-xs font-bold text-foreground leading-tight truncate max-w-[120px]">
             {user?.firstName ? `${user.firstName} ${user.lastName}` : 'Guest User'}
           </p>
-          <p className="text-[10px] font-bold text-brand-orange uppercase leading-tight tracking-wider">
+          <p className="text-[10px] font-bold text-foreground uppercase leading-tight tracking-wider">
             {role.replace('_', ' ')}
           </p>
         </div>
@@ -108,9 +108,9 @@ export default function ProfileDropdown() {
             className="absolute right-0 mt-[12px] w-[320px] bg-card/95 backdrop-blur-xl border border-border rounded-[20px] shadow-2xl overflow-hidden premium-hover z-50"
           >
             {/* Profile Card Header */}
-            <div className="p-5 border-b border-border bg-gradient-to-br from-orange-50/50 to-white">
+            <div className="p-5 border-b border-border bg-gradient-to-br from-card to-white">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-brand-orange flex items-center justify-center text-foreground font-bold text-xl shadow-md overflow-hidden shrink-0">
+                <div className="w-14 h-14 rounded-full bg-foreground flex items-center justify-center text-foreground font-bold text-xl shadow-md overflow-hidden shrink-0">
                   {user?.profileImage ? (
                     <img src={user.profileImage} alt={user.firstName} className="w-full h-full object-cover" />
                   ) : (
@@ -123,7 +123,7 @@ export default function ProfileDropdown() {
                   </h4>
                   <p className="text-sm text-muted-foreground truncate">{user?.email || 'guest@juzdog.com'}</p>
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-orange-100 text-brand-orange text-[10px] font-bold uppercase tracking-wider">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-foreground/10 text-foreground text-[10px] font-bold uppercase tracking-wider">
                       {role.replace('_', ' ')}
                     </span>
                     <span className="text-[10px] text-muted-foreground font-medium whitespace-nowrap">Last login: Today</span>
@@ -137,13 +137,13 @@ export default function ProfileDropdown() {
               
               {/* Common Profile Section */}
               <div className="mb-2">
-                <Link href={`${basePath}/profile`} onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                <Link href={`${basePath}/profile`} onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                   <User className="w-4 h-4 mr-3 text-muted-foreground" /> My Profile
                 </Link>
-                <Link href={`${basePath}/settings`} onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                <Link href={`${basePath}/settings`} onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                   <Settings className="w-4 h-4 mr-3 text-muted-foreground" /> Account Settings
                 </Link>
-                <Link href={`${basePath}/security`} onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                <Link href={`${basePath}/security`} onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                   <Shield className="w-4 h-4 mr-3 text-muted-foreground" /> Security & 2FA
                 </Link>
               </div>
@@ -154,16 +154,16 @@ export default function ProfileDropdown() {
               {(role === 'USER' || role === 'EVENT_MANAGER') && (
                 <div className="mb-2">
                   <p className="px-3 py-1 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Platform</p>
-                  <Link href="/dashboard/dogs" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                  <Link href="/dashboard/dogs" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                     <Dog className="w-4 h-4 mr-3 text-muted-foreground" /> My Dogs
                   </Link>
-                  <Link href="/dashboard/events/registered" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                  <Link href="/dashboard/events/registered" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                     <Calendar className="w-4 h-4 mr-3 text-muted-foreground" /> My Events
                   </Link>
-                  <Link href="/dashboard/payments/transactions" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                  <Link href="/dashboard/payments/transactions" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                     <CreditCard className="w-4 h-4 mr-3 text-muted-foreground" /> Payments
                   </Link>
-                  <Link href="/dashboard/dogs/certificates" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                  <Link href="/dashboard/dogs/certificates" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                     <FileBadge className="w-4 h-4 mr-3 text-muted-foreground" /> Certificates
                   </Link>
                 </div>
@@ -172,7 +172,7 @@ export default function ProfileDropdown() {
               {role === 'ADMIN' && (
                 <div className="mb-2">
                   <p className="px-3 py-1 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Admin Quick Actions</p>
-                  <Link href="/admin/users" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                  <Link href="/admin/users" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                     <Users className="w-4 h-4 mr-3 text-muted-foreground" /> User Database
                   </Link>
                 </div>
@@ -181,7 +181,7 @@ export default function ProfileDropdown() {
               {role === 'JUDGE' && (
                 <div className="mb-2">
                   <p className="px-3 py-1 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Judging</p>
-                  <Link href="/dashboard/judge/assignments" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-brand-orange rounded-xl transition-colors">
+                  <Link href="/dashboard/judge/assignments" onClick={() => setIsOpen(false)} className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground rounded-xl transition-colors">
                     <Award className="w-4 h-4 mr-3 text-muted-foreground" /> Assigned Competitions
                   </Link>
                 </div>

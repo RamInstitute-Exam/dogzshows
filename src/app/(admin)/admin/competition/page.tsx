@@ -46,7 +46,7 @@ export default function CompetitionEngine() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-muted-foregroundxl font-bold text-foreground">Competition Engine</h1>
-            <p className="text-muted-foreground mt-1">Live tracking and judging for Event: <span className="font-semibold text-brand-orange">National Championship 2026</span></p>
+            <p className="text-muted-foreground mt-1">Live tracking and judging for Event: <span className="font-semibold text-foreground">National Championship 2026</span></p>
           </div>
           <Button className="bg-brand-dark hover:bg-foreground text-background gap-2">
             <Trophy className="w-4 h-4" /> Finalize Best in Show
@@ -61,7 +61,7 @@ export default function CompetitionEngine() {
               onClick={() => setActiveRound(round)}
               className={`px-6 py-2.5 rounded-full font-medium transition-all ${
                 activeRound === round 
-                  ? 'bg-brand-orange text-foreground shadow-md' 
+                  ? 'bg-foreground text-foreground shadow-md' 
                   : 'bg-card text-muted-foreground hover:bg-input border border-border'
               }`}
             >

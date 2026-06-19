@@ -364,7 +364,7 @@ export default function CreateEventForm() {
               </div>
             </div>
             <div className="flex gap-2">
-              <select name="status" value={formData.status} onChange={handleInputChange} className="px-4 py-2 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none">
+              <select name="status" value={formData.status} onChange={handleInputChange} className="px-4 py-2 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none">
                 <option value="DRAFT">Draft</option>
                 <option value="REGISTRATION_OPEN">Open For Registration</option>
                 <option value="ONGOING">Ongoing</option>
@@ -388,7 +388,7 @@ export default function CreateEventForm() {
                     type="button"
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                       activeTab === tab.id 
-                        ? 'bg-brand-orange text-foreground shadow-lg' 
+                        ? 'bg-foreground text-foreground shadow-lg' 
                         : 'text-muted-foreground hover:bg-card hover:text-foreground'
                     }`}
                   >
@@ -410,19 +410,19 @@ export default function CreateEventForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Event Title *</label>
-                        <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="E.g., 50th All India Championship Dog Show" />
+                        <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="E.g., 50th All India Championship Dog Show" />
                       </div>
                       
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Slug URL (auto-generated)</label>
-                        <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="e.g. 50th-all-india-championship" />
+                        <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 50th-all-india-championship" />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Host Club / Organization *</label>
-                        <select name="clubId" value={formData.clubId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none appearance-none">
+                        <select name="clubId" value={formData.clubId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none appearance-none">
                           <option value="">Select Club...</option>
                           {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
@@ -430,7 +430,7 @@ export default function CreateEventForm() {
                       
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Event Type</label>
-                        <select name="type" value={formData.type} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none appearance-none">
+                        <select name="type" value={formData.type} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none appearance-none">
                           <option value="CHAMPIONSHIP">Championship Show</option>
                           <option value="SPECIALTY">Specialty Show</option>
                           <option value="OBEDIENCE">Obedience Trial</option>
@@ -440,11 +440,11 @@ export default function CreateEventForm() {
 
                     <div>
                       <label className="block text-sm font-bold text-muted-foreground mb-2">Show Description</label>
-                      <textarea name="description" value={formData.description} onChange={handleInputChange} rows={4} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="Write introductory details, prize details, or general info about the show..." />
+                      <textarea name="description" value={formData.description} onChange={handleInputChange} rows={4} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="Write introductory details, prize details, or general info about the show..." />
                     </div>
 
                     <div className="flex items-center gap-3 pt-2">
-                      <input type="checkbox" id="isFeatured" name="isFeatured" checked={formData.isFeatured} onChange={handleInputChange} className="w-5 h-5 rounded border-border text-brand-orange focus:ring-brand-orange bg-card" />
+                      <input type="checkbox" id="isFeatured" name="isFeatured" checked={formData.isFeatured} onChange={handleInputChange} className="w-5 h-5 rounded border-border text-foreground focus:ring-foreground bg-card" />
                       <label htmlFor="isFeatured" className="font-bold text-foreground text-sm cursor-pointer">Feature this show on the homepage banner</label>
                     </div>
                   </motion.div>
@@ -458,33 +458,33 @@ export default function CreateEventForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Show Start Date *</label>
-                        <input required type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input required type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Show End Date *</label>
-                        <input required type="date" name="endDate" value={formData.endDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input required type="date" name="endDate" value={formData.endDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Daily Start Time</label>
-                        <input type="time" name="startTime" value={formData.startTime} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="time" name="startTime" value={formData.startTime} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Daily End Time</label>
-                        <input type="time" name="endTime" value={formData.endTime} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="time" name="endTime" value={formData.endTime} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Registration Opens On</label>
-                        <input type="datetime-local" name="registrationWindowStart" value={formData.registrationWindowStart} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="datetime-local" name="registrationWindowStart" value={formData.registrationWindowStart} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Registration Last Date (Closing Date)</label>
-                        <input type="datetime-local" name="registrationWindowEnd" value={formData.registrationWindowEnd} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="datetime-local" name="registrationWindowEnd" value={formData.registrationWindowEnd} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                     </div>
                   </motion.div>
@@ -497,37 +497,37 @@ export default function CreateEventForm() {
                     
                     <div>
                       <label className="block text-sm font-bold text-muted-foreground mb-2">Venue / Stadium Name</label>
-                      <input type="text" name="venue" value={formData.venue} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="E.g., Nehru Indoor Stadium" />
+                      <input type="text" name="venue" value={formData.venue} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="E.g., Nehru Indoor Stadium" />
                     </div>
 
                     <div>
                       <label className="block text-sm font-bold text-muted-foreground mb-2">Full Address</label>
-                      <textarea name="address" value={formData.address} onChange={handleInputChange} rows={2} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="E.g., Raja Muthaiah Road, Kannappar Thidal, Periyamet" />
+                      <textarea name="address" value={formData.address} onChange={handleInputChange} rows={2} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="E.g., Raja Muthaiah Road, Kannappar Thidal, Periyamet" />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">City</label>
-                        <input type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="E.g., Chennai" />
+                        <input type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="E.g., Chennai" />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">State</label>
-                        <input type="text" name="state" value={formData.state} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="E.g., Tamil Nadu" />
+                        <input type="text" name="state" value={formData.state} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="E.g., Tamil Nadu" />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Country</label>
-                        <input type="text" name="country" value={formData.country} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                        <input type="text" name="country" value={formData.country} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Latitude (optional)</label>
-                        <input type="text" name="latitude" value={formData.latitude} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="e.g. 13.0827" />
+                        <input type="text" name="latitude" value={formData.latitude} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 13.0827" />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Longitude (optional)</label>
-                        <input type="text" name="longitude" value={formData.longitude} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="e.g. 80.2707" />
+                        <input type="text" name="longitude" value={formData.longitude} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 80.2707" />
                       </div>
                     </div>
                   </motion.div>
@@ -542,17 +542,17 @@ export default function CreateEventForm() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                         <div>
                           <label className="block text-sm font-bold text-muted-foreground mb-2">Maximum Capacity (Dogs)</label>
-                          <input type="number" name="capacity" value={formData.capacity} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                          <input type="number" name="capacity" value={formData.capacity} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                         </div>
                         <div>
                           <label className="block text-sm font-bold text-muted-foreground mb-2">Standard Entry Fee (INR)</label>
-                          <input type="number" name="entryFee" value={formData.entryFee} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" />
+                          <input type="number" name="entryFee" value={formData.entryFee} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                         </div>
                       </div>
 
                       <div className="mt-4">
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Specific Rules & Guidelines</label>
-                        <textarea name="rules" value={formData.rules} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="Write show entry guidelines, refund policy, breed specific details..." />
+                        <textarea name="rules" value={formData.rules} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="Write show entry guidelines, refund policy, breed specific details..." />
                       </div>
                     </div>
 
@@ -574,7 +574,7 @@ export default function CreateEventForm() {
                             placeholder="Search Judge..."
                             value={searchJudgeQuery}
                             onChange={(e) => setSearchJudgeQuery(e.target.value)}
-                            className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:border-brand-orange outline-none text-sm"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none text-sm"
                           />
                           <div className="border border-border rounded-lg max-h-[280px] overflow-y-auto divide-y divide-border bg-card">
                             {filteredJudges.length === 0 ? (
@@ -588,7 +588,7 @@ export default function CreateEventForm() {
                                     onClick={() => handleToggleJudge(judge)}
                                     className="flex items-center gap-3 p-3 hover:bg-accent/40 cursor-pointer transition-colors text-sm"
                                   >
-                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${isChecked ? 'bg-brand-orange border-brand-orange text-foreground' : 'border-border'}`}>
+                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${isChecked ? 'bg-foreground border-border text-foreground' : 'border-border'}`}>
                                       {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -622,12 +622,12 @@ export default function CreateEventForm() {
                                   onDragStart={() => handleDragStart(idx)}
                                   onDragOver={(e) => handleDragOver(e, idx)}
                                   onDrop={() => handleDrop(idx)}
-                                  className="flex flex-col p-3.5 bg-accent/20 border border-border hover:border-brand-orange/40 rounded-xl transition-all cursor-move group relative"
+                                  className="flex flex-col p-3.5 bg-accent/20 border border-border hover:border-border/40 rounded-xl transition-all cursor-move group relative"
                                 >
                                   <div className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2">
                                       <Move className="w-4 h-4 text-muted-foreground/60 shrink-0" />
-                                      <span className="text-xs font-black text-brand-orange bg-orange-50 w-5 h-5 rounded-full flex items-center justify-center shrink-0">{idx + 1}</span>
+                                      <span className="text-xs font-black text-foreground bg-foreground/10 w-5 h-5 rounded-full flex items-center justify-center shrink-0">{idx + 1}</span>
                                       <span className="font-bold text-foreground text-sm truncate max-w-[150px] sm:max-w-none">{j.name}</span>
                                     </div>
                                     
@@ -669,7 +669,7 @@ export default function CreateEventForm() {
                                     placeholder="Remarks (e.g. Ring 1 Coordinator)"
                                     value={j.remarks || ''}
                                     onChange={(e) => handleJudgeRemarksChange(j.judgeId, e.target.value)}
-                                    className="w-full mt-2 px-2.5 py-1.5 bg-background border border-border rounded text-xs text-foreground focus:border-brand-orange outline-none"
+                                    className="w-full mt-2 px-2.5 py-1.5 bg-background border border-border rounded text-xs text-foreground focus:border-border outline-none"
                                   />
                                 </div>
                               ))}
@@ -702,7 +702,7 @@ export default function CreateEventForm() {
                         {secretaries.map((sec, idx) => (
                           <div key={idx} className="bg-card border border-border rounded-2xl p-6 shadow-md relative space-y-4">
                             <div className="flex justify-between items-center bg-accent/20 -mx-6 -mt-6 p-4 px-6 rounded-t-2xl border-b border-border">
-                              <span className="font-extrabold text-brand-orange text-sm uppercase tracking-wider">Secretary Card {idx + 1}</span>
+                              <span className="font-extrabold text-foreground text-sm uppercase tracking-wider">Secretary Card {idx + 1}</span>
                               {secretaries.length > 1 && (
                                 <button
                                   type="button"
@@ -723,7 +723,7 @@ export default function CreateEventForm() {
                                   placeholder="e.g. Mr. R. Saravanakumar"
                                   value={sec.name}
                                   onChange={(e) => handleSecretaryChange(idx, 'name', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 />
                               </div>
                               <div>
@@ -731,7 +731,7 @@ export default function CreateEventForm() {
                                 <select
                                   value={sec.designation}
                                   onChange={(e) => handleSecretaryChange(idx, 'designation', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 >
                                   <option value="Hony. Secretary">Hony. Secretary</option>
                                   <option value="Joint Secretary">Joint Secretary</option>
@@ -747,7 +747,7 @@ export default function CreateEventForm() {
                                   placeholder="e.g. 9585266566"
                                   value={sec.mobile}
                                   onChange={(e) => handleSecretaryChange(idx, 'mobile', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 />
                               </div>
                             </div>
@@ -760,7 +760,7 @@ export default function CreateEventForm() {
                                   placeholder="e.g. 9443212345"
                                   value={sec.alternateMobile}
                                   onChange={(e) => handleSecretaryChange(idx, 'alternateMobile', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 />
                               </div>
                               <div>
@@ -770,7 +770,7 @@ export default function CreateEventForm() {
                                   placeholder="e.g. 0422-243000"
                                   value={sec.phone}
                                   onChange={(e) => handleSecretaryChange(idx, 'phone', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 />
                               </div>
                               <div>
@@ -781,7 +781,7 @@ export default function CreateEventForm() {
                                   placeholder="e.g. cmkc2021@gmail.com"
                                   value={sec.email}
                                   onChange={(e) => handleSecretaryChange(idx, 'email', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 />
                               </div>
                             </div>
@@ -794,7 +794,7 @@ export default function CreateEventForm() {
                                   placeholder="e.g. info@club.com"
                                   value={sec.alternateEmail}
                                   onChange={(e) => handleSecretaryChange(idx, 'alternateEmail', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 />
                               </div>
                               <div>
@@ -804,7 +804,7 @@ export default function CreateEventForm() {
                                   placeholder="e.g. www.clubsecretary.com"
                                   value={sec.website}
                                   onChange={(e) => handleSecretaryChange(idx, 'website', e.target.value)}
-                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                 />
                               </div>
                             </div>
@@ -820,7 +820,7 @@ export default function CreateEventForm() {
                                     placeholder="e.g. Aadhi International, 5/7 8th Street"
                                     value={sec.address}
                                     onChange={(e) => handleSecretaryChange(idx, 'address', e.target.value)}
-                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                   />
                                 </div>
                                 <div>
@@ -830,7 +830,7 @@ export default function CreateEventForm() {
                                     placeholder="e.g. Lakshmi Vinayagar Kovil Street, Ganapathy"
                                     value={sec.addressLine2}
                                     onChange={(e) => handleSecretaryChange(idx, 'addressLine2', e.target.value)}
-                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                   />
                                 </div>
                               </div>
@@ -843,7 +843,7 @@ export default function CreateEventForm() {
                                     placeholder="e.g. Coimbatore"
                                     value={sec.city}
                                     onChange={(e) => handleSecretaryChange(idx, 'city', e.target.value)}
-                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                   />
                                 </div>
                                 <div>
@@ -853,7 +853,7 @@ export default function CreateEventForm() {
                                     placeholder="e.g. Tamil Nadu"
                                     value={sec.state}
                                     onChange={(e) => handleSecretaryChange(idx, 'state', e.target.value)}
-                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                   />
                                 </div>
                                 <div>
@@ -863,7 +863,7 @@ export default function CreateEventForm() {
                                     placeholder="e.g. 641006"
                                     value={sec.pincode}
                                     onChange={(e) => handleSecretaryChange(idx, 'pincode', e.target.value)}
-                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                   />
                                 </div>
                                 <div>
@@ -872,7 +872,7 @@ export default function CreateEventForm() {
                                     type="text"
                                     value={sec.country}
                                     onChange={(e) => handleSecretaryChange(idx, 'country', e.target.value)}
-                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-brand-orange outline-none"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none"
                                   />
                                 </div>
                               </div>
@@ -891,7 +891,7 @@ export default function CreateEventForm() {
                     
                     <div>
                       <label className="block text-sm font-bold text-muted-foreground mb-2">Hero Banner Image URL</label>
-                      <input type="text" name="bannerUrl" value={formData.bannerUrl} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-brand-orange outline-none" placeholder="https://example.com/banner.jpg or /images/..." />
+                      <input type="text" name="bannerUrl" value={formData.bannerUrl} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="https://example.com/banner.jpg or /images/..." />
                     </div>
 
                     <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl py-12 px-4 bg-accent/5">

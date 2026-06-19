@@ -18,7 +18,7 @@ export default function WinnersHallSlider() {
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 relative z-10">
         <div className="text-center mb-16">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-primary text-sm font-bold mb-6">
-            <Star className="w-4 h-4 fill-primary text-primary" /> Hall of Fame
+            <Star className="w-4 h-4 fill-foreground text-foreground" /> Hall of Fame
           </motion.div>
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-4xl md:text-5xl font-[800] text-foreground tracking-tight mb-6">
             Recent Champions
@@ -64,7 +64,7 @@ export default function WinnersHallSlider() {
         </div>
 
         <div className="mt-12 text-center w-full px-4 md:px-0">
-          <Button className="w-full md:w-auto btn-primary-luxury h-[54px] md:h-[52px] px-8 font-bold rounded-[14px]">
+          <Button className="w-full md:w-auto btn-primary-luxury">
             Explore Hall of Fame
           </Button>
         </div>

@@ -41,7 +41,7 @@ export default function UpcomingEvents() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-brand-orange" /> Upcoming Events
+            <Calendar className="w-8 h-8 text-foreground" /> Upcoming Events
           </h1>
           <p className="text-muted-foreground">Browse and register for upcoming KCI certified dog shows.</p>
         </div>
@@ -93,7 +93,7 @@ export default function UpcomingEvents() {
               
               <div className="p-6 flex-1 flex flex-col">
                 <div className="mb-4">
-                  <p className="text-xs font-bold text-brand-orange uppercase tracking-wider mb-2">{event.club?.name || 'KCI Official'}</p>
+                  <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-2">{event.club?.name || 'KCI Official'}</p>
                   <h3 className="text-xl font-bold text-foreground line-clamp-2 leading-tight mb-2">{event.name}</h3>
                   <div className="flex items-center gap-2 text-muted-foreground text-sm">
                     <MapPin className="w-4 h-4" /> {event.venue}
@@ -112,7 +112,7 @@ export default function UpcomingEvents() {
                 </div>
 
                 <Link href={`/events/detail?id=${event.id}`}>
-                  <Button className="w-full bg-card text-foreground hover:bg-brand-orange hover:text-foreground transition-all font-bold">
+                  <Button className="w-full bg-card text-foreground hover:bg-foreground hover:text-foreground transition-all font-bold">
                     View Details <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>

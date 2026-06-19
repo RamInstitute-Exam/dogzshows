@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     : USER_ROUTES.filter(route => route.roles?.some(r => roles.includes(r.toUpperCase())));
 
   return (
-    <div className="min-h-screen bg-card flex flex-col selection:bg-brand-orange selection:text-foreground font-sans">
+    <div className="min-h-screen bg-card flex flex-col selection:bg-foreground selection:text-foreground font-sans">
       
       {/* Top Header */}
       <header className="fixed top-0 w-full h-[72px] bg-card/80 backdrop-blur-md border-b border-border z-50 flex items-center justify-between pl-6 pr-4">
@@ -63,7 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           
           <div className="flex items-center">
             {isSidebarCollapsed ? (
-              <div className="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center shrink-0">
                 <Dog className="w-5 h-5 text-foreground" />
               </div>
             ) : (
@@ -121,16 +121,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   return (
                     <div key={route.name}>
                       {hasChildren ? (
-                        <button onClick={() => toggleMenu(route.name)} className={`w-full flex items-center justify-between ${isSidebarCollapsed ? 'px-0 justify-center' : 'px-4'} py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-orange-50 text-brand-orange' : 'text-muted-foreground hover:bg-card hover:text-foreground'}`}>
+                        <button onClick={() => toggleMenu(route.name)} className={`w-full flex items-center justify-between ${isSidebarCollapsed ? 'px-0 justify-center' : 'px-4'} py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-foreground/10 text-foreground' : 'text-muted-foreground hover:bg-card hover:text-foreground'}`}>
                           <div className="flex items-center">
-                            <Icon className={`w-5 h-5 ${isSidebarCollapsed ? '' : 'mr-3'} ${isActive ? 'text-brand-orange' : 'text-muted-foreground'}`} />
+                            <Icon className={`w-5 h-5 ${isSidebarCollapsed ? '' : 'mr-3'} ${isActive ? 'text-foreground' : 'text-muted-foreground'}`} />
                             {!isSidebarCollapsed && <span>{route.name}</span>}
                           </div>
                           {!isSidebarCollapsed && <ChevronRight className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />}
                         </button>
                       ) : (
-                        <Link href={route.href!} onMouseEnter={() => handleRouteHover(route.href!)} className={`flex items-center ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4'} py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-orange-50 text-brand-orange' : 'hover:bg-card hover:text-foreground'}`} title={route.name}>
-                          <Icon className={`w-5 h-5 ${isSidebarCollapsed ? '' : 'mr-3'} ${isActive ? 'text-brand-orange' : 'text-muted-foreground'}`} />
+                        <Link href={route.href!} onMouseEnter={() => handleRouteHover(route.href!)} className={`flex items-center ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4'} py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-foreground/10 text-foreground' : 'hover:bg-card hover:text-foreground'}`} title={route.name}>
+                          <Icon className={`w-5 h-5 ${isSidebarCollapsed ? '' : 'mr-3'} ${isActive ? 'text-foreground' : 'text-muted-foreground'}`} />
                           {!isSidebarCollapsed && <span>{route.name}</span>}
                         </Link>
                       )}
@@ -142,7 +142,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                               <div className="pl-11 py-2 space-y-1">
                                 {route.children?.map(child => (
-                                  <Link key={child.name} href={child.href} onMouseEnter={() => handleRouteHover(child.href)} className={`block py-2 text-sm font-medium ${pathname === child.href ? 'text-brand-orange' : 'text-muted-foreground hover:text-foreground transition-colors'}`}>
+                                  <Link key={child.name} href={child.href} onMouseEnter={() => handleRouteHover(child.href)} className={`block py-2 text-sm font-medium ${pathname === child.href ? 'text-foreground' : 'text-muted-foreground hover:text-foreground transition-colors'}`}>
                                     {child.name}
                                   </Link>
                                 ))}

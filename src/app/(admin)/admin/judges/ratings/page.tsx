@@ -55,7 +55,7 @@ export default function CompetitionRatings() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <Star className="w-8 h-8 text-brand-orange" /> Competition Ratings
+                <Star className="w-8 h-8 text-foreground" /> Competition Ratings
               </h1>
               <p className="text-muted-foreground font-medium mt-1">Score participants, manage brackets, and assign Winner Tags.</p>
             </div>
@@ -87,7 +87,7 @@ export default function CompetitionRatings() {
                   {loading ? (
                     <tr>
                       <td colSpan={4} className="py-12 text-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-brand-orange  mb-4" />
+                        <Loader2 className="w-8 h-8 animate-spin text-foreground  mb-4" />
                         <p className="text-muted-foreground">Loading match data...</p>
                       </td>
                     </tr>
@@ -108,7 +108,7 @@ export default function CompetitionRatings() {
                         className="hover:bg-[rgba(255,255,255,0.01)] transition-colors group"
                       >
                         <td className="py-4 px-6">
-                          <p className="text-xs font-bold text-brand-orange uppercase tracking-wider mb-1">
+                          <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">
                             {match.round?.event?.name}
                           </p>
                           <p className="font-bold text-foreground text-lg">{match.round?.name}</p>

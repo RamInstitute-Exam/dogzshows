@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
+import Spinner from '@/components/common/loader/Spinner';
 
 export default function ShowPhotosAdminPage() {
   const [albums, setAlbums] = useState<any[]>([]);
@@ -139,7 +140,7 @@ export default function ShowPhotosAdminPage() {
     }
   };
 
-  if (isLoading) return <div className="p-8">Loading...</div>;
+  if (isLoading) return <Spinner className="p-8" />;
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -148,7 +149,7 @@ export default function ShowPhotosAdminPage() {
           <h1 className="text-3xl font-bold text-foreground tracking-tight">Homepage Show Photos</h1>
           <p className="text-muted-foreground mt-1">Manage the premium photo gallery shown on the homepage.</p>
         </div>
-        <Button onClick={() => openModal()} className="bg-brand-orange hover:bg-orange-600">
+        <Button onClick={() => openModal()} className="bg-foreground hover:bg-foreground">
           <Plus className="w-5 h-5 mr-2" />
           Add Album
         </Button>
@@ -249,7 +250,7 @@ export default function ShowPhotosAdminPage() {
 
               <div className="flex justify-end gap-3 pt-6 border-t border-border">
                 <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={isUploading} className="bg-brand-orange hover:bg-orange-600">Save Album</Button>
+                <Button type="submit" disabled={isUploading} className="bg-foreground hover:bg-foreground">Save Album</Button>
               </div>
             </form>
           </div>

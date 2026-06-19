@@ -169,8 +169,8 @@ export default function EventDetailClient() {
     return (
       <PageContainer>
         <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-          <div className="w-24 h-24 rounded-full bg-orange-50 flex items-center justify-center mb-6 border border-orange-100">
-            <SearchX className="w-12 h-12 text-brand-orange" />
+          <div className="w-24 h-24 rounded-full bg-foreground/10 flex items-center justify-center mb-6 border border-border/20">
+            <SearchX className="w-12 h-12 text-foreground" />
           </div>
           <h1 className="text-3xl font-extrabold text-foreground mb-3">Event Not Found</h1>
           <p className="text-muted-foreground font-medium max-w-md mb-8 text-lg">
@@ -184,7 +184,7 @@ export default function EventDetailClient() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/events"
-              className="inline-flex items-center gap-2 bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-md"
+              className="inline-flex items-center gap-2 bg-foreground hover:bg-foreground text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-md"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Events
@@ -205,7 +205,7 @@ export default function EventDetailClient() {
   return (
     <PageContainer>
       {/* Breadcrumb */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-3 md:pt-10 md:pb-6 breadcrumb-container">
         <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground flex-wrap">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="w-4 h-4 shrink-0" />
@@ -215,72 +215,81 @@ export default function EventDetailClient() {
         </div>
       </div>
 
-      {/* Section 1: Hero Banner */}
+      {/* Section 1: Hero Banner — ONLY visible section for now */}
       <EventHero event={event} />
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section 2: Quick Statistics */}
-        <QuickStats event={event} />
+      {false && (
+        <>
+          {/*
+            ╔══════════════════════════════════════════════════════════════════╗
+            ║  TEMPORARILY HIDDEN — Will be redesigned in a future update.   ║
+            ║  Do NOT remove this code. Just keep it commented out.          ║
+            ╚══════════════════════════════════════════════════════════════════╝
+          */}
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <QuickStats event={event} />
 
-        {/* 70/30 Split Layout */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mt-8">
-          {/* Left Column (70%) */}
-          <div className="flex-1 w-full lg:w-[70%] min-w-0">
-            <AboutEvent event={event} />
-            <EventTimeline timeline={event?.timeline ?? []} />
-            <BreedCategories />
-            <AgeClasses classes={event?.ageClasses ?? []} />
-            <EventJudges judges={event?.judges ?? []} />
-            <OrganizingCommittee secretaries={event?.secretaries ?? []} />
-            <EventVenue event={event} />
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mt-8">
+              <div className="flex-1 w-full lg:w-[70%] min-w-0">
+                <AboutEvent event={event} />
+                <EventTimeline timeline={event?.timeline ?? []} />
+                <BreedCategories />
+                <AgeClasses classes={event?.ageClasses ?? []} />
 
-            {/* Registered Entries Section */}
-            <div className="bg-card rounded-[24px] p-8 border border-border shadow-sm mb-8 text-foreground">
-              <h3 className="text-2xl font-black mb-6 flex items-center gap-2">
-                <Dog className="w-6 h-6 text-brand-orange" /> Registered Dog Entries ({showEntries.length})
-              </h3>
-              {loadingEntries ? (
-                <div className="text-center py-6 text-muted-foreground flex items-center justify-center gap-2">
-                  <Loader2 className="w-5 h-5 animate-spin text-brand-orange" /> Loading registered dogs...
-                </div>
-              ) : showEntries.length === 0 ? (
-                <p className="text-muted-foreground font-medium italic">No verified dog entries registered for this show yet.</p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {showEntries.map((ent: any) => (
-                    <div key={ent.id} className="p-4 bg-accent/15 border border-border rounded-2xl flex gap-4 items-center">
-                      <div className="w-12 h-12 rounded-full overflow-hidden bg-accent shrink-0 border border-border">
-                        <img
-                          src={ent.dogPhoto || '/images/hero_banner.png'}
-                          alt={ent.dogName ?? 'Dog'}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-bold text-foreground truncate">{ent.dogName ?? '-'}</p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {[ent.breed, ent.category].filter(Boolean).join(' • ') || '-'}
-                        </p>
-                      </div>
+                {/* Judges — hidden even if data exists in DB */}
+                <EventJudges judges={event?.judges ?? []} />
+
+                <OrganizingCommittee secretaries={event?.secretaries ?? []} />
+                <EventVenue event={event} />
+
+                {/* Registered Entries */}
+                <div className="bg-card rounded-[24px] p-8 border border-border shadow-sm mb-8 text-foreground">
+                  <h3 className="text-2xl font-black mb-6 flex items-center gap-2">
+                    <Dog className="w-6 h-6 text-foreground" /> Registered Dog Entries ({showEntries.length})
+                  </h3>
+                  {loadingEntries ? (
+                    <div className="text-center py-6 text-muted-foreground flex items-center justify-center gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin text-foreground" /> Loading registered dogs...
                     </div>
-                  ))}
+                  ) : showEntries.length === 0 ? (
+                    <p className="text-muted-foreground font-medium italic">No verified dog entries registered for this show yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {showEntries.map((ent: any) => (
+                        <div key={ent.id} className="p-4 bg-accent/15 border border-border rounded-2xl flex gap-4 items-center">
+                          <div className="w-12 h-12 rounded-full overflow-hidden bg-accent shrink-0 border border-border">
+                            <img
+                              src={ent.dogPhoto || '/images/hero_banner.png'}
+                              alt={ent.dogName ?? 'Dog'}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-bold text-foreground truncate">{ent.dogName ?? '-'}</p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {[ent.breed, ent.category].filter(Boolean).join(' • ') || '-'}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
+
+                <EventGallery />
+                <EventSponsors />
+                <EventFAQs faqs={event?.faqs ?? []} />
+                <RelatedEvents events={MOCK_EVENTS} />
+              </div>
+
+              <div className="w-full lg:w-[30%] relative">
+                <EventSidebar event={event} />
+              </div>
             </div>
-
-            <EventGallery />
-            <EventSponsors />
-            <EventFAQs faqs={event?.faqs ?? []} />
-            <RelatedEvents events={MOCK_EVENTS} />
           </div>
-
-          {/* Right Column Sticky Sidebar (30%) */}
-          <div className="w-full lg:w-[30%] relative">
-            <EventSidebar event={event} />
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </PageContainer>
   );
 }

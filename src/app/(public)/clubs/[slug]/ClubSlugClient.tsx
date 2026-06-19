@@ -76,7 +76,7 @@ function ClubSlugContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
+        <Loader2 className="w-10 h-10 animate-spin text-foreground" />
       </div>
     );
   }
@@ -89,7 +89,7 @@ export default function ClubSlugClientPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
+          <Loader2 className="w-10 h-10 animate-spin text-foreground" />
         </div>
       }
     >

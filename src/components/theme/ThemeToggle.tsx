@@ -25,7 +25,7 @@ export function ThemeToggle() {
 
   return (
     <div className="flex items-center gap-3">
-      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${!isDark ? 'text-brand-orange' : 'text-muted-foreground'}`}>
+      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${!isDark ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
         <Sun className="w-4 h-4" />
         <span className="hidden sm:inline">Light</span>
       </span>
@@ -40,7 +40,7 @@ export function ThemeToggle() {
         />
       </button>
 
-      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${isDark ? 'text-brand-orange' : 'text-muted-foreground'}`}>
+      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${isDark ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
         <span className="hidden sm:inline">Dark</span>
         <Moon className="w-4 h-4" />
       </span>

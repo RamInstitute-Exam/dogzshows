@@ -95,13 +95,13 @@ export default function DogsPage() {
               placeholder="Search dogs by name or KCI..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm bg-card border border-border rounded-xl focus:ring-2 focus:ring-brand-orange outline-none text-foreground" 
+              className="w-full pl-9 pr-4 py-2 text-sm bg-card border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none text-foreground" 
             />
           </div>
           <Button variant="outline" size="icon" className="rounded-xl border-border text-muted-foreground hover:text-foreground"><Filter className="w-4 h-4" /></Button>
           <Button variant="outline" size="icon" className="rounded-xl border-border text-muted-foreground hover:text-foreground"><Download className="w-4 h-4" /></Button>
           <Link href="/dashboard/dogs/create">
-            <Button className="bg-brand-orange hover:bg-orange-600 rounded-xl font-bold shadow-md text-foreground">
+            <Button className="bg-foreground hover:bg-foreground rounded-xl font-bold shadow-md text-foreground">
               <Plus className="w-4 h-4 sm:mr-2" /><span className="hidden sm:inline">Add Dog</span>
             </Button>
           </Link>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useEffect, Suspense } from 'react';
+import React, { createContext, useState, useEffect, Suspense, useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { AppLoader } from './AppLoader';
 
@@ -14,42 +14,59 @@ export const LoaderContext = createContext<LoaderContextType | undefined>(undefi
 
 export const LoaderProvider = ({ children }: { children: React.ReactNode }) => {
   const [isBootstrapped, setIsBootstrapped] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   
-  // Set isBootstrapped to true after a short timeout (e.g. 1.2s) to show brand animation once
+  // Initial app load animation
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsExiting(true);
       const exitTimer = setTimeout(() => {
         setIsBootstrapped(true);
         setIsExiting(false);
-      }, 500); // matches the 500ms exit transition
+      }, 300); // Fast fade
       return () => clearTimeout(exitTimer);
-    }, 1200);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // No-op triggers so background/subsequent actions do not block user interfaces
-  const showLoader = () => {};
-  const hideLoader = () => {};
+  const showLoader = useCallback(() => {
+    setIsNavigating(true);
+    setIsExiting(false);
+  }, []);
 
-  const isLoading = !isBootstrapped;
+  const hideLoader = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setIsNavigating(false);
+      setIsExiting(false);
+    }, 300);
+  }, []);
+
+  const isLoading = !isBootstrapped || isNavigating;
 
   return (
     <LoaderContext.Provider value={{ isLoading, showLoader, hideLoader }}>
       {children}
       <Suspense fallback={null}>
-        <SearchParamsTracker />
+        <SearchParamsTracker hideLoader={hideLoader} isNavigating={isNavigating} />
       </Suspense>
       <AppLoader isLoading={isLoading} isExiting={isExiting} />
     </LoaderContext.Provider>
   );
 };
 
-const SearchParamsTracker = () => {
-  // Kept here to prevent hydration/bailout issues on static paths
-  usePathname();
-  useSearchParams();
+// Tracks route changes to hide the loader when navigation completes
+const SearchParamsTracker = ({ hideLoader, isNavigating }: { hideLoader: () => void, isNavigating: boolean }) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (isNavigating) {
+      hideLoader();
+    }
+  }, [pathname, searchParams, isNavigating, hideLoader]);
+
   return null;
 };

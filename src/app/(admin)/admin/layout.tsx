@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-card flex flex-col selection:bg-brand-orange selection:text-foreground font-sans">
+    <div className="min-h-screen bg-card flex flex-col selection:bg-foreground selection:text-foreground font-sans">
       
       <header className="fixed top-0 w-full h-[72px] bg-background text-foreground border-b border-border z-50 flex items-center justify-between pl-6 pr-4">
         

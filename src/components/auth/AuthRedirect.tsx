@@ -17,7 +17,7 @@ export default function AuthRedirect({ view }: { view: AuthView }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-card">
-      <div className="w-8 h-8 border-4 border-brand-orange border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-4 border-border border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 }

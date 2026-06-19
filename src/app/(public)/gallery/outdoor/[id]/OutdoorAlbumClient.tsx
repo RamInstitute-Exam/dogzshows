@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, X, ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react';
+import { ArrowLeft, ImageIcon } from 'lucide-react';
 import Masonry from 'react-masonry-css';
 import api, { getImageUrl } from '@/lib/api';
+import ImageLightbox from '@/components/shared/ImageLightbox';
 
 export default function OutdoorAlbumClient() {
   const { id } = useParams();
@@ -30,28 +31,15 @@ export default function OutdoorAlbumClient() {
     if (id) fetchAlbum();
   }, [id]);
 
-  // Handle keyboard navigation for Lightbox
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (lightboxIndex === null) return;
-    if (e.key === 'Escape') setLightboxIndex(null);
-    if (e.key === 'ArrowRight') setLightboxIndex(prev => prev !== null && prev < album.images.length - 1 ? prev + 1 : prev);
-    if (e.key === 'ArrowLeft') setLightboxIndex(prev => prev !== null && prev > 0 ? prev - 1 : prev);
-  }, [lightboxIndex, album]);
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-background"><div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin"></div></div>;
+    return <div className="min-h-screen flex items-center justify-center bg-background"><div className="w-10 h-10 border-4 border-border border-t-transparent rounded-full animate-spin"></div></div>;
   }
 
   if (!album) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background text-center p-6">
         <h1 className="text-3xl font-bold text-foreground mb-4">Album Not Found</h1>
-        <button onClick={() => router.back()} className="text-brand-orange font-bold hover:underline">Go Back</button>
+        <button onClick={() => router.back()} className="text-foreground font-bold hover:underline">Go Back</button>
       </div>
     );
   }
@@ -114,42 +102,12 @@ export default function OutdoorAlbumClient() {
       </div>
 
       {/* Lightbox */}
-      {lightboxIndex !== null && (
-        <div className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-sm flex flex-col">
-          <div className="flex justify-between items-center p-6 text-white/70 absolute top-0 w-full z-10">
-            <div className="font-medium">{lightboxIndex + 1} / {album.images?.length}</div>
-            <button onClick={() => setLightboxIndex(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-              <X className="w-8 h-8 text-white" />
-            </button>
-          </div>
-          
-          <div className="flex-1 flex items-center justify-center relative w-full h-full p-4 md:p-12">
-            <button 
-              onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => prev! > 0 ? prev! - 1 : prev); }}
-              className={`absolute left-4 md:left-8 p-3 rounded-full bg-black/50 text-white hover:bg-black/80 transition-all ${lightboxIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}
-              disabled={lightboxIndex === 0}
-            >
-              <ChevronLeft className="w-8 h-8" />
-            </button>
-
-            <img 
-              src={getImageUrl(album.images[lightboxIndex].imageUrl)} 
-              alt="Lightbox view" 
-              className="max-w-full max-h-full object-contain drop-shadow-2xl select-none"
-              onContextMenu={(e) => e.preventDefault()}
-              style={{ pointerEvents: 'none' }}
-            />
-
-            <button 
-              onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => prev! < album.images.length - 1 ? prev! + 1 : prev); }}
-              className={`absolute right-4 md:right-8 p-3 rounded-full bg-black/50 text-white hover:bg-black/80 transition-all ${lightboxIndex === album.images.length - 1 ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}
-              disabled={lightboxIndex === album.images.length - 1}
-            >
-              <ChevronRight className="w-8 h-8" />
-            </button>
-          </div>
-        </div>
-      )}
+      <ImageLightbox 
+        images={album.images || []} 
+        initialIndex={lightboxIndex !== null ? lightboxIndex : 0} 
+        isOpen={lightboxIndex !== null} 
+        onClose={() => setLightboxIndex(null)} 
+      />
     </div>
   );
 }

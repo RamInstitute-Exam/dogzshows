@@ -1,13 +1,10 @@
 import React, { Suspense } from 'react';
 import ClubsClient from './ClubsClient';
+import Spinner from '@/components/common/loader/Spinner';
 
 export default function ClubsPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <div className="animate-pulse font-medium text-lg">Loading...</div>
-      </div>
-    }>
+    <Suspense fallback={<Spinner className="min-h-screen" />}>
       <ClubsClient />
     </Suspense>
   );

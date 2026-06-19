@@ -48,7 +48,7 @@ export default function FciGroupsPage() {
             <h1 className="text-3xl font-bold text-foreground mb-2">FCI Groups & Breeds</h1>
             <p className="text-muted-foreground">Manage FCI classification groups and their respective breeds.</p>
           </div>
-          <Button className="bg-brand-orange hover:bg-orange-600 text-foreground">
+          <Button className="bg-foreground hover:bg-foreground text-foreground">
             <Plus className="w-4 h-4 mr-2"/> Add Group
           </Button>
         </div>

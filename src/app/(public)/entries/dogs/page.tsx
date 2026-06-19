@@ -91,7 +91,7 @@ export default function DogEntriesCatalogPage() {
               placeholder="Search Dog Name, Owner, Reg #..." 
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 outline-none transition-all font-medium text-foreground"
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-border focus:ring-2 focus:ring-foreground/20 outline-none transition-all font-medium text-foreground"
             />
           </div>
 
@@ -100,7 +100,7 @@ export default function DogEntriesCatalogPage() {
             <select
               value={eventFilter}
               onChange={(e) => { setEventFilter(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-border"
             >
               <option value="">All Shows</option>
               {events.map(ev => <option key={ev.id} value={ev.id}>{ev.name}</option>)}
@@ -110,7 +110,7 @@ export default function DogEntriesCatalogPage() {
             <select
               value={breedFilter}
               onChange={(e) => { setBreedFilter(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-border"
             >
               <option value="">All Breeds</option>
               {uniqueBreeds.map((breed, i) => <option key={i} value={breed}>{breed}</option>)}
@@ -125,7 +125,7 @@ export default function DogEntriesCatalogPage() {
             <select
               value={categoryFilter}
               onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-border"
             >
               <option value="">All Classes</option>
               <option value="Puppy">Puppy</option>
@@ -139,7 +139,7 @@ export default function DogEntriesCatalogPage() {
             <select
               value={genderFilter}
               onChange={(e) => { setGenderFilter(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-brand-orange"
+              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-border"
             >
               <option value="">All Genders</option>
               <option value="MALE">Male</option>
@@ -171,7 +171,7 @@ export default function DogEntriesCatalogPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-              <Dog className="w-8 h-8 text-brand-orange" /> Verified Dog Listings
+              <Dog className="w-8 h-8 text-foreground" /> Verified Dog Listings
             </h2>
             <p className="text-muted-foreground mt-2 font-medium">Browse dynamic live catalog records. Total: {totalCount}</p>
           </div>
@@ -208,14 +208,14 @@ export default function DogEntriesCatalogPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   
                   {/* Category Class Badge */}
-                  <span className="absolute bottom-4 left-4 bg-brand-orange text-foreground font-black text-[10px] px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
+                  <span className="absolute bottom-4 left-4 bg-foreground text-foreground font-black text-[10px] px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
                     {entry.category}
                   </span>
                 </div>
 
                 <div className="p-5 flex-grow flex flex-col justify-between">
                   <div className="space-y-2.5">
-                    <h3 className="font-extrabold text-lg line-clamp-1 group-hover:text-brand-orange transition-colors">{entry.dogName}</h3>
+                    <h3 className="font-extrabold text-lg line-clamp-1 group-hover:text-foreground transition-colors">{entry.dogName}</h3>
                     
                     <div className="flex gap-2 text-xs">
                       <span className="bg-accent px-2 py-0.5 rounded font-bold text-muted-foreground">{entry.breed}</span>
@@ -224,11 +224,11 @@ export default function DogEntriesCatalogPage() {
 
                     <div className="pt-2.5 border-t border-border space-y-2 text-xs font-semibold text-muted-foreground">
                       <div className="flex items-center gap-2">
-                        <User className="w-3.5 h-3.5 text-brand-orange" />
+                        <User className="w-3.5 h-3.5 text-foreground" />
                         <span className="truncate">Owner: {entry.ownerName}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <CalendarDays className="w-3.5 h-3.5 text-brand-orange" />
+                        <CalendarDays className="w-3.5 h-3.5 text-foreground" />
                         <span className="truncate">{entry.event?.name || 'TBA'}</span>
                       </div>
                     </div>
@@ -236,7 +236,7 @@ export default function DogEntriesCatalogPage() {
 
                   <Button 
                     onClick={() => { setSelectedEntry(entry); setIsViewModalOpen(true); }}
-                    className="mt-5 w-full bg-accent/20 hover:bg-brand-orange text-foreground rounded-xl h-10 shadow-sm border border-border group-hover:border-transparent font-bold flex items-center justify-center gap-1.5"
+                    className="mt-5 w-full bg-accent/20 hover:bg-foreground text-foreground rounded-xl h-10 shadow-sm border border-border group-hover:border-transparent font-bold flex items-center justify-center gap-1.5"
                   >
                     <Eye className="w-4 h-4" /> View Details
                   </Button>
@@ -282,7 +282,7 @@ export default function DogEntriesCatalogPage() {
             >
               <div className="flex justify-between items-center p-6 border-b border-border shrink-0 bg-accent/10">
                 <h3 className="text-xl font-extrabold text-foreground flex items-center gap-2">
-                  <Award className="w-6 h-6 text-brand-orange" /> Show Entry Profile
+                  <Award className="w-6 h-6 text-foreground" /> Show Entry Profile
                 </h3>
                 <button onClick={() => setIsViewModalOpen(false)} className="p-2 hover:bg-accent rounded-xl text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
@@ -303,7 +303,7 @@ export default function DogEntriesCatalogPage() {
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Registration ID / KCI #</span>
-                    <span className="text-sm font-mono text-brand-orange font-bold">{selectedEntry.registrationNumber || 'None'}</span>
+                    <span className="text-sm font-mono text-foreground font-bold">{selectedEntry.registrationNumber || 'None'}</span>
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Breed & Gender</span>
@@ -326,7 +326,7 @@ export default function DogEntriesCatalogPage() {
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Registered Dog Show</span>
-                    <span className="text-sm font-bold text-foreground flex items-center gap-1.5 mt-0.5"><Trophy className="w-4 h-4 text-brand-orange" /> {selectedEntry.event?.name}</span>
+                    <span className="text-sm font-bold text-foreground flex items-center gap-1.5 mt-0.5"><Trophy className="w-4 h-4 text-foreground" /> {selectedEntry.event?.name}</span>
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Show Class / Category</span>
@@ -354,7 +354,7 @@ export default function DogEntriesCatalogPage() {
               </div>
 
               <div className="p-6 border-t border-border bg-accent/10 flex justify-end shrink-0">
-                <Button onClick={() => setIsViewModalOpen(false)} className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold px-6">Close</Button>
+                <Button onClick={() => setIsViewModalOpen(false)} className="bg-foreground hover:bg-foreground text-foreground font-bold px-6">Close</Button>
               </div>
             </motion.div>
           </div>

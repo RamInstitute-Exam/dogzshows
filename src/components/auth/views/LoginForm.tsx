@@ -74,7 +74,7 @@ export default function LoginForm() {
         <div className="space-y-1">
           <div className="flex justify-between items-center">
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Password</label>
-            <button type="button" onClick={() => setView('FORGOT_PASSWORD')} className="text-xs font-bold text-brand-orange hover:underline">Forgot Password?</button>
+            <button type="button" onClick={() => setView('FORGOT_PASSWORD')} className="text-xs font-bold text-foreground hover:text-foreground hover:underline">Forgot Password?</button>
           </div>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -90,7 +90,7 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <Button disabled={loading} type="submit" className="w-full h-12 rounded-xl bg-brand-orange hover:bg-orange-600 text-foreground font-bold text-base shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2">
+        <Button disabled={loading} type="submit" className="w-full btn-primary-luxury">
           {loading && <Loader2 className="w-5 h-5 animate-spin" />}
           Sign In
         </Button>
@@ -122,7 +122,7 @@ export default function LoginForm() {
 
       <p className="text-center text-sm text-muted-foreground mt-8 font-medium">
         Don't have an account?{' '}
-        <button type="button" onClick={() => setView('REGISTER')} className="text-brand-orange font-bold hover:underline">
+        <button type="button" onClick={() => setView('REGISTER')} className="text-foreground font-bold hover:underline">
           Create Account
         </button>
       </p>

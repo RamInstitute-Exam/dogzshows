@@ -2,6 +2,7 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, notFound } from 'next/navigation';
 import DogProfileClient from './DogProfileClient';
+import Spinner from '@/components/common/loader/Spinner';
 
 
 function DogProfilePageContent() {
@@ -27,7 +28,7 @@ function DogProfilePageContent() {
     fetchData();
   }, [paramVal]);
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <Spinner className="p-8" />;
   if (!data) return notFound();
 
   return <DogProfileClient id={data} />;
@@ -35,7 +36,7 @@ function DogProfilePageContent() {
 
 export default function DogProfilePage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+    <Suspense fallback={<Spinner className="p-8" />}>
       <DogProfilePageContent />
     </Suspense>
   );

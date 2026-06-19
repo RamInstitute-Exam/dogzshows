@@ -57,7 +57,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
           >
             {isLoggingOut ? (
               <div className="p-12 text-center flex flex-col items-center justify-center space-y-4">
-                <Loader2 className="w-12 h-12 text-brand-orange animate-spin" />
+                <Loader2 className="w-12 h-12 text-foreground animate-spin" />
                 <p className="text-lg font-bold text-foreground">Signing you out...</p>
               </div>
             ) : (
@@ -75,7 +75,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
                     <Button variant="outline" onClick={onClose} className="flex-1 rounded-xl h-12 text-base font-bold border-border text-muted-foreground hover:bg-card">
                       Cancel
                     </Button>
-                    <Button onClick={handleLogout} className="flex-1 rounded-xl h-12 text-base font-bold bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-foreground border-0">
+                    <Button onClick={handleLogout} className="flex-1 btn-primary-luxury">
                       Logout
                     </Button>
                   </div>

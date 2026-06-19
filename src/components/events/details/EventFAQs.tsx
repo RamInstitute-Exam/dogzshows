@@ -18,7 +18,7 @@ export default function EventFAQs({ faqs }: { faqs: any[] }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="group bg-card rounded-[16px] p-6 cursor-pointer border border-border hover:border-brand-orange/30 transition-colors"
+            className="group bg-card rounded-[16px] p-6 cursor-pointer border border-border hover:border-border/30 transition-colors"
           >
             <summary className="flex items-center justify-between font-bold text-foreground text-lg">
               {faq.question}

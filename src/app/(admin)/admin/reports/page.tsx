@@ -73,9 +73,9 @@ export default function ReportsDashboard() {
               </Button>
             </motion.div>
 
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-purple-900/40 to-[#111827] border border-purple-500/20 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-purple-900/40 to-[#111827] border border-border rounded-2xl p-6 shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <UsersIcon className="w-24 h-24 text-purple-500" />
+                <UsersIcon className="w-24 h-24 text-foreground" />
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">Registration Export</h3>
               <p className="text-muted-foreground text-sm mb-6 relative z-10">Export a complete CSV list of all active event registrations and dog entries.</p>
@@ -85,9 +85,9 @@ export default function ReportsDashboard() {
               </Button>
             </motion.div>
             
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-brand-orange/20 to-[#111827] border border-brand-orange/20 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-card border border-border rounded-2xl p-6 shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <DogIcon className="w-24 h-24 text-brand-orange" />
+                <DogIcon className="w-24 h-24 text-foreground" />
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">KCI Directory</h3>
               <p className="text-muted-foreground text-sm mb-6 relative z-10">Extract a full list of all verified dogs and their KCI / Microchip mappings.</p>

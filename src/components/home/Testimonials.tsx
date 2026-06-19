@@ -36,7 +36,7 @@ export default function Testimonials({ testimonialsData }: TestimonialsProps) {
               transition={{ delay: i * 0.1 }}
               className="luxury-card p-8 relative"
             >
-              <Quote className="absolute top-8 right-8 w-10 h-10 text-muted-foreground group-hover:text-brand-orange/10 transition-colors" />
+              <Quote className="absolute top-8 right-8 w-10 h-10 text-muted-foreground group-hover:text-foreground/10 transition-colors" />
               
               <div className="flex gap-1 mb-6 text-yellow-400">
                 {[1,2,3,4,5].map(star => <Star key={star} className="w-5 h-5 fill-current" />)}
@@ -56,7 +56,7 @@ export default function Testimonials({ testimonialsData }: TestimonialsProps) {
                 )}
                 <div>
                   <h4 className="font-bold text-foreground">{t.name}</h4>
-                  <p className="text-sm font-medium text-brand-orange">{t.role || t.designation}</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t.role || t.designation}</p>
                 </div>
               </div>
             </motion.div>

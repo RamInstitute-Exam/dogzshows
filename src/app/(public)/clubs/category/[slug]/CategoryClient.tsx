@@ -102,12 +102,12 @@ function CategoryPageContent() {
       {/* Hero */}
       <section className="relative py-16 md:py-24 overflow-hidden border-b border-border bg-black">
         <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-brand-orange/20 blur-[120px]" />
+          <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-foreground/20 blur-[120px]" />
         </div>
         <PublicContainer className="relative z-10">
           <Link
             href="/clubs"
-            className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-brand-orange transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors mb-8 group"
           >
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             All Clubs
@@ -118,14 +118,14 @@ function CategoryPageContent() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-orange/10 text-brand-orange rounded-full text-xs font-bold uppercase tracking-widest border border-brand-orange/20 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-foreground/10 text-foreground rounded-full text-xs font-bold uppercase tracking-widest border border-border/20 mb-6">
               <FolderOpen className="w-3.5 h-3.5" /> Category
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-white capitalize">
               {categoryName || categorySlug.replace(/-/g, ' ')}
             </h1>
             <p className="text-lg text-gray-400 max-w-xl mx-auto">
-              Browse all registered kennel clubs in the <span className="text-brand-orange font-semibold capitalize">{categoryName}</span> category.
+              Browse all registered kennel clubs in the <span className="text-foreground font-semibold capitalize">{categoryName}</span> category.
             </p>
           </motion.div>
         </PublicContainer>
@@ -141,7 +141,7 @@ function CategoryPageContent() {
               placeholder="Search clubs in this category..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-brand-orange outline-none text-foreground"
+              className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none text-foreground"
             />
           </div>
         </PublicContainer>
@@ -179,8 +179,8 @@ function CategoryPageContent() {
                     {club.bannerUrl ? (
                       <img src={club.bannerUrl} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-brand-orange/20 to-orange-600/10 flex items-center justify-center">
-                        <Tent className="w-12 h-12 text-brand-orange/40" />
+                      <div className="w-full h-full bg-muted/40 flex items-center justify-center">
+                        <Tent className="w-12 h-12 text-foreground/40" />
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -197,7 +197,7 @@ function CategoryPageContent() {
                       {club.logoUrl ? (
                         <img src={club.logoUrl} alt={club.name} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="bg-brand-orange text-white font-bold text-xl flex items-center justify-center w-full h-full">
+                        <div className="bg-foreground text-white font-bold text-xl flex items-center justify-center w-full h-full">
                           {club.name?.substring(0, 2).toUpperCase()}
                         </div>
                       )}
@@ -205,11 +205,11 @@ function CategoryPageContent() {
                   </div>
 
                   <div className="p-6 pt-10 flex-1 flex flex-col">
-                    <h3 className="text-xl font-extrabold text-foreground mb-1 line-clamp-1 group-hover:text-brand-orange transition-colors">
+                    <h3 className="text-xl font-extrabold text-foreground mb-1 line-clamp-1 group-hover:text-foreground transition-colors">
                       {club.name}
                     </h3>
                     <div className="flex items-center text-sm text-muted-foreground mb-3">
-                      <MapPin className="w-3.5 h-3.5 mr-1 text-brand-orange" />
+                      <MapPin className="w-3.5 h-3.5 mr-1 text-foreground" />
                       <span className="line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
                     </div>
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-5 flex-1">
@@ -218,7 +218,7 @@ function CategoryPageContent() {
 
                     <div className="grid grid-cols-2 gap-3 mb-5">
                       <div className="bg-accent/50 rounded-xl p-3 flex flex-col items-center border border-border/50">
-                        <div className="flex items-center gap-1.5 text-brand-orange mb-1">
+                        <div className="flex items-center gap-1.5 text-foreground mb-1">
                           <Users className="w-4 h-4" />
                           <span className="font-bold text-lg leading-none">{club.memberCount || 0}</span>
                         </div>
@@ -235,7 +235,7 @@ function CategoryPageContent() {
 
                     <Link
                       href={`/clubs/${club.slug || club.id}`}
-                      className="block w-full py-2.5 bg-accent text-foreground text-center font-semibold rounded-xl group-hover:bg-brand-orange group-hover:text-white transition-colors"
+                      className="block w-full py-2.5 bg-accent text-foreground text-center font-semibold rounded-xl group-hover:bg-foreground group-hover:text-white transition-colors"
                     >
                       View Profile
                     </Link>
@@ -256,7 +256,7 @@ function CategoryPageContent() {
               </p>
               <Link
                 href="/clubs"
-                className="bg-brand-orange text-white font-bold px-6 py-2.5 rounded-xl hover:bg-orange-600 transition-colors"
+                className="bg-foreground text-white font-bold px-6 py-2.5 rounded-xl hover:bg-foreground transition-colors"
               >
                 Browse All Clubs
               </Link>
@@ -279,7 +279,7 @@ function CategoryPageContent() {
                     key={i}
                     onClick={() => handlePageChange(i + 1)}
                     className={`w-10 h-10 rounded-lg text-sm font-bold transition-colors ${page === i + 1
-                        ? 'bg-brand-orange text-white border-transparent'
+                        ? 'bg-foreground text-white border-transparent'
                         : 'border border-border bg-card text-foreground hover:bg-accent'
                       }`}
                   >
@@ -307,7 +307,7 @@ export default function CategoryClientPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
+          <Loader2 className="w-10 h-10 animate-spin text-foreground" />
         </div>
       }
     >

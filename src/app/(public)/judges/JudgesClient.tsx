@@ -123,7 +123,7 @@ function JudgesList() {
 
           {/* Filters Section */}
           <div className="bg-card border border-border rounded-2xl p-4 md:p-6 shadow-sm flex flex-col xl:flex-row gap-4 xl:items-center xl:justify-between">
-            <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center bg-background border border-border rounded-xl px-4 py-3 focus-within:ring-2 ring-brand-orange/50 transition-all">
+            <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center bg-background border border-border rounded-xl px-4 py-3 focus-within:ring-2 ring-border/50 transition-all">
               <Search className="w-5 h-5 text-muted-foreground mr-3" />
               <input
                 type="text"
@@ -139,7 +139,7 @@ function JudgesList() {
               <div className="relative min-w-[180px]">
                 <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <select 
-                  className="w-full bg-background border border-border text-foreground text-sm rounded-xl pl-9 pr-4 py-3 appearance-none focus:outline-none focus:ring-2 ring-brand-orange/50"
+                  className="w-full bg-background border border-border text-foreground text-sm rounded-xl pl-9 pr-4 py-3 appearance-none focus:outline-none focus:ring-2 ring-border/50"
                   value={specializationFilter}
                   onChange={(e) => handleFilterChange(setSpecializationFilter, e.target.value)}
                 >
@@ -155,14 +155,14 @@ function JudgesList() {
                 <button
                   type="button"
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-brand-orange text-white' : 'text-muted-foreground hover:bg-muted'}`}
+                  className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-foreground text-white' : 'text-muted-foreground hover:bg-muted'}`}
                 >
                   <LayoutGrid className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-brand-orange text-white' : 'text-muted-foreground hover:bg-muted'}`}
+                  className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-foreground text-white' : 'text-muted-foreground hover:bg-muted'}`}
                 >
                   <ListIcon className="w-4 h-4" />
                 </button>
@@ -195,12 +195,12 @@ function JudgesList() {
               </div>
             ) : judges.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-border rounded-3xl bg-card/50">
-                <div className="w-16 h-16 rounded-full bg-brand-orange/10 flex items-center justify-center text-brand-orange mb-4">
+                <div className="w-16 h-16 rounded-full bg-foreground/10 flex items-center justify-center text-foreground mb-4">
                   <Search className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">No judges available.</h3>
                 <p className="text-muted-foreground">We couldn't find any judges matching your current filters.</p>
-                <button onClick={() => { setSearchQuery(''); setSpecializationFilter(''); setDebouncedSearch(''); setPage(1); }} className="mt-6 text-brand-orange font-medium hover:underline">
+                <button onClick={() => { setSearchQuery(''); setSpecializationFilter(''); setDebouncedSearch(''); setPage(1); }} className="mt-6 text-foreground font-medium hover:underline">
                   Clear all filters
                 </button>
               </div>
@@ -286,7 +286,7 @@ function JudgesList() {
                   <button
                     key={i + 1}
                     onClick={() => setPage(i + 1)}
-                    className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${page === i + 1 ? 'bg-brand-orange text-white shadow-lg shadow-brand-orange/20' : 'bg-transparent text-muted-foreground hover:bg-accent'}`}
+                    className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${page === i + 1 ? 'bg-foreground text-white shadow-lg shadow-black/20' : 'bg-transparent text-muted-foreground hover:bg-accent'}`}
                   >
                     {i + 1}
                   </button>
@@ -313,7 +313,7 @@ export default function JudgesClient() {
   return (
     <Suspense fallback={
       <div className="flex justify-center items-center min-h-[500px] bg-background">
-        <div className="flex flex-col items-center gap-4 text-brand-orange">
+        <div className="flex flex-col items-center gap-4 text-foreground">
           <Loader2 className="w-10 h-10 animate-spin" />
           <span className="font-medium text-sm tracking-widest uppercase">Loading Judges...</span>
         </div>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
+import Spinner from '@/components/common/loader/Spinner';
 
 export default function OutdoorPhotosAdminPage() {
   const [settings, setSettings] = useState<any>({ smallHeading: '', title: '', subtitle: '', status: 'ACTIVE' });
@@ -181,7 +182,7 @@ export default function OutdoorPhotosAdminPage() {
     }
   };
 
-  if (isLoading) return <div className="p-8">Loading...</div>;
+  if (isLoading) return <Spinner className="p-8" />;
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
@@ -190,7 +191,7 @@ export default function OutdoorPhotosAdminPage() {
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-foreground">Section Settings</h2>
-          <Button onClick={saveSettings} disabled={isSavingSettings} className="bg-brand-orange hover:bg-orange-600">
+          <Button onClick={saveSettings} disabled={isSavingSettings} className="bg-foreground hover:bg-foreground">
             <Save className="w-4 h-4 mr-2" /> Save Settings
           </Button>
         </div>
@@ -214,7 +215,7 @@ export default function OutdoorPhotosAdminPage() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-foreground tracking-tight">Outdoor Photo Albums</h2>
-          <Button onClick={() => openModal()} className="bg-brand-orange hover:bg-orange-600">
+          <Button onClick={() => openModal()} className="bg-foreground hover:bg-foreground">
             <Plus className="w-5 h-5 mr-2" /> Add Album
           </Button>
         </div>
@@ -297,7 +298,7 @@ export default function OutdoorPhotosAdminPage() {
                       <option value="INACTIVE">INACTIVE</option>
                     </select>
                     <label className="flex items-center gap-2 cursor-pointer border px-3 rounded-md border-input bg-background">
-                      <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="rounded text-brand-orange focus:ring-brand-orange" />
+                      <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="rounded text-foreground focus:ring-foreground" />
                       <span className="text-sm font-medium">Featured</span>
                     </label>
                   </div>
@@ -342,7 +343,7 @@ export default function OutdoorPhotosAdminPage() {
                       onDragStart={(e) => onDragStart(e, index)}
                       onDragEnd={onDragEnd}
                       onDragOver={(e) => onDragOver(e, index)}
-                      className="relative group aspect-square rounded-lg overflow-hidden bg-muted cursor-move border border-transparent hover:border-brand-orange transition-all"
+                      className="relative group aspect-square rounded-lg overflow-hidden bg-muted cursor-move border border-transparent hover:border-border transition-all"
                     >
                       <img src={getImageUrl(url)} alt={`Gallery ${index}`} className="w-full h-full object-cover pointer-events-none" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -364,7 +365,7 @@ export default function OutdoorPhotosAdminPage() {
 
               <div className="flex justify-end gap-3 pt-6 border-t border-border">
                 <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={isUploading} className="bg-brand-orange hover:bg-orange-600">Save Album</Button>
+                <Button type="submit" disabled={isUploading} className="bg-foreground hover:bg-foreground">Save Album</Button>
               </div>
             </form>
           </div>

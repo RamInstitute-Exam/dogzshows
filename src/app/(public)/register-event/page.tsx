@@ -44,7 +44,7 @@ export default function EventRegistrationWorkflow() {
           <div className="relative mb-16">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2 rounded-full" />
             <div 
-              className="absolute top-1/2 left-0 h-1 bg-brand-orange -translate-y-1/2 rounded-full transition-all duration-500"
+              className="absolute top-1/2 left-0 h-1 bg-foreground -translate-y-1/2 rounded-full transition-all duration-500"
               style={{ width: `${((step - 1) / 4) * 100}%` }}
             />
             
@@ -55,7 +55,7 @@ export default function EventRegistrationWorkflow() {
                 return (
                   <div key={s.num} className="flex flex-col items-center">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 transition-colors duration-300 ${
-                      isActive ? 'bg-brand-orange border-orange-100 text-foreground' : 
+                      isActive ? 'bg-foreground border-border/20 text-foreground' : 
                       isPassed ? 'bg-green-500 border-green-100 text-foreground' : 'bg-card border-border text-muted-foreground'
                     }`}>
                       <s.icon className="w-5 h-5" />
@@ -77,9 +77,9 @@ export default function EventRegistrationWorkflow() {
                   <h3 className="text-2xl font-bold mb-6">Select an Event</h3>
                   <div className="space-y-4">
                     {['National Specialty Show 2026', 'Winter Classic Championship'].map((event, i) => (
-                      <div key={i} className="p-4 border-2 border-border rounded-2xl hover:border-brand-orange cursor-pointer transition-colors flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
-                          <Calendar className="w-5 h-5 text-brand-orange" />
+                      <div key={i} className="p-4 border-2 border-border rounded-2xl hover:border-border cursor-pointer transition-colors flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-foreground/10 flex items-center justify-center">
+                          <Calendar className="w-5 h-5 text-foreground" />
                         </div>
                         <div>
                           <p className="font-bold text-foreground">{event}</p>
@@ -95,7 +95,7 @@ export default function EventRegistrationWorkflow() {
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                   <h3 className="text-2xl font-bold mb-6">Select Your Dog</h3>
                   <div className="space-y-4">
-                    <div className="p-4 border-2 border-brand-orange bg-orange-50/50 rounded-2xl cursor-pointer transition-colors flex justify-between items-center">
+                    <div className="p-4 border-2 border-border bg-foreground/10/50 rounded-2xl cursor-pointer transition-colors flex justify-between items-center">
                       <div className="flex items-center gap-4">
                         <img src="/images/hero_banner.png" alt="Dog" className="w-12 h-12 rounded-full object-cover" />
                         <div>
@@ -103,7 +103,7 @@ export default function EventRegistrationWorkflow() {
                           <p className="text-sm text-muted-foreground">Golden Retriever • KCI-2023-4589</p>
                         </div>
                       </div>
-                      <CheckCircle2 className="w-6 h-6 text-brand-orange" />
+                      <CheckCircle2 className="w-6 h-6 text-foreground" />
                     </div>
                   </div>
                 </motion.div>
@@ -165,7 +165,7 @@ export default function EventRegistrationWorkflow() {
 
             {step < 4 && (
               <div className="mt-8 flex justify-end pt-6 border-t border-border">
-                <Button onClick={handleNext} className="bg-brand-orange hover:bg-orange-600 rounded-full px-8 shadow-sm">
+                <Button onClick={handleNext} className="bg-foreground hover:bg-foreground rounded-full px-8 shadow-sm">
                   Continue <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>

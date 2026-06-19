@@ -323,7 +323,7 @@ export default function JudgeManagement() {
               variant="outline" 
               size="sm" 
               onClick={() => handleToggleStatus(j, 'SUSPENDED')} 
-              className="text-orange-500 hover:bg-orange-500/10 hover:text-orange-400 border-orange-500/20 h-8 px-2 rounded-lg text-xs"
+              className="text-foreground hover:bg-foreground/10 hover:text-foreground border-border/20 h-8 px-2 rounded-lg text-xs"
             >
               Suspend
             </Button>
@@ -478,7 +478,7 @@ export default function JudgeManagement() {
             <div className="flex justify-between items-center p-6 border-t border-border bg-accent/30">
               <div className="flex gap-2">
                 {selectedJudge.status === 'ACTIVE' ? (
-                  <Button variant="outline" size="sm" onClick={() => handleToggleStatus(selectedJudge, 'SUSPENDED')} className="text-orange-500 border-orange-500/20">
+                  <Button variant="outline" size="sm" onClick={() => handleToggleStatus(selectedJudge, 'SUSPENDED')} className="text-foreground border-border/20">
                     Suspend Account
                   </Button>
                 ) : (

@@ -156,10 +156,12 @@ export function AdminButton({
       {loading ? (
         <Loader2 className="w-4 h-4 animate-spin shrink-0" />
       ) : (
-        leftIcon && <span className="shrink-0">{leftIcon}</span>
+        <>
+          {leftIcon && <span className="shrink-0">{leftIcon}</span>}
+          {children}
+          {rightIcon && <span className="shrink-0">{rightIcon}</span>}
+        </>
       )}
-      {children}
-      {!loading && rightIcon && <span className="shrink-0">{rightIcon}</span>}
     </button>
   );
 }

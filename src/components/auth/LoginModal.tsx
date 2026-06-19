@@ -47,19 +47,19 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <form className="space-y-4 mb-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <input type="email" placeholder="Email Address" className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-xl focus:ring-2 focus:ring-brand-orange outline-none transition-all" />
+                  <input type="email" placeholder="Email Address" className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none transition-all" />
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <input type="password" placeholder="Password" className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-xl focus:ring-2 focus:ring-brand-orange outline-none transition-all" />
+                  <input type="password" placeholder="Password" className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none transition-all" />
                 </div>
                 
                 <div className="flex justify-between items-center text-sm">
                   <label className="flex items-center gap-2 text-muted-foreground cursor-pointer">
-                    <input type="checkbox" className="rounded text-brand-orange focus:ring-brand-orange" />
+                    <input type="checkbox" className="rounded text-foreground focus:ring-foreground" />
                     Remember me
                   </label>
-                  <a href="#" className="font-bold text-brand-orange hover:text-orange-600">Forgot Password?</a>
+                  <a href="#" className="font-bold text-foreground hover:text-foreground">Forgot Password?</a>
                 </div>
 
                 <Button className="w-full h-12 rounded-xl bg-card hover:bg-foreground text-background font-bold text-lg shadow-md mt-4">
@@ -82,8 +82,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               </div>
 
               {/* Dev Tools for UI Testing */}
-              <div className="p-4 bg-orange-50 rounded-xl border border-orange-100">
-                <p className="text-xs font-bold text-brand-orange uppercase mb-2">Dev Tools: Test Roles</p>
+              <div className="p-4 bg-foreground/10 rounded-xl border border-border/20">
+                <p className="text-xs font-bold text-foreground uppercase mb-2">Dev Tools: Test Roles</p>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={() => handleMockLogin('USER')} className="bg-blue-600 hover:bg-blue-700 text-xs h-8">User</Button>
                   <Button size="sm" onClick={() => handleMockLogin('SUB_ADMIN')} className="bg-purple-600 hover:bg-purple-700 text-xs h-8">Sub Admin</Button>
@@ -92,7 +92,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               </div>
 
               <p className="text-center text-sm text-muted-foreground mt-6">
-                Don't have an account? <a href="#" className="font-bold text-brand-orange hover:text-orange-600">Create Account</a>
+                Don't have an account? <a href="#" className="font-bold text-foreground hover:text-foreground">Create Account</a>
               </p>
             </div>
           </motion.div>

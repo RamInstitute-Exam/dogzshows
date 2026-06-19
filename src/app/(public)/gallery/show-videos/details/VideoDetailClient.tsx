@@ -42,7 +42,7 @@ export default function VideoDetailClient({ initialVideo, initialVideos }: Video
     return (
       <PageContainer>
         <div className="flex-grow flex items-center justify-center p-24">
-          <Loader2 className="w-12 h-12 text-brand-orange animate-spin" />
+          <Loader2 className="w-12 h-12 text-foreground animate-spin" />
         </div>
       </PageContainer>
     );
@@ -54,7 +54,7 @@ export default function VideoDetailClient({ initialVideo, initialVideos }: Video
         <div className="flex-grow flex flex-col items-center justify-center gap-4 text-muted-foreground p-8">
           <Play className="w-16 h-16 opacity-30" />
           <p className="text-xl font-semibold">Video not found</p>
-          <Link href="/gallery/videos" className="text-brand-orange hover:underline font-bold">← Back to Videos</Link>
+          <Link href="/gallery/videos" className="text-foreground hover:underline font-bold">← Back to Videos</Link>
         </div>
       </PageContainer>
     );
@@ -106,7 +106,7 @@ export default function VideoDetailClient({ initialVideo, initialVideos }: Video
           <div className="bg-card border border-border rounded-[2rem] p-8 space-y-5">
             <div>
               {video.category?.name && (
-                <span className="inline-block bg-brand-orange/15 text-brand-orange text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                <span className="inline-block bg-foreground/15 text-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
                   {video.category.name}
                 </span>
               )}
@@ -167,7 +167,7 @@ export default function VideoDetailClient({ initialVideo, initialVideos }: Video
             {video.breed && (
               <div className="flex items-center gap-3 text-sm">
                 <div className="w-9 h-9 bg-purple-500/10 rounded-full flex items-center justify-center shrink-0">
-                  <Tag className="w-4 h-4 text-purple-500" />
+                  <Tag className="w-4 h-4 text-foreground" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-muted-foreground">Breed</p>
@@ -186,7 +186,7 @@ export default function VideoDetailClient({ initialVideo, initialVideos }: Video
           <div className="pt-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-extrabold text-foreground">Related Videos</h2>
-              <Link href="/gallery/videos" className="text-brand-orange hover:underline text-sm font-semibold flex items-center gap-1">
+              <Link href="/gallery/videos" className="text-foreground hover:underline text-sm font-semibold flex items-center gap-1">
                 View All <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
@@ -208,13 +208,13 @@ export default function VideoDetailClient({ initialVideo, initialVideos }: Video
                           <div className="w-full h-full flex items-center justify-center bg-accent"><Play className="w-8 h-8 text-muted-foreground" /></div>
                         )}
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-10 h-10 rounded-full bg-brand-orange/90 flex items-center justify-center shadow">
+                          <div className="w-10 h-10 rounded-full bg-foreground/90 flex items-center justify-center shadow">
                             <Play className="w-4 h-4 fill-current text-white ml-0.5" />
                           </div>
                         </div>
                       </div>
                       <div className="p-4">
-                        <p className="font-bold text-foreground text-sm line-clamp-2 group-hover:text-brand-orange transition-colors">{v.title}</p>
+                        <p className="font-bold text-foreground text-sm line-clamp-2 group-hover:text-foreground transition-colors">{v.title}</p>
                       </div>
                     </motion.div>
                   </Link>

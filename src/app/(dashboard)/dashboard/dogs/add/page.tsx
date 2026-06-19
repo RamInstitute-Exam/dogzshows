@@ -51,8 +51,8 @@ export default function AddDogWizard() {
       <div className="bg-card rounded-2xl border border-border p-6 shadow-xl mb-6">
         <div className="flex justify-between items-center mb-2">
           {STEPS.map((step, idx) => (
-            <div key={idx} className={`flex flex-col items-center gap-2 ${idx <= currentStep ? 'text-brand-orange' : 'text-muted-foreground'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold border-2 ${idx < currentStep ? 'bg-brand-orange border-brand-orange text-foreground' : idx === currentStep ? 'border-brand-orange text-brand-orange bg-transparent' : 'border-[#4B5563] text-muted-foreground'}`}>
+            <div key={idx} className={`flex flex-col items-center gap-2 ${idx <= currentStep ? 'text-foreground' : 'text-muted-foreground'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold border-2 ${idx < currentStep ? 'bg-foreground border-border text-foreground' : idx === currentStep ? 'border-border text-foreground bg-transparent' : 'border-[#4B5563] text-muted-foreground'}`}>
                 {idx < currentStep ? <CheckCircle className="w-4 h-4" /> : idx + 1}
               </div>
               <span className="text-xs font-semibold hidden md:block">{step}</span>
@@ -61,7 +61,7 @@ export default function AddDogWizard() {
         </div>
         <div className="w-full bg-accent h-2 rounded-full overflow-hidden mt-4">
           <motion.div 
-            className="h-full bg-brand-orange"
+            className="h-full bg-foreground"
             initial={{ width: 0 }}
             animate={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
           />
@@ -77,22 +77,22 @@ export default function AddDogWizard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-muted-foreground">Dog Name</label>
-                  <input type="text" className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-brand-orange outline-none" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Enter dog name" />
+                  <input type="text" className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-border outline-none" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Enter dog name" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-muted-foreground">KCI Number</label>
-                  <input type="text" className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-brand-orange outline-none" value={formData.kciNumber} onChange={e => setFormData({...formData, kciNumber: e.target.value})} placeholder="KCI Number" />
+                  <input type="text" className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-border outline-none" value={formData.kciNumber} onChange={e => setFormData({...formData, kciNumber: e.target.value})} placeholder="KCI Number" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-muted-foreground">Breed</label>
-                  <select className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-brand-orange outline-none">
+                  <select className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-border outline-none">
                     <option>Select Breed</option>
                     <option>Golden Retriever</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-muted-foreground">Date of Birth</label>
-                  <input type="date" className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-brand-orange outline-none" value={formData.dob} onChange={e => setFormData({...formData, dob: e.target.value})} />
+                  <input type="date" className="w-full bg-accent border border-border rounded-lg p-3 text-foreground focus:border-border outline-none" value={formData.dob} onChange={e => setFormData({...formData, dob: e.target.value})} />
                 </div>
               </div>
             </motion.div>
@@ -131,7 +131,7 @@ export default function AddDogWizard() {
               </div>
               <h2 className="text-3xl font-extrabold text-foreground mb-4">Ready to Submit</h2>
               <p className="text-muted-foreground max-w-md mb-8">All 8 steps have been completed and validated. Click submit to save the dog to the database.</p>
-              <Button onClick={submitForm} size="lg" className="bg-brand-orange hover:bg-orange-600 text-foreground font-bold px-8">Submit Registration</Button>
+              <Button onClick={submitForm} size="lg" className="bg-foreground hover:bg-foreground text-foreground font-bold px-8">Submit Registration</Button>
             </motion.div>
           )}
         </AnimatePresence>

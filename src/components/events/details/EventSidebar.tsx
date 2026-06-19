@@ -24,7 +24,7 @@ export default function EventSidebar({ event }: { event: any }) {
         {/* Entry Fee */}
         <div className="flex justify-between items-center mb-5 pb-5 border-b border-border">
           <span className="text-muted-foreground font-semibold text-sm">Entry Fee</span>
-          <span className="text-2xl font-extrabold text-[#f97316]">{entryFee}</span>
+          <span className="text-2xl font-black text-foreground">{entryFee}</span>
         </div>
 
         {/* Slots Progress */}
@@ -37,17 +37,12 @@ export default function EventSidebar({ event }: { event: any }) {
               </span>
             </div>
             <div className="w-full bg-border/40 rounded-full h-2.5 overflow-hidden">
-              <div className="bg-[#f97316] h-full rounded-full" style={{ width: '75%' }} />
+              <div className="bg-foreground h-full rounded-full" style={{ width: '75%' }} />
             </div>
           </div>
         )}
 
-        {/* 
-          Register Now button: always orange bg, ALWAYS white text.
-          In dark mode the theme makes text-foreground = white and button-text = black,
-          which would be invisible on orange. Force text-white here.
-        */}
-        <button className="w-full min-h-[50px] bg-[#f97316] hover:bg-[#ea6c0a] text-white font-bold text-base rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.25)] mb-3 transition-all duration-300 hover:shadow-[0_0_28px_rgba(249,115,22,0.4)] hover:-translate-y-0.5">
+        <button className="w-full btn-primary-luxury mb-3">
           Register Now
         </button>
 
@@ -63,7 +58,7 @@ export default function EventSidebar({ event }: { event: any }) {
       {ageClasses.length > 0 && (
         <div className="bg-card rounded-[20px] p-7 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-border">
           <div className="flex items-center gap-2 mb-5">
-            <Info className="w-5 h-5 text-[#f97316]" />
+            <Info className="w-5 h-5 text-foreground" />
             <h3 className="text-xl font-extrabold text-foreground">Age Classes</h3>
           </div>
           <div className="space-y-3">
@@ -79,13 +74,13 @@ export default function EventSidebar({ event }: { event: any }) {
                   Use explicit hex values, not theme tokens,
                   to avoid light mode bg + dark mode white text collision.
                 */}
-                <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[#f97316]/12 text-[#f97316] border border-[#f97316]/25">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-foreground/10 text-foreground border border-border/20">
                   {cls?.age ?? '-'}
                 </span>
               </div>
             ))}
           </div>
-          <button className="w-full mt-4 text-[#f97316] font-bold text-sm hover:underline text-center py-1">
+          <button className="w-full mt-4 text-foreground font-bold text-sm hover:underline text-center py-1">
             View Full Details
           </button>
         </div>
@@ -102,7 +97,7 @@ export default function EventSidebar({ event }: { event: any }) {
           {contactPhone && (
             <a href={`tel:${contactPhone}`} className="block">
               <div className="flex items-center gap-3 w-full min-h-[46px] px-4 bg-accent/50 hover:bg-accent border border-border rounded-xl font-semibold text-sm text-foreground transition-colors cursor-pointer">
-                <Phone className="w-4 h-4 text-[#f97316] shrink-0" />
+                <Phone className="w-4 h-4 text-foreground shrink-0" />
                 <span className="truncate">{contactPhone}</span>
               </div>
             </a>

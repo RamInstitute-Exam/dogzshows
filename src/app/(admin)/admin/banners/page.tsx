@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
+import Spinner from '@/components/common/loader/Spinner';
 
 interface HeroBanner {
   id: string;
@@ -265,7 +266,7 @@ export default function BannerManagement() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-foreground flex items-center gap-3">
-            <ImageIcon className="w-7 h-7 md:w-8 h-8 text-brand-orange" />
+            <ImageIcon className="w-7 h-7 md:w-8 h-8 text-foreground" />
             Hero Banner Management
           </h1>
           <p className="text-sm md:text-base text-muted-foreground mt-1">
@@ -292,14 +293,14 @@ export default function BannerManagement() {
             placeholder="Search banners by title..." 
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
-            className="w-full pl-10 pr-4 py-2.5 bg-background border border-border focus:border-brand-orange text-foreground rounded-xl outline-none transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-background border border-border focus:border-border text-foreground rounded-xl outline-none transition-all text-sm"
           />
         </div>
         <div className="flex items-center justify-between md:justify-end gap-6 text-sm text-muted-foreground">
           <span>Total Banners: <strong className="text-foreground">{totalCount}</strong></span>
           <button 
             onClick={fetchBanners}
-            className="flex items-center gap-2 hover:text-brand-orange transition-colors text-xs font-semibold py-2 px-3 border border-border rounded-xl"
+            className="flex items-center gap-2 hover:text-foreground transition-colors text-xs font-semibold py-2 px-3 border border-border rounded-xl"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </button>
@@ -324,10 +325,7 @@ export default function BannerManagement() {
             {loading && banners.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-12 text-center text-muted-foreground">
-                  <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 text-brand-orange animate-spin" />
-                    <span>Loading banners...</span>
-                  </div>
+                  <Spinner className="py-12" />
                 </td>
               </tr>
             ) : banners.length === 0 ? (
@@ -372,7 +370,7 @@ export default function BannerManagement() {
                           <button 
                             disabled={index === 0} 
                             onClick={() => moveItem(index, 'up')}
-                            className="p-1 text-muted-foreground/40 hover:text-brand-orange disabled:opacity-20 disabled:hover:text-muted-foreground/40"
+                            className="p-1 text-muted-foreground/40 hover:text-foreground disabled:opacity-20 disabled:hover:text-muted-foreground/40"
                           >
                             <ArrowUp className="w-3.5 h-3.5" />
                           </button>
@@ -380,7 +378,7 @@ export default function BannerManagement() {
                           <button 
                             disabled={index === banners.length - 1} 
                             onClick={() => moveItem(index, 'down')}
-                            className="p-1 text-muted-foreground/40 hover:text-brand-orange disabled:opacity-20 disabled:hover:text-muted-foreground/40"
+                            className="p-1 text-muted-foreground/40 hover:text-foreground disabled:opacity-20 disabled:hover:text-muted-foreground/40"
                           >
                             <ArrowDown className="w-3.5 h-3.5" />
                           </button>
@@ -553,7 +551,7 @@ export default function BannerManagement() {
                       required
                       value={currentBanner.title || ''}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, title: e.target.value }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all"
                       placeholder="e.g. Premium Siberian Husky"
                     />
                   </div>
@@ -563,7 +561,7 @@ export default function BannerManagement() {
                       type="text"
                       value={currentBanner.subtitle || ''}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, subtitle: e.target.value }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all"
                       placeholder="e.g. Explore the Arctic champion dog bloodlines."
                     />
                   </div>
@@ -576,10 +574,7 @@ export default function BannerManagement() {
                     <label className="block text-xs md:text-sm font-bold text-muted-foreground">Desktop Banner Image (1200x500) *</label>
                     <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-4 hover:bg-muted/10 transition-colors relative min-h-[140px]">
                       {uploadingDesktop ? (
-                        <div className="flex flex-col items-center gap-2">
-                          <Loader2 className="w-8 h-8 text-brand-orange animate-spin" />
-                          <span className="text-xs">Uploading...</span>
-                        </div>
+                        <Spinner size="md" className="py-4" />
                       ) : currentBanner.desktopImage ? (
                         <div className="w-full flex flex-col items-center gap-3">
                           <img 
@@ -601,7 +596,7 @@ export default function BannerManagement() {
                       ) : (
                         <label className="flex flex-col items-center justify-center cursor-pointer w-full h-full">
                           <UploadCloud className="w-10 h-10 text-muted-foreground/60 mb-2" />
-                          <span className="text-xs font-semibold text-brand-orange hover:underline">Click to upload Desktop Image</span>
+                          <span className="text-xs font-semibold text-foreground hover:underline">Click to upload Desktop Image</span>
                           <span className="text-[10px] text-muted-foreground mt-1">PNG, JPG or WEBP (Max 10MB)</span>
                           <input 
                             type="file" 
@@ -619,10 +614,7 @@ export default function BannerManagement() {
                     <label className="block text-xs md:text-sm font-bold text-muted-foreground">Mobile Banner Image (800x600) (Optional)</label>
                     <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-4 hover:bg-muted/10 transition-colors relative min-h-[140px]">
                       {uploadingMobile ? (
-                        <div className="flex flex-col items-center gap-2">
-                          <Loader2 className="w-8 h-8 text-brand-orange animate-spin" />
-                          <span className="text-xs">Uploading...</span>
-                        </div>
+                        <Spinner size="md" className="py-4" />
                       ) : currentBanner.mobileImage ? (
                         <div className="w-full flex flex-col items-center gap-3">
                           <img 
@@ -644,7 +636,7 @@ export default function BannerManagement() {
                       ) : (
                         <label className="flex flex-col items-center justify-center cursor-pointer w-full h-full">
                           <UploadCloud className="w-10 h-10 text-muted-foreground/60 mb-2" />
-                          <span className="text-xs font-semibold text-brand-orange hover:underline">Click to upload Mobile Image</span>
+                          <span className="text-xs font-semibold text-foreground hover:underline">Click to upload Mobile Image</span>
                           <span className="text-[10px] text-muted-foreground mt-1">PNG, JPG or WEBP (Max 10MB)</span>
                           <input 
                             type="file" 
@@ -666,7 +658,7 @@ export default function BannerManagement() {
                       type="text"
                       value={currentBanner.buttonText || ''}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, buttonText: e.target.value }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all"
                       placeholder="e.g. Register Now"
                     />
                   </div>
@@ -676,7 +668,7 @@ export default function BannerManagement() {
                       type="text"
                       value={currentBanner.buttonLink || ''}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, buttonLink: e.target.value }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all"
                       placeholder="e.g. /events/championship-2026"
                     />
                   </div>
@@ -690,7 +682,7 @@ export default function BannerManagement() {
                       type="text"
                       value={currentBanner.seoAltText || ''}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, seoAltText: e.target.value }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all"
                       placeholder="e.g. Champion Doberman Pinscher displaying stack pose"
                     />
                   </div>
@@ -699,7 +691,7 @@ export default function BannerManagement() {
                     <select
                       value={currentBanner.status || 'ACTIVE'}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, status: e.target.value }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all"
                     >
                       <option value="ACTIVE">ACTIVE</option>
                       <option value="DRAFT">DRAFT</option>
@@ -716,7 +708,7 @@ export default function BannerManagement() {
                       type="datetime-local"
                       value={currentBanner.startDate || ''}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, startDate: e.target.value || null }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all color-scheme-dark"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all color-scheme-dark"
                     />
                   </div>
                   <div>
@@ -725,7 +717,7 @@ export default function BannerManagement() {
                       type="datetime-local"
                       value={currentBanner.endDate || ''}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, endDate: e.target.value || null }))}
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-brand-orange transition-all color-scheme-dark"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground text-sm outline-none focus:border-border transition-all color-scheme-dark"
                     />
                   </div>
                 </div>
@@ -738,7 +730,7 @@ export default function BannerManagement() {
                       id="isActive"
                       checked={currentBanner.isActive ?? true}
                       onChange={e => setCurrentBanner(prev => ({ ...prev, isActive: e.target.checked }))}
-                      className="w-5 h-5 rounded border-border text-brand-orange accent-brand-orange focus:ring-brand-orange cursor-pointer"
+                      className="w-5 h-5 rounded border-border text-foreground accent-foreground focus:ring-foreground cursor-pointer"
                     />
                     <div>
                       <label htmlFor="isActive" className="text-sm font-bold text-foreground cursor-pointer">Active</label>

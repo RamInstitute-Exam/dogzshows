@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Search, Camera, Eye, User, ZoomIn } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
@@ -41,8 +42,8 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                 onClick={() => setActiveFilter(cat as string)}
                 className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all border ${
                   activeFilter === cat
-                    ? 'bg-brand-orange text-white border-brand-orange shadow-md cursor-pointer'
-                    : 'bg-background text-muted-foreground border-border hover:border-brand-orange hover:text-foreground cursor-pointer'
+                    ? 'bg-foreground text-white border-border shadow-md cursor-pointer'
+                    : 'bg-background text-muted-foreground border-border hover:border-border hover:text-foreground cursor-pointer'
                 }`}
               >
                 {cat as string}
@@ -58,7 +59,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
               placeholder="Search photos, photographers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-foreground outline-none focus:border-brand-orange transition-colors"
+              className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-foreground outline-none focus:border-border transition-colors"
             />
           </div>
         </div>
@@ -73,7 +74,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
             <p className="text-sm text-muted-foreground mt-2">Please check back later or modify your search.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {filtered.map((photo: any, index: number) => (
               <motion.div
                 key={photo.id}
@@ -88,17 +89,28 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                     setLightboxIndex(index);
                     setLightboxOpen(true);
                   }}
-                  className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-brand-orange/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col h-full cursor-pointer"
+                  className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-border/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto cursor-pointer"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-accent w-full">
-                    <img
+                  <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
+                    <Image
                       src={photo.s3Url || photo.imageUrl || photo.cdnUrl}
                       alt={photo.altText || photo.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      fill={false}
+                      width={800}
+                      height={1200}
+                      quality={100}
+                      unoptimized
+                      sizes="100vw"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "contain",
+                        objectPosition: "center"
+                      }}
+                      className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-brand-orange flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                      <div className="w-12 h-12 rounded-full bg-foreground flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
                         <ZoomIn className="w-5 h-5 text-white" />
                       </div>
                     </div>
@@ -108,16 +120,16 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                       </span>
                     )}
                     {photo.featured && (
-                      <span className="absolute top-4 right-4 bg-brand-orange text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                      <span className="absolute top-4 right-4 bg-foreground text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
                         Featured
                       </span>
                     )}
                   </div>
-                  <div className="p-5 w-full flex-1 flex flex-col justify-between">
-                    <h3 className="font-bold text-foreground group-hover:text-brand-orange transition-colors line-clamp-1 text-base">
+                  <div className="p-5 w-full flex flex-col justify-between space-y-4">
+                    <h3 className="font-bold text-foreground group-hover:text-foreground transition-colors line-clamp-1 text-base leading-snug">
                       {photo.title}
                     </h3>
-                    <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground font-semibold">
                       {photo.photographer && (
                         <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" />{photo.photographer}</span>
                       )}

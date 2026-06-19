@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: {
     unoptimized: true,
-    qualities: [75, 90],
+    qualities: [100, 75, 90],
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
       { protocol: 'http', hostname: 'localhost' },

@@ -151,7 +151,7 @@ export default function ApprovedEntriesPage() {
                     </td>
                     <td className="py-4 px-6 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <Button onClick={() => handleSuspend(entry.id)} className="bg-orange-600 hover:bg-orange-700 text-white font-bold h-8 px-3 text-xs rounded-xl">
+                        <Button onClick={() => handleSuspend(entry.id)} className="bg-foreground hover:bg-pink-700 text-white font-bold h-8 px-3 text-xs rounded-xl">
                           Suspend
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(entry.id)} className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10" title="Delete">
@@ -228,7 +228,7 @@ export default function ApprovedEntriesPage() {
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Dog Show Event</span>
-                    <span className="text-sm font-bold text-foreground flex items-center gap-1.5 mt-0.5"><CalendarDays className="w-4 h-4 text-brand-orange" /> {selectedEntry.event?.name}</span>
+                    <span className="text-sm font-bold text-foreground flex items-center gap-1.5 mt-0.5"><CalendarDays className="w-4 h-4 text-foreground" /> {selectedEntry.event?.name}</span>
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Event Category / Class</span>
@@ -243,7 +243,7 @@ export default function ApprovedEntriesPage() {
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-extrabold text-muted-foreground">Entry Fee</span>
-                    <span className="text-sm font-black text-brand-orange mt-0.5">₹{selectedEntry.entryFee}</span>
+                    <span className="text-sm font-black text-foreground mt-0.5">₹{selectedEntry.entryFee}</span>
                   </div>
                 </div>
               </div>
@@ -251,7 +251,7 @@ export default function ApprovedEntriesPage() {
               <div className="p-6 border-t border-border bg-accent/10 flex justify-between shrink-0">
                 <Button variant="destructive" onClick={() => handleDelete(selectedEntry.id)} className="font-bold">Soft Delete</Button>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleSuspend(selectedEntry.id)} className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-5">Suspend Account</Button>
+                  <Button onClick={() => handleSuspend(selectedEntry.id)} className="bg-foreground hover:bg-pink-700 text-white font-bold px-5">Suspend Account</Button>
                   <Button variant="outline" onClick={() => setIsViewModalOpen(false)}>Close</Button>
                 </div>
               </div>

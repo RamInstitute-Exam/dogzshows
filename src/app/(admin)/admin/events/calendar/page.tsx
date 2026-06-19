@@ -175,7 +175,7 @@ export default function CalendarPage() {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-md">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <CalendarIcon className="w-8 h-8 text-brand-orange" /> Shows Calendar
+                <CalendarIcon className="w-8 h-8 text-foreground" /> Shows Calendar
               </h1>
               <p className="text-muted-foreground mt-1">Schedule, reschedule, and manage national dog shows.</p>
             </div>
@@ -194,7 +194,7 @@ export default function CalendarPage() {
                     onClick={() => setView(v)}
                     className={`px-4 py-2 text-xs font-bold uppercase rounded-lg transition-all ${
                       view === v 
-                        ? 'bg-brand-orange text-foreground shadow-md font-extrabold' 
+                        ? 'bg-foreground text-foreground shadow-md font-extrabold' 
                         : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
@@ -214,14 +214,14 @@ export default function CalendarPage() {
                 placeholder="Search Show, Venue, Club..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-background border border-border rounded-xl focus:border-brand-orange outline-none text-sm"
+                className="w-full pl-9 pr-4 py-2 bg-background border border-border rounded-xl focus:border-border outline-none text-sm"
               />
             </div>
             
             <select
               value={selectedClub}
               onChange={(e) => setSelectedClub(e.target.value)}
-              className="px-3 py-2 bg-background border border-border rounded-xl focus:border-brand-orange outline-none text-sm text-foreground max-w-xs"
+              className="px-3 py-2 bg-background border border-border rounded-xl focus:border-border outline-none text-sm text-foreground max-w-xs"
             >
               <option value="">All Clubs</option>
               {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -230,7 +230,7 @@ export default function CalendarPage() {
             <select
               value={selectedState}
               onChange={(e) => setSelectedState(e.target.value)}
-              className="px-3 py-2 bg-background border border-border rounded-xl focus:border-brand-orange outline-none text-sm text-foreground"
+              className="px-3 py-2 bg-background border border-border rounded-xl focus:border-border outline-none text-sm text-foreground"
             >
               <option value="">All States</option>
               {statesList.map(s => <option key={s} value={s}>{s}</option>)}
@@ -239,7 +239,7 @@ export default function CalendarPage() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-3 py-2 bg-background border border-border rounded-xl focus:border-brand-orange outline-none text-sm text-foreground"
+              className="px-3 py-2 bg-background border border-border rounded-xl focus:border-border outline-none text-sm text-foreground"
             >
               <option value="">All Statuses</option>
               <option value="DRAFT">Draft</option>
@@ -274,7 +274,7 @@ export default function CalendarPage() {
           {/* Calendar Body */}
           {loading ? (
             <div className="flex justify-center items-center py-40 bg-card rounded-2xl border border-border min-h-[500px]">
-              <Loader2 className="w-12 h-12 animate-spin text-brand-orange" />
+              <Loader2 className="w-12 h-12 animate-spin text-foreground" />
             </div>
           ) : (
             <div className="bg-card rounded-2xl border border-border shadow-xl overflow-hidden min-h-[550px]">
@@ -307,7 +307,7 @@ export default function CalendarPage() {
                           <div className="flex justify-between items-center mb-1">
                             <span className={`text-sm font-extrabold flex items-center justify-center w-7 h-7 rounded-full ${
                               isTodayDay 
-                                ? 'bg-brand-orange text-foreground font-black' 
+                                ? 'bg-foreground text-foreground font-black' 
                                 : isCurrentMonth ? 'text-foreground' : 'text-muted-foreground/50'
                             }`}>
                               {day.getDate()}
@@ -352,7 +352,7 @@ export default function CalendarPage() {
                         <div className="text-center pb-4 border-b border-border mb-4">
                           <span className="block text-xs font-bold text-muted-foreground uppercase">{day.toLocaleString('default', { weekday: 'short' })}</span>
                           <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-lg font-black mt-1 ${
-                            isTodayDay ? 'bg-brand-orange text-foreground' : 'text-foreground'
+                            isTodayDay ? 'bg-foreground text-foreground' : 'text-foreground'
                           }`}>
                             {day.getDate()}
                           </span>
@@ -370,7 +370,7 @@ export default function CalendarPage() {
                               <h4 className="font-black text-sm text-foreground line-clamp-2">{event.name}</h4>
                               <p className="text-xs text-muted-foreground mt-1 font-semibold">{event.club?.name}</p>
                               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
-                                <MapPin className="w-3.5 h-3.5 text-brand-orange" />
+                                <MapPin className="w-3.5 h-3.5 text-foreground" />
                                 <span>{event.city || 'TBA'}</span>
                               </div>
                             </div>
@@ -404,8 +404,8 @@ export default function CalendarPage() {
                           <h3 className="text-xl font-extrabold text-foreground">{event.name}</h3>
                           <p className="text-sm text-muted-foreground font-bold">{event.club?.name}</p>
                           <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-brand-orange" /> {event.venue}, {event.city}, {event.state}</span>
-                            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-brand-orange" /> {event.startTime || '09:00 AM'} - {event.endTime || '06:00 PM'}</span>
+                            <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-foreground" /> {event.venue}, {event.city}, {event.state}</span>
+                            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-foreground" /> {event.startTime || '09:00 AM'} - {event.endTime || '06:00 PM'}</span>
                           </div>
                         </div>
                         <Button className="mt-4 sm:mt-0 bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] font-bold">Details</Button>
@@ -431,7 +431,7 @@ export default function CalendarPage() {
                         className="flex items-start gap-6 p-6 hover:bg-accent/10 transition-colors cursor-pointer"
                       >
                         <div className="bg-accent rounded-xl p-3 text-center min-w-[80px]">
-                          <span className="block text-brand-orange font-black text-2xl leading-none">{new Date(event.startDate).getDate()}</span>
+                          <span className="block text-foreground font-black text-2xl leading-none">{new Date(event.startDate).getDate()}</span>
                           <span className="block text-muted-foreground font-bold text-xs uppercase mt-1">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</span>
                         </div>
                         <div className="space-y-1.5 flex-1">
@@ -440,7 +440,7 @@ export default function CalendarPage() {
                           </span>
                           <h3 className="text-lg font-black text-foreground">{event.name}</h3>
                           <p className="text-sm text-muted-foreground font-semibold">{event.club?.name}</p>
-                          <p className="text-sm text-muted-foreground/80 flex items-center gap-1.5"><MapPin className="w-4 h-4 text-brand-orange" /> {event.city}, {event.state}</p>
+                          <p className="text-sm text-muted-foreground/80 flex items-center gap-1.5"><MapPin className="w-4 h-4 text-foreground" /> {event.city}, {event.state}</p>
                         </div>
                       </div>
                     ))
@@ -512,7 +512,7 @@ export default function CalendarPage() {
                   <div>
                     <h5 className="text-xs uppercase font-extrabold text-muted-foreground">Venue</h5>
                     <p className="text-sm font-bold text-foreground mt-1 flex items-start gap-1.5">
-                      <MapPin className="w-4 h-4 text-brand-orange shrink-0 mt-0.5" />
+                      <MapPin className="w-4 h-4 text-foreground shrink-0 mt-0.5" />
                       <span>{selectedEvent.venue}, {selectedEvent.city}, {selectedEvent.state}, {selectedEvent.country}</span>
                     </p>
                   </div>
@@ -520,7 +520,7 @@ export default function CalendarPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h5 className="text-xs uppercase font-extrabold text-muted-foreground">Entry Fee</h5>
-                      <p className="text-sm font-extrabold text-brand-orange mt-1">₹{selectedEvent.entryFee || 0}</p>
+                      <p className="text-sm font-extrabold text-foreground mt-1">₹{selectedEvent.entryFee || 0}</p>
                     </div>
                     <div>
                       <h5 className="text-xs uppercase font-extrabold text-muted-foreground">Capacity</h5>
@@ -551,7 +551,7 @@ export default function CalendarPage() {
                       <div className="space-y-3 mt-1.5">
                         {selectedEvent.secretaries.map((sec: any, idx: number) => (
                           <div key={sec.id || idx} className="p-3 bg-accent/40 rounded-xl border border-border space-y-1 text-xs">
-                            <p className="font-bold text-foreground">{sec.name} <span className="text-[10px] text-brand-orange uppercase bg-orange-50 px-1.5 py-0.5 rounded font-black">{sec.designation || 'Secretary'}</span></p>
+                            <p className="font-bold text-foreground">{sec.name} <span className="text-[10px] text-foreground uppercase bg-foreground/10 px-1.5 py-0.5 rounded font-black">{sec.designation || 'Secretary'}</span></p>
                             <p className="text-muted-foreground">📞 {sec.mobile} {sec.alternateMobile ? `/ ${sec.alternateMobile}` : ''}</p>
                             <p className="text-muted-foreground">✉ {sec.email}</p>
                             {sec.address && <p className="text-muted-foreground italic mt-1 whitespace-pre-line">{sec.address}</p>}

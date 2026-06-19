@@ -146,7 +146,7 @@ export default function AddVideoForm() {
         {loading && (
           <div className="w-full bg-muted rounded-full h-4 mb-4 overflow-hidden relative">
             <div 
-              className="bg-brand-orange h-4 transition-all duration-300 ease-out"
+              className="bg-foreground h-4 transition-all duration-300 ease-out"
               style={{ width: `${uploadProgress}%` }}
             ></div>
             <p className="text-xs absolute inset-0 flex items-center justify-center font-bold mix-blend-difference text-white">
@@ -179,31 +179,31 @@ export default function AddVideoForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Video Title *</label>
-            <input required type="text" name="title" value={formData.title} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
+            <input required type="text" name="title" value={formData.title} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Slug (Optional)</label>
-            <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
+            <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50" />
           </div>
           <div className="md:col-span-2 2xl:col-span-3">
             <label className="block text-sm font-medium text-muted-foreground mb-2">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleInputChange} disabled={loading} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
+            <textarea name="description" value={formData.description} onChange={handleInputChange} disabled={loading} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Breed</label>
-            <input type="text" name="breed" value={formData.breed} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
+            <input type="text" name="breed" value={formData.breed} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Location</label>
-            <input type="text" name="location" value={formData.location} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
+            <input type="text" name="location" value={formData.location} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Duration (e.g. 12:05)</label>
-            <input type="text" name="duration" value={formData.duration} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
+            <input type="text" name="duration" value={formData.duration} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50" />
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Tags (JSON or comma separated)</label>
-            <input type="text" name="tags" value={formData.tags} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50" />
+            <input type="text" name="tags" value={formData.tags} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50" />
           </div>
         </div>
 
@@ -214,7 +214,7 @@ export default function AddVideoForm() {
           </label>
           <div className="flex-1">
             <label className="block text-sm font-medium text-muted-foreground mb-2">Status</label>
-            <select name="status" value={formData.status} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-brand-orange disabled:opacity-50">
+            <select name="status" value={formData.status} onChange={handleInputChange} disabled={loading} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border disabled:opacity-50">
               <option value="ACTIVE">Active (Published)</option>
               <option value="DRAFT">Draft</option>
             </select>

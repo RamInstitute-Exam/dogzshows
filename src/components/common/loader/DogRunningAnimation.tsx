@@ -40,7 +40,7 @@ export const DogRunningAnimation = () => {
     <div className="flex items-center justify-center w-20 md:w-[100px] lg:w-[120px] aspect-square">
       {/* Fallback if JSON fails or user prefers reduced motion */}
       {(!animationData || error || prefersReducedMotion) ? (
-        <div className="w-full h-full flex items-center justify-center text-brand-orange animate-pulse">
+        <div className="w-full h-full flex items-center justify-center text-foreground animate-pulse">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
             <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.969-1.45 2.344-2.5"/>
             <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.984-1.45-2.359-2.5"/>

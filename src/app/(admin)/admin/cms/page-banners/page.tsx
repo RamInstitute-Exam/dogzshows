@@ -8,6 +8,7 @@ import { Plus, Edit, Trash2, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
 import api from '@/services/api';
+import Spinner from '@/components/common/loader/Spinner';
 
 interface PageBanner {
   id: string;
@@ -106,7 +107,7 @@ export default function PageBannersCMS() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-                <LayoutTemplate className="w-8 h-8 text-brand-orange" />
+                <LayoutTemplate className="w-8 h-8 text-foreground" />
                 Page Banners
               </h1>
               <p className="text-muted-foreground">Manage header banners for internal directory pages.</p>
@@ -138,7 +139,7 @@ export default function PageBannersCMS() {
               </thead>
               <tbody className="divide-y divide-[rgba(255,255,255,0.05)]">
                 {loading ? (
-                  <tr><td colSpan={5} className="p-4 text-center">Loading...</td></tr>
+                  <tr><td colSpan={5} className="p-4 text-center"><Spinner size="sm" /></td></tr>
                 ) : banners.length === 0 ? (
                   <tr><td colSpan={5} className="p-4 text-center text-muted-foreground">No page banners found</td></tr>
                 ) : (
@@ -160,7 +161,7 @@ export default function PageBannersCMS() {
                         </span>
                       </td>
                       <td className="p-4 flex gap-2 justify-end items-center h-full">
-                        <Button variant="ghost" size="icon" onClick={() => { setCurrentBanner(banner); setIsModalOpen(true); }} className="hover:text-brand-orange mt-2">
+                        <Button variant="ghost" size="icon" onClick={() => { setCurrentBanner(banner); setIsModalOpen(true); }} className="hover:text-foreground mt-2">
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(banner.id)} className="hover:text-red-500 mt-2">
@@ -252,7 +253,7 @@ export default function PageBannersCMS() {
                       id="isActive"
                       checked={currentBanner?.isActive ?? true} 
                       onChange={e => setCurrentBanner({...currentBanner, isActive: e.target.checked})}
-                      className="w-4 h-4 accent-brand-orange"
+                      className="w-4 h-4 accent-foreground"
                     />
                     <label htmlFor="isActive" className="text-sm font-bold text-muted-foreground">Active on site</label>
                   </div>

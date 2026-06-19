@@ -282,7 +282,7 @@ export default function DogProfileClient() {
     return (
       <PageContainer>
         <div className="flex flex-col justify-center items-center min-h-[70vh]">
-          <Loader2 className="w-12 h-12 text-orange-500 animate-spin mb-4" />
+          <Loader2 className="w-12 h-12 text-foreground animate-spin mb-4" />
           <p className="text-muted-foreground text-xs font-semibold">Loading companion profile...</p>
         </div>
       </PageContainer>
@@ -295,7 +295,7 @@ export default function DogProfileClient() {
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-20 text-center">
           <h1 className="text-muted-foregroundxl font-bold text-foreground mb-4">Companion Profile Not Found</h1>
           <p className="text-gray-550 text-xs font-semibold mb-8">The dog listing you are searching for is no longer active.</p>
-          <Link href="/dogs" className="inline-flex items-center text-orange-500 font-bold hover:text-orange-600">
+          <Link href="/dogs" className="inline-flex items-center text-foreground font-bold hover:text-foreground">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Search Directory
           </Link>
@@ -311,7 +311,7 @@ export default function DogProfileClient() {
       {/* Toast Notification */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-50 bg-card text-foreground p-4.5 p-4 rounded-2xl shadow-xl flex items-center space-x-2 animate-in fade-in slide-in-from-bottom-5 duration-300">
-          <CheckCircle className="w-5 h-5 text-orange-400" />
+          <CheckCircle className="w-5 h-5 text-foreground" />
           <span className="font-extrabold text-xs">{toast}</span>
         </div>
       )}
@@ -361,7 +361,7 @@ export default function DogProfileClient() {
                       key={img.id}
                       onClick={() => setActiveImage(img.url)}
                       className={`aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                        activeImage === img.url ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-transparent hover:border-orange-300'
+                        activeImage === img.url ? 'border-border ring-2 ring-border/20' : 'border-transparent hover:border-pink-300'
                       }`}
                     >
                       <img src={getImageUrl(img.url)} alt={dog.name} className="object-cover w-full h-full" />
@@ -375,7 +375,7 @@ export default function DogProfileClient() {
             {dog.videoUrl && (
               <div className="mt-8 pt-8 border-t border-border">
                 <h3 className="text-sm font-extrabold text-gray-950 uppercase tracking-wider mb-4 flex items-center space-x-1.5">
-                  <Play className="w-4.5 h-4.5 text-orange-500 fill-current" />
+                  <Play className="w-4.5 h-4.5 text-foreground fill-current" />
                   <span>Cinematic Introduction</span>
                 </h3>
                 <div className="relative aspect-video bg-foreground text-background rounded-2xl overflow-hidden shadow-md">
@@ -412,7 +412,7 @@ export default function DogProfileClient() {
                       </span>
                     )}
                   </div>
-                  <p className="text-base text-orange-500 font-bold mt-1.5">{dog.breed}</p>
+                  <p className="text-base text-foreground font-bold mt-1.5">{dog.breed}</p>
                 </div>
                 <div className="flex space-x-2">
                   <button
@@ -456,14 +456,14 @@ export default function DogProfileClient() {
               {dog.personality && dog.personality.length > 0 && (
                 <div className="mt-8">
                   <h3 className="text-muted-foregroundxs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center space-x-1">
-                    <Activity className="w-3.5 h-3.5 text-orange-500" />
+                    <Activity className="w-3.5 h-3.5 text-foreground" />
                     <span>Personality Traits</span>
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {dog.personality.map((trait, idx) => (
                       <span
                         key={idx}
-                        className="bg-orange-50 text-orange-650 border border-orange-100 text-muted-foregroundxs font-extrabold rounded-xl px-3 py-1 uppercase tracking-wider"
+                        className="bg-foreground/10 text-foreground border border-border/20 text-muted-foregroundxs font-extrabold rounded-xl px-3 py-1 uppercase tracking-wider"
                       >
                         {trait}
                       </span>
@@ -522,7 +522,7 @@ export default function DogProfileClient() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       onClick={() => setIsAdoptionOpen(true)}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-foreground font-bold px-6 py-3.5 rounded-xl transition-all shadow-md text-xs cursor-pointer text-center"
+                      className="flex-1 bg-foreground/100 hover:bg-foreground text-foreground font-bold px-6 py-3.5 rounded-xl transition-all shadow-md text-xs cursor-pointer text-center"
                     >
                       {dog.listingType === 'SALE' ? `Adopt Now - $${dog.price}` : 'Adopt Now - Free'}
                     </button>
@@ -530,19 +530,19 @@ export default function DogProfileClient() {
                       onClick={() => setIsMessageOpen(true)}
                       className="bg-card border border-gray-250 text-muted-foreground hover:bg-slate-50 px-4.5 py-3.5 rounded-xl transition-colors cursor-pointer text-xs font-bold flex items-center justify-center space-x-1.5"
                     >
-                      <MessageSquare className="w-4 h-4 text-orange-500" />
+                      <MessageSquare className="w-4 h-4 text-foreground" />
                       <span>Message Owner</span>
                     </button>
                     <button
                       onClick={() => setIsAppointmentOpen(true)}
                       className="bg-card border border-gray-250 text-muted-foreground hover:bg-slate-50 px-4.5 py-3.5 rounded-xl transition-colors cursor-pointer text-xs font-bold flex items-center justify-center space-x-1.5"
                     >
-                      <CalendarRange className="w-4 h-4 text-orange-500" />
+                      <CalendarRange className="w-4 h-4 text-foreground" />
                       <span>Consult</span>
                     </button>
                   </div>
                 ) : (
-                  <div className="bg-orange-50 border border-orange-100 text-orange-700 p-3.5 rounded-xl text-xs font-bold text-center">
+                  <div className="bg-foreground/10 border border-border/20 text-pink-700 p-3.5 rounded-xl text-xs font-bold text-center">
                     You listed this dog profile. Manage it via your SaaS Dashboard.
                   </div>
                 )}
@@ -556,7 +556,7 @@ export default function DogProfileClient() {
       {similarDogs.length > 0 && (
         <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 mt-16 w-full">
           <h2 className="text-xl font-extrabold text-foreground mb-6 flex items-center space-x-2">
-            <Sparkles className="w-5 h-5 text-orange-500" />
+            <Sparkles className="w-5 h-5 text-foreground" />
             <span>Similar {dog.breed} Companions</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -572,17 +572,17 @@ export default function DogProfileClient() {
                     {simImageSrc ? (
                       <img src={getImageUrl(simImageSrc)} alt="" className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-550" />
                     ) : (
-                      <div className="bg-orange-50/50 h-full w-full flex items-center justify-center text-orange-200">
+                      <div className="bg-foreground/10/50 h-full w-full flex items-center justify-center text-muted-foreground">
                         <span className="font-semibold text-muted-foregroundxs">No Photo</span>
                       </div>
                     )}
                   </div>
                   <div className="p-5 flex flex-col justify-between flex-grow">
                     <div className="flex justify-between items-center">
-                      <h4 className="font-bold text-sm text-foreground group-hover:text-orange-500 transition-colors">{sDog.name}</h4>
+                      <h4 className="font-bold text-sm text-foreground group-hover:text-foreground transition-colors">{sDog.name}</h4>
                       <span className="text-muted-foregroundxs text-muted-foreground font-bold">{sDog.age} {sDog.age === 1 ? 'year' : 'years'}</span>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-muted-foregroundxs font-extrabold text-orange-500 uppercase tracking-wider">
+                    <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-muted-foregroundxs font-extrabold text-foreground uppercase tracking-wider">
                       <span>View Profile</span>
                       <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                     </div>
@@ -615,7 +615,7 @@ export default function DogProfileClient() {
           <div className="bg-card rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-gray-250 flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold text-foreground flex items-center space-x-1.5">
-                <HeartHandshake className="w-5 h-5 text-orange-500" />
+                <HeartHandshake className="w-5 h-5 text-foreground" />
                 <span>Submit Adoption Interest</span>
               </h3>
               <button onClick={() => setIsAdoptionOpen(false)} className="text-muted-foreground hover:text-gray-650 cursor-pointer">
@@ -634,7 +634,7 @@ export default function DogProfileClient() {
                   placeholder="Tell the breeder about your home, work hours, and setup for a dog..."
                   value={adoptionNotes}
                   onChange={(e) => setAdoptionNotes(e.target.value)}
-                  className="w-full bg-card border border-border focus:bg-card text-gray-950 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-semibold leading-relaxed"
+                  className="w-full bg-card border border-border focus:bg-card text-gray-955 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-border transition-all font-semibold leading-relaxed"
                 />
               </div>
               <div className="flex space-x-3 pt-2">
@@ -648,7 +648,7 @@ export default function DogProfileClient() {
                 <button
                   type="submit"
                   disabled={adoptionLoading}
-                  className="w-2/3 bg-orange-500 hover:bg-orange-600 disabled:opacity-85 text-foreground font-bold py-2.5 rounded-xl text-xs shadow-md flex justify-center items-center space-x-1 cursor-pointer"
+                  className="w-2/3 bg-foreground/100 hover:bg-foreground disabled:opacity-85 text-foreground font-bold py-2.5 rounded-xl text-xs shadow-md flex justify-center items-center space-x-1 cursor-pointer"
                 >
                   {adoptionLoading ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <span>Submit Interest</span>}
                 </button>
@@ -664,7 +664,7 @@ export default function DogProfileClient() {
           <div className="bg-card rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-gray-250 flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold text-foreground flex items-center space-x-1.5">
-                <MessageSquare className="w-5 h-5 text-orange-500" />
+                <MessageSquare className="w-5 h-5 text-foreground" />
                 <span>Message Owner</span>
               </h3>
               <button onClick={() => setIsMessageOpen(false)} className="text-muted-foreground hover:text-gray-650 cursor-pointer">
@@ -681,7 +681,7 @@ export default function DogProfileClient() {
                   placeholder="Type your message details here..."
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
-                  className="w-full bg-card border border-border focus:bg-card text-gray-955 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-semibold leading-relaxed"
+                  className="w-full bg-card border border-border focus:bg-card text-gray-955 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-border transition-all font-semibold leading-relaxed"
                 />
               </div>
               <div className="flex space-x-3 pt-2">
@@ -695,7 +695,7 @@ export default function DogProfileClient() {
                 <button
                   type="submit"
                   disabled={chatLoading}
-                  className="w-2/3 bg-orange-500 hover:bg-orange-600 disabled:opacity-85 text-foreground font-bold py-2.5 rounded-xl text-xs shadow-md flex justify-center items-center space-x-1 cursor-pointer"
+                  className="w-2/3 bg-foreground/100 hover:bg-foreground disabled:opacity-85 text-foreground font-bold py-2.5 rounded-xl text-xs shadow-md flex justify-center items-center space-x-1 cursor-pointer"
                 >
                   {chatLoading ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <span>Send Message</span>}
                 </button>
@@ -711,7 +711,7 @@ export default function DogProfileClient() {
           <div className="bg-card rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-gray-250 flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold text-foreground flex items-center space-x-1.5">
-                <CalendarRange className="w-5 h-5 text-orange-500" />
+                <CalendarRange className="w-5 h-5 text-foreground" />
                 <span>Book Shelter Visit</span>
               </h3>
               <button onClick={() => setIsAppointmentOpen(false)} className="text-muted-foreground hover:text-gray-650 cursor-pointer">
@@ -727,7 +727,7 @@ export default function DogProfileClient() {
                   required
                   value={apptDate}
                   onChange={(e) => setApptDate(e.target.value)}
-                  className="w-full bg-card border border-border focus:bg-card text-gray-950 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-semibold"
+                  className="w-full bg-card border border-border focus:bg-card text-gray-950 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-border transition-all font-semibold"
                 />
               </div>
               <div>
@@ -737,7 +737,7 @@ export default function DogProfileClient() {
                   placeholder="Specify visit expectations (e.g. check socialization, confirm licensing docs)..."
                   value={apptNotes}
                   onChange={(e) => setApptNotes(e.target.value)}
-                  className="w-full bg-card border border-border focus:bg-card text-foreground text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-semibold leading-relaxed"
+                  className="w-full bg-card border border-border focus:bg-card text-foreground text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-border transition-all font-semibold leading-relaxed"
                 />
               </div>
               <div className="flex space-x-3 pt-2">
@@ -751,7 +751,7 @@ export default function DogProfileClient() {
                 <button
                   type="submit"
                   disabled={apptLoading}
-                  className="w-2/3 bg-orange-500 hover:bg-orange-650 disabled:opacity-85 text-foreground font-bold py-2.5 rounded-xl text-xs shadow-md flex justify-center items-center space-x-1 cursor-pointer"
+                  className="w-2/3 bg-foreground hover:bg-foreground disabled:opacity-85 text-white font-bold py-2.5 rounded-xl text-xs shadow-md flex justify-center items-center space-x-1 cursor-pointer"
                 >
                   {apptLoading ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <span>Schedule Visit</span>}
                 </button>
@@ -784,7 +784,7 @@ export default function DogProfileClient() {
                   placeholder="Detail warnings (e.g. unhealthy pet environment, counterfeit registration numbers, abusive content)..."
                   value={reportReason}
                   onChange={(e) => setReportReason(e.target.value)}
-                  className="w-full bg-card border border-border focus:bg-card text-gray-950 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-semibold leading-relaxed"
+                  className="w-full bg-card border border-border focus:bg-card text-gray-955 text-xs rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-border transition-all font-semibold leading-relaxed"
                 />
               </div>
               <div className="flex space-x-3 pt-2">

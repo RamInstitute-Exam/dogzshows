@@ -107,7 +107,7 @@ export default function UserDetailsView() {
             
             <div className="bg-card p-6 rounded-2xl border border-border shadow-md space-y-4">
               <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2 border-b border-border pb-3">
-                <Shield className="w-4 h-4 text-brand-orange" /> Role & Access
+                <Shield className="w-4 h-4 text-foreground" /> Role & Access
               </h3>
               <div>
                 <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Primary Role</p>

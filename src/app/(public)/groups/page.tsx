@@ -24,7 +24,7 @@ export default function GroupsPage() {
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-16">
         {loading ? (
           <div className="flex justify-center items-center min-h-[400px]">
-             <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+             <div className="w-12 h-12 border-4 border-border border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

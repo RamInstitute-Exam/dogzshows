@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
+import Spinner from '@/components/common/loader/Spinner';
 
 export default function SlidingSectionsAdminPage() {
   const [sections, setSections] = useState<any[]>([]);
@@ -149,14 +150,14 @@ export default function SlidingSectionsAdminPage() {
     }
   };
 
-  if (isLoading) return <div className="p-8">Loading...</div>;
+  if (isLoading) return <Spinner className="p-8" />;
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-foreground tracking-tight">Sliding Photo Sections</h2>
-          <Button onClick={() => openModal()} className="bg-brand-orange hover:bg-orange-600">
+          <Button onClick={() => openModal()} className="bg-foreground hover:bg-foreground">
             <Plus className="w-5 h-5 mr-2" /> Add Section
           </Button>
         </div>
@@ -246,7 +247,7 @@ export default function SlidingSectionsAdminPage() {
                       onDragStart={(e) => onDragStart(e, index)}
                       onDragEnd={onDragEnd}
                       onDragOver={(e) => onDragOver(e, index)}
-                      className="relative group aspect-square rounded-lg overflow-hidden bg-muted cursor-move border border-transparent hover:border-brand-orange transition-all"
+                      className="relative group aspect-square rounded-lg overflow-hidden bg-muted cursor-move border border-transparent hover:border-border transition-all"
                     >
                       <img src={getImageUrl(img.imageUrl)} alt={`Gallery ${index}`} className="w-full h-full object-cover pointer-events-none" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -263,7 +264,7 @@ export default function SlidingSectionsAdminPage() {
 
               <div className="flex justify-end gap-3 pt-6 border-t border-border">
                 <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={isUploading} className="bg-brand-orange hover:bg-orange-600">Save Section</Button>
+                <Button type="submit" disabled={isUploading} className="bg-foreground hover:bg-foreground">Save Section</Button>
               </div>
             </form>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Keyboard } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -59,14 +60,14 @@ export default function SlidingPhotoSections() {
                 
                 {/* Custom Navigation Arrows */}
                 <button 
-                  className={`nav-prev-${section.id} hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl text-gray-800 transition-all duration-300 hover:scale-110 hover:bg-white hover:text-brand-orange hover:border-brand-orange cursor-pointer disabled:opacity-0 disabled:hidden`}
+                  className={`nav-prev-${section.id} hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl text-gray-800 transition-all duration-300 hover:scale-110 hover:bg-white hover:text-foreground hover:border-border cursor-pointer disabled:opacity-0 disabled:hidden`}
                   aria-label="Previous slide"
                 >
                   <ChevronLeft className="w-6 h-6 ml-[-2px]" />
                 </button>
                 
                 <button 
-                  className={`nav-next-${section.id} hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl text-gray-800 transition-all duration-300 hover:scale-110 hover:bg-white hover:text-brand-orange hover:border-brand-orange cursor-pointer disabled:opacity-0 disabled:hidden`}
+                  className={`nav-next-${section.id} hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl text-gray-800 transition-all duration-300 hover:scale-110 hover:bg-white hover:text-foreground hover:border-border cursor-pointer disabled:opacity-0 disabled:hidden`}
                   aria-label="Next slide"
                 >
                   <ChevronRight className="w-6 h-6 mr-[-2px]" />
@@ -103,20 +104,19 @@ export default function SlidingPhotoSections() {
                           setLightboxIndex(idx);
                           setLightboxOpen(true);
                         }}
-                        className="group relative w-full h-[260px] md:h-[300px] lg:h-[320px] xl:h-[360px] rounded-[24px] overflow-hidden block transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20 border border-border/50 bg-card cursor-pointer"
+                        className="group photo-card transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20 cursor-pointer"
                       >
-                        
-                        <div className="absolute inset-0">
-                          <img 
-                            src={getImageUrl(img.imageUrl)} 
-                            alt={`${section.title} ${idx + 1}`}
-                            loading="lazy"
-                            style={{ objectPosition: 'top center' }}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                        </div>
-                        
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <Image 
+                          src={getImageUrl(img.imageUrl)} 
+                          alt={`${section.title} ${idx + 1}`}
+                          fill={false}
+                          width={800}
+                          height={1200}
+                          quality={100}
+                          unoptimized
+                          sizes="100vw"
+                          className="photo-card-img group-hover:scale-[1.02]"
+                        />
                       </div>
                     </SwiperSlide>
                   ))}
@@ -130,6 +130,43 @@ export default function SlidingPhotoSections() {
               .nav-prev-${section.id}.swiper-button-lock,
               .nav-next-${section.id}.swiper-button-lock {
                 display: none !important;
+              }
+
+              .photo-card {
+                width: 100%;
+                height: auto;
+                background: #000000;
+                border-radius: 20px;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+              }
+
+              .photo-card-img {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 3 / 4 !important;
+                object-fit: contain !important;
+                object-position: center !important;
+                background: #000000 !important;
+                border-radius: 12px !important;
+                transition: transform 0.7s ease;
+              }
+
+              @media (max-width: 768px) {
+                .photo-card {
+                  width: 100% !important;
+                  padding: 12px !important;
+                }
+                .photo-card-img {
+                  aspect-ratio: auto !important;
+                  height: auto !important;
+                  object-fit: contain !important;
+                  object-position: center !important;
+                }
               }
             `}</style>
           </section>

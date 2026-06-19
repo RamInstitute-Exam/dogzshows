@@ -36,7 +36,7 @@ export default function ForgotPasswordForm() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full h-12 rounded-xl bg-card hover:bg-accent text-foreground font-bold text-base mt-2">
+          <Button type="submit" className="w-full btn-primary-luxury mt-2">
             Send Reset OTP
           </Button>
         </form>
@@ -47,11 +47,11 @@ export default function ForgotPasswordForm() {
             <Input required type="text" placeholder="• • • • • •" className="text-center tracking-[1em] font-bold rounded-xl bg-card h-12" />
           </div>
 
-          <Button type="submit" className="w-full h-12 rounded-xl bg-brand-orange hover:bg-orange-600 text-foreground font-bold text-base mt-2 shadow-lg shadow-orange-500/20">
+          <Button type="submit" className="w-full btn-primary-luxury mt-2">
             Verify & Reset
           </Button>
           
-          <p className="text-center text-xs font-bold text-muted-foreground mt-4 cursor-pointer hover:text-brand-orange">
+          <p className="text-center text-xs font-bold text-muted-foreground mt-4 cursor-pointer hover:text-foreground">
             Resend OTP
           </p>
         </form>

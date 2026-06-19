@@ -59,7 +59,7 @@ export default function Footer() {
                 width={180}
                 height={56}
                 loading="lazy"
-                className="footer-logo-img dark:brightness-0 dark:invert" // Invert image for dark theme
+                className="footer-logo-img"
               />
             </Link>
             <p className="text-muted-foreground text-sm max-w-xs leading-relaxed mt-5">

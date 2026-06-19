@@ -2,6 +2,7 @@
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import MediaGalleryClient from '@/components/media-gallery/MediaGalleryClient';
+import Spinner from '@/components/common/loader/Spinner';
 
 function MediaCategoryPageContent() {
   const searchParams = useSearchParams();
@@ -18,7 +19,7 @@ function MediaCategoryPageContent() {
 
 export default function MediaCategoryPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+    <Suspense fallback={<Spinner className="p-8" />}>
       <MediaCategoryPageContent />
     </Suspense>
   );

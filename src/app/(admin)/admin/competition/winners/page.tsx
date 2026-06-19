@@ -69,7 +69,7 @@ export default function WinnersListing() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-brand-orange" /> Champions & Winners
+                <Trophy className="w-8 h-8 text-foreground" /> Champions & Winners
               </h1>
               <p className="text-muted-foreground font-medium mt-1">Manage global show winners and Champion points.</p>
             </div>
@@ -85,8 +85,8 @@ export default function WinnersListing() {
           </div>
 
           {selectedIds.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between bg-brand-orange/10 border border-brand-orange/20 p-4 rounded-xl">
-              <p className="text-brand-orange font-bold">{selectedIds.length} records selected</p>
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between bg-foreground/10 border border-border/20 p-4 rounded-xl">
+              <p className="text-foreground font-bold">{selectedIds.length} records selected</p>
               <div className="flex gap-2">
                 <Button size="sm" onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700 text-foreground border-0">Delete Selected</Button>
               </div>
@@ -99,7 +99,7 @@ export default function WinnersListing() {
                 <thead>
                   <tr className="bg-card border-b border-border">
                     <th className="py-4 px-6 w-12">
-                      <input type="checkbox" onChange={handleSelectAll} checked={winners.length > 0 && selectedIds.length === winners.length} className="rounded bg-accent border-border text-brand-orange focus:ring-brand-orange" />
+                      <input type="checkbox" onChange={handleSelectAll} checked={winners.length > 0 && selectedIds.length === winners.length} className="rounded bg-accent border-border text-foreground focus:ring-foreground" />
                     </th>
                     <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Dog Profile</th>
                     <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider">Award Title</th>
@@ -112,7 +112,7 @@ export default function WinnersListing() {
                   {loading ? (
                     <tr>
                       <td colSpan={6} className="py-12 text-center">
-                        <RefreshCw className="w-8 h-8 animate-spin text-brand-orange  mb-4" />
+                        <RefreshCw className="w-8 h-8 animate-spin text-foreground  mb-4" />
                         <p className="text-muted-foreground">Loading winners...</p>
                       </td>
                     </tr>
@@ -142,15 +142,15 @@ export default function WinnersListing() {
                             type="checkbox" 
                             checked={selectedIds.includes(w.id)}
                             onChange={() => handleSelectOne(w.id)}
-                            className="rounded bg-accent border-border text-brand-orange focus:ring-brand-orange" 
+                            className="rounded bg-accent border-border text-foreground focus:ring-foreground" 
                           />
                         </td>
                         <td className="py-4 px-6">
-                          <p className="font-bold text-foreground group-hover:text-brand-orange transition-colors">{dog?.name || 'Unknown Dog'}</p>
+                          <p className="font-bold text-foreground group-hover:text-foreground transition-colors">{dog?.name || 'Unknown Dog'}</p>
                           <p className="text-xs text-muted-foreground mt-0.5">{dog?.breed?.name || 'Unknown Breed'}</p>
                         </td>
                         <td className="py-4 px-6">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-orange/10 border border-brand-orange/20 text-brand-orange text-xs font-bold uppercase tracking-wider">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/20 text-foreground text-xs font-bold uppercase tracking-wider">
                             <Award className="w-3 h-3" /> {w.awardTitle}
                           </span>
                         </td>
@@ -160,7 +160,7 @@ export default function WinnersListing() {
                         </td>
                         <td className="py-4 px-6">
                           <p className="text-sm text-foreground">{judge?.name || 'System Generated'}</p>
-                          {w.score !== null && <p className="text-xs text-brand-orange font-bold mt-0.5">Score: {w.score}</p>}
+                          {w.score !== null && <p className="text-xs text-foreground font-bold mt-0.5">Score: {w.score}</p>}
                         </td>
                         <td className="py-4 px-6 text-right">
                           <div className="flex items-center justify-end gap-1  transition-opacity">

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -195,13 +196,25 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative w-full aspect-[4/3] md:aspect-auto md:h-[75vh] 2xl:h-[85vh] bg-[#0A0A0A] rounded-[32px] overflow-hidden group border border-white/5 cursor-zoom-in shadow-2xl"
+              className="relative w-full aspect-auto md:h-[75vh] 2xl:h-[85vh] bg-[#0A0A0A] rounded-[32px] overflow-hidden group border border-white/5 cursor-zoom-in shadow-2xl"
               onClick={() => setLightboxOpen(true)}
             >
-              <img
+              <Image
                 src={photoSrc}
                 alt={photo.altText || photo.title}
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                fill={false}
+                width={800}
+                height={1200}
+                quality={100}
+                unoptimized
+                sizes="100vw"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  objectPosition: "center"
+                }}
+                className="gallery-image transition-transform duration-1000 group-hover:scale-105"
               />
               
               <div className="absolute inset-0 bg-gradient-to-t from-[#020817]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -234,8 +247,8 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                     const pSrc = p.s3Url || p.imageUrl || p.cdnUrl;
                     return (
                       <Link href={`/gallery/show-photos/details?slug=${p.slug}`} key={p.id} className="snap-start shrink-0">
-                        <div className={`relative w-[140px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#020817] shadow-lg' : 'opacity-50 hover:opacity-100 border border-white/10'}`}>
-                          <img src={pSrc} alt={p.title} className="w-full h-full object-cover" />
+                        <div className={`relative w-[140px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 bg-black ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#020817] shadow-lg' : 'opacity-50 hover:opacity-100 border border-white/10'}`}>
+                          <img src={pSrc} alt={p.title} className="w-full h-full object-contain" />
                         </div>
                       </Link>
                     );

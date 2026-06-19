@@ -88,7 +88,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-orange" />
+        <Loader2 className="w-8 h-8 animate-spin text-foreground" />
       </div>
     );
   }
@@ -110,18 +110,18 @@ export default function ProfilePage() {
           {/* Main Profile Card */}
           <div className="bg-card rounded-[2rem] border border-border p-6 shadow-sm relative overflow-hidden group">
             {/* Background pattern */}
-            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-orange-100 to-orange-50 -z-10" />
+            <div className="absolute top-0 left-0 w-full h-32 bg-muted/20 -z-10" />
             
             <div className="text-center mt-8">
               <div className="relative inline-block">
-                <div className="w-24 h-24 rounded-full bg-brand-orange text-foreground flex items-center justify-center text-3xl font-bold border-4 border-border shadow-xl overflow-hidden mx-auto">
+                <div className="w-24 h-24 rounded-full bg-foreground text-foreground flex items-center justify-center text-3xl font-bold border-4 border-border shadow-xl overflow-hidden mx-auto">
                   {userData?.avatarUrl ? (
                     <img src={userData.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <span>{userData?.firstName?.[0] || authUser?.firstName?.[0] || 'G'}</span>
                   )}
                 </div>
-                <button className="absolute bottom-0 right-0 p-2 bg-card text-foreground rounded-full shadow-lg hover:bg-brand-orange transition-colors">
+                <button className="absolute bottom-0 right-0 p-2 bg-card text-foreground rounded-full shadow-lg hover:bg-foreground transition-colors">
                   <Camera className="w-4 h-4" />
                 </button>
               </div>
@@ -155,19 +155,19 @@ export default function ProfilePage() {
             <nav className="space-y-1">
               <button 
                 onClick={() => setActiveTab('general')}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'general' ? 'bg-orange-50 text-brand-orange' : 'text-muted-foreground hover:bg-card'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'general' ? 'bg-foreground/10 text-foreground' : 'text-muted-foreground hover:bg-card'}`}
               >
                 <User className="w-5 h-5" /> General Information
               </button>
               <button 
                 onClick={() => setActiveTab('security')}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'security' ? 'bg-orange-50 text-brand-orange' : 'text-muted-foreground hover:bg-card'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'security' ? 'bg-foreground/10 text-foreground' : 'text-muted-foreground hover:bg-card'}`}
               >
                 <Shield className="w-5 h-5" /> Security & 2FA
               </button>
               <button 
                 onClick={() => setActiveTab('billing')}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'billing' ? 'bg-orange-50 text-brand-orange' : 'text-muted-foreground hover:bg-card'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'billing' ? 'bg-foreground/10 text-foreground' : 'text-muted-foreground hover:bg-card'}`}
               >
                 <CreditCard className="w-5 h-5" /> Billing & Invoices
               </button>
@@ -207,7 +207,7 @@ export default function ProfilePage() {
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <Input value={userData?.email || authUser?.email || ''} readOnly className="pl-10 rounded-xl bg-input border-transparent text-muted-foreground" />
                     </div>
-                    <p className="text-xs text-brand-orange font-bold mt-1">Verified</p>
+                    <p className="text-xs text-foreground font-bold mt-1">Verified</p>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-muted-foreground">Mobile Number</label>
@@ -220,14 +220,14 @@ export default function ProfilePage() {
                     <label className="text-sm font-bold text-muted-foreground">Residential Address</label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
-                      <textarea value={formData.address1} onChange={e => setFormData(p => ({...p, address1: e.target.value}))} rows={3} className="w-full pl-10 pr-4 py-3 rounded-xl bg-card border border-border focus:bg-card focus:border-brand-orange outline-none resize-none text-sm transition-all" placeholder="Enter your full address..."></textarea>
+                      <textarea value={formData.address1} onChange={e => setFormData(p => ({...p, address1: e.target.value}))} rows={3} className="w-full pl-10 pr-4 py-3 rounded-xl bg-card border border-border focus:bg-card focus:border-border outline-none resize-none text-sm transition-all" placeholder="Enter your full address..."></textarea>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-8 flex justify-end gap-4">
                   <Button onClick={handleDiscard} disabled={saving} variant="outline" className="rounded-xl font-bold">Discard Changes</Button>
-                  <Button onClick={handleSaveProfile} disabled={saving} className="rounded-xl bg-brand-orange hover:bg-orange-600 text-foreground font-bold px-8 flex items-center gap-2">
+                  <Button onClick={handleSaveProfile} disabled={saving} className="rounded-xl bg-foreground hover:bg-foreground text-foreground font-bold px-8 flex items-center gap-2">
                     {saving && <Loader2 className="w-4 h-4 animate-spin" />} Save Profile
                   </Button>
                 </div>
@@ -276,7 +276,7 @@ export default function ProfilePage() {
               {/* Password Change */}
               <div className="bg-card rounded-[2rem] border border-border p-8 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-brand-orange">
+                  <div className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center text-foreground">
                     <Key className="w-5 h-5" />
                   </div>
                   <div>

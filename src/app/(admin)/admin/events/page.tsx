@@ -281,7 +281,7 @@ export default function BespokeEventManagement() {
       <div className="bg-card p-5 rounded-2xl border border-border shadow-md flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-brand-orange" /> Event Management
+            <Calendar className="w-8 h-8 text-foreground" /> Event Management
           </h1>
           <p className="text-muted-foreground font-medium mt-1">Configure dog shows, manage assignments, view registration matrices, and update statuses.</p>
         </div>
@@ -298,7 +298,7 @@ export default function BespokeEventManagement() {
                 setSearch(e.target.value);
                 setPage(1); // Reset to page 1
               }}
-              className="w-full pl-10 pr-4 h-11 bg-background border border-border focus:border-brand-orange rounded-xl text-sm outline-none transition-all placeholder-muted-foreground"
+              className="w-full pl-10 pr-4 h-11 bg-background border border-border focus:border-border rounded-xl text-sm outline-none transition-all placeholder-muted-foreground"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
@@ -353,7 +353,7 @@ export default function BespokeEventManagement() {
                 <select 
                   value={yearFilter}
                   onChange={(e) => { setYearFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 >
                   <option value="">All Years</option>
                   {[2024, 2025, 2026, 2027].map(y => (
@@ -368,7 +368,7 @@ export default function BespokeEventManagement() {
                 <select 
                   value={monthFilter}
                   onChange={(e) => { setMonthFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 >
                   <option value="">All Months</option>
                   {[
@@ -390,7 +390,7 @@ export default function BespokeEventManagement() {
                   placeholder="e.g. Tamil Nadu" 
                   value={stateFilter}
                   onChange={(e) => { setStateFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 />
               </div>
 
@@ -402,7 +402,7 @@ export default function BespokeEventManagement() {
                   placeholder="e.g. Coimbatore" 
                   value={cityFilter}
                   onChange={(e) => { setCityFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 />
               </div>
 
@@ -412,7 +412,7 @@ export default function BespokeEventManagement() {
                 <select 
                   value={clubFilter}
                   onChange={(e) => { setClubFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 >
                   <option value="">All Clubs</option>
                   {clubs.map(c => (
@@ -427,7 +427,7 @@ export default function BespokeEventManagement() {
                 <select 
                   value={judgeFilter}
                   onChange={(e) => { setJudgeFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 >
                   <option value="">All Judges</option>
                   {judges.map(j => (
@@ -442,7 +442,7 @@ export default function BespokeEventManagement() {
                 <select 
                   value={typeFilter}
                   onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 >
                   <option value="">All Types</option>
                   <option value="Championship Show">Championship Show</option>
@@ -458,7 +458,7 @@ export default function BespokeEventManagement() {
                 <select 
                   value={statusFilter}
                   onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-brand-orange"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
                 >
                   <option value="">All Statuses</option>
                   <option value="DRAFT">Draft</option>
@@ -505,7 +505,7 @@ export default function BespokeEventManagement() {
             className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl text-slate-200"
           >
             <div className="flex items-center gap-3">
-              <span className="px-2.5 py-1 text-xs font-black bg-brand-orange text-slate-950 rounded-full">
+              <span className="px-2.5 py-1 text-xs font-black bg-foreground text-slate-950 rounded-full">
                 {selectedIds.length} Selected
               </span>
               <p className="text-sm font-semibold text-slate-300">Perform transactional updates across selection.</p>
@@ -582,7 +582,7 @@ export default function BespokeEventManagement() {
                     className="text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {selectedIds.length === data.length && data.length > 0 ? (
-                      <CheckSquare className="w-5 h-5 text-brand-orange" />
+                      <CheckSquare className="w-5 h-5 text-foreground" />
                     ) : (
                       <Square className="w-5 h-5" />
                     )}
@@ -611,7 +611,7 @@ export default function BespokeEventManagement() {
               {loading ? (
                 <tr>
                   <td colSpan={8} className="py-24 text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-brand-orange mx-auto mb-4" />
+                    <Loader2 className="w-8 h-8 animate-spin text-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground font-semibold">Parsing database entries...</p>
                   </td>
                 </tr>
@@ -631,7 +631,7 @@ export default function BespokeEventManagement() {
                   return (
                     <tr 
                       key={item.id}
-                      className={`hover:bg-accent/40 transition-colors ${isSelected ? 'bg-brand-orange/5' : ''}`}
+                      className={`hover:bg-accent/40 transition-colors ${isSelected ? 'bg-foreground/5' : ''}`}
                     >
                       {/* Checkbox */}
                       <td className="py-4 px-4 text-center">
@@ -640,7 +640,7 @@ export default function BespokeEventManagement() {
                           className="text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {isSelected ? (
-                            <CheckSquare className="w-5 h-5 text-brand-orange" />
+                            <CheckSquare className="w-5 h-5 text-foreground" />
                           ) : (
                             <Square className="w-5 h-5" />
                           )}
@@ -649,7 +649,7 @@ export default function BespokeEventManagement() {
 
                       {/* Event Title */}
                       <td className="py-4 px-6 truncate font-bold text-foreground">
-                        <span className="block truncate hover:text-brand-orange cursor-pointer" onClick={() => setActiveEvent(item)}>{item.name}</span>
+                        <span className="block truncate hover:text-foreground cursor-pointer" onClick={() => setActiveEvent(item)}>{item.name}</span>
                         <span className="block text-xs font-semibold text-muted-foreground mt-0.5">{item.type}</span>
                       </td>
 
@@ -912,7 +912,7 @@ export default function BespokeEventManagement() {
                   <span className="mb-2 block">{getStatusBadge(activeEvent.status)}</span>
                   <h2 className="text-2xl font-black text-white leading-tight drop-shadow-md">{activeEvent.name}</h2>
                   <p className="text-xs font-bold text-slate-300 mt-1 uppercase tracking-wide flex items-center gap-1">
-                    <Trophy className="w-3.5 h-3.5 text-brand-orange" /> {activeEvent.type} Show
+                    <Trophy className="w-3.5 h-3.5 text-foreground" /> {activeEvent.type} Show
                   </p>
                 </div>
               </div>
@@ -922,7 +922,7 @@ export default function BespokeEventManagement() {
                 {/* Dates & Location Card */}
                 <div className="grid grid-cols-2 gap-4 bg-accent/30 p-4 border border-border rounded-2xl">
                   <div className="flex gap-3">
-                    <Calendar className="w-5 h-5 text-brand-orange mt-0.5 flex-shrink-0" />
+                    <Calendar className="w-5 h-5 text-foreground mt-0.5 flex-shrink-0" />
                     <div>
                       <span className="block text-[10px] font-bold uppercase text-muted-foreground">Show Date</span>
                       <span className="text-xs font-bold text-foreground">
@@ -932,7 +932,7 @@ export default function BespokeEventManagement() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <MapPin className="w-5 h-5 text-brand-orange mt-0.5 flex-shrink-0" />
+                    <MapPin className="w-5 h-5 text-foreground mt-0.5 flex-shrink-0" />
                     <div>
                       <span className="block text-[10px] font-bold uppercase text-muted-foreground">Venue</span>
                       <span className="text-xs font-bold text-foreground leading-tight">{activeEvent.venue}</span>
@@ -950,7 +950,7 @@ export default function BespokeEventManagement() {
 
                   <div>
                     <h4 className="text-xs font-bold uppercase text-muted-foreground tracking-wider mb-2 font-mono">Entry Fee</h4>
-                    <p className="text-lg font-black text-brand-orange">₹{activeEvent.entryFee || 'Free'}</p>
+                    <p className="text-lg font-black text-foreground">₹{activeEvent.entryFee || 'Free'}</p>
                   </div>
 
                   {activeEvent.description && (
@@ -997,7 +997,7 @@ export default function BespokeEventManagement() {
                         <div key={index} className="p-3 border border-border/80 bg-accent/10 rounded-xl flex flex-col gap-1">
                           <div className="flex justify-between items-start">
                             <p className="text-xs font-bold text-foreground">{s.name}</p>
-                            <span className="text-[9px] font-bold uppercase tracking-wider bg-brand-orange/15 text-brand-orange px-2 py-0.5 rounded">
+                            <span className="text-[9px] font-bold uppercase tracking-wider bg-foreground/15 text-foreground px-2 py-0.5 rounded">
                               {s.designation || 'Secretary'}
                             </span>
                           </div>

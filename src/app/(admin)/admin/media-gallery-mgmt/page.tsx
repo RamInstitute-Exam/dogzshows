@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
+import Spinner from '@/components/common/loader/Spinner';
 
 function MediaGalleryMgmtContent() {
   const searchParams = useSearchParams();
@@ -333,7 +334,7 @@ function MediaGalleryMgmtContent() {
           {activeTab !== 'add' && (
             <Button 
               onClick={() => router.push('/admin/media-gallery-mgmt?tab=add')} 
-              className="bg-brand-orange hover:bg-orange-600 text-white font-bold cursor-pointer"
+              className="bg-foreground hover:bg-foreground text-white font-bold cursor-pointer"
             >
               <Plus className="w-4 h-4 mr-2" /> Add Album
             </Button>
@@ -345,19 +346,19 @@ function MediaGalleryMgmtContent() {
       <div className="flex border-b border-border/80">
         <button 
           onClick={() => router.push('/admin/media-gallery-mgmt?tab=list')}
-          className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 cursor-pointer ${activeTab === 'list' ? 'border-brand-orange text-brand-orange' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+          className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 cursor-pointer ${activeTab === 'list' ? 'border-border text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
         >
           Albums
         </button>
         <button 
           onClick={() => router.push('/admin/media-gallery-mgmt?tab=add')}
-          className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 cursor-pointer ${activeTab === 'add' ? 'border-brand-orange text-brand-orange' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+          className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 cursor-pointer ${activeTab === 'add' ? 'border-border text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
         >
           {paramAlbumId ? 'Edit Album' : 'Add Album'}
         </button>
         <button 
           onClick={() => router.push(`/admin/media-gallery-mgmt?tab=images${paramAlbumId ? `&albumId=${paramAlbumId}` : ''}`)}
-          className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 cursor-pointer ${activeTab === 'images' ? 'border-brand-orange text-brand-orange' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+          className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 cursor-pointer ${activeTab === 'images' ? 'border-border text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
         >
           Gallery Images
         </button>
@@ -365,10 +366,7 @@ function MediaGalleryMgmtContent() {
 
       {/* Loader */}
       {isLoading && (
-        <div className="py-20 flex flex-col items-center justify-center">
-          <div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
-          <p className="text-muted-foreground text-sm mt-4">Loading media gallery content...</p>
-        </div>
+        <Spinner className="py-20" />
       )}
 
       {/* TAB 1: ALBUM LIST */}
@@ -614,7 +612,7 @@ function MediaGalleryMgmtContent() {
                     type="checkbox" 
                     checked={featured} 
                     onChange={(e) => setFeatured(e.target.checked)} 
-                    className="rounded text-brand-orange focus:ring-brand-orange cursor-pointer w-4 h-4" 
+                    className="rounded text-foreground focus:ring-foreground cursor-pointer w-4 h-4" 
                   />
                   <span className="text-sm font-semibold">Featured</span>
                 </label>
@@ -629,7 +627,7 @@ function MediaGalleryMgmtContent() {
               placeholder="Enter brief description of the album event"
               value={description} 
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 rounded-md border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-brand-orange focus:border-brand-orange"
+              className="w-full p-3 rounded-md border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-foreground focus:border-border"
               rows={3}
             />
           </div>
@@ -707,7 +705,7 @@ function MediaGalleryMgmtContent() {
               <Button 
                 type="submit" 
                 disabled={isSaving || isUploading} 
-                className="bg-brand-orange hover:bg-orange-600 text-white font-bold cursor-pointer"
+                className="bg-foreground hover:bg-foreground text-white font-bold cursor-pointer"
               >
                 <Save className="w-4 h-4 mr-2" /> {paramAlbumId ? 'Update Album' : 'Save Album'}
               </Button>
@@ -748,7 +746,7 @@ function MediaGalleryMgmtContent() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-muted/20 p-4 rounded-xl border border-border/40">
                   <div>
                     <h3 className="text-lg font-bold text-foreground">
-                      Album: <span className="text-brand-orange">{selectedAlbum.title}</span>
+                      Album: <span className="text-foreground">{selectedAlbum.title}</span>
                     </h3>
                     <div className="text-xs text-muted-foreground mt-1 flex flex-wrap gap-x-4 gap-y-1 font-medium">
                       {selectedAlbum.eventName && <span>Event: {selectedAlbum.eventName}</span>}
@@ -795,10 +793,7 @@ function MediaGalleryMgmtContent() {
                     </div>
                   </div>
                   {isUploading && (
-                    <div className="flex items-center gap-2 text-xs text-brand-orange font-bold animate-pulse">
-                      <div className="w-4.5 h-4.5 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" />
-                      Uploading photos directly to album gallery...
-                    </div>
+                    <Spinner size="sm" className="py-2 justify-start" />
                   )}
                 </div>
 
@@ -810,7 +805,7 @@ function MediaGalleryMgmtContent() {
                       <Button 
                         size="sm" 
                         onClick={persistReorder}
-                        className="bg-brand-orange hover:bg-orange-600 text-white font-bold cursor-pointer text-xs"
+                        className="bg-foreground hover:bg-foreground text-white font-bold cursor-pointer text-xs"
                       >
                         Save Grid Order
                       </Button>
@@ -828,7 +823,7 @@ function MediaGalleryMgmtContent() {
                           onDragStart={(e) => onDragStart(e, index)}
                           onDragEnd={onDragEnd}
                           onDragOver={(e) => onDragOver(e, index)}
-                          className={`relative group aspect-[4/3] rounded-xl overflow-hidden bg-muted cursor-move border transition-all ${isCover ? 'border-green-500 ring-2 ring-green-500/20' : 'border-border/60 hover:border-brand-orange'}`}
+                          className={`relative group aspect-[4/3] rounded-xl overflow-hidden bg-muted cursor-move border transition-all ${isCover ? 'border-green-500 ring-2 ring-green-500/20' : 'border-border/60 hover:border-border'}`}
                         >
                           <img 
                             src={getImageUrl(url)} 
@@ -907,7 +902,7 @@ function MediaGalleryMgmtContent() {
           <div className="relative max-w-4xl max-h-[85vh] overflow-hidden rounded-xl border border-white/10 shadow-2xl">
             <button 
               onClick={() => setPreviewImage(null)} 
-              className="absolute top-4 right-4 bg-black/60 hover:bg-black text-white hover:text-brand-orange p-2 rounded-full cursor-pointer z-10 transition-all shadow border border-white/10"
+              className="absolute top-4 right-4 bg-black/60 hover:bg-black text-white hover:text-foreground p-2 rounded-full cursor-pointer z-10 transition-all shadow border border-white/10"
             >
               <X className="w-6 h-6" />
             </button>
@@ -925,7 +920,7 @@ function MediaGalleryMgmtContent() {
 
 export default function MediaGalleryMgmtAdminPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading Media Gallery...</div>}>
+    <Suspense fallback={<Spinner className="p-8" />}>
       <MediaGalleryMgmtContent />
     </Suspense>
   );

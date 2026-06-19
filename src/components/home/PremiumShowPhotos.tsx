@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ImageIcon } from 'lucide-react';
@@ -24,7 +26,7 @@ export default function PremiumShowPhotos() {
   }, []);
 
   if (isLoading) {
-    return <div className="py-20 text-center"><div className="w-8 h-8 border-4 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto"></div></div>;
+    return <div className="py-20 text-center"><div className="w-8 h-8 border-4 border-foreground/20 border-t-foreground rounded-full animate-spin mx-auto"></div></div>;
   }
 
   if (albums.length === 0) return null;
@@ -36,26 +38,38 @@ export default function PremiumShowPhotos() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl">
-            <span className="text-brand-orange font-bold text-sm tracking-[0.2em] uppercase block mb-3">Premium Show Photos</span>
+            <span className="text-muted-foreground font-bold text-sm tracking-[0.2em] uppercase block mb-3">Premium Show Photos</span>
             <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">Until Sunday Coimbatore Show Photos</h2>
             <p className="text-muted-foreground mt-4 text-lg max-w-xl">Explore exclusive moments captured from the latest championship dog shows across India.</p>
           </div>
-          <Link href="/gallery/photos" className="group flex items-center gap-2 text-foreground font-bold hover:text-brand-orange transition-colors">
+          <Link href="/gallery/photos" className="group flex items-center gap-2 text-foreground font-bold hover:text-foreground transition-colors">
             View All <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {albums.map((album) => (
-            <Link key={album.id} href={`/gallery/shows/${album.id}`} className="group relative h-[420px] rounded-3xl overflow-hidden block">
+            <Link key={album.id} href={`/gallery/shows/${album.id}`} className="group relative rounded-3xl overflow-hidden flex flex-col justify-between w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto border border-border/50 bg-black">
               
               {/* Background Image */}
-              <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.08]">
-                <img 
+              <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden transition-transform duration-500 group-hover:scale-[1.08]">
+                <Image 
                   src={getImageUrl(album.coverImage)} 
                   alt={album.title}
-                  className="w-full h-full object-cover"
+                  fill={false}
+                  width={800}
+                  height={1200}
+                  quality={100}
+                  unoptimized
+                  sizes="100vw"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    objectFit: "contain",
+                    objectPosition: "center"
+                  }}
+                  className="gallery-image"
                 />
               </div>
 

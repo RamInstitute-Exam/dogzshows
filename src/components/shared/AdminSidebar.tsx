@@ -68,7 +68,7 @@ export default function AdminSidebar() {
                         key={subItem.name}
                         href={subItem.href}
                         className={`block px-3 py-2 rounded-lg text-sm transition-colors ${isSubActive
-                          ? 'bg-brand-orange text-foreground font-semibold'
+                          ? 'bg-foreground text-foreground font-semibold'
                           : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                         }`}
                       >
@@ -87,7 +87,7 @@ export default function AdminSidebar() {
               key={item.name}
               href={item.href!}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive
-                ? 'bg-brand-orange text-foreground'
+                ? 'bg-foreground text-foreground'
                 : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                 }`}
             >

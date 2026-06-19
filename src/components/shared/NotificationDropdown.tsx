@@ -29,7 +29,7 @@ export default function NotificationDropdown() {
       case 'competition': return <Trophy className="w-5 h-5 text-yellow-600" />;
       case 'payment': return <CreditCard className="w-5 h-5 text-green-600" />;
       case 'system': return <AlertCircle className="w-5 h-5 text-red-600" />;
-      default: return <Info className="w-5 h-5 text-brand-orange" />;
+      default: return <Info className="w-5 h-5 text-foreground" />;
     }
   };
 
@@ -38,7 +38,7 @@ export default function NotificationDropdown() {
       case 'competition': return 'bg-yellow-100';
       case 'payment': return 'bg-green-100';
       case 'system': return 'bg-red-100';
-      default: return 'bg-orange-50';
+      default: return 'bg-foreground/10';
     }
   };
 
@@ -74,7 +74,7 @@ export default function NotificationDropdown() {
               <div className="p-4 border-b border-border flex justify-between items-center bg-card/50">
                 <h3 className="text-lg font-extrabold text-foreground">Notifications</h3>
                 {unreadCount > 0 && (
-                  <button onClick={markAllRead} className="text-sm font-bold text-brand-orange hover:text-orange-600 flex items-center gap-1 transition-colors">
+                  <button onClick={markAllRead} className="text-sm font-bold text-foreground hover:text-foreground flex items-center gap-1 transition-colors">
                     <Check className="w-4 h-4" /> Mark all read
                   </button>
                 )}
@@ -92,7 +92,7 @@ export default function NotificationDropdown() {
                     {notifications.map(notification => (
                       <div 
                         key={notification.id} 
-                        className={`p-4 hover:bg-card transition-colors cursor-pointer flex gap-4 ${!notification.isRead ? 'bg-orange-50/30' : ''}`}
+                        className={`p-4 hover:bg-card transition-colors cursor-pointer flex gap-4 ${!notification.isRead ? 'bg-foreground/10/30' : ''}`}
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${getIconBg(notification.type)}`}>
                           {getIcon(notification.type)}
@@ -105,7 +105,7 @@ export default function NotificationDropdown() {
                           <span className="text-[10px] font-bold text-muted-foreground mt-2 block">{notification.time}</span>
                         </div>
                         {!notification.isRead && (
-                          <div className="w-2 h-2 rounded-full bg-brand-orange shrink-0 mt-2"></div>
+                          <div className="w-2 h-2 rounded-full bg-foreground shrink-0 mt-2"></div>
                         )}
                       </div>
                     ))}

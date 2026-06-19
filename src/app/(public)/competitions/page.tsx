@@ -35,7 +35,7 @@ export default function CompetitionEngine() {
       
       {/* Header */}
       <div className="pt-8 pb-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-orange/20 blur-[100px] -z-10" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-foreground/20 blur-[100px] -z-10" />
         <div className="absolute top-1/2 left-0 w-96 h-96 bg-blue-500/20 blur-[100px] -z-10" />
         
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
@@ -55,7 +55,7 @@ export default function CompetitionEngine() {
             <div className="flex gap-4">
               <div className="bg-card/5 backdrop-blur border border-border px-6 py-3 rounded-2xl text-center">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Live Viewers</p>
-                <p className="text-xl font-bold flex items-center justify-center gap-2"><Users className="w-5 h-5 text-brand-orange" /> 1,248</p>
+                <p className="text-xl font-bold flex items-center justify-center gap-2"><Users className="w-5 h-5 text-foreground" /> 1,248</p>
               </div>
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function CompetitionEngine() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: (colIdx * 0.2) + (matchIdx * 0.1) }}
-                    className={`relative p-1 rounded-2xl ${match.live ? 'bg-gradient-to-r from-brand-orange to-red-500 animate-pulse' : 'bg-card/5'}`}
+                    className={`relative p-1 rounded-2xl ${match.live ? 'bg-foreground animate-pulse' : 'bg-card/5'}`}
                   >
                     <div className="bg-accent rounded-xl p-4 flex flex-col gap-3 h-full">
                       {match.live && (

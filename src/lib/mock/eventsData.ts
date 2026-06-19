@@ -42,7 +42,7 @@ export const MOCK_EVENTS = [
     venue: 'BIEC Ground',
     type: 'Breed Specialty', 
     status: 'Draft', 
-    bg: 'bg-gradient-to-br from-brand-orange to-red-500',
+    bg: 'bg-gradient-to-br from-pink-500 to-red-500',
     club: 'Golden Retriever Club of India',
     judgeCount: 2,
     entryFee: '₹3,000',

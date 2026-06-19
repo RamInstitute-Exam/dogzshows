@@ -70,7 +70,7 @@ export default function CompetitionsDashboard() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-brand-orange" /> Competition Rings
+                <Trophy className="w-8 h-8 text-foreground" /> Competition Rings
               </h1>
               <p className="text-muted-foreground mt-1">Manage active matches, input scores, and declare winners.</p>
             </div>
@@ -82,14 +82,14 @@ export default function CompetitionsDashboard() {
                 placeholder="Search dog or event..." 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-brand-orange transition-all shadow-sm"
+                className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-border transition-all shadow-sm"
               />
             </div>
           </div>
 
           {loading ? (
             <div className="flex justify-center py-20">
-              <Loader2 className="w-12 h-12 animate-spin text-brand-orange" />
+              <Loader2 className="w-12 h-12 animate-spin text-foreground" />
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -108,7 +108,7 @@ export default function CompetitionsDashboard() {
                   </div>
                   
                   <h3 className="text-xl font-bold text-foreground line-clamp-1">{match.dog?.name || 'Unknown Dog'}</h3>
-                  <p className="text-sm text-brand-orange font-semibold mb-4 line-clamp-1">{match.round?.event?.name}</p>
+                  <p className="text-sm text-foreground font-semibold mb-4 line-clamp-1">{match.round?.event?.name}</p>
 
                   <div className="grid grid-cols-2 gap-4 text-sm mt-auto border-t border-border pt-4 mb-6">
                     <div>
@@ -126,7 +126,7 @@ export default function CompetitionsDashboard() {
                       setScoringMatch(match);
                       setScoreForm({ score: match.score || '', notes: match.notes || '', isWinner: match.status === 'ADVANCED', awardTitle: '' });
                     }} 
-                    className="w-full bg-accent hover:bg-brand-orange hover:text-white text-foreground transition-colors font-bold"
+                    className="w-full bg-accent hover:bg-foreground hover:text-white text-foreground transition-colors font-bold"
                   >
                     <Play className="w-4 h-4 mr-2" /> Score Match
                   </Button>
@@ -157,7 +157,7 @@ export default function CompetitionsDashboard() {
                       type="number" 
                       value={scoreForm.score} 
                       onChange={e => setScoreForm({...scoreForm, score: e.target.value})}
-                      className="w-full px-4 py-3 bg-input border border-border rounded-xl text-foreground focus:border-brand-orange outline-none font-bold text-xl"
+                      className="w-full px-4 py-3 bg-input border border-border rounded-xl text-foreground focus:border-border outline-none font-bold text-xl"
                     />
                   </div>
                   <div>
@@ -166,7 +166,7 @@ export default function CompetitionsDashboard() {
                       value={scoreForm.notes} 
                       onChange={e => setScoreForm({...scoreForm, notes: e.target.value})}
                       rows={3}
-                      className="w-full px-4 py-3 bg-input border border-border rounded-xl text-foreground focus:border-brand-orange outline-none resize-none"
+                      className="w-full px-4 py-3 bg-input border border-border rounded-xl text-foreground focus:border-border outline-none resize-none"
                     />
                   </div>
                   
@@ -176,7 +176,7 @@ export default function CompetitionsDashboard() {
                         type="checkbox" 
                         checked={scoreForm.isWinner} 
                         onChange={e => setScoreForm({...scoreForm, isWinner: e.target.checked})}
-                        className="w-5 h-5 rounded bg-input border-border text-brand-orange focus:ring-brand-orange"
+                        className="w-5 h-5 rounded bg-input border-border text-foreground focus:ring-foreground"
                       />
                       <span className="font-bold text-foreground">Declare as Winner / Advance</span>
                     </label>
@@ -184,11 +184,11 @@ export default function CompetitionsDashboard() {
 
                   {scoreForm.isWinner && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pt-2">
-                      <label className="block text-sm font-bold text-brand-orange mb-2">Award Title (Optional)</label>
+                      <label className="block text-sm font-bold text-foreground mb-2">Award Title (Optional)</label>
                       <select 
                         value={scoreForm.awardTitle} 
                         onChange={e => setScoreForm({...scoreForm, awardTitle: e.target.value})}
-                        className="w-full px-4 py-3 bg-brand-orange/10 border border-brand-orange/30 rounded-xl text-foreground focus:border-brand-orange outline-none"
+                        className="w-full px-4 py-3 bg-foreground/10 border border-border/30 rounded-xl text-foreground focus:border-border outline-none"
                       >
                         <option value="">Select an Award...</option>
                         <option value="Best in Show">Best in Show</option>
@@ -202,7 +202,7 @@ export default function CompetitionsDashboard() {
 
                 <div className="flex justify-end gap-3 mt-8">
                   <Button variant="ghost" onClick={() => setScoringMatch(null)} className="hover:bg-accent text-foreground">Cancel</Button>
-                  <Button onClick={handleScoreSubmit} disabled={submitLoading} className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6">
+                  <Button onClick={handleScoreSubmit} disabled={submitLoading} className="bg-foreground hover:bg-foreground text-white font-bold px-6">
                     {submitLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Score'}
                   </Button>
                 </div>

@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { config } from '@/lib/config';
 import ImageUploader from '@/components/shared/ImageUploader';
 import api from '@/services/api';
+import Spinner from '@/components/common/loader/Spinner';
 
 interface HomepageBanner {
   id: string;
@@ -20,6 +21,7 @@ interface HomepageBanner {
   status: string;
   startDate?: string;
   endDate?: string;
+  bannerMode?: string;
 }
 
 export default function HomepageBannersAdmin() {
@@ -162,7 +164,7 @@ export default function HomepageBannersAdmin() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-            <ImageIcon className="w-8 h-8 text-brand-orange" />
+            <ImageIcon className="w-8 h-8 text-foreground" />
             Homepage Banners
           </h1>
           <p className="text-muted-foreground">Manage full-screen hero sliders for the main homepage.</p>
@@ -174,7 +176,8 @@ export default function HomepageBannersAdmin() {
             setCurrentBanner({
               status: 'ACTIVE',
               openNewTab: false,
-              displayOrder: banners.length
+              displayOrder: banners.length,
+              bannerMode: 'cover'
             });
             setIsModalOpen(true);
           }}
@@ -198,7 +201,7 @@ export default function HomepageBannersAdmin() {
           </thead>
           <tbody className="divide-y divide-[rgba(255,255,255,0.05)]">
             {loading ? (
-              <tr><td colSpan={6} className="p-4 text-center">Loading...</td></tr>
+              <tr><td colSpan={6} className="p-4 text-center"><Spinner size="sm" /></td></tr>
             ) : banners.length === 0 ? (
               <tr><td colSpan={6} className="p-4 text-center text-muted-foreground">No banners found</td></tr>
             ) : (
@@ -233,7 +236,7 @@ export default function HomepageBannersAdmin() {
                     {!banner.startDate && !banner.endDate && <span className="text-gray-500 italic">Always show</span>}
                   </td>
                   <td className="p-4 flex gap-2 justify-end items-center h-full">
-                    <Button variant="ghost" size="icon" onClick={() => { setCurrentBanner(banner); setIsModalOpen(true); }} className="hover:text-brand-orange mt-2">
+                    <Button variant="ghost" size="icon" onClick={() => { setCurrentBanner(banner); setIsModalOpen(true); }} className="hover:text-foreground mt-2">
                       <Edit className="w-4 h-4" />
                     </Button>
                     <Button variant="ghost" size="icon" onClick={() => handleDelete(banner.id)} className="hover:text-red-500 mt-2">
@@ -280,6 +283,7 @@ export default function HomepageBannersAdmin() {
                     label="Banner Image (1920x1080 or 2400x1350) *"
                     aspectRatio={1920 / 1080}
                     helpText="Max 10 MB. This single image will adapt responsively to Desktop, Tablet, and Mobile views."
+                    highResolution={true}
                   />
                 </div>
               </div>
@@ -301,7 +305,7 @@ export default function HomepageBannersAdmin() {
                     id="openNewTab"
                     checked={currentBanner?.openNewTab ?? false}
                     onChange={e => setCurrentBanner({ ...currentBanner, openNewTab: e.target.checked })}
-                    className="w-4 h-4 accent-brand-orange"
+                    className="w-4 h-4 accent-foreground"
                   />
                   <label htmlFor="openNewTab" className="text-sm font-bold text-muted-foreground">Open link in new tab</label>
                 </div>
@@ -328,6 +332,34 @@ export default function HomepageBannersAdmin() {
                 </div>
               </div>
 
+              <div className="flex flex-col gap-2">
+                <label className="block text-sm font-bold text-muted-foreground">Banner Mode *</label>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      id="modeCover"
+                      name="bannerMode"
+                      checked={(currentBanner?.bannerMode || 'cover') === 'cover'}
+                      onChange={() => setCurrentBanner({ ...currentBanner, bannerMode: 'cover' })}
+                      className="accent-foreground"
+                    />
+                    <label htmlFor="modeCover" className="text-sm font-bold text-muted-foreground">Cover (fills container, may crop)</label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      id="modeContain"
+                      name="bannerMode"
+                      checked={currentBanner?.bannerMode === 'contain'}
+                      onChange={() => setCurrentBanner({ ...currentBanner, bannerMode: 'contain' })}
+                      className="accent-foreground"
+                    />
+                    <label htmlFor="modeContain" className="text-sm font-bold text-muted-foreground">Contain (fits container, no cropping)</label>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <input
@@ -336,7 +368,7 @@ export default function HomepageBannersAdmin() {
                     name="status"
                     checked={currentBanner?.status === 'ACTIVE'}
                     onChange={() => setCurrentBanner({ ...currentBanner, status: 'ACTIVE' })}
-                    className="accent-brand-orange"
+                    className="accent-foreground"
                   />
                   <label htmlFor="statusActive" className="text-sm font-bold text-muted-foreground">Active</label>
                 </div>
@@ -347,7 +379,7 @@ export default function HomepageBannersAdmin() {
                     name="status"
                     checked={currentBanner?.status === 'INACTIVE'}
                     onChange={() => setCurrentBanner({ ...currentBanner, status: 'INACTIVE' })}
-                    className="accent-brand-orange"
+                    className="accent-foreground"
                   />
                   <label htmlFor="statusInactive" className="text-sm font-bold text-muted-foreground">Inactive</label>
                 </div>

@@ -44,7 +44,7 @@ export default function FCIGroupDetailClient({ slug }: { slug: string }) {
       <div className="max-w-[1400px] mx-auto px-6 py-6 pb-24">
         <Link
           href="/groups"
-          className="inline-flex items-center text-muted-foreground hover:text-brand-orange transition-colors mb-8 font-bold"
+          className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-8 font-bold"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back to Groups
@@ -65,7 +65,7 @@ export default function FCIGroupDetailClient({ slug }: { slug: string }) {
 
           <div className="absolute bottom-12 left-12 right-12 z-20 flex flex-col md:flex-row justify-between items-end gap-8">
             <div>
-              <span className="inline-block px-4 py-1.5 bg-brand-orange/20 text-brand-orange text-sm font-black tracking-widest uppercase rounded-full border border-brand-orange/50 mb-4">
+              <span className="inline-block px-4 py-1.5 bg-foreground/20 text-foreground text-sm font-black tracking-widest uppercase rounded-full border border-border/50 mb-4">
                 FCI Group {group.groupNumber}
               </span>
               <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight leading-tight">
@@ -75,7 +75,7 @@ export default function FCIGroupDetailClient({ slug }: { slug: string }) {
 
             <div className="flex gap-4">
               <div className="bg-card/80 backdrop-blur-md px-6 py-4 rounded-2xl border border-border text-center shadow-lg">
-                <p className="text-3xl font-black text-brand-orange">
+                <p className="text-3xl font-black text-foreground">
                   {group._count?.breeds ?? 0}
                 </p>
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
@@ -91,7 +91,7 @@ export default function FCIGroupDetailClient({ slug }: { slug: string }) {
           <div className="lg:col-span-2 space-y-12">
             <section>
               <h2 className="text-3xl font-extrabold mb-6 flex items-center gap-3">
-                <Dog className="text-brand-orange w-8 h-8" />
+                <Dog className="text-foreground w-8 h-8" />
                 About This Group
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
@@ -108,7 +108,7 @@ export default function FCIGroupDetailClient({ slug }: { slug: string }) {
                 <p className="text-muted-foreground text-lg">
                   Detailed breed profiles are currently being curated.
                 </p>
-                <Button className="mt-6 bg-brand-orange hover:bg-orange-600 rounded-full font-bold text-foreground">
+                <Button className="mt-6 bg-foreground hover:bg-foreground rounded-full font-bold text-foreground">
                   View Full Registry
                 </Button>
               </div>

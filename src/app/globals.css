@@ -119,13 +119,51 @@ select:focus {
   }
 
   .btn-primary-luxury {
-    background: linear-gradient(135deg, #F59E0B, #FB923C);
-    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 0 32px;
     transition: all 0.3s ease;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    /* Light Mode Default Style */
+    background-color: #FFFFFF;
+    border: 1px solid #111111;
+    color: #111111;
   }
 
   .btn-primary-luxury:hover {
-    background: linear-gradient(135deg, #FB923C, #F59E0B);
+    background-color: #F9F9F9;
+    border-color: #000000;
+    transform: scale(1.02);
+  }
+
+  .btn-primary-luxury:active {
+    background-color: #EEEEEE;
+    color: #111111;
+  }
+
+  /* Dark Mode Styles */
+  .dark .btn-primary-luxury {
+    background-color: #000000;
+    border: 1px solid #2A2A2A;
+    color: #FFFFFF;
+  }
+
+  .dark .btn-primary-luxury:hover {
+    background-color: #1A1A1A;
+    border-color: #444444;
+    transform: scale(1.02);
+  }
+
+  .dark .btn-primary-luxury:active {
+    background-color: #222222;
+    color: #FFFFFF;
   }
 
   .btn-secondary-luxury {
@@ -155,12 +193,12 @@ select:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #f59e0b;
+  background: var(--border-color);
   border-radius: 24px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffb020;
+  background: var(--text-secondary);
 }
 
 /* Hide scrollbar for gallery elements */
@@ -754,7 +792,7 @@ button:hover .bell-icon-animate {
   --bg-primary: #000000;
   --bg-card: #111111;
   --text-primary: #ffffff;
-  --text-secondary: #b5b5b5;
+  --text-secondary: #BDBDBD;
   --button-bg: #ffffff;
   --button-text: #000000;
   --icon-color: #ffffff;
@@ -823,6 +861,28 @@ button:hover .bell-icon-animate {
   }
 }
 
+/* ─── Global Button Text Contrast Safety ────────────────────────────────────
+   Prevents white-on-white or black-on-black button text in any theme.
+   These rules are intentionally low-specificity — component styles override.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Light mode: dark buttons should have white text */
+button:not([class*="text-"]),
+a[role="button"]:not([class*="text-"]) {
+  color: inherit;
+}
+
+/* Explicit fix: any element using bg-foreground should display background-colored text */
+.bg-foreground {
+  color: var(--background);
+}
+
+/* Explicit fix: any element using bg-background or bg-white should display foreground-colored text */
+.bg-background,
+.bg-white {
+  color: var(--foreground);
+}
+
 /* ─── Footer Logo Styles ─────────────────────────────────────────────────── */
 .footer-logo-img {
   width: 120px;
@@ -852,21 +912,23 @@ button:hover .bell-icon-animate {
 /* ─── Dedicated Mobile Navbar & Menu Styles (0px - 768px) ──────────────── */
 @media (max-width: 768px) {
   :root {
-    --nav-height: 72px !important;
+    --nav-height: 60px !important;
   }
 
   .navbar-header {
-    height: 72px !important;
-    padding-left: 20px !important;
+    height: 60px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 16px !important;
     padding-right: 16px !important;
-    /* Spacing: 16px from screen edge */
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    background: inherit !important;
-    position: sticky !important;
+    background: var(--nav-bg) !important;
+    position: fixed !important;
     top: 0 !important;
     z-index: 9999 !important;
+    box-sizing: border-box !important;
   }
 
   .header-container {
@@ -1222,3 +1284,119 @@ html, body {
   .admin-btn-md  { height: 2.5rem; padding: 0 1rem;   font-size: 0.875rem; }
   .admin-btn-lg  { height: 3rem;  padding: 0 1.5rem;  font-size: 1rem; }
 }
+
+.gallery-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  background: #000000 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLOBAL MOBILE RESPONSIVE OPTIMIZATIONS (screens < 768px)
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Section Spacing overrides */
+  section,
+  .section-padding,
+  .py-32, .py-24, .py-20, .py-16, .py-12, .py-10,
+  .pt-32, .pt-24, .pt-20, .pt-16,
+  .pb-32, .pb-24, .pb-20, .pb-16 {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+
+  /* Container margins & layouts */
+  .container,
+  [class*="max-w-"] {
+    width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    max-width: 100% !important;
+  }
+
+  /* Card layouts margins and gaps overrides */
+  .gap-6, .gap-8, .gap-10, .gap-12, .gap-16,
+  .gap-x-6, .gap-x-8, .gap-x-12, .gap-x-16,
+  .gap-y-6, .gap-y-8, .gap-y-12, .gap-y-16 {
+    gap: 16px !important;
+  }
+
+  .card, [class*="card"], [class*="-card"], .netflix-card {
+    margin-top: 0 !important;
+  }
+
+  /* Title margins */
+  h1, h2, h3, .section-title, .page-title {
+    margin-bottom: 16px !important;
+  }
+
+  /* Buttons stacking and full-width */
+  .flex-wrap:has(.btn-primary-luxury),
+  .flex:has(.btn-primary-luxury) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .btn-primary-luxury,
+  .w-full.md\:w-auto.btn-primary-luxury {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+  }
+
+  /* Breadcrumb margin */
+  .breadcrumb-container,
+  .max-w-\[1400px\].mx-auto.px-4.sm\:px-6.lg\:px-8.py-6:has(a[href="/"]) {
+    margin-top: 12px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Image sections layout adjustments */
+  .flex-shrink-0.w-full,
+  .flex-1.w-full {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Tablet overrides */
+@media (max-width: 1023px) and (min-width: 768px) {
+  section,
+  .section-padding,
+  .py-32, .py-24, .py-20, .py-16,
+  .pt-32, .pt-24, .pt-20, .pt-16,
+  .pb-32, .pb-24, .pb-20, .pb-16 {
+    padding-top: 48px !important;
+    padding-bottom: 48px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLOBAL LOADER ANIMATIONS
+   ───────────────────────────────────────────────────────────── */
+@keyframes logoPulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+}
+
+.loader-logo {
+  animation: logoPulse 1.2s infinite ease-in-out;
+}
+

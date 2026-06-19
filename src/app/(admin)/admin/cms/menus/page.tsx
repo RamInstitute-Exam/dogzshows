@@ -127,7 +127,7 @@ export default function MenusPage() {
         </div>
         <button 
           onClick={() => openModal()}
-          className="bg-brand-orange hover:bg-orange-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-bold transition-colors"
+          className="bg-foreground hover:bg-foreground text-white px-4 py-2 rounded-xl flex items-center gap-2 font-bold transition-colors"
         >
           <Plus className="w-4 h-4" /> Add Menu Item
         </button>
@@ -135,7 +135,7 @@ export default function MenusPage() {
 
       <div className="bg-card border border-border rounded-2xl overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/30">
-          <h3 className="font-bold flex items-center gap-2"><ListTree className="w-4 h-4 text-brand-orange"/> Menu Structure</h3>
+          <h3 className="font-bold flex items-center gap-2"><ListTree className="w-4 h-4 text-foreground"/> Menu Structure</h3>
         </div>
         
         <div className="p-4 space-y-4">
@@ -149,7 +149,7 @@ export default function MenusPage() {
                     <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
                     <span className="font-bold">{parent.name}</span>
                     <span className="text-xs text-muted-foreground font-mono">{parent.url}</span>
-                    {parent.url === '#mega' && <span className="text-[10px] bg-brand-orange/20 text-brand-orange px-2 py-0.5 rounded-full font-bold">MEGA MENU</span>}
+                    {parent.url === '#mega' && <span className="text-[10px] bg-foreground/20 text-foreground px-2 py-0.5 rounded-full font-bold">MEGA MENU</span>}
                   </div>
                   <div className="flex items-center gap-2">
                     <button onClick={() => openModal(parent)} className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit2 className="w-4 h-4" /></button>
@@ -194,7 +194,7 @@ export default function MenusPage() {
                 <input 
                   type="text" required value={name} onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Home"
-                  className="w-full px-4 py-2.5 bg-background border border-border rounded-xl outline-none focus:border-brand-orange"
+                  className="w-full px-4 py-2.5 bg-background border border-border rounded-xl outline-none focus:border-border"
                 />
               </div>
 
@@ -203,16 +203,16 @@ export default function MenusPage() {
                 <input 
                   type="text" required value={url} onChange={(e) => setUrl(e.target.value)}
                   placeholder="e.g. /events or #mega"
-                  className="w-full px-4 py-2.5 bg-background border border-border rounded-xl outline-none focus:border-brand-orange font-mono text-sm"
+                  className="w-full px-4 py-2.5 bg-background border border-border rounded-xl outline-none focus:border-border font-mono text-sm"
                 />
-                <p className="text-xs text-muted-foreground">Use <code className="text-brand-orange bg-brand-orange/10 px-1 rounded">#mega</code> to define a Mega Menu container.</p>
+                <p className="text-xs text-muted-foreground">Use <code className="text-foreground bg-foreground/10 px-1 rounded">#mega</code> to define a Mega Menu container.</p>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-muted-foreground">Parent Menu</label>
                 <select 
                   value={parentId} onChange={(e) => setParentId(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-background border border-border rounded-xl outline-none focus:border-brand-orange"
+                  className="w-full px-4 py-2.5 bg-background border border-border rounded-xl outline-none focus:border-border"
                 >
                   <option value="">None (Top Level)</option>
                   {menus.map(m => (
@@ -223,7 +223,7 @@ export default function MenusPage() {
 
               <div className="pt-4 flex justify-end gap-3">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 text-muted-foreground font-bold hover:bg-accent rounded-xl">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 bg-brand-orange text-white font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-brand-orange/20"><Save className="w-4 h-4"/> Save Menu</button>
+                <button type="submit" className="px-5 py-2.5 bg-foreground text-white font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-black/20"><Save className="w-4 h-4"/> Save Menu</button>
               </div>
             </form>
           </div>

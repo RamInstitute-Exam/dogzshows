@@ -34,7 +34,7 @@ export default function FeaturedClubsSlider() {
   const { data: response, isLoading } = useQuery({
     queryKey: ['featured-clubs'],
     queryFn: async () => {
-      return api.get('/public/clubs', { params: { isFeatured: true } });
+      return api.get('/public/clubs', { params: { limit: 10, featured: true } });
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -73,20 +73,16 @@ export default function FeaturedClubsSlider() {
               Discover India's leading kennel clubs organizing prestigious dog shows, championships, and canine events across the country.
             </p>
           </div>
-          <Link href="/clubs" className="group hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-orange hover:text-brand-orange/80 transition-colors">
-            View All Clubs
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
         </div>
 
         <div className="relative !overflow-visible">
           {/* Custom Navigation Buttons */}
           <button
             ref={(node) => setPrevEl(node)}
-            className="custom-swiper-prev absolute -left-4 lg:-left-10 xl:-left-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white/[0.08] backdrop-blur-md border border-white/[0.15] text-white shadow-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-brand-orange hover:to-pink-500 hover:border-transparent hover:scale-[1.08] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            className="custom-swiper-prev absolute -left-4 lg:-left-10 xl:-left-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
             aria-label="Previous slide"
           >
-            <ChevronLeft size={22} className="text-white" />
+            <ChevronLeft size={22} />
           </button>
 
           <Swiper
@@ -107,11 +103,12 @@ export default function FeaturedClubsSlider() {
               delay: 4000,
               disableOnInteraction: false,
             }}
-            loop={clubs.length > 4}
+            loop={clubs.length > 5}
             breakpoints={{
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-              1280: { slidesPerView: 4 },
+              320: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
+              1440: { slidesPerView: 5 },
             }}
             className="!pb-12 custom-swiper !overflow-visible"
           >
@@ -120,44 +117,44 @@ export default function FeaturedClubsSlider() {
                 <Link href={`/clubs/${club.slug || club.id}`}>
                   <motion.div
                     whileHover={{ y: -8 }}
-                    className="group relative flex flex-col h-[320px] bg-card border border-border/50 rounded-[20px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-brand-orange/30 transition-all duration-500 p-6"
+                    className="group relative flex flex-col h-[320px] bg-card border border-border/50 rounded-[20px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-border/30 transition-all duration-500 p-6"
                   >
                     {/* Content */}
                     <div className="flex-1 flex flex-col h-full">
-                      <h3 className="text-xl sm:text-2xl font-black text-foreground mb-3 line-clamp-1 group-hover:text-brand-orange transition-colors">
+                      <h3 className="text-xl sm:text-2xl font-black text-foreground mb-3 line-clamp-1 group-hover:text-foreground transition-colors">
                         {club.name}
                       </h3>
                       
                       <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-4">
-                        <MapPin className="w-4 h-4 text-brand-orange" />
+                        <MapPin className="w-4 h-4 text-muted-foreground" />
                         <span className="truncate">
                           {[club.city, club.state].filter(Boolean).join(', ') || 'India'}
                         </span>
                       </div>
-
+ 
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-6 flex-1">
                         {club.description || 'India\'s leading kennel club organizing prestigious canine events.'}
                       </p>
-
+ 
                       <div className="mt-auto flex flex-col">
                         <div className="flex items-center gap-4 py-4 border-t border-b border-border/50 mb-4">
                           <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                            <ImageIcon className="w-4 h-4 text-brand-orange" />
+                            <ImageIcon className="w-4 h-4 text-muted-foreground" />
                             {club._count?.clubGalleries || 0} Photos
                           </div>
                           <div className="w-1 h-1 rounded-full bg-border" />
                           <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                            <Film className="w-4 h-4 text-brand-orange" />
+                            <Film className="w-4 h-4 text-muted-foreground" />
                             {0} Videos
                           </div>
                         </div>
-
+ 
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-foreground group-hover:text-brand-orange transition-colors">
+                          <span className="text-sm font-bold text-foreground transition-colors">
                             View Club
                           </span>
-                          <div className="w-8 h-8 rounded-full bg-brand-orange/5 flex items-center justify-center group-hover:bg-brand-orange group-hover:scale-110 transition-all">
-                            <ArrowRight className="w-4 h-4 text-brand-orange group-hover:text-white transition-colors" />
+                          <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center group-hover:bg-foreground group-hover:scale-110 transition-all duration-300">
+                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-background transition-colors duration-300" />
                           </div>
                         </div>
                       </div>
@@ -167,20 +164,28 @@ export default function FeaturedClubsSlider() {
               </SwiperSlide>
             ))}
           </Swiper>
-
+ 
           <button
             ref={(node) => setNextEl(node)}
-            className="custom-swiper-next absolute -right-4 lg:-right-10 xl:-right-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white/[0.08] backdrop-blur-md border border-white/[0.15] text-white shadow-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-brand-orange hover:to-pink-500 hover:border-transparent hover:scale-[1.08] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            className="custom-swiper-next absolute -right-4 lg:-right-10 xl:-right-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
             aria-label="Next slide"
           >
-            <ChevronRight size={22} className="text-white" />
+            <ChevronRight size={22} />
           </button>
         </div>
-        
-        <Link href="/clubs" className="md:hidden mt-8 flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-orange border border-brand-orange/20 rounded-xl py-4 hover:bg-brand-orange/5 transition-colors">
-          View All Clubs
-          <ArrowRight className="w-4 h-4" />
-        </Link>
+ 
+        <div className="flex flex-col items-center justify-center mt-12 gap-3 text-center">
+          <span className="text-sm font-medium text-muted-foreground">
+            Showing 10 Featured Clubs
+          </span>
+          <Link
+            href="/clubs"
+            className="btn-primary-luxury group gap-2.5 px-8"
+          >
+            View All Clubs
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+          </Link>
+        </div>
       </div>
 
       <style jsx global>{`

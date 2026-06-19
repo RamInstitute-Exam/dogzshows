@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <Suspense fallback={
       <div className="flex justify-center items-center min-h-[70vh]">
-        <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
+        <Loader2 className="w-12 h-12 text-foreground animate-spin" />
       </div>
     }>
       <EventDetailClient />

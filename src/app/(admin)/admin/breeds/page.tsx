@@ -54,7 +54,7 @@ export default function BreedMaster() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xl">
             <div>
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                <Dog className="w-8 h-8 text-orange-500" /> Breed Master
+                <Dog className="w-8 h-8 text-foreground" /> Breed Master
               </h1>
               <p className="text-muted-foreground font-medium mt-1">Manage recognized dog breeds and their properties. Total: {totalCount}</p>
             </div>
@@ -67,10 +67,10 @@ export default function BreedMaster() {
                   placeholder="Search breed..." 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-orange-500 transition-all"
+                  className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-border transition-all"
                 />
               </div>
-              <Button onClick={fetchBreeds} disabled={loading} className="bg-orange-600 hover:bg-orange-700 text-foreground font-bold">
+              <Button onClick={fetchBreeds} disabled={loading} className="bg-foreground hover:bg-pink-700 text-white font-bold">
                 {loading ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
                 Refresh
               </Button>

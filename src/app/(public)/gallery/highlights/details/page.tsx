@@ -4,6 +4,7 @@ import { useSearchParams, notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import VideoDetailClient from '../../show-videos/details/VideoDetailClient';
 import { getVideoBySlug, getAllVideos } from '@/lib/server-api';
+import Spinner from '@/components/common/loader/Spinner';
 
 
 function VideoDetailPageContent() {
@@ -29,7 +30,7 @@ function VideoDetailPageContent() {
     fetchData();
   }, [paramVal]);
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <Spinner className="p-8" />;
   if (!data) return notFound();
 
   return <VideoDetailClient initialVideos={[data]} />;
@@ -37,7 +38,7 @@ function VideoDetailPageContent() {
 
 export default function VideoDetailPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+    <Suspense fallback={<Spinner className="p-8" />}>
       <VideoDetailPageContent />
     </Suspense>
   );
