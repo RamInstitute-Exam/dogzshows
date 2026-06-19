@@ -7,10 +7,16 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import api, { getImageUrl } from '@/lib/api';
+import ImageLightbox from '@/components/shared/ImageLightbox';
 
 export default function SlidingPhotoSections() {
   const [sections, setSections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Lightbox State
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxImages, setLightboxImages] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,7 +97,14 @@ export default function SlidingPhotoSections() {
                 >
                   {section.images.map((img: any, idx: number) => (
                     <SwiperSlide key={img.id || idx}>
-                      <div className="group relative w-full h-[260px] md:h-[300px] lg:h-[320px] xl:h-[360px] rounded-[24px] overflow-hidden block transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20 border border-border/50 bg-card cursor-pointer">
+                      <div 
+                        onClick={() => {
+                          setLightboxImages(section.images);
+                          setLightboxIndex(idx);
+                          setLightboxOpen(true);
+                        }}
+                        className="group relative w-full h-[260px] md:h-[300px] lg:h-[320px] xl:h-[360px] rounded-[24px] overflow-hidden block transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20 border border-border/50 bg-card cursor-pointer"
+                      >
                         
                         <div className="absolute inset-0">
                           <img 
@@ -122,6 +135,14 @@ export default function SlidingPhotoSections() {
           </section>
         );
       })}
+
+      {/* Reusable Image Lightbox */}
+      <ImageLightbox
+        images={lightboxImages}
+        initialIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
     </div>
   );
 }

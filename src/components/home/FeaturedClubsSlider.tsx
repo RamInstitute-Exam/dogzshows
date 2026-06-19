@@ -1,9 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { motion } from 'framer-motion';
-import { MapPin, Image as ImageIcon, Film, ArrowRight } from 'lucide-react';
+import { MapPin, Image as ImageIcon, Film, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -27,6 +28,9 @@ interface ClubData {
 }
 
 export default function FeaturedClubsSlider() {
+  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
+  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+
   const { data: response, isLoading } = useQuery({
     queryKey: ['featured-clubs'],
     queryFn: async () => {
@@ -75,12 +79,30 @@ export default function FeaturedClubsSlider() {
           </Link>
         </div>
 
-        <div className="relative">
+        <div className="relative !overflow-visible">
+          {/* Custom Navigation Buttons */}
+          <button
+            ref={(node) => setPrevEl(node)}
+            className="custom-swiper-prev absolute -left-4 lg:-left-10 xl:-left-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white/[0.08] backdrop-blur-md border border-white/[0.15] text-white shadow-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-brand-orange hover:to-pink-500 hover:border-transparent hover:scale-[1.08] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft size={22} className="text-white" />
+          </button>
+
           <Swiper
             modules={[Autoplay, Navigation, Pagination]}
             spaceBetween={24}
             slidesPerView={1}
-            navigation
+            navigation={{
+              prevEl,
+              nextEl,
+            }}
+            onBeforeInit={(swiper) => {
+              // @ts-ignore
+              swiper.params.navigation.prevEl = prevEl;
+              // @ts-ignore
+              swiper.params.navigation.nextEl = nextEl;
+            }}
             autoplay={{
               delay: 4000,
               disableOnInteraction: false,
@@ -91,7 +113,7 @@ export default function FeaturedClubsSlider() {
               1024: { slidesPerView: 3 },
               1280: { slidesPerView: 4 },
             }}
-            className="!pb-12 custom-swiper"
+            className="!pb-12 custom-swiper !overflow-visible"
           >
             {clubs.map((club) => (
               <SwiperSlide key={club.id}>
@@ -145,6 +167,14 @@ export default function FeaturedClubsSlider() {
               </SwiperSlide>
             ))}
           </Swiper>
+
+          <button
+            ref={(node) => setNextEl(node)}
+            className="custom-swiper-next absolute -right-4 lg:-right-10 xl:-right-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white/[0.08] backdrop-blur-md border border-white/[0.15] text-white shadow-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-brand-orange hover:to-pink-500 hover:border-transparent hover:scale-[1.08] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            aria-label="Next slide"
+          >
+            <ChevronRight size={22} className="text-white" />
+          </button>
         </div>
         
         <Link href="/clubs" className="md:hidden mt-8 flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-orange border border-brand-orange/20 rounded-xl py-4 hover:bg-brand-orange/5 transition-colors">
@@ -152,6 +182,66 @@ export default function FeaturedClubsSlider() {
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
+      <style jsx global>{`
+        /* Hide Swiper default navigation icons inside our custom buttons */
+        .custom-swiper-prev.swiper-button-prev::after,
+        .custom-swiper-next.swiper-button-next::after {
+          display: none !important;
+          content: "" !important;
+        }
+        
+        /* Prevent Swiper from overriding custom button positions and sizes */
+        .custom-swiper-prev.swiper-button-prev,
+        .custom-swiper-next.swiper-button-next {
+          position: absolute !important;
+          top: 160px !important;
+          transform: translateY(-50%) !important;
+          margin-top: 0 !important;
+          display: flex !important;
+          width: 48px !important;
+          height: 48px !important;
+          z-index: 20 !important;
+        }
+
+        .custom-swiper-prev.swiper-button-prev {
+          left: -16px !important;
+        }
+
+        .custom-swiper-next.swiper-button-next {
+          right: -16px !important;
+        }
+
+        @media (min-width: 1024px) {
+          .custom-swiper-prev.swiper-button-prev,
+          .custom-swiper-next.swiper-button-next {
+            width: 56px !important;
+            height: 56px !important;
+          }
+          .custom-swiper-prev.swiper-button-prev {
+            left: -40px !important;
+          }
+          .custom-swiper-next.swiper-button-next {
+            right: -40px !important;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .custom-swiper-prev.swiper-button-prev {
+            left: -64px !important;
+          }
+          .custom-swiper-next.swiper-button-next {
+            right: -64px !important;
+          }
+        }
+
+        /* Disable Swiper default styling affecting layout */
+        .custom-swiper-prev.swiper-button-disabled,
+        .custom-swiper-next.swiper-button-disabled {
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `}</style>
     </section>
   );
 }

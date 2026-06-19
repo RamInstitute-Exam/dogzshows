@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { LayoutDashboard, Calendar, Users, Trophy, Settings, LogOut, Dog, Tent } from 'lucide-react';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -22,10 +23,12 @@ export default function AdminSidebar() {
     { name: 'Breeds Master', href: '/admin/breeds', icon: Dog },
     { name: 'Age Classes', href: '/admin/age-classes', icon: Calendar },
     {
-      name: 'CMS Gallery',
+      name: 'Content Management',
       icon: LayoutDashboard,
       subItems: [
-        { name: 'Media Gallery', href: '/admin/gallery' },
+        { name: 'Albums', href: '/admin/media-gallery-mgmt?tab=list' },
+        { name: 'Add Album', href: '/admin/media-gallery-mgmt?tab=add' },
+        { name: 'Gallery Images', href: '/admin/media-gallery-mgmt?tab=images' },
         { name: 'Featured Clubs', href: '/admin/cms/featured-clubs' },
         { name: 'Show Photos', href: '/admin/cms/show-photos' },
         { name: 'Outdoor Photos', href: '/admin/cms/outdoor-photos' },
@@ -56,7 +59,10 @@ export default function AdminSidebar() {
                 </summary>
                 <div className="ml-6 mt-1 flex flex-col gap-1 border-l-2 border-border pl-2">
                   {item.subItems.map((subItem) => {
-                    const isSubActive = pathname === subItem.href || pathname.startsWith(`${subItem.href}/`);
+                    const [hrefPath, hrefQuery] = subItem.href.split('?');
+                    const hrefTab = hrefQuery?.split('=').pop() || 'list';
+                    const currentTab = searchParams.get('tab') || 'list';
+                    const isSubActive = pathname === hrefPath && (hrefPath !== '/admin/media-gallery-mgmt' || currentTab === hrefTab);
                     return (
                       <Link
                         key={subItem.name}

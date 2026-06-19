@@ -7,19 +7,19 @@ import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 
-export default function OutdoorPhotosPage() {
+export default function AllPhotosPage() {
   const [albums, setAlbums] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchAlbums() {
       try {
-        const res = await api.get('/public/media-gallery-mgmt/albums?type=OUTDOOR_PHOTOS');
+        const res = await api.get('/public/media-gallery-mgmt/albums?type=ALL_PHOTOS');
         if (res.success && res.data) {
           setAlbums(res.data);
         }
       } catch (err) {
-        console.error('Failed to load outdoor-photos albums:', err);
+        console.error('Failed to load all-photos albums:', err);
       } finally {
         setLoading(false);
       }
@@ -29,19 +29,17 @@ export default function OutdoorPhotosPage() {
 
   return (
     <PageContainer>
-      {/* Premium Header */}
-      <div className="w-full bg-[#050505] py-16 border-b border-border/40 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-brand-orange/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="w-full bg-[#050505] py-12 border-b border-border/40">
         <PublicContainer>
-          <div className="space-y-3 text-center md:text-left relative z-10">
+          <div className="space-y-2 text-center md:text-left">
             <span className="text-brand-orange font-bold text-xs uppercase tracking-widest block">
-              Premium Gallery
+              Media Gallery
             </span>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-foreground tracking-tight">
-              Outdoor Photos
+            <h1 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight">
+              All Photos
             </h1>
-            <p className="text-muted-foreground text-base max-w-2xl leading-relaxed">
-              Explore dynamic outdoor photography and action moments from dog shows, training grounds, and fields across the region.
+            <p className="text-muted-foreground text-sm max-w-xl">
+              Explore professional dog photography albums from shows, competitions, and specialties across India.
             </p>
           </div>
         </PublicContainer>
@@ -51,8 +49,8 @@ export default function OutdoorPhotosPage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-card rounded-[24px] border border-border/50 h-[400px] animate-pulse overflow-hidden">
-                <div className="bg-muted/10 h-56 w-full" />
+              <div key={i} className="bg-card rounded-[24px] border border-border/50 h-[380px] animate-pulse overflow-hidden">
+                <div className="bg-muted/10 h-52 w-full" />
                 <div className="p-6 space-y-4">
                   <div className="h-6 bg-muted/10 rounded w-2/3" />
                   <div className="h-4 bg-muted/10 rounded w-1/2" />
@@ -73,7 +71,7 @@ export default function OutdoorPhotosPage() {
               <Link 
                 key={album.id}
                 href={`/gallery/${album.slug}`}
-                className="group flex flex-col bg-card border border-border/50 hover:border-brand-orange/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-black/20 h-[400px]"
+                className="group flex flex-col bg-card border border-border/50 hover:border-brand-orange/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-md hover:shadow-2xl hover:shadow-black/20"
               >
                 {/* Cover Image */}
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-accent border-b border-border/20">
@@ -90,7 +88,7 @@ export default function OutdoorPhotosPage() {
                 </div>
 
                 {/* Card Info */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2">
                     <h3 className="text-lg font-bold text-foreground group-hover:text-brand-orange transition-colors leading-snug line-clamp-2">
                       {album.title}
@@ -110,7 +108,7 @@ export default function OutdoorPhotosPage() {
                     </div>
                   </div>
 
-                  <div className="w-full pt-4 border-t border-border/40 mt-4">
+                  <div className="w-full pt-4 border-t border-border/40">
                     <div className="w-full py-3 rounded-xl bg-muted group-hover:bg-brand-orange group-hover:text-white text-foreground text-center font-bold text-sm transition-all flex items-center justify-center gap-1.5">
                       View Album
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

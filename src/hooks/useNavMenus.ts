@@ -51,7 +51,7 @@ export const FALLBACK_MENUS: NavMenuItem[] = [
   {
     id: 'fallback-media',
     name: 'Media Gallery',
-    url: '/gallery/photos',
+    url: '/gallery/all-photos',
     position: 'NAVBAR',
     displayOrder: 2,
     visibility: true,
@@ -62,9 +62,9 @@ export const FALLBACK_MENUS: NavMenuItem[] = [
     onlyAdmin: false,
     children: [
       {
-        id: 'fallback-show-photos',
-        name: 'Show Photos',
-        url: '/gallery/photos',
+        id: 'fallback-all-photos',
+        name: 'All Photos',
+        url: '/gallery/all-photos',
         position: 'NAVBAR',
         displayOrder: 1,
         visibility: true,
