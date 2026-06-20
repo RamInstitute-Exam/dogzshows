@@ -79,6 +79,19 @@ export const MOCK_EVENT_DETAIL = {
     { id: 5, name: 'Yuki Tanaka', country: 'Japan', experience: '18 Years', groups: 'Groups 5, 9', image: '/images/judge_5_1781314918866.png' },
     { id: 6, name: 'Klaus Weber', country: 'Germany', experience: '35 Years', groups: 'Groups 2, 7', image: '/images/judge_6_1781314930133.png' },
   ],
+  secretaries: [
+    {
+      id: 1,
+      name: 'Mr. R. Saravanakumar',
+      designation: 'Hony. Secretary',
+      mobile: '9585266566',
+      email: 'cmkc2021@gmail.com',
+      address: 'Ganapathy, Coimbatore',
+      city: 'Coimbatore',
+      state: 'Tamil Nadu',
+      country: 'India'
+    }
+  ],
   ageClasses: [
     { name: 'Minor Puppy', age: '3 to 6 Months', desc: 'For puppies beginning their show career.' },
     { name: 'Puppy', age: '6 to 9 Months', desc: 'For developing puppies.' },

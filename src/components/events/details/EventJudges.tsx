@@ -26,11 +26,11 @@ function JudgeAvatar({ judge }: { judge: any }) {
           (e.target as HTMLImageElement).style.display = 'none';
           const parent = (e.target as HTMLImageElement).parentElement;
           if (parent) {
-            parent.innerHTML = `<span style="font-size:1.25rem;font-weight:800;color:#FFFFFF">${initials}</span>`;
+            parent.innerHTML = `<span class="text-xl font-extrabold text-foreground">${initials}</span>`;
             parent.style.display = 'flex';
             parent.style.alignItems = 'center';
             parent.style.justifyContent = 'center';
-            parent.style.background = 'rgba(255,255,255,0.12)';
+            parent.className = parent.className + ' bg-muted';
           }
         }}
       />
@@ -38,8 +38,8 @@ function JudgeAvatar({ judge }: { judge: any }) {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
-      <span className="text-2xl font-extrabold" style={{ color: '#FFFFFF' }}>{initials || '?'}</span>
+    <div className="w-full h-full flex items-center justify-center bg-muted">
+      <span className="text-2xl font-extrabold text-foreground">{initials || '?'}</span>
     </div>
   );
 }
@@ -49,7 +49,7 @@ export default function EventJudges({ judges }: { judges: any[] }) {
   if (!judges || judges.length === 0) return null;
 
   return (
-    <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-border mb-[80px]">
+    <div className="bg-card rounded-[20px] p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-border mb-8">
       <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8">
         Esteemed Judges
         <span className="ml-3 text-base font-bold text-muted-foreground">({judges.length})</span>
@@ -65,10 +65,9 @@ export default function EventJudges({ judges }: { judges: any[] }) {
             transition={{ delay: i * 0.08 }}
             className="group p-6 bg-card rounded-[20px] border border-border hover:border-border/50 transition-all duration-300 text-center hover:shadow-lg"
           >
-            {/* Avatar — bg always uses rgba to work in both themes */}
+            {/* Avatar */}
             <div
-              className="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300"
-              style={{ background: 'rgba(255,255,255,0.10)' }}
+              className="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300 bg-muted"
             >
               <JudgeAvatar judge={judge} />
             </div>
@@ -78,7 +77,7 @@ export default function EventJudges({ judges }: { judges: any[] }) {
               {judge?.name ?? 'Unknown Judge'}
             </h4>
 
-            {/* Country / Experience */}
+            {/* Country */}
             <div className="flex items-center justify-center gap-3 mb-4 text-sm font-semibold text-muted-foreground flex-wrap">
               {judge?.country && (
                 <span className="flex items-center gap-1">
@@ -86,27 +85,20 @@ export default function EventJudges({ judges }: { judges: any[] }) {
                   {judge.country}
                 </span>
               )}
-              {judge?.country && judge?.experience && (
-                <span className="w-1 h-1 bg-gray-300 rounded-full" />
-              )}
-              {judge?.experience && judge.experience !== 'N/A' && (
-                <span>{judge.experience} Exp</span>
-              )}
             </div>
 
-            {/* Groups badge — explicit orange, works in both themes */}
+            {/* Groups badge */}
             {judge?.groups && (
               <div
-                className="inline-flex items-center gap-2 px-3 py-1.5 font-bold text-xs rounded-lg"
-                style={{ background: 'rgba(255,255,255,0.12)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.25)' }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 font-bold text-xs rounded-lg bg-muted text-foreground border border-border"
               >
-                <Trophy className="w-3.5 h-3.5" /> {judge.groups}
+                <Trophy className="w-3.5 h-3.5 text-muted-foreground" /> {judge.groups}
               </div>
             )}
 
             {/* Chief Judge badge */}
             {judge?.isChiefJudge && (
-              <div className="mt-3 inline-block px-3 py-1 bg-foreground text-white font-bold text-xs rounded-full">
+              <div className="mt-3 inline-block px-3 py-1 bg-foreground text-background font-bold text-xs rounded-full">
                 Chief Judge
               </div>
             )}
@@ -116,3 +108,4 @@ export default function EventJudges({ judges }: { judges: any[] }) {
     </div>
   );
 }
+

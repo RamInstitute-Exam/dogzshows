@@ -1,7 +1,7 @@
 import os
 import re
 
-src_dir = r"d:\Our Projects\DogProfileApp\frontend\src\app"
+src_dir = r"d:\bala backend\frontend\src\app"
 
 def process_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:

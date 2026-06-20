@@ -210,7 +210,7 @@ export default function UpcomingEventsCarousel() {
                           </div>
 
                           {/* Championship Badge */}
-                          <div className="bg-gradient-to-r from-[#e52d27] to-[#b31217] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(229,45,39,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(229,45,39,0.5)] transition-all duration-300 cursor-default uppercase">
+                          <div className="bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(168,31,37,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(168,31,37,0.5)] transition-all duration-300 cursor-default uppercase">
                             <Trophy className="w-[14px] h-[14px] text-white" />
                             CHAMPIONSHIP
                           </div>

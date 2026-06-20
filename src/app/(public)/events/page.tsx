@@ -13,13 +13,12 @@ import api from '@/lib/api';
 export default function EventsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [clubs, setClubs] = useState<any[]>([]);
-  const [states, setStates] = useState<string[]>([]);
+  const [cities, setCities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedClub, setSelectedClub] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -47,19 +46,19 @@ export default function EventsPage() {
     loadClubs();
   }, []);
 
-  // Load states once for filter
+  // Load cities once for filter
   useEffect(() => {
-    async function loadStates() {
+    async function loadCities() {
       try {
-        const res = await api.get('/public/shows/active-states');
+        const res = await api.get('/public/shows/active-cities');
         if (res.success) {
-          setStates(res.data || []);
+          setCities(res.data || []);
         }
       } catch (err) {
-        console.error('Failed to load states:', err);
+        console.error('Failed to load cities:', err);
       }
     }
-    loadStates();
+    loadCities();
   }, []);
 
   // Fetch filtered events
@@ -71,16 +70,10 @@ export default function EventsPage() {
         limit: '12',
         search: debouncedSearch,
         clubId: selectedClub,
-        state: selectedState,
-        status: selectedStatus,
+        city: selectedCity,
       });
 
-      let endpoint = '/public/shows/upcoming';
-      if (selectedStatus === 'COMPLETED') {
-        endpoint = '/public/shows/completed';
-      } else if (selectedStatus) {
-        endpoint = '/public/shows';
-      }
+      const endpoint = '/public/shows/upcoming';
 
       const res = await api.get(`${endpoint}?${queryParams.toString()}`);
       if (res.success) {
@@ -113,15 +106,15 @@ export default function EventsPage() {
 
   useEffect(() => {
     loadEvents();
-  }, [page, debouncedSearch, selectedClub, selectedState, selectedStatus]);
+  }, [page, debouncedSearch, selectedClub, selectedCity]);
 
   const formatDate = (dateStr: string | null | undefined) => {
     if (!dateStr) return 'TBA';
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  // Get list of unique states from existing shows for filters
-  const uniqueStates = states;
+  // Get list of unique cities from existing shows for filters
+  const uniqueCities = cities;
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
@@ -178,27 +171,14 @@ export default function EventsPage() {
               {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
 
-            {/* State filter */}
+            {/* City/Location filter */}
             <select
-              value={selectedState}
-              onChange={(e) => { setSelectedState(e.target.value); setPage(1); }}
+              value={selectedCity}
+              onChange={(e) => { setSelectedCity(e.target.value); setPage(1); }}
               className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
             >
-              <option value="">All States</option>
-              {uniqueStates.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-
-            {/* Status filter */}
-            <select
-              value={selectedStatus}
-              onChange={(e) => { setSelectedStatus(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
-            >
-              <option value="">All Statuses</option>
-              <option value="REGISTRATION_OPEN">Open For Registration</option>
-              <option value="ONGOING">Ongoing</option>
-              <option value="COMPLETED">Completed</option>
-              <option value="CANCELLED">Cancelled</option>
+              <option value="">All Locations</option>
+              {uniqueCities.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
@@ -207,8 +187,7 @@ export default function EventsPage() {
               onClick={() => {
                 setSearch('');
                 setSelectedClub('');
-                setSelectedState('');
-                setSelectedStatus('');
+                setSelectedCity('');
                 setPage(1);
               }}
               variant="outline" 
@@ -288,14 +267,6 @@ export default function EventsPage() {
                         <div className="flex items-center gap-2">
                           <Trophy className="w-4 h-4 text-primary shrink-0" /> 
                           <span className="truncate">{event.type || 'Championship Show'}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="w-4 h-4 text-primary shrink-0" /> 
-                          <span>Entry Fee: ₹{event.entryFee}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-primary shrink-0" /> 
-                          <span>Closing Date: {formatDate(event.registrationWindowEnd)}</span>
                         </div>
                       </div>
                     </div>

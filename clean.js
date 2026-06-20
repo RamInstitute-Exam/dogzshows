@@ -24,4 +24,4 @@ function clean(dir) {
   }
 }
 
-clean('d:/Our Projects/DogProfileApp/frontend/src/app/(admin)/admin');
+clean('d:\bala backend/frontend/src/app/(admin)/admin');

@@ -90,8 +90,8 @@ export default function Home() {
       {/* 2. Premium Personal Photos */}
       <SlidingPhotoSections />
 
-      {/* 3. Outdoor Photos */}
-      <PremiumOutdoorPhotos />
+      {/* 3. Outdoor Photos - Hidden per user request */}
+      {/* <PremiumOutdoorPhotos /> */}
 
       {/* 4. Upcoming Show Calendars (Card Listing) */}
       <UpcomingEventsCarousel />

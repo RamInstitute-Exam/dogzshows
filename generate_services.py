@@ -1,6 +1,6 @@
 import os
 
-services_dir = r"d:\Our Projects\DogProfileApp\frontend\src\services"
+services_dir = r"d:\bala backend\frontend\src\services"
 os.makedirs(services_dir, exist_ok=True)
 
 services = {

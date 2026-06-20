@@ -62,7 +62,7 @@ routes = [
     '/admin/audit-logs'
 ]
 
-base_dir = r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)"
+base_dir = r"d:\bala backend\frontend\src\app\(admin)"
 
 template = """import React from 'react';
 import UnderConstruction from '@/components/admin/UnderConstruction';

@@ -20,9 +20,9 @@ export default function EventHero({ event }: { event: any }) {
       {/* ── Background Image (always present) ── */}
       <div className="absolute inset-0 z-0">
         <img
-          src={event?.bannerUrl ?? '/images/hero_banner.png'}
+          src={event?.bannerUrl || '/images/events_banner.png'}
           alt={event?.name ?? 'Event Banner'}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-top"
           loading="eager"
         />
         {/* 

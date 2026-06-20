@@ -131,7 +131,7 @@ export default function CreateEventForm() {
         {
           judgeId: judge.id,
           name: judge.name,
-          isChiefJudge: prev.length === 0, // default first to chief judge
+          isChiefJudge: false, // do not default first to chief judge
           displayOrder: prev.length + 1,
           remarks: ''
         }
@@ -282,33 +282,16 @@ export default function CreateEventForm() {
       return;
     }
 
-    // Required contact details validation
-    if (selectedJudges.length === 0) {
-      toast.error('At least one assigned judge is required');
-      return;
-    }
+    // Judge selection is optional — no required validation
 
-    const hasChiefJudge = selectedJudges.some(j => j.isChiefJudge);
-    if (!hasChiefJudge) {
-      toast.error('Please designate at least one Chief Judge');
-      return;
-    }
+    // Chief Judge is now optional
+    // const hasChiefJudge = selectedJudges.some(j => j.isChiefJudge);
+    // if (!hasChiefJudge) {
+    //   toast.error('Please designate at least one Chief Judge');
+    //   return;
+    // }
 
-    for (let i = 0; i < secretaries.length; i++) {
-      const sec = secretaries[i];
-      if (!sec.name) {
-        toast.error(`Secretary #${i + 1} Name is required`);
-        return;
-      }
-      if (!sec.mobile) {
-        toast.error(`Secretary #${i + 1} Mobile is required`);
-        return;
-      }
-      if (!sec.email) {
-        toast.error(`Secretary #${i + 1} Email is required`);
-        return;
-      }
-    }
+    // Secretary fields are optional — no required validation
 
     setLoading(true);
     try {
@@ -744,9 +727,8 @@ export default function CreateEventForm() {
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <div>
-                                <label className="block text-xs font-bold text-muted-foreground mb-1.5">Secretary Name *</label>
+                                <label className="block text-xs font-bold text-muted-foreground mb-1.5">Secretary Name</label>
                                 <input
-                                  required
                                   type="text"
                                   placeholder="e.g. Mr. R. Saravanakumar"
                                   value={sec.name}
@@ -765,12 +747,12 @@ export default function CreateEventForm() {
                                   <option value="Joint Secretary">Joint Secretary</option>
                                   <option value="Secretary">Secretary</option>
                                   <option value="Show Secretary">Show Secretary</option>
+                                  <option value="Vice President">Vice President</option>
                                 </select>
                               </div>
                               <div>
-                                <label className="block text-xs font-bold text-muted-foreground mb-1.5">Mobile Number *</label>
+                                <label className="block text-xs font-bold text-muted-foreground mb-1.5">Mobile Number</label>
                                 <input
-                                  required
                                   type="text"
                                   placeholder="e.g. 9585266566"
                                   value={sec.mobile}
@@ -802,9 +784,8 @@ export default function CreateEventForm() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-xs font-bold text-muted-foreground mb-1.5">Email *</label>
+                                <label className="block text-xs font-bold text-muted-foreground mb-1.5">Email</label>
                                 <input
-                                  required
                                   type="email"
                                   placeholder="e.g. cmkc2021@gmail.com"
                                   value={sec.email}

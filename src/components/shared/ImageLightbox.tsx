@@ -5,6 +5,9 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
 import { getImageUrl } from '@/lib/api';
+import Image from 'next/image';
+
+const MotionImage = motion(Image);
 
 interface ImageLightboxProps {
   images: any[];
@@ -27,9 +30,6 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
 
   // References
   const modalRef = useRef<HTMLDivElement>(null);
-  const activeThumbnailRef = useRef<HTMLButtonElement>(null);
-  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
-
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -124,17 +124,6 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
     modal.addEventListener('keydown', handleTabTrap);
     return () => modal.removeEventListener('keydown', handleTabTrap);
   }, [isOpen]);
-
-  // Auto-scroll active thumbnail into view
-  useEffect(() => {
-    if (isOpen && activeThumbnailRef.current) {
-      activeThumbnailRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
-      });
-    }
-  }, [currentIndex, isOpen]);
 
   const getImgSrc = (img: any) => {
     if (!img) return '';
@@ -231,166 +220,136 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
           exit={{ opacity: 0 }}
           onClick={onClose}
           style={{
+            width: '100vw',
             height: '100vh',
-            minHeight: '100vh',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(0,0,0,0.95)',
           }}
-          className="fixed inset-0 z-[999999999] flex flex-col justify-between bg-black/95 backdrop-blur-md outline-none select-none"
+          className="fixed inset-0 z-[999999999] backdrop-blur-md outline-none select-none overflow-hidden"
         >
-          {/* Background Preloader for smooth transitions */}
+          {/* Background Preloaders */}
           {nextSrc && <img src={nextSrc} className="hidden" aria-hidden="true" alt="preload" />}
           {prevSrc && <img src={prevSrc} className="hidden" aria-hidden="true" alt="preload" />}
 
-          {/* Top Header / Actions Area */}
-          <div className="w-full flex items-center justify-between p-4 z-50" onClick={(e) => e.stopPropagation()}>
-            {/* Image Counter */}
-            <div className="text-white/80 font-bold text-sm tracking-wider bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm">
-              {currentIndex + 1} / {images.length}
-            </div>
-
-            {/* Action Buttons (Zoom Indicators + Close) */}
-            <div className="flex items-center gap-3">
-              {scale > 1 ? (
-                <button
-                  onClick={() => setScale(1)}
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
-                  title="Reset Zoom"
-                  aria-label="Reset zoom"
-                >
-                  <ZoomOut className="w-5 h-5" />
-                </button>
-              ) : (
-                <button
-                  onClick={() => setScale(2.5)}
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
-                  title="Zoom In"
-                  aria-label="Zoom in"
-                >
-                  <ZoomIn className="w-5 h-5" />
-                </button>
-              )}
-
-              <button
-                onClick={onClose}
-                className="w-10 h-10 rounded-full bg-white text-black hover:scale-110 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-lg"
-                title="Close Gallery"
-                aria-label="Close modal"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-          </div>
-
-          {/* Main Content Area: Image + Navigation */}
-          <div
-            className="flex-1 relative flex items-center justify-center w-full overflow-hidden px-4 md:px-12"
-            onClick={(e) => {
-              // Close popup when clicking outside the main image container
-              if (e.target === e.currentTarget) {
-                onClose();
-              }
-            }}
+          {/* Top-Left Corner: Image Counter */}
+          <div 
+            className="absolute top-6 left-6 z-50 text-white/80 font-bold text-sm tracking-wider bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm"
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Left Arrow (Desktop Only) */}
+            {currentIndex + 1} / {images.length}
+          </div>
+
+          {/* Top-Right Corner: Close & Zoom buttons */}
+          <div 
+            className="absolute top-6 right-6 z-50 flex items-center gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePrev();
-              }}
-              className="absolute left-6 z-50 hidden md:flex w-14 h-14 items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10"
-              aria-label="Previous image"
+              onClick={() => setScale((prev) => (prev > 1 ? 1 : 2.5))}
+              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-sm"
+              title={scale > 1 ? "Zoom Out" : "Zoom In"}
+              aria-label={scale > 1 ? "Zoom out" : "Zoom in"}
             >
-              <ChevronLeft className="w-8 h-8 mr-0.5" />
+              {scale > 1 ? <ZoomOut className="w-5 h-5" /> : <ZoomIn className="w-5 h-5" />}
             </button>
 
-            {/* Large Image Container */}
-            <div
-              className="relative flex items-center justify-center max-w-[95vw] max-h-[75vh] md:max-w-[85vw] md:max-h-[80vh] pointer-events-auto"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
+            <button
+              onClick={onClose}
+              className="w-10 h-10 rounded-full bg-white text-black hover:scale-110 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-lg"
+              title="Close Gallery"
+              aria-label="Close modal"
             >
-              {/* Shimmer / Spinner Loading State */}
-              {!isLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center z-10 rounded-[20px] overflow-hidden">
-                  <div className="absolute inset-0 bg-white/5 animate-pulse" />
-                  <div className="w-10 h-10 border-4 border-white/20 border-t-foreground rounded-full animate-spin" />
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Fixed Vertically Centered Previous Arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrev();
+            }}
+            className="absolute left-6 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10 backdrop-blur-sm"
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="w-6 h-6 md:w-8 md:h-8 mr-0.5" />
+          </button>
+
+          {/* Centered Image Container */}
+          <div
+            className="relative flex items-center justify-center pointer-events-auto"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Shimmer / Spinner Loading State */}
+            {!isLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="w-[85vw] h-[65vh] max-w-[1200px] max-h-[800px] bg-white/5 animate-pulse rounded-2xl flex items-center justify-center">
+                  <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
                 </div>
-              )}
+              </div>
+            )}
 
-              <motion.img
-                key={currentIndex}
-                src={getImgSrc(images[currentIndex])}
-                alt={images[currentIndex]?.altText || `Lightbox Image ${currentIndex + 1}`}
-                onLoad={() => setIsLoaded(true)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleTap(e);
-                }}
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{
-                  scale: scale,
-                  opacity: isLoaded ? 1 : 0,
-                }}
-                transition={{
-                  scale: { type: 'spring', stiffness: 300, damping: 25 },
-                  opacity: { duration: 0.2 }
-                }}
-                style={{
-                  cursor: scale > 1 ? 'zoom-out' : 'zoom-in',
-                  transformOrigin: 'center center',
-                  width: 'auto',
-                  height: 'auto',
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                }}
-                className="max-w-full max-h-[70vh] md:max-h-[80vh] object-contain rounded-[20px] shadow-2xl transition-shadow duration-300 pointer-events-auto select-none"
-              />
-            </div>
-
-            {/* Right Arrow (Desktop Only) */}
-            <button
+            <MotionImage
+              key={currentIndex}
+              src={getImgSrc(images[currentIndex])}
+              alt={images[currentIndex]?.altText || `Lightbox Image ${currentIndex + 1}`}
+              onLoad={() => setIsLoaded(true)}
               onClick={(e) => {
                 e.stopPropagation();
-                handleNext();
+                handleTap(e);
               }}
-              className="absolute right-6 z-50 hidden md:flex w-14 h-14 items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10"
-              aria-label="Next image"
-            >
-              <ChevronRight className="w-8 h-8 ml-0.5" />
-            </button>
+              width={images[currentIndex]?.width || 1920}
+              height={images[currentIndex]?.height || 1080}
+              unoptimized
+              initial={{ opacity: 0 }}
+              animate={{
+                scale: scale,
+                opacity: isLoaded ? 1 : 0,
+              }}
+              transition={{
+                scale: { type: 'spring', stiffness: 300, damping: 25 },
+                opacity: { duration: 0.2 }
+              }}
+              style={{
+                width: 'auto',
+                height: 'auto',
+                maxWidth: '95vw',
+                maxHeight: '90vh',
+                objectFit: 'contain',
+                cursor: scale > 1 ? 'zoom-out' : 'zoom-in',
+                transformOrigin: 'center center',
+              }}
+              className="shadow-2xl select-none"
+            />
           </div>
 
-          {/* Footer Area: Mobile Navigation */}
-          <div className="w-full bg-gradient-to-t from-black/80 to-transparent pt-6 pb-8 z-50 flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
+          {/* Fixed Vertically Centered Next Arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNext();
+            }}
+            className="absolute right-6 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10 backdrop-blur-sm"
+            aria-label="Next image"
+          >
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 ml-0.5" />
+          </button>
 
-            {/* Mobile Overlay Arrows */}
-            <div className="flex md:hidden items-center justify-center gap-8 w-full px-4">
-              <button
-                onClick={handlePrev}
-                className="w-12 h-12 rounded-full bg-white/15 active:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/15"
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="w-6 h-6 mr-0.5" />
-              </button>
-              <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Swipe</span>
-              <button
-                onClick={handleNext}
-                className="w-12 h-12 rounded-full bg-white/15 active:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/15"
-                aria-label="Next image"
-              >
-                <ChevronRight className="w-6 h-6 ml-0.5" />
-              </button>
-            </div>
+          {/* Mobile swipe helper */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none md:hidden">
+            <span className="text-white/40 text-xs font-semibold uppercase tracking-widest bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
+              Swipe to navigate
+            </span>
           </div>
-
         </motion.div>
       )}
     </AnimatePresence>,
     document.body
   );
 }
+

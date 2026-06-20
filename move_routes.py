@@ -1,7 +1,7 @@
 import os
 import shutil
 
-src_app = r"d:\Our Projects\DogProfileApp\frontend\src\app"
+src_app = r"d:\bala backend\frontend\src\app"
 
 routes = [
     (r"(public)\judges\[slug]", r"(public)\judge-details"),

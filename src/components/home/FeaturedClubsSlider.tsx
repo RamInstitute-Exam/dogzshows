@@ -34,7 +34,7 @@ export default function FeaturedClubsSlider() {
   const { data: response, isLoading } = useQuery({
     queryKey: ['featured-clubs'],
     queryFn: async () => {
-      return api.get('/public/clubs', { params: { limit: 10, featured: true } });
+      return api.get('/public/clubs', { params: { limit: 10 } });
     },
     staleTime: 5 * 60 * 1000,
   });

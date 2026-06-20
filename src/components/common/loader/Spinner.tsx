@@ -20,12 +20,12 @@ export const Spinner = ({ size = 'md', className = '', fullScreen = false }: Spi
   const height = Math.round(width * 0.35); // JUZDOG logo aspect ratio approximation
 
   const baseClasses = fullScreen 
-    ? "fixed inset-0 w-full h-full flex items-center justify-center bg-[#000] z-[9999]" 
-    : "flex items-center justify-center w-full h-full min-h-[100px] bg-[#000]";
+    ? "fixed inset-0 w-full h-full flex items-center justify-center bg-background/80 backdrop-blur-sm z-[9999]" 
+    : "flex items-center justify-center w-full h-full min-h-[100px] bg-transparent";
 
   return (
     <div className={`${baseClasses} ${className}`}>
-      <div className="relative loader-logo flex items-center justify-center">
+      <div className="relative loader-logo flex items-center justify-center animate-pulse">
         <Image 
           src="/Untitled-1.png" 
           alt="JUZDOG Loading..." 

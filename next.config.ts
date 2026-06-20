@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   },
 
   // Safety net: allow up to 120s per static page (default is 60s)
-  // staticPageGenerationTimeout: 120,
+  staticPageGenerationTimeout: 120,
 };
 
 export default nextConfig;

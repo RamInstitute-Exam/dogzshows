@@ -284,7 +284,7 @@ function JudgesList() {
                       <div className="w-full flex items-center justify-center pt-2">
                         {judge.source && (
                           <p className="text-[10px] text-muted-foreground/70 italic truncate w-full text-center" title={judge.source}>
-                            📷 {judge.source}
+                            Source - {judge.source}
                           </p>
                         )}
                       </div>

@@ -2,7 +2,7 @@ import os
 import re
 
 def fix_clubs_bulk_upload():
-    filepath = r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\clubs\bulk-upload\page.tsx"
+    filepath = r"d:\bala backend\frontend\src\app\(admin)\admin\clubs\bulk-upload\page.tsx"
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     content = content.replace("import { toast } from 'react-hot-toast';", "import { toast } from 'sonner';")
@@ -11,8 +11,8 @@ def fix_clubs_bulk_upload():
 
 def revert_external_fetches():
     files = [
-        r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\judges\create\page.tsx",
-        r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\judges\edit\page.tsx"
+        r"d:\bala backend\frontend\src\app\(admin)\admin\judges\create\page.tsx",
+        r"d:\bala backend\frontend\src\app\(admin)\admin\judges\edit\page.tsx"
     ]
     for filepath in files:
         if os.path.exists(filepath):
@@ -29,11 +29,11 @@ def revert_external_fetches():
 
 def fix_remaining_fetches():
     files = [
-        r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\cms\homepage-banners\page.tsx",
-        r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\cms\menus\page.tsx",
-        r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\cms\page-banners\page.tsx",
-        r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\users\permissions\page.tsx",
-        r"d:\Our Projects\DogProfileApp\frontend\src\app\(admin)\admin\users\roles\page.tsx"
+        r"d:\bala backend\frontend\src\app\(admin)\admin\cms\homepage-banners\page.tsx",
+        r"d:\bala backend\frontend\src\app\(admin)\admin\cms\menus\page.tsx",
+        r"d:\bala backend\frontend\src\app\(admin)\admin\cms\page-banners\page.tsx",
+        r"d:\bala backend\frontend\src\app\(admin)\admin\users\permissions\page.tsx",
+        r"d:\bala backend\frontend\src\app\(admin)\admin\users\roles\page.tsx"
     ]
     for filepath in files:
         if os.path.exists(filepath):

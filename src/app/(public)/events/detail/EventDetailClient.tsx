@@ -64,10 +64,10 @@ export default function EventDetailClient() {
             // Keep real judges/secretaries; fall back to mock timeline/ageClasses/faqs if missing
             judges: Array.isArray(apiData.judges) && apiData.judges.length > 0
               ? apiData.judges
-              : [],
+              : (MOCK_EVENT_DETAIL.judges || []),
             secretaries: Array.isArray(apiData.secretaries) && apiData.secretaries.length > 0
               ? apiData.secretaries
-              : [],
+              : (MOCK_EVENT_DETAIL.secretaries || []),
             timeline: Array.isArray(apiData.timeline) && apiData.timeline.length > 0
               ? apiData.timeline
               : (MOCK_EVENT_DETAIL.timeline || []),
@@ -217,6 +217,19 @@ export default function EventDetailClient() {
 
       {/* Section 1: Hero Banner — ONLY visible section for now */}
       <EventHero event={event} />
+
+      {/* Section 2: Judges & Organizing Committee (extracted from the hidden section below) */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col gap-12">
+          {event?.judges && event.judges.length > 0 && (
+            <EventJudges judges={event.judges} />
+          )}
+
+          {event?.secretaries && event.secretaries.length > 0 && (
+            <OrganizingCommittee secretaries={event.secretaries} />
+          )}
+        </div>
+      </div>
 
       {false && (
         <>

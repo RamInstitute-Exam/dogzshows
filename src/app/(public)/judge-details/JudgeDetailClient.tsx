@@ -194,7 +194,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                 {judge.source && (
                   <div className="mt-5 pt-4 border-t border-border">
                     <p className="text-[11px] text-muted-foreground italic leading-relaxed">
-                      📷 {judge.source}
+                      Source - {judge.source}
                     </p>
                   </div>
                 )}

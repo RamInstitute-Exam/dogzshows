@@ -1,7 +1,7 @@
 import os
 import re
 
-TARGET_DIR = r"d:\Our Projects\DogProfileApp\frontend\src"
+TARGET_DIR = r"d:\bala backend\frontend\src"
 
 REPLACEMENTS = [
     # Background colors
