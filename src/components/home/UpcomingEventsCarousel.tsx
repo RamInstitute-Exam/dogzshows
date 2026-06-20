@@ -35,6 +35,7 @@ interface EventData {
 export default function UpcomingEventsCarousel() {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
 
   const { data, isLoading } = useEventsCMS();
   let events: EventData[] = data?.success && Array.isArray(data.data) ? data.data : [];
@@ -44,14 +45,14 @@ export default function UpcomingEventsCarousel() {
     const aDate = new Date(a.startDate).getTime();
     const bDate = new Date(b.startDate).getTime();
     const now = new Date().setHours(0, 0, 0, 0); // Start of today
-    
+
     const aIsPast = aDate < now;
     const bIsPast = bDate < now;
-    
+
     // If one is past and the other is upcoming, push past to the bottom
     if (aIsPast && !bIsPast) return 1;
     if (!aIsPast && bIsPast) return -1;
-    
+
     // If both are same (both past or both upcoming), sort ascending (nearest first)
     return aDate - bDate;
   });
@@ -62,8 +63,8 @@ export default function UpcomingEventsCarousel() {
   // Skeleton Loader while API is loading
   if (isLoading) {
     return (
-      <section className="w-full pt-12 lg:pt-20 pb-16 lg:pb-24 bg-background">
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 xl:px-12">
+      <section className="premium-section-spacing bg-background">
+        <div className="premium-container">
           {/* Skeleton Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 sm:mb-16 gap-6">
             <div className="space-y-4 w-full md:max-w-2xl">
@@ -75,8 +76,8 @@ export default function UpcomingEventsCarousel() {
           {/* Skeleton Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="relative flex flex-col overflow-hidden h-[450px] animate-pulse bg-card border border-border rounded-[24px]"
               >
                 <div className="h-[200px] w-full bg-accent/20 shrink-0" />
@@ -101,9 +102,9 @@ export default function UpcomingEventsCarousel() {
   }
 
   return (
-    <section className="w-full pt-12 lg:pt-20 pb-16 lg:pb-24 bg-background overflow-hidden">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 xl:px-12">
-        
+    <section className="premium-section-spacing bg-background overflow-hidden">
+      <div className="premium-container">
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 sm:mb-16 gap-6">
           <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
@@ -117,11 +118,11 @@ export default function UpcomingEventsCarousel() {
         </div>
 
         {/* Event Swiper Slider */}
-        <div className="relative !overflow-visible">
+        <div className="premium-carousel-wrapper">
           {/* Custom Navigation Buttons */}
           <button
             ref={(node) => setPrevEl(node)}
-            className="events-swiper-prev absolute -left-4 lg:-left-10 xl:-left-16 top-1/2 -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            className="events-swiper-prev premium-slider-nav premium-slider-prev"
             aria-label="Previous slide"
           >
             <ChevronLeft size={22} />
@@ -152,37 +153,44 @@ export default function UpcomingEventsCarousel() {
               1024: { slidesPerView: 4 },
               1440: { slidesPerView: 5 },
             }}
-            className="!pb-12 events-swiper !overflow-visible"
+            className="!pb-12 events-swiper premium-carousel-track"
           >
             {events.map((event, i) => {
               const startDate = new Date(event.startDate);
+              const hasError = imgErrors[event.id];
+              const imageSrc = hasError
+                ? '/images/events_banner.png'
+                : getImageUrl(event.cardImage || event.bannerUrl || '/images/events_banner.png');
 
               return (
                 <SwiperSlide key={event.id}>
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.05, duration: 0.5, ease: "easeOut" }}
                     className="h-full pb-4"
                   >
-                    <Link 
+                    <Link
                       href={`/events/detail?slug=${event.slug}`}
                       className="group relative flex flex-col h-[460px] overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer"
                     >
                       {/* 1. Banner Image */}
                       <div className="h-[200px] w-full relative overflow-hidden shrink-0 bg-accent">
-                        <Image 
-                          src={getImageUrl(event.cardImage || event.bannerUrl)} 
-                          alt={event.name} 
+                        <Image
+                          src={imageSrc}
+                          alt={event.name}
                           fill
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                           loading="lazy"
+                          onError={() => {
+                            setImgErrors((prev) => ({ ...prev, [event.id]: true }));
+                          }}
                         />
-                        
+
                         {/* Dark Gradient Overlay for text readability */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                        
+
                         {/* Floating Date Badge (Top Right) */}
                         <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md rounded-[12px] shadow-2xl flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[56px] border border-black/5 transform group-hover:-translate-y-1 transition-transform duration-500 z-10">
                           <span className="text-[10px] font-black uppercase tracking-widest text-foreground mb-[-4px]">
@@ -203,7 +211,7 @@ export default function UpcomingEventsCarousel() {
                             <MapPin className="w-[14px] h-[14px] text-white/80" />
                             <span className="truncate max-w-[140px]">{event.venue || 'TBA'}</span>
                           </div>
-                          
+
                           {/* Championship Badge */}
                           <div className="bg-gradient-to-r from-[#e52d27] to-[#b31217] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(229,45,39,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(229,45,39,0.5)] transition-all duration-300 cursor-default">
                             <Trophy className="w-[14px] h-[14px] text-white" />
@@ -213,31 +221,31 @@ export default function UpcomingEventsCarousel() {
                       </div>
 
                       {/* 2. Body Container */}
-                      <div className="p-4 flex-1 flex flex-col justify-between">
-                        <div>
+                      <div className="p-4 flex-1 flex flex-col justify-between h-full">
+                        <div className="flex flex-col h-full justify-between">
                           {/* Event Title */}
-                          <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors">
+                          <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere]">
                             {event.name}
                           </h3>
 
                           {/* Event Info Icons */}
-                          <div className="flex flex-col gap-2">
+                          <div className="flex flex-col gap-2 mt-auto">
                             <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
                               <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
                                 <Users className="w-3.5 h-3.5 text-muted-foreground" />
                               </div>
-                              <div className="overflow-hidden">
-                                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Judging Panel</p>
-                                <p className="text-xs font-bold text-foreground truncate">{event.judgesCount ? `${event.judgesCount} International Judges` : 'TBA'}</p>
+                              <div className="overflow-hidden flex-1">
+                                <p className="text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0.5">Judging Panel</p>
+                                <p className="text-[clamp(13px,1vw,17px)] font-[700] leading-[1.3] text-foreground truncate overflow-hidden break-words [overflow-wrap:anywhere]">{event.judgesCount ? `${event.judgesCount} International Judges` : 'TBA'}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
                               <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
                                 <Tent className="w-3.5 h-3.5 text-[#38BDF8]" />
                               </div>
-                              <div className="overflow-hidden">
-                                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Organizer</p>
-                                <p className="text-xs font-bold text-foreground truncate">{event.club?.name || 'KCI Affiliate'}</p>
+                              <div className="overflow-hidden flex-1">
+                                <p className="text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0.5">Organizer</p>
+                                <p className="text-[clamp(13px,1vw,16px)] font-[700] leading-[1.35] text-foreground line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere]">{event.club?.name || 'KCI Affiliate'}</p>
                               </div>
                             </div>
                           </div>
@@ -252,7 +260,7 @@ export default function UpcomingEventsCarousel() {
 
           <button
             ref={(node) => setNextEl(node)}
-            className="events-swiper-next absolute -right-4 lg:-right-10 xl:-right-16 top-1/2 -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            className="events-swiper-next premium-slider-nav premium-slider-next"
             aria-label="Next slide"
           >
             <ChevronRight size={22} />
