@@ -94,6 +94,42 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
     { id: 'contact', label: 'Contact' },
   ];
 
+  const getSecretaries = () => {
+    if (club?.secretaries?.length > 0) return club.secretaries;
+    
+    if (club?.events?.length > 0) {
+      for (const evt of club.events) {
+        if (evt.eventSecretaries && evt.eventSecretaries.length > 0) {
+          return evt.eventSecretaries;
+        }
+      }
+    }
+    
+    // Fallback to basic club info
+    if (club?.secretaryName || club?.secretary || club?.phone || club?.email || club?.address) {
+      return [{
+        name: club.secretaryName || club.secretary || 'Club Contact',
+        designation: club.designation || 'Contact Person',
+        mobile: club.mobile || club.phone,
+        alternateMobile: '',
+        phone: club.phone !== club.mobile ? club.phone : '',
+        email: club.email,
+        alternateEmail: '',
+        website: club.website,
+        addressLine1: club.address,
+        addressLine2: '',
+        city: club.city,
+        state: club.state,
+        pincode: club.zipcode,
+        country: club.country
+      }];
+    }
+    
+    return [];
+  };
+
+  const secretaries = getSecretaries();
+
   return (
     <PageContainer>
       {/* Premium Hero */}
@@ -340,76 +376,113 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
               )}
 
               {activeTab === 'contact' && (
-                <div className="max-w-2xl bg-card rounded-2xl border border-border p-8 shadow-sm">
+                <div className="w-full">
                   <h2 className="text-2xl font-bold text-foreground mb-6">Contact Information</h2>
-                  <div className="space-y-6">
-                    {(club.secretaryName || club.secretary) && (
-                      <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Users className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground mb-1">Secretary Details</h4>
-                          <p className="text-muted-foreground leading-relaxed">
-                            <span className="font-semibold text-foreground">{club.secretaryName || club.secretary}</span>
-                            {club.designation && <span className="block text-xs text-muted-foreground mt-0.5">{club.designation}</span>}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    {club.address && (
-                      <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <MapPin className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground mb-1">Address</h4>
-                          <p className="text-muted-foreground leading-relaxed">
-                            {club.address}<br />
-                            {[club.city, club.state, club.zipcode, club.country].filter(Boolean).join(', ')}
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                  
+                  {secretaries.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[1400px]">
+                      {secretaries.map((sec: any, idx: number) => (
+                        <div key={idx} className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col h-full">
+                          <div className="flex items-center gap-4 mb-6 border-b border-border/50 pb-4">
+                            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                              <Users className="w-6 h-6 text-primary" />
+                            </div>
+                            <div>
+                              <h3 className="font-bold text-lg text-foreground leading-tight">{sec.name}</h3>
+                              {sec.designation && <span className="text-sm font-semibold text-muted-foreground">{sec.designation}</span>}
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-4 flex-grow">
+                            {sec.mobile && (
+                              <div className="flex gap-3">
+                                <Phone className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-0.5">Mobile</span>
+                                  <a href={`tel:${sec.mobile}`} className="text-foreground hover:text-primary transition-colors font-medium">{sec.mobile}</a>
+                                </div>
+                              </div>
+                            )}
 
-                    {club.phone && (
-                      <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Phone className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground mb-1">Phone</h4>
-                          <a href={`tel:${club.phone}`} className="text-muted-foreground hover:text-primary transition-colors">{club.phone}</a>
-                        </div>
-                      </div>
-                    )}
+                            {sec.alternateMobile && (
+                              <div className="flex gap-3">
+                                <Phone className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-0.5">Alternate Mobile</span>
+                                  <a href={`tel:${sec.alternateMobile}`} className="text-foreground hover:text-primary transition-colors font-medium">{sec.alternateMobile}</a>
+                                </div>
+                              </div>
+                            )}
 
-                    {club.email && (
-                      <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Mail className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground mb-1">Email</h4>
-                          <a href={`mailto:${club.email}`} className="text-muted-foreground hover:text-primary transition-colors">{club.email}</a>
-                        </div>
-                      </div>
-                    )}
+                            {sec.phone && (
+                              <div className="flex gap-3">
+                                <Phone className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-0.5">Landline</span>
+                                  <a href={`tel:${sec.phone}`} className="text-foreground hover:text-primary transition-colors font-medium">{sec.phone}</a>
+                                </div>
+                              </div>
+                            )}
+                            
+                            {sec.email && (
+                              <div className="flex gap-3">
+                                <Mail className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-0.5">Email</span>
+                                  <a href={`mailto:${sec.email}`} className="text-foreground hover:text-primary transition-colors font-medium break-all">{sec.email}</a>
+                                </div>
+                              </div>
+                            )}
 
-                    {club.website && (
-                      <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Globe className="w-5 h-5 text-primary" />
+                            {sec.alternateEmail && (
+                              <div className="flex gap-3">
+                                <Mail className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-0.5">Alternate Email</span>
+                                  <a href={`mailto:${sec.alternateEmail}`} className="text-foreground hover:text-primary transition-colors font-medium break-all">{sec.alternateEmail}</a>
+                                </div>
+                              </div>
+                            )}
+
+                            {sec.website && (
+                              <div className="flex gap-3">
+                                <Globe className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-0.5">Website</span>
+                                  <a href={sec.website.startsWith('http') ? sec.website : `https://${sec.website}`} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors font-medium break-all flex items-center gap-1">
+                                    {sec.website} <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                </div>
+                              </div>
+                            )}
+
+                            {(sec.addressLine1 || sec.addressLine2 || sec.address || sec.city || sec.state) && (
+                              <div className="flex gap-3">
+                                <MapPin className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-0.5">Address</span>
+                                  <p className="text-foreground font-medium leading-relaxed">
+                                    {[
+                                      sec.addressLine1 || sec.address, 
+                                      sec.addressLine2, 
+                                      sec.city, 
+                                      sec.state ? `${sec.state}${sec.pincode ? ` - ${sec.pincode}` : ''}` : null,
+                                      sec.country || 'India'
+                                    ].filter(Boolean).join(', ')}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground mb-1">Website</h4>
-                          <a href={club.website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                            {club.website} <ExternalLink className="w-3 h-3" />
-                          </a>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center bg-card border border-border rounded-xl text-muted-foreground max-w-2xl">
+                      <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>No contact information available for this club.</p>
+                    </div>
+                  )}
                 </div>
               )}
 

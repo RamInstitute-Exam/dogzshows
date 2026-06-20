@@ -29,8 +29,8 @@ export default function PremiumOutdoorPhotos() {
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-background border-t border-border/50">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 xl:px-12">
+      <section className="premium-section-spacing bg-background border-t border-border/50">
+        <div className="premium-container">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 animate-pulse">
             <div className="space-y-3">
               <div className="h-4 bg-muted/20 w-32 rounded" />
@@ -59,11 +59,11 @@ export default function PremiumOutdoorPhotos() {
   if (albums.length === 0) return null;
 
   return (
-    <section className="py-20 bg-background relative overflow-hidden border-t border-border/40">
+    <section className="premium-section-spacing bg-background relative overflow-hidden border-t border-border/40">
       {/* Subtle background glow */}
       <div className="absolute -top-40 -right-40 w-[400px] h-[400px] bg-foreground/5 rounded-full blur-[120px] pointer-events-none" />
       
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 xl:px-12 relative z-10">
+      <div className="premium-container relative z-10">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl">

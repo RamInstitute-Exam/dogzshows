@@ -45,8 +45,8 @@ export default function SlidingPhotoSections() {
         if (!section.images || section.images.length === 0) return null;
 
         return (
-          <section key={section.id} className="py-20 overflow-hidden relative">
-            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 xl:px-12 relative z-10">
+          <section key={section.id} className="premium-section-spacing overflow-hidden relative">
+            <div className="premium-container relative z-10">
               
               {/* Header */}
               <div className="mb-10 text-center md:text-left">
@@ -56,21 +56,21 @@ export default function SlidingPhotoSections() {
               </div>
 
               {/* Slider Container with padding for outside arrows */}
-              <div className="relative group/sliding-section px-0 md:px-16 lg:px-20">
+              <div className="premium-carousel-wrapper group/sliding-section">
                 
                 {/* Custom Navigation Arrows */}
                 <button 
-                  className={`nav-prev-${section.id} hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl text-gray-800 transition-all duration-300 hover:scale-110 hover:bg-white hover:text-foreground hover:border-border cursor-pointer disabled:opacity-0 disabled:hidden`}
+                  className={`nav-prev-${section.id} premium-slider-nav premium-slider-prev`}
                   aria-label="Previous slide"
                 >
-                  <ChevronLeft className="w-6 h-6 ml-[-2px]" />
+                  <ChevronLeft size={22} />
                 </button>
                 
                 <button 
-                  className={`nav-next-${section.id} hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl text-gray-800 transition-all duration-300 hover:scale-110 hover:bg-white hover:text-foreground hover:border-border cursor-pointer disabled:opacity-0 disabled:hidden`}
+                  className={`nav-next-${section.id} premium-slider-nav premium-slider-next`}
                   aria-label="Next slide"
                 >
-                  <ChevronRight className="w-6 h-6 mr-[-2px]" />
+                  <ChevronRight size={22} />
                 </button>
 
                 <Swiper
@@ -94,7 +94,7 @@ export default function SlidingPhotoSections() {
                     1024: { slidesPerView: 3, slidesPerGroup: 1, spaceBetween: 20 },
                     1280: { slidesPerView: 4, slidesPerGroup: 1, spaceBetween: 24 }
                   }}
-                  className="w-full !overflow-hidden"
+                  className="premium-carousel-track"
                 >
                   {section.images.map((img: any, idx: number) => (
                     <SwiperSlide key={img.id || idx}>
@@ -104,7 +104,7 @@ export default function SlidingPhotoSections() {
                           setLightboxIndex(idx);
                           setLightboxOpen(true);
                         }}
-                        className="group photo-card transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20 cursor-pointer"
+                        className="group photo-card cursor-pointer relative"
                       >
                         <Image 
                           src={getImageUrl(img.imageUrl)} 
@@ -115,7 +115,7 @@ export default function SlidingPhotoSections() {
                           quality={100}
                           unoptimized
                           sizes="100vw"
-                          className="photo-card-img group-hover:scale-[1.02]"
+                          className="photo-card-img transition-transform duration-700 ease-out group-hover:scale-[1.05]"
                         />
                       </div>
                     </SwiperSlide>
@@ -133,39 +133,46 @@ export default function SlidingPhotoSections() {
               }
 
               .photo-card {
-                width: 100%;
-                height: auto;
-                background: #000000;
+                overflow: hidden;
                 border-radius: 20px;
-                padding: 16px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                border: 1px solid rgba(255, 255, 255, 0.08);
+                background: #fff;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+                transition: 0.3s ease;
+                width: 100%;
+                height: 520px;
+                display: block;
+              }
+
+              .photo-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
               }
 
               .photo-card-img {
                 width: 100% !important;
-                height: auto !important;
-                aspect-ratio: 3 / 4 !important;
-                object-fit: contain !important;
+                height: 100% !important;
+                object-fit: cover !important;
                 object-position: center !important;
-                background: #000000 !important;
-                border-radius: 12px !important;
-                transition: transform 0.7s ease;
+                border-radius: 20px !important;
+                display: block !important;
+                background: transparent !important;
+              }
+
+              @media (max-width: 1440px) {
+                .photo-card {
+                  height: 480px !important;
+                }
+              }
+
+              @media (max-width: 1024px) {
+                .photo-card {
+                  height: 420px !important;
+                }
               }
 
               @media (max-width: 768px) {
                 .photo-card {
-                  width: 100% !important;
-                  padding: 12px !important;
-                }
-                .photo-card-img {
-                  aspect-ratio: auto !important;
-                  height: auto !important;
-                  object-fit: contain !important;
-                  object-position: center !important;
+                  height: 360px !important;
                 }
               }
             `}</style>

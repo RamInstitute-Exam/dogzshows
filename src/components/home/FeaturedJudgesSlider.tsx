@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Award, Globe, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import PublicContainer from '@/components/layout/PublicContainer';
 
 interface FeaturedJudgesSliderProps {
   judges: any[];
@@ -18,8 +17,8 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
   }
 
   return (
-    <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background pt-0">
-      <PublicContainer>
+    <section className="premium-section-spacing bg-background overflow-hidden">
+      <div className="premium-container">
 
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-5xl font-[800] text-foreground tracking-tight mb-6">
@@ -90,7 +89,7 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
             </Button>
           </Link>
         </div>
-      </PublicContainer>
+      </div>
     </section>
   );
 }

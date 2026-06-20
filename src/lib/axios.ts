@@ -30,7 +30,7 @@ axiosInstance.interceptors.request.use(
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
       if (token) {
-        req.headers['Authorization'] = `Bearer ${token}`;
+        req.headers.set('Authorization', `Bearer ${token}`);
       }
     }
     return req;

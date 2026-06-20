@@ -85,7 +85,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Metrics Grid */}
-          <div className="grid gap-6 mb-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8 w-full">
             {statCards.map((stat, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.1 }}>
                 <Card className="border border-border shadow-xl bg-card overflow-hidden relative transition-all hover:border-[rgba(255,255,255,0.15)]">
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 ga">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
             {/* Revenue Chart */}
             <Card className="border border-border shadow-xl bg-card lg:col-span-2">
               <CardContent className="p-6">

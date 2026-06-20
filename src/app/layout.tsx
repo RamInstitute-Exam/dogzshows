@@ -18,9 +18,14 @@ const mulish = Mulish({
 });
 
 export const metadata: Metadata = {
-  title: "JuztDog - India's Premium Dog Community & Marketplace",
+  title: "JUZDOG",
   description: "A world-class platform to discover, adopt, and manage dog profiles, integrated with AI tools, social community, and professional pet services.",
   keywords: ['dog show', 'KCI', 'kennel club', 'FCI', 'dog competitions'],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 import { ThemeProvider } from '@/components/providers/ThemeProvider';

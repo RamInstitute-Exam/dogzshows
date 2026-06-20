@@ -181,7 +181,7 @@ export default function UniversalBulkUpload() {
 
     try {
       const response = await axiosInstance.post('/bulk-upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': undefined }
       });
 
       if (response.data?.success) {

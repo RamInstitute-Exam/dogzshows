@@ -101,15 +101,15 @@ export default function Home() {
       {/* 5. Featured Kennel Clubs (Card Listing) */}
       <FeaturedClubsSlider />
 
-      {/* 6. About JuzDog Media (Capture Every Champion Moment) */}
-      <AboutUsSection />
-
-      {/* 7. Elite International Judges (Card Listing) */}
+      {/* 6. Elite International Judges (Card Listing) */}
       {loadingP2 ? (
         <SectionSkeleton height="h-64" />
       ) : (
         <FeaturedJudgesSlider judges={judges} />
       )}
+
+      {/* 7. About JuzDog Media (Capture Every Champion Moment) */}
+      <AboutUsSection />
 
       {/* 8. Latest Photography & Videography Showcase - Hidden per user request
       {loadingP2 ? (

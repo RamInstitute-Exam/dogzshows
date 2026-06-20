@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { 
   Home, User, Dog, Calendar, CreditCard, Award, Bell, Settings, 
@@ -15,15 +15,22 @@ import ProfileDropdown from '@/components/shared/ProfileDropdown';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import { useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/lib/axios';
+import { Spinner } from '@/components/common/loader/Spinner';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const pathname = usePathname();
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
   
   // Extract and normalize roles to uppercase
   const roles = user?.roles?.map((r: any) => typeof r === 'string' ? r.toUpperCase() : r.role?.name?.toUpperCase()) || [];
   const isAdminOrSuperAdmin = roles.includes('SUPER_ADMIN') || roles.includes('SUPER ADMIN') || roles.includes('ADMIN');
-  const role = roles[0] || 'USER';
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
@@ -45,6 +52,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const allowedRoutes = isAdminOrSuperAdmin
     ? ADMIN_ROUTES
     : USER_ROUTES.filter(route => route.roles?.some(r => roles.includes(r.toUpperCase())));
+
+  useEffect(() => {
+    if (mounted && !isAuthenticated && !user) {
+      router.replace('/');
+    } else if (mounted && isAdminOrSuperAdmin) {
+      router.replace('/admin');
+    }
+  }, [mounted, isAuthenticated, user, isAdminOrSuperAdmin, router]);
+
+  if (!mounted || (!isAuthenticated && !user)) {
+    return <Spinner fullScreen />;
+  }
+
+  if (isAdminOrSuperAdmin) {
+    return <Spinner fullScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-card flex flex-col selection:bg-foreground selection:text-foreground font-sans">
@@ -178,7 +201,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Content Area */}
         <motion.main 
-          animate={{ marginLeft: isSidebarCollapsed ? 80 : 280 }}
+          animate={{ marginLeft: typeof window !== 'undefined' && window.innerWidth >= 1024 ? (isSidebarCollapsed ? 80 : 280) : 0 }}
           transition={{ type: "spring", bounce: 0, duration: 0.3 }}
           className="flex-1 px-8 pb-8 pt-6 w-full"
           style={{ paddingTop: 0 }}

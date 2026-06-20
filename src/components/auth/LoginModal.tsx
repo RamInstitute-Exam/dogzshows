@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/useAuthStore';
+import Link from 'next/link';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -36,13 +37,31 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="relative w-full max-w-md bg-card rounded-[2rem] shadow-2xl overflow-hidden flex flex-col z-10"
           >
-            <div className="p-8">
-              <button onClick={onClose} className="absolute top-6 right-6 text-muted-foreground hover:text-foreground bg-card hover:bg-input p-2 rounded-full transition-colors">
+            <div className="p-8 pt-[24px]">
+              <button onClick={onClose} className="absolute top-6 right-6 text-muted-foreground hover:text-foreground bg-card hover:bg-input p-2 rounded-full transition-colors z-20">
                 <X className="w-5 h-5" />
               </button>
 
-              <h2 className="text-muted-foregroundxl font-extrabold text-foreground mb-2 tracking-tight">Welcome Back</h2>
-              <p className="text-muted-foreground text-sm mb-8">Sign in to your JuzDog enterprise account to manage events and registries.</p>
+              <div className="flex flex-col items-center mb-[20px]">
+                <Link href="/" onClick={onClose}>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+                  >
+                    <img 
+                      src="/Untitled-1.png" 
+                      alt="JUZDOG" 
+                      className="w-[100px] md:w-[140px] h-auto object-contain"
+                    />
+                  </motion.div>
+                </Link>
+              </div>
+
+              <div className="text-center">
+                <h2 className="text-2xl font-extrabold text-foreground mb-2 tracking-tight">Welcome Back</h2>
+                <p className="text-muted-foreground text-sm mb-8 px-4">Enter your credentials to access your account</p>
+              </div>
 
               <form className="space-y-4 mb-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="relative">

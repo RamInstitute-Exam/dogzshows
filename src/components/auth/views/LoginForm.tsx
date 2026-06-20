@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Mail, Lock, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 
@@ -48,10 +49,20 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 pt-[24px]">
+      <div className="flex justify-center items-center gap-4 mb-[20px]">
+        <Link href="/" onClick={closeModal} className="cursor-pointer">
+          <img 
+            src="/Untitled-1.png" 
+            alt="JUZDOG" 
+            className="w-[100px] md:w-[140px] h-auto object-contain animate-in fade-in duration-500"
+          />
+        </Link>
+      </div>
+
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-extrabold text-foreground">Welcome Back</h2>
-        <p className="text-sm text-muted-foreground mt-2">Enter your credentials to access your account</p>
+        <h2 className="text-2xl font-extrabold text-foreground tracking-tight">Welcome Back</h2>
+        <p className="text-sm text-muted-foreground mt-2 px-4">Enter your credentials to access your account</p>
       </div>
 
       <form onSubmit={handleLogin} className="space-y-4">

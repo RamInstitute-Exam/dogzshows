@@ -31,11 +31,12 @@ function JudgesList() {
     e.preventDefault();
     setDebouncedSearch(searchQuery);
     setPage(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const { data, isLoading, isError } = useJudges({
     page,
-    limit: 12,
+    limit: 15,
     search: debouncedSearch || undefined,
     specialization: specializationFilter || undefined,
     category: categoryFilter || undefined,
@@ -51,6 +52,7 @@ function JudgesList() {
   const handleFilterChange = (setter: any, value: string) => {
     setter(value);
     setPage(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const { data: bannerData } = usePageBanner('judges');
@@ -173,14 +175,17 @@ function JudgesList() {
           {/* Results Section */}
           <div className="min-h-[400px]">
             {isLoading ? (
-              <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : 'grid-cols-1'}`}>
-                {[1,2,3,4,5,6,7,8,9,10].map((n) => (
-                  <div key={n} className={`bg-card border border-border rounded-[2rem] p-6 animate-pulse ${viewMode === 'list' ? 'flex items-center gap-6' : 'flex flex-col items-center'}`}>
-                    <div className={`rounded-full bg-muted ${viewMode === 'list' ? 'w-24 h-24 shrink-0' : 'w-32 h-32 mb-6'}`} />
-                    <div className={`flex flex-col gap-3 w-full ${viewMode === 'list' ? '' : 'items-center text-center'}`}>
-                      <div className="h-6 bg-muted rounded-md w-1/2" />
-                      <div className="h-4 bg-muted rounded-md w-1/3" />
-                      <div className="h-10 bg-muted rounded-md w-full mt-4" />
+              <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'}`}>
+                {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map((n) => (
+                  <div key={n} className={`bg-card border border-border rounded-[2rem] p-6 animate-pulse ${viewMode === 'list' ? 'flex items-center gap-6' : 'flex flex-col justify-between h-[480px]'}`}>
+                    <div className="flex flex-col items-center text-center w-full">
+                      <div className={`rounded-[24px] bg-muted shrink-0 ${viewMode === 'list' ? 'w-[140px] h-[140px]' : 'w-[140px] h-[140px] mb-4'}`} />
+                      <div className="w-full flex flex-col items-center gap-3">
+                        <div className="h-6 bg-muted rounded-md w-3/4" />
+                        <div className="h-4 bg-muted rounded-md w-1/2" />
+                        <div className="h-[76px] w-full bg-muted/50 rounded-md mt-2" />
+                        <div className="h-[60px] w-full bg-muted/30 rounded-md mt-2" />
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -205,60 +210,76 @@ function JudgesList() {
                 </button>
               </div>
             ) : (
-              <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : 'grid-cols-1'}`}>
+              <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'}`}>
                 {judges.map((judge: any, i: number) => (
                   <motion.div
                     key={judge.id}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.05, 0.5) }}
+                    className="h-full"
                   >
                     <Link
                       href={`/judge-details?slug=${judge.slug || judge.id}`}
-                      className={`group bg-card rounded-[2rem] p-6 sm:p-8 shadow-sm border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease cursor-pointer block ${viewMode === 'list' ? 'flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-8 text-center sm:text-left' : 'flex flex-col items-center text-center'}`}
+                      className={`group bg-card rounded-[2rem] p-6 shadow-sm border border-border hover:border-primary/30 hover:-translate-y-[4px] hover:shadow-2xl transition-all duration-300 ease cursor-pointer block h-full ${viewMode === 'list' ? 'flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-8 text-center sm:text-left' : 'flex flex-col justify-between'}`}
                     >
-                      <div className={`shrink-0 overflow-hidden relative border-[3px] border-[#1f2937] bg-[#f8fafc] shadow-[0_10px_30px_rgba(0,0,0,0.12)] rounded-[24px] ${viewMode === 'list' ? 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] sm:self-center' : 'w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] mb-[20px]'}`}>
-                        {judge.photoUrl ? (
-                          <img src={judge.photoUrl} alt={judge.name} className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
-                        ) : (
-                          <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center text-[#64748b] text-[64px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
-                            {judge.name?.[0]?.toUpperCase() || 'M'}
-                          </div>
-                        )}
-                        {judge.isFeatured && (
-                          <div className="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1">
-                            <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className={`flex flex-col flex-1 ${viewMode === 'list' ? 'justify-center' : 'w-full'}`}>
-                        <h3 className="text-2xl font-[800] text-foreground mb-1 flex items-center justify-center sm:justify-start gap-1.5 group-hover:text-primary transition-colors">
-                          {judge.name}
-                          {judge.isFeatured && (
-                            <span title="Verified Judge">
-                              <Shield className="w-5 h-5 text-blue-500 shrink-0" />
-                            </span>
+                      <div className={`flex flex-col items-center text-center w-full ${viewMode === 'list' && 'sm:items-start sm:text-left sm:flex-row sm:gap-6'}`}>
+                        {/* Fixed Size Image */}
+                        <div className={`shrink-0 overflow-hidden relative border-[3px] border-border bg-muted shadow-md rounded-[24px] ${viewMode === 'list' ? 'w-[140px] h-[140px] sm:self-center' : 'w-[140px] h-[140px] mx-auto mb-4'}`}>
+                          {judge.photoUrl ? (
+                            <img src={judge.photoUrl} alt={judge.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-muted-foreground text-[48px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
+                              {judge.name?.[0]?.toUpperCase() || 'M'}
+                            </div>
                           )}
-                        </h3>
-                        <p className={`text-primary font-[700] text-sm mb-3 flex items-center justify-center sm:justify-start gap-1.5`}>
-                          <MapPin className="w-3.5 h-3.5" />
-                          {judge.city ? `${judge.city}, ` : ''}{judge.state || judge.country || 'International'}
-                        </p>
+                          {judge.isFeatured && (
+                            <div className="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1">
+                              <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                            </div>
+                          )}
+                        </div>
                         
-                        <div className={`flex gap-4 mb-4 py-3 border-y border-border ${viewMode === 'list' ? 'justify-start max-w-md' : 'justify-center w-full'}`}>
-                          <div className={`${viewMode === 'list' ? '' : 'w-full text-center'}`}>
-                            <p className="text-foreground font-[700] text-sm line-clamp-1">{judge.qualifications || judge.specialization || 'Professional Judge'}</p>
-                            <p className="small-label text-[10px]">Specialization</p>
+                        <div className={`flex flex-col w-full ${viewMode === 'list' ? 'justify-center items-start text-left' : 'items-center text-center'}`}>
+                          {/* Name (Fixed height 2 lines) */}
+                          <div className={`w-full flex items-center ${viewMode === 'list' ? 'justify-start h-auto mb-1' : 'justify-center h-[56px] mb-2'}`}>
+                            <h3 className="text-xl font-[800] text-foreground line-clamp-2 leading-[28px] group-hover:text-primary transition-colors flex items-center gap-1.5 justify-center">
+                              {judge.name}
+                              {judge.isFeatured && (
+                                <span title="Verified Judge">
+                                  <Shield className="w-4 h-4 text-blue-500 shrink-0" />
+                                </span>
+                              )}
+                            </h3>
+                          </div>
+
+                          {/* Country (Fixed height 1 line) */}
+                          <div className={`w-full flex items-center ${viewMode === 'list' ? 'justify-start h-auto mb-3' : 'justify-center h-[24px] mb-4'} text-primary font-[700] text-sm gap-1`}>
+                            <MapPin className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">{judge.city ? `${judge.city}, ` : ''}{judge.state || judge.country || 'International'}</span>
+                          </div>
+                          
+                          {/* Specialization (Fixed height) */}
+                          <div className={`w-full border-y border-border py-3 flex flex-col justify-center ${viewMode === 'list' ? 'h-auto mb-4 items-start' : 'h-[76px] mb-4 items-center'}`}>
+                            <p className={`text-foreground font-[700] text-sm line-clamp-2 ${viewMode === 'list' ? 'text-left' : 'text-center'}`}>
+                              {judge.qualifications || judge.specialization || 'Professional Judge'}
+                            </p>
+                            <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-1">Specialization</p>
+                          </div>
+
+                          {/* Description (Fixed height max 3 lines) */}
+                          <div className={`w-full ${viewMode === 'list' ? 'h-auto mb-4' : 'h-[60px] mb-4'}`}>
+                            <p className={`text-xs text-muted-foreground line-clamp-3 leading-[20px] ${viewMode === 'list' ? 'text-left max-w-2xl' : 'text-center'}`}>
+                              {judge.bio || 'Certified all breed international judge with credentials in evaluating multiple groups and working class breeds. Brings years of expertise and professionalism to every show ring.'}
+                            </p>
                           </div>
                         </div>
+                      </div>
 
-                        <p className={`text-xs text-muted-foreground line-clamp-3 mb-4 leading-relaxed ${viewMode === 'list' ? 'max-w-2xl' : ''}`}>
-                          {judge.bio || 'Certified all breed international judge with credentials in evaluating multiple groups and working class breeds. Brings years of expertise and professionalism to every show ring.'}
-                        </p>
-
+                      {/* Footer Section (Always at bottom) */}
+                      <div className="w-full flex items-center justify-center pt-2">
                         {judge.source && (
-                          <p className="text-[10px] text-muted-foreground/70 italic mb-2 truncate w-full" title={judge.source}>
+                          <p className="text-[10px] text-muted-foreground/70 italic truncate w-full text-center" title={judge.source}>
                             📷 {judge.source}
                           </p>
                         )}
@@ -274,7 +295,7 @@ function JudgesList() {
           {!isLoading && !isError && totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 mt-8 pt-8 border-t border-border">
               <button 
-                onClick={() => setPage(p => Math.max(1, p - 1))}
+                onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 disabled={page === 1}
                 className="w-10 h-10 rounded-xl flex items-center justify-center bg-card border border-border text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
@@ -285,7 +306,7 @@ function JudgesList() {
                 {[...Array(totalPages)].map((_, i) => (
                   <button
                     key={i + 1}
-                    onClick={() => setPage(i + 1)}
+                    onClick={() => { setPage(i + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${page === i + 1 ? 'bg-foreground text-white shadow-lg shadow-black/20' : 'bg-transparent text-muted-foreground hover:bg-accent'}`}
                   >
                     {i + 1}
@@ -294,7 +315,7 @@ function JudgesList() {
               </div>
 
               <button 
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 disabled={page === totalPages}
                 className="w-10 h-10 rounded-xl flex items-center justify-center bg-card border border-border text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >

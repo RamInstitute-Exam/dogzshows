@@ -9,7 +9,6 @@
  * Next.js doesn't throw the "missing param" error.
  *
  * Fallback behaviour: if the API is unreachable (e.g. during CI), an empty
- * array is returned so the build still succeeds.
  */
 
 const API_BASE =
@@ -76,6 +75,6 @@ export async function getOutdoorAlbumIds(): Promise<{ id: string }[]> {
     if (Array.isArray(albums) && albums.length > 0) {
       return albums.map((a) => ({ id: String(a.id) }));
     }
-  } catch {}
+  } catch { }
   return [{ id: '_' }];
 }

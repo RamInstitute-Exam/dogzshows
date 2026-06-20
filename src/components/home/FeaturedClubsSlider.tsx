@@ -62,8 +62,8 @@ export default function FeaturedClubsSlider() {
   if (!clubs.length) return null;
 
   return (
-    <section className="w-full pt-16 pb-20 bg-background relative overflow-hidden">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 xl:px-12">
+    <section className="featured-clubs-section w-full pt-16 pb-20 bg-background relative overflow-hidden">
+      <div className="w-full max-w-[1440px] mx-auto px-[12px] sm:px-[16px] md:px-[24px]">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 gap-6">
           <div className="max-w-3xl">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-4 leading-tight">
@@ -75,11 +75,11 @@ export default function FeaturedClubsSlider() {
           </div>
         </div>
 
-        <div className="relative !overflow-visible">
+        <div className="carousel-wrapper relative overflow-hidden w-full">
           {/* Custom Navigation Buttons */}
           <button
             ref={(node) => setPrevEl(node)}
-            className="custom-swiper-prev absolute -left-4 lg:-left-10 xl:-left-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            className="custom-swiper-prev absolute z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
             aria-label="Previous slide"
           >
             <ChevronLeft size={22} />
@@ -105,52 +105,55 @@ export default function FeaturedClubsSlider() {
             }}
             loop={clubs.length > 5}
             breakpoints={{
-              320: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 4 },
-              1440: { slidesPerView: 5 },
+              320: { slidesPerView: 1, spaceBetween: 12 },
+              576: { slidesPerView: 2, spaceBetween: 12 },
+              768: { slidesPerView: 3, spaceBetween: 16 },
+              1200: { slidesPerView: 4, spaceBetween: 20 },
+              1440: { slidesPerView: 5, spaceBetween: 24 },
             }}
-            className="!pb-12 custom-swiper !overflow-visible"
+            className="!pb-12 custom-swiper premium-carousel-track"
           >
             {clubs.map((club) => (
-              <SwiperSlide key={club.id}>
-                <Link href={`/clubs/${club.slug || club.id}`}>
+              <SwiperSlide key={club.id} className="!h-auto flex">
+                <Link href={`/clubs/${club.slug || club.id}`} className="w-full">
                   <motion.div
-                    whileHover={{ y: -8 }}
-                    className="group relative flex flex-col h-[320px] bg-card border border-border/50 rounded-[20px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-border/30 transition-all duration-500 p-6"
+                    whileHover={{ y: -6 }}
+                    className="group relative flex flex-col h-full bg-card border border-border/50 rounded-[20px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-border/30 transition-all duration-500 p-6"
                   >
                     {/* Content */}
-                    <div className="flex-1 flex flex-col h-full">
-                      <h3 className="text-xl sm:text-2xl font-black text-foreground mb-3 line-clamp-1 group-hover:text-foreground transition-colors">
-                        {club.name}
-                      </h3>
-                      
-                      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-4">
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <span className="truncate">
-                          {[club.city, club.state].filter(Boolean).join(', ') || 'India'}
-                        </span>
+                    <div className="flex flex-col justify-between flex-1 h-full">
+                      <div className="flex flex-col">
+                        <h3 className="text-[clamp(22px,1.4vw,30px)] font-[800] leading-[1.25] text-foreground mb-3 line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] group-hover:text-foreground transition-colors">
+                          {club.name}
+                        </h3>
+                        
+                        <div className="flex items-center gap-[8px] text-[16px] font-[600] text-muted-foreground mb-4">
+                          <MapPin className="w-5 h-5 shrink-0 text-muted-foreground" />
+                          <span className="truncate">
+                            {[club.city, club.state].filter(Boolean).join(', ') || 'India'}
+                          </span>
+                        </div>
+  
+                        <p className="text-[15px] leading-[1.7] text-muted-foreground line-clamp-3 overflow-hidden break-words [overflow-wrap:anywhere] mb-6">
+                          {club.description || 'India\'s leading kennel club organizing prestigious canine events.'}
+                        </p>
                       </div>
  
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-6 flex-1">
-                        {club.description || 'India\'s leading kennel club organizing prestigious canine events.'}
-                      </p>
- 
-                      <div className="mt-auto flex flex-col">
+                      <div className="mt-auto flex flex-col w-full">
                         <div className="flex items-center gap-4 py-4 border-t border-b border-border/50 mb-4">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                            <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                          <div className="flex items-center gap-2 text-[15px] font-[600] text-foreground">
+                            <ImageIcon className="w-[20px] h-[20px] text-muted-foreground" />
                             {club._count?.clubGalleries || 0} Photos
                           </div>
-                          <div className="w-1 h-1 rounded-full bg-border" />
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                            <Film className="w-4 h-4 text-muted-foreground" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-border" />
+                          <div className="flex items-center gap-2 text-[15px] font-[600] text-foreground">
+                            <Film className="w-[20px] h-[20px] text-muted-foreground" />
                             {0} Videos
                           </div>
                         </div>
  
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-foreground transition-colors">
+                        <div className="flex justify-between items-center w-full">
+                          <span className="text-[15px] font-[700] text-foreground transition-colors">
                             View Club
                           </span>
                           <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center group-hover:bg-foreground group-hover:scale-110 transition-all duration-300">
@@ -167,7 +170,7 @@ export default function FeaturedClubsSlider() {
  
           <button
             ref={(node) => setNextEl(node)}
-            className="custom-swiper-next absolute -right-4 lg:-right-10 xl:-right-16 top-[160px] -translate-y-1/2 z-20 hidden md:flex w-12 h-12 lg:w-14 lg:h-14 items-center justify-center rounded-full bg-white dark:bg-black border border-[#E5E5E5] dark:border-[#2A2A2A] text-black dark:text-white shadow-lg transition-all duration-300 hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] hover:border-black dark:hover:border-[#444444] hover:scale-[1.05] disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+            className="custom-swiper-next premium-slider-nav premium-slider-next"
             aria-label="Next slide"
           >
             <ChevronRight size={22} />
@@ -188,65 +191,6 @@ export default function FeaturedClubsSlider() {
         </div>
       </div>
 
-      <style jsx global>{`
-        /* Hide Swiper default navigation icons inside our custom buttons */
-        .custom-swiper-prev.swiper-button-prev::after,
-        .custom-swiper-next.swiper-button-next::after {
-          display: none !important;
-          content: "" !important;
-        }
-        
-        /* Prevent Swiper from overriding custom button positions and sizes */
-        .custom-swiper-prev.swiper-button-prev,
-        .custom-swiper-next.swiper-button-next {
-          position: absolute !important;
-          top: 160px !important;
-          transform: translateY(-50%) !important;
-          margin-top: 0 !important;
-          display: flex !important;
-          width: 48px !important;
-          height: 48px !important;
-          z-index: 20 !important;
-        }
-
-        .custom-swiper-prev.swiper-button-prev {
-          left: -16px !important;
-        }
-
-        .custom-swiper-next.swiper-button-next {
-          right: -16px !important;
-        }
-
-        @media (min-width: 1024px) {
-          .custom-swiper-prev.swiper-button-prev,
-          .custom-swiper-next.swiper-button-next {
-            width: 56px !important;
-            height: 56px !important;
-          }
-          .custom-swiper-prev.swiper-button-prev {
-            left: -40px !important;
-          }
-          .custom-swiper-next.swiper-button-next {
-            right: -40px !important;
-          }
-        }
-
-        @media (min-width: 1280px) {
-          .custom-swiper-prev.swiper-button-prev {
-            left: -64px !important;
-          }
-          .custom-swiper-next.swiper-button-next {
-            right: -64px !important;
-          }
-        }
-
-        /* Disable Swiper default styling affecting layout */
-        .custom-swiper-prev.swiper-button-disabled,
-        .custom-swiper-next.swiper-button-disabled {
-          opacity: 0 !important;
-          pointer-events: none !important;
-        }
-      `}</style>
     </section>
   );
 }

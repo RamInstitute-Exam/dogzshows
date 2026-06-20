@@ -250,18 +250,18 @@ function MobileMenuItem({
         height: '56px',
         fontSize: '18px',
         fontWeight: 600,
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        color: active ? 'var(--nav-text-active)' : 'rgba(255, 255, 255, 0.9)',
+        borderBottom: '1px solid var(--border-color)',
+        color: active ? 'var(--nav-text-active)' : 'var(--foreground)',
       }
     : {
         height: '48px',
         fontSize: '16px',
         fontWeight: 500,
-        color: active ? 'var(--nav-text-active)' : 'rgba(255, 255, 255, 0.7)',
+        color: active ? 'var(--nav-text-active)' : 'var(--muted-foreground)',
         paddingLeft: `${depth * 20}px`,
       };
 
-  const linkClass = "flex items-center justify-between w-full transition-colors duration-150 hover:text-[var(--nav-text-active)] bg-transparent border-none text-left cursor-pointer";
+  const linkClass = "flex items-center px-3 justify-between w-full transition-colors duration-150 hover:text-[var(--nav-text-active)] hover:bg-black/5 dark:hover:bg-white/5 bg-transparent border-none text-left cursor-pointer";
 
   if (!hasChildren) {
     return (
@@ -437,12 +437,12 @@ export default function Navbar() {
 
             {mounted && !showAuth && (
               <>
-                <Link
-                  href="/dashboard"
-                  className="!hidden lg:!inline-flex navbar-btn-premium navbar-btn-dashboard"
-                >
-                  Dashboard
-                </Link>
+                  <Link
+                    href={user?.roles?.[0] === 'SUPER_ADMIN' || user?.roles?.[0] === 'ADMIN' ? '/admin' : '/dashboard'}
+                    className="navbar-btn-premium navbar-btn-dashboard hidden sm:flex"
+                  >
+                    Dashboard
+                  </Link>
                 <div
                   className="navbar-avatar !hidden lg:!flex"
                   title={user?.firstName}
@@ -480,7 +480,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-99998 lg:!hidden"
+              className="fixed inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-[99998] lg:!hidden"
             />
 
             <motion.aside
@@ -489,7 +489,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-[320px] z-99999 shadow-2xl flex flex-col lg:!hidden mobile-drawer-container"
+              className="fixed top-0 right-0 h-full w-[320px] z-[99999] shadow-2xl flex flex-col lg:!hidden mobile-drawer-container"
               aria-label="Mobile navigation"
             >
               {/* Drawer header */}
@@ -506,7 +506,7 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={() => setIsMobileOpen(false)}
-                  className="flex items-center justify-center w-10 h-10 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  className="flex items-center justify-center w-10 h-10 rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors"
                   aria-label="Close menu"
                 >
                   <X className="w-6 h-6" />
@@ -536,7 +536,7 @@ export default function Navbar() {
                   {mounted && isAuthenticated ? (
                     <>
                       <Link
-                        href="/dashboard"
+                        href={user?.roles?.[0] === 'SUPER_ADMIN' || user?.roles?.[0] === 'ADMIN' ? '/admin' : '/dashboard'}
                         onClick={() => setIsMobileOpen(false)}
                         className="navbar-btn-premium navbar-btn-dashboard w-full"
                       >

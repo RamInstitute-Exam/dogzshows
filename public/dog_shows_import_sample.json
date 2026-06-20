@@ -8,11 +8,45 @@
     "startDate": "2026-06-05",
     "endDate": "2026-06-06",
     "venue": "Coimbatore",
-    "judges": "Mr. Ranjeet S Munjal | Mr. T. Preetham | Mr. Shharat Sharma",
-    "secretary": "Mr. R. Saravanakumar|Hony Secretary|9585266566|cmkc2021@gmail.com",
-    "mobile": "9585266566",
-    "email": "cmkc2021@gmail.com",
-    "address": "Aadhi International, 5/7, 8th Street, Lakshmi Vinayagar Kovil Street, Ganapathy, Coimbatore - 641006"
+    "judges": [
+      { "name": "Mr. Ranjeet S Munjal", "country": "India" },
+      { "name": "Mr. T. Preetham", "country": "India" },
+      { "name": "Mr. Shharat Sharma", "country": "India" }
+    ],
+    "secretaries": [
+      {
+        "name": "Mr. R. Saravanakumar",
+        "designation": "Hony. Secretary",
+        "mobile": "9585266566",
+        "alternateMobile": "",
+        "phone": "",
+        "email": "cmkc2021@gmail.com",
+        "alternateEmail": "",
+        "website": "",
+        "addressLine1": "Aadhi International",
+        "addressLine2": "5/7, 8th Street, Lakshmi Vinayagar Kovil Street",
+        "city": "Coimbatore",
+        "state": "Tamil Nadu",
+        "pincode": "641006",
+        "country": "India"
+      },
+      {
+        "name": "Mr. S. Siddhartha",
+        "designation": "Joint Secretary",
+        "mobile": "9092524298",
+        "alternateMobile": "",
+        "phone": "",
+        "email": "abc@gmail.com",
+        "alternateEmail": "",
+        "website": "",
+        "addressLine1": "Ganapathy",
+        "addressLine2": "",
+        "city": "Coimbatore",
+        "state": "Tamil Nadu",
+        "pincode": "",
+        "country": "India"
+      }
+    ]
   },
   {
     "month": "October",
@@ -23,40 +57,27 @@
     "startDate": "2026-10-25",
     "endDate": "2026-10-26",
     "venue": "Kanyakumari",
-    "judges": "Mr. Dennis McGreevy - Australia | Mrs. Chris McGreevy - Australia",
-    "secretary": "Mrs. S. Parvathi Vijayakumar|Hony Secretary|9486325459|kanyakumarikc@gmail.com",
-    "mobile": "9486325459",
-    "email": "kanyakumarikc@gmail.com",
-    "address": "VII:9/58, Subramaniapuram, Theroor P.O., Kanyakumari District - 629704"
-  },
-  {
-    "month": "November",
-    "city": "Kodaikanal",
-    "clubName": "Kodaikanal Kennel Association",
-    "eventTitle": "151st & 152nd All Breeds Ch. Dog Show",
-    "eventType": "Championship Show",
-    "startDate": "2026-11-14",
-    "endDate": "2026-11-15",
-    "venue": "Kodaikanal",
-    "judges": "Dr. Chakkapan Chantarasmee - Thailand | Mr. Victor Roman G. Santos - Philippines",
-    "secretary": "Mr. K. Secretary|Hony Secretary|9876543210|kkclub@gmail.com",
-    "mobile": "9876543210",
-    "email": "kkclub@gmail.com",
-    "address": "Kodaikanal"
-  },
-  {
-    "month": "November",
-    "city": "Chennai",
-    "clubName": "Madras Canine Club",
-    "eventTitle": "25th & 26th All Breeds Ch. Dog Show",
-    "eventType": "Championship Show",
-    "startDate": "2026-11-28",
-    "endDate": "2026-11-29",
-    "venue": "Chennai",
-    "judges": "Mr. Alan Ong - Philippines | Mr. Mohammad Muneer Bin Jung",
-    "secretary": "Mr. S. Siddhartha|Hony Joint Secretary|9092524298|madrascanineclub@gmail.com",
-    "mobile": "9092524298",
-    "email": "madrascanineclub@gmail.com",
-    "address": "Old No. 51, 7th Cross Street, Shenoy Nagar, Chennai - 600030"
+    "judges": [
+      { "name": "Mr. Dennis McGreevy", "country": "Australia" },
+      { "name": "Mrs. Chris McGreevy", "country": "Australia" }
+    ],
+    "secretaries": [
+      {
+        "name": "Mrs. S. Parvathi Vijayakumar",
+        "designation": "Hony. Secretary",
+        "mobile": "9486325459",
+        "alternateMobile": "",
+        "phone": "",
+        "email": "kanyakumarikc@gmail.com",
+        "alternateEmail": "",
+        "website": "",
+        "addressLine1": "VII:9/58, Subramaniapuram, Theroor P.O.",
+        "addressLine2": "",
+        "city": "Kanyakumari District",
+        "state": "Tamil Nadu",
+        "pincode": "629704",
+        "country": "India"
+      }
+    ]
   }
 ]

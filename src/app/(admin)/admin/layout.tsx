@@ -12,14 +12,24 @@ import ProfileDropdown from '@/components/shared/ProfileDropdown';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import api from '@/lib/api';
 import { ADMIN_ROUTES } from '@/config/navigation';
+import { Spinner } from '@/components/common/loader/Spinner';
+import { useRouter } from 'next/navigation';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const pathname = usePathname();
-  const { user } = useAuthStore();
-  const role = user?.roles?.[0] || 'SUPER_ADMIN';
+  const { user, isAuthenticated } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
+  const roles = user?.roles?.map((r: any) => typeof r === 'string' ? r.toUpperCase() : r.role?.name?.toUpperCase()) || [];
+  const isAdminOrSuperAdmin = roles.includes('SUPER_ADMIN') || roles.includes('SUPER ADMIN') || roles.includes('ADMIN');
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const activeRoute = ADMIN_ROUTES.find((r: any) => 
@@ -33,6 +43,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const toggleMenu = (name: string) => {
     setOpenMenus(prev => ({ ...prev, [name]: !prev[name] }));
   };
+
+  useEffect(() => {
+    if (mounted) {
+      if (!isAuthenticated && !user) {
+        router.replace('/');
+      } else if (!isAdminOrSuperAdmin) {
+        router.replace('/dashboard');
+      }
+    }
+  }, [mounted, isAuthenticated, user, isAdminOrSuperAdmin, router]);
+
+  if (!mounted || (!isAuthenticated && !user)) {
+    return <Spinner fullScreen />;
+  }
+
+  if (!isAdminOrSuperAdmin) {
+    return <Spinner fullScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-card flex flex-col selection:bg-foreground selection:text-foreground font-sans">
@@ -235,7 +263,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Content Area */}
         <div className="flex-1 flex flex-col min-w-0 w-full max-w-full">
           <motion.main 
-            className="flex-1 w-full max-w-full p-5 overflow-hidden box-border"
+            className="flex-1 w-full max-w-full p-5 overflow-x-hidden box-border"
           >
             <div className="w-full max-w-full  transition-all duration-300">
               

@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Play, Eye, User, Camera, Video, Clock, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import PublicContainer from '@/components/layout/PublicContainer';
 
 // ─── Section Header ────────────────────────────────────────────────────────────
 const SectionHeader = ({
@@ -45,8 +44,8 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
   }
 
   return (
-    <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 pt-0 bg-background text-foreground font-sans">
-      <PublicContainer className="space-y-20">
+    <section className="premium-section-spacing bg-background text-foreground font-sans overflow-hidden">
+      <div className="premium-container space-y-20">
 
         {/* ══════════════════════════════════════════════
             SECTION 1: FEATURED PHOTOGRAPHY
@@ -230,7 +229,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
           </div>
         )}
 
-      </PublicContainer>
+      </div>
     </section>
   );
 }
