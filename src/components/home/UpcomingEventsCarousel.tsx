@@ -193,7 +193,7 @@ export default function UpcomingEventsCarousel() {
 
                         {/* Floating Date Badge (Top Right) */}
                         <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md rounded-[12px] shadow-2xl flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[56px] border border-black/5 transform group-hover:-translate-y-1 transition-transform duration-500 z-10">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground mb-[-4px]">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-[-4px]">
                             {startDate.toLocaleDateString('en-US', { month: 'short' })}
                           </span>
                           <span className="text-2xl font-black text-black leading-none mt-1">
