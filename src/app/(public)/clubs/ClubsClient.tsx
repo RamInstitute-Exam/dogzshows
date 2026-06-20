@@ -38,7 +38,8 @@ export default function ClubsClient() {
   const fetchClubs = async () => {
     setLoading(true);
     try {
-      let url = `/public/clubs?page=${page}&limit=20&status=ACTIVE`;
+      // Added a cache buster timestamp to instantly invalidate the old 24h stale cache
+      let url = `/public/clubs?page=${page}&limit=20&status=ACTIVE&_cb=${Date.now()}`;
       if (debouncedSearch) url += `&search=${encodeURIComponent(debouncedSearch)}`;
       if (stateFilter) url += `&state=${encodeURIComponent(stateFilter)}`;
       if (cityFilter) url += `&city=${encodeURIComponent(cityFilter)}`;
@@ -109,15 +110,15 @@ export default function ClubsClient() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-white">
               {typeParam.toLowerCase() === 'all-breeds' ? (
-                <>All Breeds <span className="text-foreground">Clubs</span></>
+                <>All Breeds <span className="text-white/70">Clubs</span></>
               ) : typeParam.toLowerCase() === 'specialty' ? (
-                <>Specialty <span className="text-foreground">Clubs</span></>
+                <>Specialty <span className="text-white/70">Clubs</span></>
               ) : typeParam.toLowerCase() === 'kennel' ? (
-                <>Kennel <span className="text-foreground">Clubs</span></>
+                <>Kennel <span className="text-white/70">Clubs</span></>
               ) : typeParam.toLowerCase() === 'state' ? (
-                <>State <span className="text-foreground">Clubs</span></>
+                <>State <span className="text-white/70">Clubs</span></>
               ) : (
-                <>Club <span className="text-foreground">Directory</span></>
+                <>Club <span className="text-white/70">Directory</span></>
               )}
             </h1>
             <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">

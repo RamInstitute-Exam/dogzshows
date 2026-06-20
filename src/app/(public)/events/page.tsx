@@ -13,6 +13,7 @@ import api from '@/lib/api';
 export default function EventsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [clubs, setClubs] = useState<any[]>([]);
+  const [states, setStates] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -35,7 +36,7 @@ export default function EventsPage() {
   useEffect(() => {
     async function loadClubs() {
       try {
-        const res = await api.get('/public/clubs?limit=1000');
+        const res = await api.get('/public/shows/active-clubs');
         if (res.success) {
           setClubs(res.data || []);
         }
@@ -44,6 +45,21 @@ export default function EventsPage() {
       }
     }
     loadClubs();
+  }, []);
+
+  // Load states once for filter
+  useEffect(() => {
+    async function loadStates() {
+      try {
+        const res = await api.get('/public/shows/active-states');
+        if (res.success) {
+          setStates(res.data || []);
+        }
+      } catch (err) {
+        console.error('Failed to load states:', err);
+      }
+    }
+    loadStates();
   }, []);
 
   // Fetch filtered events
@@ -105,7 +121,7 @@ export default function EventsPage() {
   };
 
   // Get list of unique states from existing shows for filters
-  const uniqueStates = ['Tamil Nadu', 'Karnataka', 'Maharashtra', 'Delhi', 'West Bengal', 'Punjab', 'Kerala', 'Gujarat'];
+  const uniqueStates = states;
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
@@ -179,7 +195,6 @@ export default function EventsPage() {
               className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
             >
               <option value="">All Statuses</option>
-              <option value="DRAFT">Draft</option>
               <option value="REGISTRATION_OPEN">Open For Registration</option>
               <option value="ONGOING">Ongoing</option>
               <option value="COMPLETED">Completed</option>

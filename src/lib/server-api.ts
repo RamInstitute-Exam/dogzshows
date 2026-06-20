@@ -115,17 +115,17 @@ export async function getVideoBySlug(slug: string) {
 }
 
 export async function getAllJudges() {
-  return fetchServerData('/public/judges', 60); 
+  return fetchServerData('/public/judges', 60);
 }
 
 export async function getJudgeBySlug(slug: string) {
-  return fetchServerDataSingle(`/public/judges/slug/${slug}`, 60); 
+  return fetchServerDataSingle(`/public/judges/slug/${slug}`, 60);
 }
 
 export async function getAllClubs() {
-  return fetchServerData('/public/clubs', 60); 
+  return fetchServerData('/public/clubs', 60);
 }
 
 export async function getClubBySlug(slug: string) {
-  return fetchServerDataSingle(`/public/clubs/slug/${slug}`, 60); 
+  return fetchServerDataSingle(`/public/clubs/slug/${slug}`, 60);
 }

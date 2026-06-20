@@ -70,7 +70,7 @@ export default function PremiumOutdoorPhotos() {
             <span className="text-muted-foreground font-bold text-xs uppercase tracking-[0.2em] block mb-3">
               PREMIUM GALLERY
             </span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight uppercase">
               Outdoor Photos
             </h2>
             <p className="text-muted-foreground mt-3 text-sm md:text-base leading-relaxed">
@@ -79,9 +79,9 @@ export default function PremiumOutdoorPhotos() {
           </div>
           <Link 
             href="/gallery/outdoor-photos" 
-            className="group flex items-center justify-center gap-2 px-6 py-3 bg-card border border-border/60 hover:border-border hover:text-foreground rounded-full text-sm font-bold text-foreground transition-all shadow-sm shrink-0 self-start sm:self-end"
+            className="group flex items-center justify-center gap-2 px-6 py-3 bg-card border border-border/60 hover:border-border hover:text-foreground rounded-full text-sm font-bold text-foreground transition-all shadow-sm shrink-0 self-start sm:self-end uppercase"
           >
-            View All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            VIEW ALL <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
@@ -112,9 +112,9 @@ export default function PremiumOutdoorPhotos() {
                   }}
                   className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                 />
-                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md">
+                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md uppercase">
                   <ImageIcon className="w-3.5 h-3.5 text-muted-foreground" />
-                  {album._count?.images || album.images?.length || 0} Photos
+                  {album._count?.images || album.images?.length || 0} PHOTOS
                 </div>
               </div>
 
@@ -124,18 +124,18 @@ export default function PremiumOutdoorPhotos() {
                   {album.eventName && (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <Camera className="w-3.5 h-3.5" />
-                      {album.eventName}
+                      {album.eventName?.toUpperCase()}
                     </span>
                   )}
-                  <h3 className="text-base font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
-                    {album.title}
+                  <h3 className="text-base font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 uppercase">
+                    {album.title?.toUpperCase()}
                   </h3>
                   
-                  <div className="flex flex-col gap-1 text-[11px] text-muted-foreground font-medium">
+                  <div className="flex flex-col gap-1 text-[11px] text-muted-foreground font-medium uppercase">
                     {album.location && (
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                        <span className="truncate">{album.location}</span>
+                        <span className="truncate">{album.location?.toUpperCase()}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-1.5">
@@ -146,8 +146,8 @@ export default function PremiumOutdoorPhotos() {
                 </div>
 
                 <div className="w-full pt-4 border-t border-border/40 mt-4">
-                  <div className="w-full py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 group-hover:bg-black dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-black text-center font-bold text-xs transition-all flex items-center justify-center gap-1.5 duration-300">
-                    View Album
+                  <div className="w-full py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 group-hover:bg-black dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-black text-center font-bold text-xs transition-all flex items-center justify-center gap-1.5 duration-300 uppercase">
+                    VIEW ALBUM
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>

@@ -34,6 +34,7 @@ export default function RegisterClubForm() {
     instagram: '',
     isActive: true,
     isFeatured: false,
+    displayOrder: 999,
     logoUrl: ''
   });
 
@@ -143,6 +144,10 @@ export default function RegisterClubForm() {
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Registration Number</label>
                 <input type="text" name="registrationNumber" value={formData.registrationNumber} onChange={handleInputChange} placeholder="E.g. KCI-REG-8472" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Display Order</label>
+                <input type="number" name="displayOrder" value={formData.displayOrder} onChange={handleInputChange} placeholder="E.g. 1" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">President Name</label>

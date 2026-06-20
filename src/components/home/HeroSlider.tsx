@@ -43,7 +43,7 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
   if (error) return null; // Don't render broken images, let parent slide handle empty space
 
   return (
-    <div 
+    <div
       className={`relative w-full h-full hero-slide bg-transparent ${onClick ? 'cursor-zoom-in' : ''}`}
       onClick={onClick}
     >
@@ -177,9 +177,9 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             return (
               <SwiperSlide key={slide.id || index} className="hero-slide-item-wrapper">
                 {slide.redirectUrl ? (
-                  <a 
-                    href={slide.redirectUrl} 
-                    target={slide.openNewTab ? "_blank" : "_self"} 
+                  <a
+                    href={slide.redirectUrl}
+                    target={slide.openNewTab ? "_blank" : "_self"}
                     rel={slide.openNewTab ? "noopener noreferrer" : ""}
                     className="block w-full h-full"
                   >
@@ -196,16 +196,16 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
         {showNav && (
           <>
             {/* Navigation Arrows */}
-            <button 
-              aria-label="Previous slide" 
-              onClick={() => swiperRef.current?.slidePrev()} 
+            <button
+              aria-label="Previous slide"
+              onClick={() => swiperRef.current?.slidePrev()}
               className="premium-slider-nav premium-slider-prev"
             >
               <ChevronLeft className="w-8 h-8" />
             </button>
-            <button 
-              aria-label="Next slide" 
-              onClick={() => swiperRef.current?.slideNext()} 
+            <button
+              aria-label="Next slide"
+              onClick={() => swiperRef.current?.slideNext()}
               className="premium-slider-nav premium-slider-next"
             >
               <ChevronRight className="w-8 h-8" />
@@ -226,16 +226,16 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 cursor-zoom-out touch-pan-x touch-pan-y"
             onClick={() => setZoomedImage(null)}
           >
-            <button 
+            <button
               className="absolute top-4 right-4 z-50 p-3 bg-white/10 text-white rounded-full hover:bg-white/20 backdrop-blur-md transition-colors"
               onClick={() => setZoomedImage(null)}
             >
               <X className="w-6 h-6" />
             </button>
             <div className="relative w-full h-full flex items-center justify-center overflow-auto pointer-events-none">
-              <img 
-                src={zoomedImage} 
-                alt="Zoomed" 
+              <img
+                src={zoomedImage}
+                alt="Zoomed"
                 className="max-w-full max-h-[90vh] object-contain pointer-events-auto"
               />
             </div>

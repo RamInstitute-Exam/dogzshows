@@ -39,11 +39,11 @@ export default function PremiumShowPhotos() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl">
             <span className="text-muted-foreground font-bold text-sm tracking-[0.2em] uppercase block mb-3">Premium Show Photos</span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">Until Sunday Coimbatore Show Photos</h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight uppercase">Until Sunday Coimbatore Show Photos</h2>
             <p className="text-muted-foreground mt-4 text-lg max-w-xl">Explore exclusive moments captured from the latest championship dog shows across India.</p>
           </div>
-          <Link href="/gallery/photos" className="group flex items-center gap-2 text-foreground font-bold hover:text-foreground transition-colors">
-            View All <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          <Link href="/gallery/photos" className="group flex items-center gap-2 text-foreground font-bold hover:text-foreground transition-colors uppercase">
+            VIEW ALL <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
@@ -77,13 +77,13 @@ export default function PremiumShowPhotos() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
 
               {/* Content Overlay */}
-              <div className="absolute bottom-0 left-0 w-full p-6 text-white transform transition-transform duration-500 group-hover:-translate-y-2">
-                <h3 className="text-2xl font-bold mb-2 leading-tight drop-shadow-md">{album.title}</h3>
+              <div className="absolute bottom-0 left-0 w-full p-6 text-white transform transition-transform duration-500 group-hover:-translate-y-2 uppercase">
+                <h3 className="text-2xl font-bold mb-2 leading-tight drop-shadow-md uppercase">{album.title?.toUpperCase()}</h3>
                 <div className="flex items-center gap-4 text-sm font-medium text-white/80">
-                  <span>{album.showDate ? new Date(album.showDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'}</span>
+                  <span>{album.showDate ? new Date(album.showDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'RECENT'}</span>
                   <div className="flex items-center gap-1">
                     <ImageIcon className="w-4 h-4" />
-                    <span>{album._count?.images || 0} Photos</span>
+                    <span>{album._count?.images || 0} PHOTOS</span>
                   </div>
                 </div>
               </div>

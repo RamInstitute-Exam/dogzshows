@@ -31,7 +31,8 @@ export default function RegisterJudgeForm() {
     photoUrl: '',
     source: '',
     status: 'ACTIVE',
-    isFeatured: false
+    isFeatured: false,
+    display_order: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -85,7 +86,8 @@ export default function RegisterJudgeForm() {
     setLoading(true);
     try {
       const payload = {
-        ...formData
+        ...formData,
+        display_order: formData.display_order === '' ? null : Number(formData.display_order)
       };
       const res = await api.post('/judges', payload);
       if (res.success) {
@@ -170,6 +172,10 @@ export default function RegisterJudgeForm() {
                   <option value="FEMALE">Female</option>
                   <option value="OTHER">Other</option>
                 </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Display Order</label>
+                <input type="number" name="display_order" value={formData.display_order ?? ''} onChange={handleInputChange} placeholder="E.g. 1 (auto-assigned if empty)" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
             </div>
           </div>

@@ -24,24 +24,24 @@ export function ThemeToggle() {
   const isDark = theme === 'dark';
 
   return (
-    <div className="flex items-center gap-3">
-      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${!isDark ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
+    <div className="flex items-center gap-3 shrink-0">
+      <span className={`text-sm font-semibold items-center gap-1.5 transition-colors uppercase ${!isDark ? 'text-foreground font-bold' : 'text-muted-foreground'} hidden md:flex`}>
         <Sun className="w-4 h-4" />
-        <span className="hidden sm:inline">Light</span>
+        <span className="hidden sm:inline">LIGHT</span>
       </span>
       
       <button
         onClick={() => setTheme(isDark ? 'light' : 'dark')}
-        className="relative inline-flex h-6 w-11 items-center rounded-full bg-border transition-colors hover:bg-border/80 focus:outline-none"
+        className="theme-toggle bg-border transition-colors hover:bg-border/80 focus:outline-none"
         aria-label="Toggle theme"
       >
         <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-foreground transition-transform duration-250 ease-in-out ${isDark ? 'translate-x-6' : 'translate-x-1'}`}
+          className={`theme-toggle-thumb bg-foreground ${isDark ? 'active' : ''}`}
         />
       </button>
 
-      <span className={`text-sm font-semibold flex items-center gap-1.5 transition-colors ${isDark ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
-        <span className="hidden sm:inline">Dark</span>
+      <span className={`text-sm font-semibold items-center gap-1.5 transition-colors uppercase ${isDark ? 'text-foreground font-bold' : 'text-muted-foreground'} hidden md:flex`}>
+        <span className="hidden sm:inline">DARK</span>
         <Moon className="w-4 h-4" />
       </span>
     </div>

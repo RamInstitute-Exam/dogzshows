@@ -47,7 +47,7 @@ export default function SlidingPhotoSections() {
         return (
           <section key={section.id} className="premium-section-spacing overflow-hidden relative">
             <div className="premium-container relative z-10">
-              
+
               {/* Header */}
               <div className="mb-10 text-center md:text-left">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
@@ -57,16 +57,16 @@ export default function SlidingPhotoSections() {
 
               {/* Slider Container with padding for outside arrows */}
               <div className="premium-carousel-wrapper group/sliding-section">
-                
+
                 {/* Custom Navigation Arrows */}
-                <button 
+                <button
                   className={`nav-prev-${section.id} premium-slider-nav premium-slider-prev`}
                   aria-label="Previous slide"
                 >
                   <ChevronLeft size={22} />
                 </button>
-                
-                <button 
+
+                <button
                   className={`nav-next-${section.id} premium-slider-nav premium-slider-next`}
                   aria-label="Next slide"
                 >
@@ -98,16 +98,16 @@ export default function SlidingPhotoSections() {
                 >
                   {section.images.map((img: any, idx: number) => (
                     <SwiperSlide key={img.id || idx}>
-                      <div 
+                      <div
                         onClick={() => {
                           setLightboxImages(section.images);
                           setLightboxIndex(idx);
                           setLightboxOpen(true);
                         }}
-                        className="group photo-card cursor-pointer relative"
+                        className="group personal-photo-card photo-card photo-wrapper cursor-pointer relative"
                       >
-                        <Image 
-                          src={getImageUrl(img.imageUrl)} 
+                        <Image
+                          src={getImageUrl(img.imageUrl)}
                           alt={`${section.title} ${idx + 1}`}
                           fill={false}
                           width={800}
@@ -115,13 +115,13 @@ export default function SlidingPhotoSections() {
                           quality={100}
                           unoptimized
                           sizes="100vw"
-                          className="photo-card-img transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                          className="personal-photo-image photo-card-img"
                         />
                       </div>
                     </SwiperSlide>
                   ))}
                 </Swiper>
-                
+
               </div>
             </div>
 
@@ -132,47 +132,72 @@ export default function SlidingPhotoSections() {
                 display: none !important;
               }
 
+              .photo-wrapper {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                background: transparent !important;
+              }
+
+              .photo-wrapper img,
+              .personal-photo-image,
+              .photo-card-img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                object-position: center center !important;
+                display: block !important;
+                background: transparent !important;
+              }
+
+              .personal-photo-card,
               .photo-card {
                 overflow: hidden;
-                border-radius: 20px;
-                background: #fff;
+                border-radius: 24px !important;
+                background: transparent !important;
                 box-shadow: 0 8px 24px rgba(0,0,0,0.08);
                 transition: 0.3s ease;
                 width: 100%;
                 height: 520px;
-                display: block;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
               }
 
+              .personal-photo-card:hover,
               .photo-card:hover {
                 transform: translateY(-6px);
                 box-shadow: 0 20px 40px rgba(0,0,0,0.15);
               }
 
-              .photo-card-img {
-                width: 100% !important;
-                height: 100% !important;
-                object-fit: cover !important;
-                object-position: center !important;
-                border-radius: 20px !important;
-                display: block !important;
-                background: transparent !important;
-              }
-
               @media (max-width: 1440px) {
+                .personal-photo-card,
                 .photo-card {
                   height: 480px !important;
                 }
               }
 
               @media (max-width: 1024px) {
+                .personal-photo-card,
                 .photo-card {
                   height: 420px !important;
                 }
               }
 
               @media (max-width: 768px) {
+                .personal-photo-card,
                 .photo-card {
                   height: 360px !important;
+                  border-radius: 20px !important;
+                }
+
+                .personal-photo-image,
+                .photo-card-img {
+                  width: 100% !important;
+                  height: 100% !important;
+                  max-height: none !important;
+                  object-fit: cover !important;
+                  object-position: center center !important;
                 }
               }
             `}</style>

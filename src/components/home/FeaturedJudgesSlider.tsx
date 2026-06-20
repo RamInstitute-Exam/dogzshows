@@ -21,8 +21,8 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
       <div className="premium-container">
 
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-5xl font-[800] text-foreground tracking-tight mb-6">
-            Elite International Judges
+          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-5xl font-[800] text-foreground tracking-tight mb-6 uppercase">
+            ELITE INTERNATIONAL JUDGES
           </motion.h2>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-xl text-muted-foreground">
             Learn from the masters. Our championships feature the most respected FCI-certified judges from around the globe.
@@ -53,16 +53,16 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
                 </div>
 
                 <div className="flex flex-col flex-1 w-full">
-                  <h3 className="text-xl font-[800] text-foreground mb-1 line-clamp-1 group-hover:text-primary transition-colors">{judge.name}</h3>
+                  <h3 className="text-xl font-[800] text-foreground mb-1 line-clamp-1 group-hover:text-primary transition-colors uppercase">{judge.name?.toUpperCase()}</h3>
 
-                  <p className="text-primary font-[700] text-sm mb-3 flex items-center justify-center gap-1.5">
+                  <p className="text-primary font-[700] text-sm mb-3 flex items-center justify-center gap-1.5 uppercase">
                     <Globe className="w-3.5 h-3.5" />
-                    {judge.country || 'International'}
+                    {(judge.country || 'International')?.toUpperCase()}
                   </p>
 
-                  <div className="flex gap-4 mb-4 py-3 border-y border-border justify-center w-full">
+                  <div className="flex gap-4 mb-4 py-3 border-y border-border justify-center w-full uppercase">
                     <div className="w-full text-center">
-                      <p className="text-foreground font-[700] text-sm line-clamp-1">{judge.groups || judge.specialization || 'All Groups'}</p>
+                      <p className="text-foreground font-[700] text-sm line-clamp-1">{(judge.groups || judge.specialization || 'All Groups')?.toUpperCase()}</p>
                       <p className="small-label text-[10px]">Specialization</p>
                     </div>
                     {(judge.experience || judge.exp) && (
@@ -73,8 +73,8 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
                     )}
                   </div>
 
-                  <div className="mt-auto pt-2 flex items-center justify-center gap-1 text-xs font-[700] text-primary group-hover:gap-2 transition-all duration-200">
-                    View Profile <ArrowRight className="w-3.5 h-3.5" />
+                  <div className="mt-auto pt-2 flex items-center justify-center gap-1 text-xs font-[700] text-primary group-hover:gap-2 transition-all duration-200 uppercase">
+                    VIEW PROFILE <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 </div>
               </Link>
@@ -84,8 +84,8 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
 
         <div className="mt-12 text-center">
           <Link href="/judges">
-            <Button variant="link" className="text-primary font-bold text-lg hover:opacity-75">
-              View All Judges <ArrowRight className="w-5 h-5 ml-2" />
+            <Button variant="link" className="text-primary font-bold text-lg hover:opacity-75 uppercase">
+              VIEW ALL JUDGES <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
         </div>

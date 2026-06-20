@@ -95,6 +95,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
   ];
 
   const getSecretaries = () => {
+    if (club?.clubSecretaries?.length > 0) return club.clubSecretaries;
     if (club?.secretaries?.length > 0) return club.secretaries;
     
     if (club?.events?.length > 0) {

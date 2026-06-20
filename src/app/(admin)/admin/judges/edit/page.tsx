@@ -17,7 +17,6 @@ function EditJudgeFormContent() {
   
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,7 +33,8 @@ function EditJudgeFormContent() {
     photoUrl: '',
     source: '',
     status: 'ACTIVE',
-    isFeatured: false
+    isFeatured: false,
+    display_order: ''
   });
 
   useEffect(() => {
@@ -63,7 +63,8 @@ function EditJudgeFormContent() {
           photoUrl: jd.photoUrl || '',
           source: jd.source || '',
           status: jd.status || 'ACTIVE',
-          isFeatured: jd.isFeatured || false
+          isFeatured: jd.isFeatured || false,
+          display_order: jd.display_order ?? ''
         });
       } catch (err: any) {
         const is404 = err?.response?.status === 404 || err?.status === 404;
@@ -134,7 +135,8 @@ function EditJudgeFormContent() {
     setLoading(true);
     try {
       const payload = {
-        ...formData
+        ...formData,
+        display_order: formData.display_order === '' ? null : Number(formData.display_order)
       };
       const res = await api.put(`/judges/${judgeId}`, payload);
       if (res.success) {
@@ -228,6 +230,10 @@ function EditJudgeFormContent() {
                   <option value="FEMALE">Female</option>
                   <option value="OTHER">Other</option>
                 </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Display Order</label>
+                <input type="number" name="display_order" value={formData.display_order ?? ''} onChange={handleInputChange} placeholder="E.g. 1 (auto-assigned if empty)" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
             </div>
           </div>

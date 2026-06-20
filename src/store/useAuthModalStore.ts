@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-export type AuthView = 
-  | 'LOGIN' 
-  | 'REGISTER' 
-  | 'MOBILE_OTP' 
-  | 'EMAIL_OTP' 
-  | 'FORGOT_PASSWORD' 
+export type AuthView =
+  | 'LOGIN'
+  | 'REGISTER'
+  | 'MOBILE_OTP'
+  | 'EMAIL_OTP'
+  | 'FORGOT_PASSWORD'
   | 'RESET_PASSWORD';
 
 interface AuthModalState {

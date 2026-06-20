@@ -111,8 +111,8 @@ export default function UpcomingEventsCarousel() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-[11px] font-black tracking-widest uppercase text-muted-foreground mb-4 shadow-sm">
               <Calendar className="w-3 h-3 text-foreground" /> Upcoming Shows
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight leading-[1.1]">
-              Discover India's biggest <br className="hidden sm:block" />championship dog shows.
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight leading-[1.1] uppercase">
+              DISCOVER INDIA'S BIGGEST <br className="hidden sm:block" />CHAMPIONSHIP DOG SHOWS.
             </h2>
           </motion.div>
         </div>
@@ -142,10 +142,7 @@ export default function UpcomingEventsCarousel() {
               // @ts-ignore
               swiper.params.navigation.nextEl = nextEl;
             }}
-            autoplay={{
-              delay: 4500,
-              disableOnInteraction: false,
-            }}
+            autoplay={false}
             loop={events.length > 5}
             breakpoints={{
               320: { slidesPerView: 1 },
@@ -213,9 +210,9 @@ export default function UpcomingEventsCarousel() {
                           </div>
 
                           {/* Championship Badge */}
-                          <div className="bg-gradient-to-r from-[#e52d27] to-[#b31217] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(229,45,39,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(229,45,39,0.5)] transition-all duration-300 cursor-default">
+                          <div className="bg-gradient-to-r from-[#e52d27] to-[#b31217] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(229,45,39,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(229,45,39,0.5)] transition-all duration-300 cursor-default uppercase">
                             <Trophy className="w-[14px] h-[14px] text-white" />
-                            Championship
+                            CHAMPIONSHIP
                           </div>
                         </div>
                       </div>
@@ -224,7 +221,7 @@ export default function UpcomingEventsCarousel() {
                       <div className="p-4 flex-1 flex flex-col justify-between h-full">
                         <div className="flex flex-col h-full justify-between">
                           {/* Event Title */}
-                          <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere]">
+                          <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere] uppercase">
                             {event.name}
                           </h3>
 
@@ -236,7 +233,7 @@ export default function UpcomingEventsCarousel() {
                               </div>
                               <div className="overflow-hidden flex-1">
                                 <p className="text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0.5">Judging Panel</p>
-                                <p className="text-[clamp(13px,1vw,17px)] font-[700] leading-[1.3] text-foreground truncate overflow-hidden break-words [overflow-wrap:anywhere]">{event.judgesCount ? `${event.judgesCount} International Judges` : 'TBA'}</p>
+                                <p className="text-[clamp(13px,1vw,17px)] font-[700] leading-[1.3] text-foreground truncate overflow-hidden break-words [overflow-wrap:anywhere] uppercase">{event.judgesCount ? `${event.judgesCount} International Judges` : 'TBA'}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
@@ -245,7 +242,7 @@ export default function UpcomingEventsCarousel() {
                               </div>
                               <div className="overflow-hidden flex-1">
                                 <p className="text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0.5">Organizer</p>
-                                <p className="text-[clamp(13px,1vw,16px)] font-[700] leading-[1.35] text-foreground line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere]">{event.club?.name || 'KCI Affiliate'}</p>
+                                <p className="text-[clamp(13px,1vw,16px)] font-[700] leading-[1.35] text-foreground line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] uppercase">{event.club?.name || 'KCI Affiliate'}</p>
                               </div>
                             </div>
                           </div>
@@ -269,14 +266,14 @@ export default function UpcomingEventsCarousel() {
 
         {/* Centered View All Pill Button */}
         <div className="flex flex-col items-center justify-center mt-12 gap-3 text-center">
-          <span className="text-sm font-medium text-muted-foreground">
+          <span className="text-sm font-medium text-muted-foreground uppercase">
             Showing 10 Upcoming Shows
           </span>
           <Link
             href="/events"
-            className="btn-primary-luxury group gap-2.5 px-8"
+            className="btn-primary-luxury group gap-2.5 px-8 uppercase"
           >
-            View All Shows
+            VIEW ALL SHOWS
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
           </Link>
         </div>

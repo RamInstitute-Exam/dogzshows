@@ -58,7 +58,7 @@ function DropdownPanel({
             className="group flex items-center justify-between px-4 py-[11px] text-[14px] font-medium text-foreground hover:bg-[var(--nav-text-active)]/10 hover:text-[var(--nav-text-active)] hover:pl-6 transition-all duration-150 whitespace-nowrap rounded-xl mx-1"
           >
             <span className="flex items-center gap-2">
-              {item.name}
+              {item.name?.toUpperCase()}
               {item.badge && (
                 <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--nav-text-active)]/15 text-[var(--nav-text-active)]">
                   {item.badge}
@@ -165,7 +165,7 @@ function NavItem({ menu, pathname }: { menu: NavMenuItem; pathname: string }) {
           aria-expanded={open}
           aria-label={menu.name}
         >
-          {menu.name}
+          {menu.name?.toUpperCase()}
           {menu.badge && (
             <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--nav-text-active)]/15 text-[var(--nav-text-active)]">
               {menu.badge}
@@ -190,7 +190,7 @@ function NavItem({ menu, pathname }: { menu: NavMenuItem; pathname: string }) {
           rel={menu.openNewTab ? 'noopener noreferrer' : undefined}
           className={labelClass}
         >
-          {menu.name}
+          {menu.name?.toUpperCase()}
           {menu.badge && (
             <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--nav-text-active)]/15 text-[var(--nav-text-active)]">
               {menu.badge}
@@ -247,19 +247,19 @@ function MobileMenuItem({
 
   const style = isTop
     ? {
-        height: '56px',
-        fontSize: '18px',
-        fontWeight: 600,
-        borderBottom: '1px solid var(--border-color)',
-        color: active ? 'var(--nav-text-active)' : 'var(--foreground)',
-      }
+      height: '56px',
+      fontSize: '18px',
+      fontWeight: 600,
+      borderBottom: '1px solid var(--border-color)',
+      color: active ? 'var(--nav-text-active)' : 'var(--foreground)',
+    }
     : {
-        height: '48px',
-        fontSize: '16px',
-        fontWeight: 500,
-        color: active ? 'var(--nav-text-active)' : 'var(--muted-foreground)',
-        paddingLeft: `${depth * 20}px`,
-      };
+      height: '48px',
+      fontSize: '16px',
+      fontWeight: 500,
+      color: active ? 'var(--nav-text-active)' : 'var(--muted-foreground)',
+      paddingLeft: `${depth * 20}px`,
+    };
 
   const linkClass = "flex items-center px-3 justify-between w-full transition-colors duration-150 hover:text-[var(--nav-text-active)] hover:bg-black/5 dark:hover:bg-white/5 bg-transparent border-none text-left cursor-pointer";
 
@@ -274,7 +274,7 @@ function MobileMenuItem({
         style={style}
       >
         <span className="flex items-center gap-2">
-          {menu.name}
+          {menu.name?.toUpperCase()}
           {menu.badge && (
             <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--nav-text-active)]/15 text-[var(--nav-text-active)]">
               {menu.badge}
@@ -294,7 +294,7 @@ function MobileMenuItem({
         style={style}
       >
         <span className="flex items-center gap-2">
-          {menu.name}
+          {menu.name?.toUpperCase()}
           {menu.badge && (
             <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--nav-text-active)]/15 text-[var(--nav-text-active)]">
               {menu.badge}
@@ -416,20 +416,20 @@ export default function Navbar() {
                   onClick={() => openModal('LOGIN')}
                   className="!hidden lg:!inline-flex navbar-btn-premium navbar-btn-login"
                 >
-                  Login
+                  LOGIN
                 </button>
                 {/*
                 <button
                   onClick={() => openModal('REGISTER')}
                   className="!hidden lg:!inline-flex navbar-btn-premium navbar-btn-signup"
                 >
-                  Sign Up
+                  SIGN UP
                 </button>
                 <Link
                   href="/dogs/register"
                   className="!hidden lg:!inline-flex navbar-btn-premium navbar-btn-register"
                 >
-                  Register Dog
+                  REGISTER DOG
                 </Link>
                 */}
               </>
@@ -437,12 +437,12 @@ export default function Navbar() {
 
             {mounted && !showAuth && (
               <>
-                  <Link
-                    href={user?.roles?.[0] === 'SUPER_ADMIN' || user?.roles?.[0] === 'ADMIN' ? '/admin' : '/dashboard'}
-                    className="navbar-btn-premium navbar-btn-dashboard hidden sm:flex"
-                  >
-                    Dashboard
-                  </Link>
+                <Link
+                  href={user?.roles?.[0] === 'SUPER_ADMIN' || user?.roles?.[0] === 'ADMIN' ? '/admin' : '/dashboard'}
+                  className="navbar-btn-premium navbar-btn-dashboard hidden sm:flex"
+                >
+                  DASHBOARD
+                </Link>
                 <div
                   className="navbar-avatar !hidden lg:!flex"
                   title={user?.firstName}
@@ -540,13 +540,13 @@ export default function Navbar() {
                         onClick={() => setIsMobileOpen(false)}
                         className="navbar-btn-premium navbar-btn-dashboard w-full"
                       >
-                        Dashboard
+                        DASHBOARD
                       </Link>
                       <button
                         onClick={() => { setIsMobileOpen(false); logout(); }}
                         className="w-full h-[50px] rounded-full font-bold text-sm text-red-400 border border-red-400/20 bg-red-400/5 hover:bg-red-400/10 transition-all hover:scale-[1.02]"
                       >
-                        Logout
+                        LOGOUT
                       </button>
                     </>
                   ) : (
@@ -555,7 +555,7 @@ export default function Navbar() {
                         onClick={() => { setIsMobileOpen(false); openModal('LOGIN'); }}
                         className="navbar-btn-premium navbar-btn-login w-full"
                       >
-                        Login
+                        LOGIN
                       </button>
                       {/*
                       <button

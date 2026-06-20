@@ -37,6 +37,7 @@ function EditClubFormContent() {
     instagram: '',
     isActive: true,
     isFeatured: false,
+    displayOrder: 999,
     logoUrl: ''
   });
 
@@ -64,6 +65,7 @@ function EditClubFormContent() {
             instagram: cd.instagram || '',
             isActive: cd.isActive === true,
             isFeatured: cd.isFeatured === true,
+            displayOrder: cd.displayOrder ?? 999,
             logoUrl: cd.logoUrl || ''
           });
         } else {
@@ -198,6 +200,10 @@ function EditClubFormContent() {
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Registration Number</label>
                 <input type="text" name="registrationNumber" value={formData.registrationNumber} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Display Order</label>
+                <input type="number" name="displayOrder" value={formData.displayOrder} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">President Name</label>

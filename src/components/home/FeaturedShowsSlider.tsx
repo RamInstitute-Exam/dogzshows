@@ -41,15 +41,15 @@ export default function FeaturedShowsSlider({ shows }: FeaturedShowsSliderProps)
             <span className="small-label text-[11px] uppercase tracking-wider font-semibold text-primary">
               Premium Showcases
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
-              Featured Dog Shows
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1 uppercase">
+              FEATURED DOG SHOWS
             </h2>
           </div>
           <Link 
             href="/shows" 
-            className="text-primary hover:opacity-75 font-bold flex items-center gap-1.5 transition-colors text-sm sm:text-base group"
+            className="text-primary hover:opacity-75 font-bold flex items-center gap-1.5 transition-colors text-sm sm:text-base group uppercase"
           >
-            View All <span className="transition-transform group-hover:translate-x-1">→</span>
+            VIEW ALL <span className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
 
@@ -80,8 +80,8 @@ export default function FeaturedShowsSlider({ shows }: FeaturedShowsSliderProps)
 
                   {/* Card Content Overlay */}
                   <div className="absolute bottom-6 left-6 right-6 z-20 flex flex-col items-start pointer-events-none">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-2 tracking-tight line-clamp-2">
-                      {show.name}
+                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-2 tracking-tight line-clamp-2 uppercase">
+                      {show.name?.toUpperCase()}
                     </h3>
                     
                     {show.description && (

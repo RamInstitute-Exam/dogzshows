@@ -14,17 +14,17 @@ const SectionHeader = ({
     <div>
       <span className="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 mb-2">
         <Icon className="w-4 h-4" />
-        {eyebrow}
+        {eyebrow?.toUpperCase()}
       </span>
-      <h2 className="text-3xl md:text-4xl font-extrabold font-outfit tracking-tight text-foreground">
-        {title}
+      <h2 className="text-3xl md:text-4xl font-extrabold font-outfit tracking-tight text-foreground uppercase">
+        {title?.toUpperCase()}
       </h2>
     </div>
     <Link
       href={viewAllHref}
-      className="text-primary hover:opacity-75 font-bold transition-colors flex items-center gap-1.5 group text-sm md:text-base shrink-0 ml-4"
+      className="text-primary hover:opacity-75 font-bold transition-colors flex items-center gap-1.5 group text-sm md:text-base shrink-0 ml-4 uppercase"
     >
-      View All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      VIEW ALL <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
     </Link>
   </div>
 );
@@ -111,8 +111,8 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                       {/* Info */}
                       <div className="p-5 flex flex-col justify-between space-y-4">
                         <div>
-                          <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1 text-base leading-snug">
-                            {photo.title}
+                          <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1 text-base leading-snug uppercase">
+                            {photo.title?.toUpperCase()}
                           </h3>
 
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground mt-2">
@@ -211,8 +211,8 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
 
                       {/* Info */}
                       <div className="p-5 flex flex-col gap-3">
-                        <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 text-base leading-snug">
-                          {video.title}
+                        <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 text-base leading-snug uppercase">
+                          {video.title?.toUpperCase()}
                         </h3>
 
                         <div className="flex items-center justify-between border-t border-border pt-3 text-xs font-semibold text-muted-foreground">

@@ -72,22 +72,22 @@ export default function Footer() {
               <a
                 key={social.name}
                 href={social.url}
-                className="text-xs font-bold text-muted-foreground bg-accent/20 dark:bg-[#0A0A0A] border border-border px-5 py-2.5 rounded-full hover:bg-accent hover:text-primary hover:-translate-y-1 transition-all duration-300"
+                className="text-xs font-bold text-muted-foreground bg-accent/20 dark:bg-[#0A0A0A] border border-border px-5 py-2.5 rounded-full hover:bg-accent hover:text-primary hover:-translate-y-1 transition-all duration-300 uppercase"
               >
-                {social.name}
+                {social.name?.toUpperCase()}
               </a>
             ))}
             <Link
               href="/login"
-              className="w-full sm:w-auto mt-4 sm:mt-0 bg-primary hover:opacity-90 text-primary-foreground px-8 h-[42px] rounded-full flex items-center justify-center font-bold text-sm shadow-md transition-all"
+              className="w-full sm:w-auto mt-4 sm:mt-0 bg-primary hover:opacity-90 text-primary-foreground px-8 h-[42px] rounded-full flex items-center justify-center font-bold text-sm shadow-md transition-all uppercase"
             >
-              Login
+              LOGIN
             </Link>
           </div>
         </div>
 
         {/* MAIN GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 items-start w-full">
 
           {/* SECTION 1: QUICK LINKS */}
           <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
@@ -95,22 +95,8 @@ export default function Footer() {
             <ul className="grid grid-cols-2 gap-y-5 gap-x-8 w-full items-start">
               {quickLinks.map((link: any) => (
                 <li key={link.label} className="text-left flex items-start">
-                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* SECTION 2: SERVICES */}
-          <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
-            <h4 className="text-foreground text-[20px] font-bold mb-6 tracking-[1px] text-left w-full">SERVICES</h4>
-            <ul className="grid grid-cols-2 gap-y-5 gap-x-8 w-full items-start">
-              {services.map((link: any) => (
-                <li key={link.label} className="text-left flex items-start">
-                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium">
-                    {link.label}
+                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium uppercase">
+                    {link.label?.toUpperCase()}
                   </Link>
                 </li>
               ))}
@@ -123,8 +109,8 @@ export default function Footer() {
             <ul className="grid grid-cols-2 gap-y-5 gap-x-8 w-full items-start">
               {supportLinks.map((link: any) => (
                 <li key={link.label} className="text-left flex items-start">
-                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium">
-                    {link.label}
+                  <Link href={link.url} className="text-muted-foreground hover:text-primary transition-colors duration-250 text-sm font-medium uppercase">
+                    {link.label?.toUpperCase()}
                   </Link>
                 </li>
               ))}
@@ -145,7 +131,7 @@ export default function Footer() {
               </li>
               <li className="flex flex-row items-start justify-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-muted-foreground text-sm font-medium text-left leading-relaxed">{contact?.address || 'Coimbatore, Tamil Nadu'}</span>
+                <span className="text-muted-foreground text-sm font-medium text-left leading-relaxed uppercase">{(contact?.address || 'Coimbatore, Tamil Nadu')?.toUpperCase()}</span>
               </li>
             </ul>
           </div>
@@ -162,10 +148,10 @@ export default function Footer() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-6 text-sm font-medium">
-            <Link href={footerData?.privacyUrl || "#"} className="text-muted-foreground hover:text-primary transition-colors duration-250">Privacy Policy</Link>
-            <Link href={footerData?.termsUrl || "#"} className="text-muted-foreground hover:text-primary transition-colors duration-250">Terms</Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors duration-250">Support</Link>
-          </div>s
+            <Link href={footerData?.privacyUrl || "#"} className="text-muted-foreground hover:text-primary transition-colors duration-250 uppercase">PRIVACY POLICY</Link>
+            <Link href={footerData?.termsUrl || "#"} className="text-muted-foreground hover:text-primary transition-colors duration-250 uppercase">TERMS</Link>
+            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors duration-250 uppercase">SUPPORT</Link>
+          </div>
 
           <p className="text-muted-foreground text-sm font-medium">
             {footerData?.description || 'Made with ❤️ in India'}
