@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { motion } from 'framer-motion';
-import { MapPin, Image as ImageIcon, Film, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -139,19 +139,7 @@ export default function FeaturedClubsSlider() {
                         </p>
                       </div>
  
-                      <div className="mt-auto flex flex-col w-full">
-                        <div className="flex items-center gap-4 py-4 border-t border-b border-border/50 mb-4">
-                          <div className="flex items-center gap-2 text-[15px] font-[600] text-foreground">
-                            <ImageIcon className="w-[20px] h-[20px] text-muted-foreground" />
-                            {club._count?.clubGalleries || 0} Photos
-                          </div>
-                          <div className="w-1.5 h-1.5 rounded-full bg-border" />
-                          <div className="flex items-center gap-2 text-[15px] font-[600] text-foreground">
-                            <Film className="w-[20px] h-[20px] text-muted-foreground" />
-                            {0} Videos
-                          </div>
-                        </div>
- 
+                      <div className="mt-auto flex flex-col w-full pt-4 border-t border-border/50">
                         <div className="flex justify-between items-center w-full">
                           <span className="text-[15px] font-[700] text-foreground transition-colors">
                             View Club
