@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, ChevronRight, Sparkles, Search, MapPin, Filter, LayoutGrid, List as ListIcon, ChevronLeft, Loader2, UserX, Award, Shield } from 'lucide-react';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
@@ -25,13 +25,19 @@ function JudgesList() {
   
   // Custom debounced search query
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   
   // Submit search on enter or blur
   const handleSearchSubmit = (e: React.FormEvent | React.FocusEvent) => {
     e.preventDefault();
     setDebouncedSearch(searchQuery);
     setPage(1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const { data, isLoading, isError } = useJudges({
@@ -52,7 +58,7 @@ function JudgesList() {
   const handleFilterChange = (setter: any, value: string) => {
     setter(value);
     setPage(1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const { data: bannerData } = usePageBanner('judges');
@@ -113,7 +119,7 @@ function JudgesList() {
       </section>
 
       <PublicContainer className="py-12">
-        <div className="flex flex-col gap-8">
+        <div ref={listRef} className="flex flex-col gap-8 scroll-mt-28">
           
           {showFeaturedOnly && (
             <div className="flex justify-center mb-2">
@@ -205,7 +211,7 @@ function JudgesList() {
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">No judges available.</h3>
                 <p className="text-muted-foreground">We couldn't find any judges matching your current filters.</p>
-                <button onClick={() => { setSearchQuery(''); setSpecializationFilter(''); setDebouncedSearch(''); setPage(1); }} className="mt-6 text-foreground font-medium hover:underline">
+                <button onClick={() => { setSearchQuery(''); setSpecializationFilter(''); setDebouncedSearch(''); handlePageChange(1); }} className="mt-6 text-foreground font-medium hover:underline">
                   Clear all filters
                 </button>
               </div>
@@ -295,7 +301,7 @@ function JudgesList() {
           {!isLoading && !isError && totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 mt-8 pt-8 border-t border-border">
               <button 
-                onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => handlePageChange(Math.max(1, page - 1))}
                 disabled={page === 1}
                 className="w-10 h-10 rounded-xl flex items-center justify-center bg-card border border-border text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
@@ -306,7 +312,7 @@ function JudgesList() {
                 {[...Array(totalPages)].map((_, i) => (
                   <button
                     key={i + 1}
-                    onClick={() => { setPage(i + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    onClick={() => handlePageChange(i + 1)}
                     className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${page === i + 1 ? 'bg-foreground text-white shadow-lg shadow-black/20' : 'bg-transparent text-muted-foreground hover:bg-accent'}`}
                   >
                     {i + 1}
@@ -315,7 +321,7 @@ function JudgesList() {
               </div>
 
               <button 
-                onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages}
                 className="w-10 h-10 rounded-xl flex items-center justify-center bg-card border border-border text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
