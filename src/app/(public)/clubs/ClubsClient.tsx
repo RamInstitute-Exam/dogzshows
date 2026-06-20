@@ -10,6 +10,7 @@ import PublicContainer from '@/components/layout/PublicContainer';
 import api from '@/lib/api';
 import Image from 'next/image';
 import { getImageUrl } from '@/lib/api';
+import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 
 export default function ClubsClient() {
   const searchParams = useSearchParams();
@@ -101,32 +102,17 @@ export default function ClubsClient() {
 
   return (
     <PageContainer>
-      {/* Hero Section */}
-      <section className="relative py-16 md:py-24 overflow-hidden border-b border-border bg-black">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-foreground/20 blur-[120px]"></div>
-        </div>
-        <PublicContainer className="relative z-10 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-white">
-              {typeParam.toLowerCase() === 'all-breeds' ? (
-                <>All Breeds <span className="text-white/70">Clubs</span></>
-              ) : typeParam.toLowerCase() === 'specialty' ? (
-                <>Specialty <span className="text-white/70">Clubs</span></>
-              ) : typeParam.toLowerCase() === 'kennel' ? (
-                <>Kennel <span className="text-white/70">Clubs</span></>
-              ) : typeParam.toLowerCase() === 'state' ? (
-                <>State <span className="text-white/70">Clubs</span></>
-              ) : (
-                <>Club <span className="text-white/70">Directory</span></>
-              )}
-            </h1>
-            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
-              Discover registered kennel clubs across India. Connect with local chapters for events, dog shows, and community support.
-            </p>
-          </motion.div>
-        </PublicContainer>
-      </section>
+      <BreadcrumbBanner
+        slug="clubs"
+        fallbackTitle={
+          typeParam.toLowerCase() === 'all-breeds' ? 'All Breeds Clubs' :
+          typeParam.toLowerCase() === 'specialty' ? 'Specialty Clubs' :
+          typeParam.toLowerCase() === 'kennel' ? 'Kennel Clubs' :
+          typeParam.toLowerCase() === 'state' ? 'State Clubs' : 'Club Directory'
+        }
+        fallbackSubtitle="Discover registered kennel clubs across India. Connect with local chapters for events, dog shows, and community support."
+        fallbackImage="/images/dogshows_banner.png"
+      />
 
       {/* Filters Bar */}
       <section className="py-6 border-b border-border bg-card/50 backdrop-blur-md sticky top-[var(--nav-height, 84px)] z-40 shadow-sm">
@@ -221,15 +207,14 @@ export default function ClubsClient() {
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">Results <span className="text-muted-foreground font-normal text-sm ml-2">({totalCount} clubs found)</span></h2>
           </div>
-
           {loading ? (
-            <div className="grid grid-cols-1 min-[576px]:grid-cols-2 md:grid-cols-3 min-[1200px]:grid-cols-4 min-[1440px]:grid-cols-5 gap-6 w-full">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                 <div key={i} className="animate-pulse bg-card rounded-2xl border border-border h-[340px]"></div>
               ))}
             </div>
           ) : clubs.length > 0 ? (
-            <div className="grid grid-cols-1 min-[576px]:grid-cols-2 md:grid-cols-3 min-[1200px]:grid-cols-4 min-[1440px]:grid-cols-5 gap-6 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
               {clubs.map((club, idx) => (
                 <motion.div
                   key={club.id}
@@ -242,12 +227,7 @@ export default function ClubsClient() {
                     href={`/clubs/${club.slug || club.id}`}
                     className="group relative flex flex-col h-full bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#222222] rounded-2xl p-6 transition-all duration-[350ms] ease-in-out cursor-pointer hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl dark:hover:shadow-[0_10px_30px_rgba(255,255,255,0.06)]"
                   >
-                    {/* Status Badge */}
-                    {club.kciApproved && (
-                      <div className="absolute top-4 right-4 z-10 bg-green-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> KCI Approved
-                      </div>
-                    )}
+
 
                     {/* Logo Area */}
                     <div className="flex justify-center pt-6 pb-4 relative">
@@ -341,12 +321,12 @@ export default function ClubsClient() {
                 <ChevronLeft className="w-5 h-5" />
               </button>
               
-              <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center justify-center gap-1">
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i}
                     onClick={() => handlePageChange(i + 1)}
-                    className={`w-10 h-10 rounded-lg text-sm font-bold transition-colors ${
+                    className={`w-10 h-10 shrink-0 rounded-lg text-sm font-bold transition-colors ${
                       page === i + 1 
                         ? 'bg-foreground text-white border-transparent' 
                         : 'border border-border bg-card text-foreground hover:bg-accent'

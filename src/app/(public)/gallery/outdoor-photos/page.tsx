@@ -15,7 +15,7 @@ export default function OutdoorPhotosPage() {
   useEffect(() => {
     async function fetchAlbums() {
       try {
-        const res = await api.get('/public/media-gallery-mgmt/albums?type=OUTDOOR_PHOTOS');
+        const res = await api.get('/public/gallery/albums?category=outdoor-photos');
         if (res.success && res.data) {
           setAlbums(res.data);
         }
@@ -31,17 +31,29 @@ export default function OutdoorPhotosPage() {
   return (
     <PageContainer>
       {/* Premium Header */}
-      <div className="w-full bg-[#050505] py-16 border-b border-border/40 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-foreground/5 rounded-full blur-[100px] pointer-events-none" />
-        <PublicContainer>
-          <div className="space-y-3 text-center md:text-left relative z-10">
-            <span className="text-foreground font-bold text-xs uppercase tracking-widest block">
+      <div className="w-full bg-background dark:bg-[#050505] py-16 md:py-24 border-b border-border/40 relative overflow-hidden">
+        {/* Background Image & Gradient Overlays */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=2000&auto=format&fit=crop" 
+            alt="Outdoor Dog Show" 
+            className="w-full h-full object-cover"
+          />
+          {/* Light Mode Gradient */}
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.75)_40%,rgba(255,255,255,0.4)_70%,rgba(255,255,255,0.15)_100%)] dark:hidden" />
+          {/* Dark Mode Gradient */}
+          <div className="absolute inset-0 hidden dark:block bg-[linear-gradient(90deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.65)_40%,rgba(0,0,0,0.35)_70%,rgba(0,0,0,0.15)_100%)]" />
+        </div>
+
+        <PublicContainer className="relative z-10">
+          <div className="space-y-4 text-left">
+            <span className="text-[#6B7280] dark:text-[#E5E7EB] font-semibold text-sm uppercase tracking-[3px] opacity-100 block">
               Premium Gallery
             </span>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-foreground tracking-tight">
+            <h1 className="text-[36px] md:text-[48px] lg:text-[60px] xl:text-[72px] font-extrabold text-[#111827] dark:text-[#FFFFFF] tracking-tight leading-tight drop-shadow-sm dark:drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] opacity-100">
               Outdoor Photos
             </h1>
-            <p className="text-muted-foreground text-base max-w-2xl leading-relaxed">
+            <p className="text-[#4B5563] dark:text-[#CBD5E1] text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px] max-w-[700px] leading-[1.8] opacity-100">
               Explore dynamic outdoor photography and action moments from dog shows, training grounds, and fields across the region.
             </p>
           </div>
@@ -62,19 +74,13 @@ export default function OutdoorPhotosPage() {
               </div>
             ))}
           </div>
-        ) : albums.length === 0 ? (
-          <div className="text-center py-24 bg-card rounded-[32px] border border-border/60 border-dashed max-w-md mx-auto p-8 shadow-inner">
-            <Camera className="w-16 h-16 text-foreground mx-auto mb-6 opacity-80" />
-            <h3 className="text-2xl font-bold text-foreground">No Albums Available</h3>
-            <p className="text-muted-foreground text-sm mt-2 leading-relaxed">Please add albums from the Admin Panel.</p>
-          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
             {albums.map((album) => (
               <Link 
                 key={album.id}
-                href={`/gallery/album?slug=${album.slug}`}
-                className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-black/20 w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto"
+                href={`/gallery/album/${album.slug}`}
+                className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
               >
                 {/* Cover Image */}
                 <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
@@ -109,15 +115,21 @@ export default function OutdoorPhotosPage() {
                     </h3>
                     
                     <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium">
-                      {album.location && (
+                      {(album.city || album.state || album.location) && (
                         <div className="flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5 text-foreground shrink-0" />
-                          <span className="truncate">{album.location}</span>
+                          <span className="truncate">
+                            {[album.city, album.state].filter(Boolean).join(', ') || album.location}
+                          </span>
                         </div>
                       )}
                       <div className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5 text-foreground shrink-0" />
-                        <span>{new Date(album.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        <span>
+                          {album.albumDate 
+                            ? new Date(album.albumDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                            : new Date(album.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
                       </div>
                     </div>
                   </div>

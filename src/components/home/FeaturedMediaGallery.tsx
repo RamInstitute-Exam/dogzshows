@@ -69,7 +69,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                 >
                   <Link href={`/gallery/show-photos/details?slug=${photo.slug}`}>
-                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between cursor-pointer w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto">
+                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between cursor-pointer w-full max-w-[380px] min-h-[420px] h-auto mx-auto">
                       {/* Image */}
                       <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
                         <Image
@@ -166,7 +166,7 @@ export default function FeaturedMediaGallery({ photos, videos }: FeaturedMediaGa
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                 >
                   <Link href={`/gallery/show-videos/details?slug=${video.slug}`}>
-                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between cursor-pointer w-full lg:max-w-[380px] lg:max-h-[560px] md:max-w-[320px] md:max-h-[480px] max-md:w-full max-md:min-h-[420px] max-md:max-h-[560px] h-auto">
+                    <div className="group bg-card rounded-[1.75rem] border border-border overflow-hidden hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between cursor-pointer w-full max-w-[380px] h-auto mx-auto">
                       {/* Thumbnail */}
                       <div className="relative aspect-video w-full overflow-hidden bg-black">
                         {video.thumbnailUrl ? (

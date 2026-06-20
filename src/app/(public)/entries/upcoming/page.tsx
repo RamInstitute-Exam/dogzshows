@@ -51,7 +51,7 @@ export default function UpcomingEntriesPage() {
         slug="entries/upcoming"
         fallbackTitle="UPCOMING ENTRIES OPEN"
         fallbackSubtitle="Register your dogs in national and international championships open for entry."
-        fallbackImage="/images/hero_banner.png"
+        fallbackImage="/images/registration_banner.png"
       />
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 mb-12 mt-12">

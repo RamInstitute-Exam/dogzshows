@@ -160,13 +160,13 @@ function CategoryPageContent() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div key={i} className="animate-pulse bg-card rounded-2xl border border-border h-[380px]" />
               ))}
             </div>
           ) : clubs.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {clubs.map((club, idx) => (
                 <motion.div
                   key={club.id}
@@ -185,13 +185,7 @@ function CategoryPageContent() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                    {club.kciApproved && (
-                      <div className="absolute top-3 right-3">
-                        <div className="bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3" /> KCI Approved
-                        </div>
-                      </div>
-                    )}
+
 
                     <div className="absolute -bottom-6 left-6 w-16 h-16 rounded-xl bg-card border-4 border-card shadow-lg overflow-hidden flex items-center justify-center z-10">
                       {club.logoUrl ? (
@@ -273,12 +267,12 @@ function CategoryPageContent() {
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center justify-center gap-1">
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i}
                     onClick={() => handlePageChange(i + 1)}
-                    className={`w-10 h-10 rounded-lg text-sm font-bold transition-colors ${page === i + 1
+                    className={`w-10 h-10 shrink-0 rounded-lg text-sm font-bold transition-colors ${page === i + 1
                         ? 'bg-foreground text-white border-transparent'
                         : 'border border-border bg-card text-foreground hover:bg-accent'
                       }`}

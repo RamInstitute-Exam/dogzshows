@@ -143,9 +143,8 @@ export default function SlidingPhotoSections() {
               .personal-photo-image,
               .photo-card-img {
                 width: 100% !important;
-                height: 100% !important;
-                object-fit: cover !important;
-                object-position: center center !important;
+                height: auto !important;
+                object-fit: contain !important;
                 display: block !important;
                 background: transparent !important;
               }
@@ -158,7 +157,7 @@ export default function SlidingPhotoSections() {
                 box-shadow: 0 8px 24px rgba(0,0,0,0.08);
                 transition: 0.3s ease;
                 width: 100%;
-                height: 520px;
+                height: auto !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
@@ -173,31 +172,30 @@ export default function SlidingPhotoSections() {
               @media (max-width: 1440px) {
                 .personal-photo-card,
                 .photo-card {
-                  height: 480px !important;
+                  height: auto !important;
                 }
               }
 
               @media (max-width: 1024px) {
                 .personal-photo-card,
                 .photo-card {
-                  height: 420px !important;
+                  height: auto !important;
                 }
               }
 
               @media (max-width: 768px) {
                 .personal-photo-card,
                 .photo-card {
-                  height: 360px !important;
+                  height: auto !important;
                   border-radius: 20px !important;
                 }
 
                 .personal-photo-image,
                 .photo-card-img {
                   width: 100% !important;
-                  height: 100% !important;
+                  height: auto !important;
                   max-height: none !important;
-                  object-fit: cover !important;
-                  object-position: center center !important;
+                  object-fit: contain !important;
                 }
               }
             `}</style>

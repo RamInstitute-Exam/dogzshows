@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
 import { getImageUrl } from '@/lib/api';
@@ -17,7 +18,7 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
   const [isLoaded, setIsLoaded] = useState(false);
   const [scale, setScale] = useState(1);
   const [lastTap, setLastTap] = useState(0);
-  
+
   // Touch swipe states
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -28,6 +29,15 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
   const modalRef = useRef<HTMLDivElement>(null);
   const activeThumbnailRef = useRef<HTMLButtonElement>(null);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   // Reset index and scale when lightbox opens
   useEffect(() => {
@@ -126,8 +136,6 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
     }
   }, [currentIndex, isOpen]);
 
-  if (!isOpen || !images || images.length === 0) return null;
-
   const getImgSrc = (img: any) => {
     if (!img) return '';
     if (typeof img === 'string') return getImageUrl(img);
@@ -208,192 +216,181 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
   const nextSrc = getImgSrc(images[nextIndex]);
   const prevSrc = getImgSrc(images[prevIndex]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      <div 
-        ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Image lightbox"
-        className="fixed inset-0 z-[999999] flex flex-col justify-between bg-black/95 backdrop-blur-md outline-none select-none"
-      >
-        {/* Background Preloader for smooth transitions */}
-        {nextSrc && <img src={nextSrc} className="hidden" aria-hidden="true" alt="preload" />}
-        {prevSrc && <img src={prevSrc} className="hidden" aria-hidden="true" alt="preload" />}
-
-        {/* Top Header / Actions Area */}
-        <div className="w-full flex items-center justify-between p-4 z-50">
-          {/* Image Counter */}
-          <div className="text-white/80 font-bold text-sm tracking-wider bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm">
-            {currentIndex + 1} / {images.length}
-          </div>
-
-          {/* Action Buttons (Zoom Indicators + Close) */}
-          <div className="flex items-center gap-3">
-            {scale > 1 ? (
-              <button 
-                onClick={() => setScale(1)}
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
-                title="Reset Zoom"
-                aria-label="Reset zoom"
-              >
-                <ZoomOut className="w-5 h-5" />
-              </button>
-            ) : (
-              <button 
-                onClick={() => setScale(2.5)}
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
-                title="Zoom In"
-                aria-label="Zoom in"
-              >
-                <ZoomIn className="w-5 h-5" />
-              </button>
-            )}
-
-            <button 
-              onClick={onClose}
-              className="w-10 h-10 rounded-full bg-white text-black hover:scale-110 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-lg"
-              title="Close Gallery"
-              aria-label="Close modal"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-
-        {/* Main Content Area: Image + Navigation */}
-        <div 
-          className="flex-1 relative flex items-center justify-center w-full overflow-hidden px-4 md:px-12"
-          onClick={(e) => {
-            // Close popup when clicking outside the main image container
-            if (e.target === e.currentTarget) {
-              onClose();
-            }
+      {isOpen && images && images.length > 0 && (
+        <motion.div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image lightbox"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          style={{
+            height: '100vh',
+            minHeight: '100vh',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
           }}
+          className="fixed inset-0 z-[999999999] flex flex-col justify-between bg-black/95 backdrop-blur-md outline-none select-none"
         >
-          {/* Left Arrow (Desktop Only) */}
-          <button
-            onClick={handlePrev}
-            className="absolute left-6 z-50 hidden md:flex w-14 h-14 items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10"
-            aria-label="Previous image"
-          >
-            <ChevronLeft className="w-8 h-8 mr-0.5" />
-          </button>
+          {/* Background Preloader for smooth transitions */}
+          {nextSrc && <img src={nextSrc} className="hidden" aria-hidden="true" alt="preload" />}
+          {prevSrc && <img src={prevSrc} className="hidden" aria-hidden="true" alt="preload" />}
 
-          {/* Large Image Container */}
-          <div 
-            className="relative flex items-center justify-center max-w-[95vw] max-h-[75vh] md:max-w-[85vw] md:max-h-[80vh] pointer-events-auto"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Shimmer / Spinner Loading State */}
-            {!isLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center z-10 rounded-[20px] overflow-hidden">
-                <div className="absolute inset-0 bg-white/5 animate-pulse" />
-                <div className="w-10 h-10 border-4 border-white/20 border-t-foreground rounded-full animate-spin" />
-              </div>
-            )}
+          {/* Top Header / Actions Area */}
+          <div className="w-full flex items-center justify-between p-4 z-50" onClick={(e) => e.stopPropagation()}>
+            {/* Image Counter */}
+            <div className="text-white/80 font-bold text-sm tracking-wider bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm">
+              {currentIndex + 1} / {images.length}
+            </div>
 
-            <motion.img
-              key={currentIndex}
-              src={getImgSrc(images[currentIndex])}
-              alt={images[currentIndex]?.altText || `Lightbox Image ${currentIndex + 1}`}
-              onLoad={() => setIsLoaded(true)}
-              onClick={handleTap}
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ 
-                scale: scale,
-                opacity: isLoaded ? 1 : 0,
-              }}
-              transition={{ 
-                scale: { type: 'spring', stiffness: 300, damping: 25 },
-                opacity: { duration: 0.2 }
-              }}
-              style={{
-                cursor: scale > 1 ? 'zoom-out' : 'zoom-in',
-                transformOrigin: 'center center',
-              }}
-              className="max-w-full max-h-[70vh] md:max-h-[80vh] object-contain rounded-[20px] shadow-2xl transition-shadow duration-300 pointer-events-auto select-none"
-            />
-          </div>
+            {/* Action Buttons (Zoom Indicators + Close) */}
+            <div className="flex items-center gap-3">
+              {scale > 1 ? (
+                <button
+                  onClick={() => setScale(1)}
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
+                  title="Reset Zoom"
+                  aria-label="Reset zoom"
+                >
+                  <ZoomOut className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => setScale(2.5)}
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
+                  title="Zoom In"
+                  aria-label="Zoom in"
+                >
+                  <ZoomIn className="w-5 h-5" />
+                </button>
+              )}
 
-          {/* Right Arrow (Desktop Only) */}
-          <button
-            onClick={handleNext}
-            className="absolute right-6 z-50 hidden md:flex w-14 h-14 items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10"
-            aria-label="Next image"
-          >
-            <ChevronRight className="w-8 h-8 ml-0.5" />
-          </button>
-        </div>
-
-        {/* Footer Area: Mobile Navigation + Thumbnail Strip */}
-        <div className="w-full bg-gradient-to-t from-black/80 to-transparent pt-6 pb-6 z-50 flex flex-col gap-4">
-          
-          {/* Mobile Overlay Arrows (If viewport is small, show buttons directly above thumbnail strip) */}
-          <div className="flex md:hidden items-center justify-center gap-8 w-full px-4">
-            <button
-              onClick={handlePrev}
-              className="w-12 h-12 rounded-full bg-white/15 active:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/15"
-              aria-label="Previous image"
-            >
-              <ChevronLeft className="w-6 h-6 mr-0.5" />
-            </button>
-            <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Swipe or Nav</span>
-            <button
-              onClick={handleNext}
-              className="w-12 h-12 rounded-full bg-white/15 active:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/15"
-              aria-label="Next image"
-            >
-              <ChevronRight className="w-6 h-6 ml-0.5" />
-            </button>
-          </div>
-
-          {/* Thumbnails list */}
-          <div 
-            ref={thumbnailContainerRef}
-            className="w-full overflow-x-auto hide-scrollbar scroll-smooth flex items-center gap-3 px-4 md:px-12 py-2 mask-linear"
-            style={{ WebkitOverflowScrolling: 'touch' }}
-          >
-            <div className="flex items-center gap-3 mx-auto">
-              {images.map((img, idx) => {
-                const isActive = idx === currentIndex;
-                return (
-                  <button
-                    key={img.id || idx}
-                    ref={isActive ? activeThumbnailRef : null}
-                    onClick={() => setCurrentIndex(idx)}
-                    className={`relative w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden cursor-pointer transition-all shrink-0 focus:outline-none ${
-                      isActive 
-                        ? 'ring-2 ring-border ring-offset-2 ring-offset-black scale-105 opacity-100 z-10' 
-                        : 'opacity-40 hover:opacity-80 scale-95'
-                    }`}
-                    aria-label={`Go to image ${idx + 1}`}
-                  >
-                    <img
-                      src={getImgSrc(img)}
-                      alt={`Thumbnail ${idx + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                );
-              })}
+              <button
+                onClick={onClose}
+                className="w-10 h-10 rounded-full bg-white text-black hover:scale-110 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-lg"
+                title="Close Gallery"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6" />
+              </button>
             </div>
           </div>
-        </div>
 
-        {/* Custom Styling for Linear Fade Mask */}
-        <style jsx>{`
-          .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-          }
-          .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-        `}</style>
-      </div>
-    </AnimatePresence>
+          {/* Main Content Area: Image + Navigation */}
+          <div
+            className="flex-1 relative flex items-center justify-center w-full overflow-hidden px-4 md:px-12"
+            onClick={(e) => {
+              // Close popup when clicking outside the main image container
+              if (e.target === e.currentTarget) {
+                onClose();
+              }
+            }}
+          >
+            {/* Left Arrow (Desktop Only) */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrev();
+              }}
+              className="absolute left-6 z-50 hidden md:flex w-14 h-14 items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="w-8 h-8 mr-0.5" />
+            </button>
+
+            {/* Large Image Container */}
+            <div
+              className="relative flex items-center justify-center max-w-[95vw] max-h-[75vh] md:max-w-[85vw] md:max-h-[80vh] pointer-events-auto"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {/* Shimmer / Spinner Loading State */}
+              {!isLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center z-10 rounded-[20px] overflow-hidden">
+                  <div className="absolute inset-0 bg-white/5 animate-pulse" />
+                  <div className="w-10 h-10 border-4 border-white/20 border-t-foreground rounded-full animate-spin" />
+                </div>
+              )}
+
+              <motion.img
+                key={currentIndex}
+                src={getImgSrc(images[currentIndex])}
+                alt={images[currentIndex]?.altText || `Lightbox Image ${currentIndex + 1}`}
+                onLoad={() => setIsLoaded(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTap(e);
+                }}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{
+                  scale: scale,
+                  opacity: isLoaded ? 1 : 0,
+                }}
+                transition={{
+                  scale: { type: 'spring', stiffness: 300, damping: 25 },
+                  opacity: { duration: 0.2 }
+                }}
+                style={{
+                  cursor: scale > 1 ? 'zoom-out' : 'zoom-in',
+                  transformOrigin: 'center center',
+                  width: 'auto',
+                  height: 'auto',
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
+                }}
+                className="max-w-full max-h-[70vh] md:max-h-[80vh] object-contain rounded-[20px] shadow-2xl transition-shadow duration-300 pointer-events-auto select-none"
+              />
+            </div>
+
+            {/* Right Arrow (Desktop Only) */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+              className="absolute right-6 z-50 hidden md:flex w-14 h-14 items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10"
+              aria-label="Next image"
+            >
+              <ChevronRight className="w-8 h-8 ml-0.5" />
+            </button>
+          </div>
+
+          {/* Footer Area: Mobile Navigation */}
+          <div className="w-full bg-gradient-to-t from-black/80 to-transparent pt-6 pb-8 z-50 flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
+
+            {/* Mobile Overlay Arrows */}
+            <div className="flex md:hidden items-center justify-center gap-8 w-full px-4">
+              <button
+                onClick={handlePrev}
+                className="w-12 h-12 rounded-full bg-white/15 active:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/15"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-6 h-6 mr-0.5" />
+              </button>
+              <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Swipe</span>
+              <button
+                onClick={handleNext}
+                className="w-12 h-12 rounded-full bg-white/15 active:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/15"
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-6 h-6 ml-0.5" />
+              </button>
+            </div>
+          </div>
+
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 }

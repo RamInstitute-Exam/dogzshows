@@ -150,7 +150,7 @@ export default function EventsPage() {
         slug="events"
         fallbackTitle="DOG EVENTS & CHAMPIONSHIPS"
         fallbackSubtitle="Register your dogs in national and international competitions."
-        fallbackImage="/images/hero_banner.png"
+        fallbackImage="/images/events_banner.png"
       />
 
       {/* Filter / Search Bar */}

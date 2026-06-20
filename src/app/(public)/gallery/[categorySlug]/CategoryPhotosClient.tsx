@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, MapPin, Image as ImageIcon, ArrowRight, Camera } from 'lucide-react';
@@ -8,35 +8,64 @@ import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 
-export default function AllPhotosPage() {
+export default function CategoryPhotosClient({ params }: { params: Promise<{ categorySlug: string }> }) {
+  const resolvedParams = use(params);
+  const categorySlug = resolvedParams.categorySlug;
+
   const [albums, setAlbums] = useState<any[]>([]);
+  const [categoryName, setCategoryName] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // Capitalize slug for fallback title
+  const fallbackTitle = categorySlug
+    ? categorySlug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    : '';
+
   useEffect(() => {
-    async function fetchAlbums() {
+    async function fetchData() {
       try {
-        const res = await api.get('/public/gallery/albums');
+        setLoading(true);
+        // 1. Fetch category name
+        const catRes = await api.get('/public/gallery/categories');
+        if (catRes.success && Array.isArray(catRes.data)) {
+          const currentCat = catRes.data.find((c: any) => c.slug === categorySlug);
+          if (currentCat) {
+            setCategoryName(currentCat.name);
+          } else {
+            setCategoryName(fallbackTitle);
+          }
+        } else {
+          setCategoryName(fallbackTitle);
+        }
+
+        // 2. Fetch albums for this category
+        const res = await api.get(`/public/gallery/albums?category=${categorySlug}`);
         if (res.success && res.data) {
           setAlbums(res.data);
         }
       } catch (err) {
-        console.error('Failed to load all-photos albums:', err);
+        console.error('Failed to load category photos:', err);
       } finally {
         setLoading(false);
       }
     }
-    fetchAlbums();
-  }, []);
+    if (categorySlug) {
+      fetchData();
+    }
+  }, [categorySlug, fallbackTitle]);
 
   return (
     <PageContainer>
       {/* Premium Header */}
       <div className="w-full bg-background dark:bg-[#050505] py-16 md:py-24 border-b border-border/40 relative overflow-hidden">
         {/* Background Image & Gradient Overlays */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <img 
-            src="https://images.unsplash.com/photo-1444212477490-ca407925329e?q=80&w=2000&auto=format&fit=crop" 
-            alt="All Photos Dog Show" 
+            src="https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=2000&auto=format&fit=crop" 
+            alt={categoryName} 
             className="w-full h-full object-cover"
           />
           {/* Light Mode Gradient */}
@@ -48,13 +77,13 @@ export default function AllPhotosPage() {
         <PublicContainer className="relative z-10">
           <div className="space-y-4 text-left">
             <span className="text-[#6B7280] dark:text-[#E5E7EB] font-semibold text-sm uppercase tracking-[3px] opacity-100 block">
-              Media Gallery
+              Gallery Category
             </span>
             <h1 className="text-[36px] md:text-[48px] lg:text-[60px] xl:text-[72px] font-extrabold text-[#111827] dark:text-[#FFFFFF] tracking-tight leading-tight drop-shadow-sm dark:drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] opacity-100">
-              All Photos
+              {categoryName || fallbackTitle}
             </h1>
             <p className="text-[#4B5563] dark:text-[#CBD5E1] text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px] max-w-[700px] leading-[1.8] opacity-100">
-              Explore professional dog photography albums from shows, competitions, and specialties across India.
+              Explore dynamic dog photography and professional cover collections under {categoryName || fallbackTitle}.
             </p>
           </div>
         </PublicContainer>
@@ -74,6 +103,12 @@ export default function AllPhotosPage() {
               </div>
             ))}
           </div>
+        ) : albums.length === 0 ? (
+          <div className="text-center py-20 bg-card rounded-[24px] border border-border border-dashed">
+            <ImageIcon className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-foreground">No albums available.</h3>
+            <p className="text-muted-foreground text-sm mt-2">There are currently no published albums in this category.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
             {albums.map((album) => (
@@ -83,20 +118,20 @@ export default function AllPhotosPage() {
                 className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-md hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
               >
                 {/* Cover Image */}
-                <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
+                <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden aspect-[4/3] max-h-[220px]">
                   <Image
                     src={getImageUrl(album.coverImage)}
                     alt={album.title}
                     fill={false}
                     width={800}
-                    height={1200}
+                    height={600}
                     quality={100}
                     unoptimized
                     sizes="100vw"
                     style={{
                       width: "100%",
-                      height: "auto",
-                      objectFit: "contain",
+                      height: "100%",
+                      objectFit: "cover",
                       objectPosition: "center"
                     }}
                     className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
@@ -110,7 +145,7 @@ export default function AllPhotosPage() {
                 {/* Card Info */}
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
+                    <h3 className="text-lg font-bold text-[#111827] dark:text-[#FFFFFF] group-hover:text-foreground transition-colors leading-snug line-clamp-2">
                       {album.title}
                     </h3>
                     

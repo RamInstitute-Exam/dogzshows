@@ -13,7 +13,8 @@ export async function fetchServerData(endpoint: string, revalidate: number = 60)
   }
 
   try {
-    const url = `${getBaseUrl()}${endpoint}`;
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${getBaseUrl()}${endpoint}${separator}_cb=${Date.now()}`;
     const res = await fetch(url, {
       next: { revalidate },
       headers: {
@@ -76,7 +77,8 @@ export async function fetchServerDataSingle(endpoint: string, revalidate: number
   }
 
   try {
-    const url = `${getBaseUrl()}${endpoint}`;
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${getBaseUrl()}${endpoint}${separator}_cb=${Date.now()}`;
     const res = await fetch(url, {
       next: { revalidate },
       headers: {

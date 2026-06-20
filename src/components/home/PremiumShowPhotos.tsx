@@ -50,7 +50,7 @@ export default function PremiumShowPhotos() {
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {albums.map((album) => (
-            <Link key={album.id} href={`/gallery/shows/${album.id}`} className="group relative rounded-3xl overflow-hidden flex flex-col justify-between w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto border border-border/50 bg-black">
+            <Link key={album.id} href={`/gallery/shows/${album.id}`} className="group relative rounded-3xl overflow-hidden flex flex-col justify-between w-full max-w-[380px] min-h-[420px] h-auto mx-auto border border-border/50 bg-black">
               
               {/* Background Image */}
               <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden transition-transform duration-500 group-hover:scale-[1.08]">

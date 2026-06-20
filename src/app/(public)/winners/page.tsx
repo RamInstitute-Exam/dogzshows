@@ -28,7 +28,7 @@ export default function WinnersPage() {
         slug="winners"
         fallbackTitle="Hall of Champions"
         fallbackSubtitle="Celebrating the finest dogs across all our prestigious events and championships."
-        fallbackImage="/images/events_banner.png"
+        fallbackImage="/images/winners_banner.png"
       />
 
       {/* Featured Winners */}

@@ -13,7 +13,8 @@ export const api = {
 
     const promise = (async () => {
       try {
-        const response = await axiosInstance.get<T>(url, { params });
+        const finalParams = { ...params, _cb: Date.now() };
+        const response = await axiosInstance.get<T>(url, { params: finalParams });
         return response.data;
       } finally {
         // Remove from cache after 500ms to allow deduplication of closely timed parallel requests

@@ -166,8 +166,6 @@ export default function PhotoAlbumsManagement() {
         onPageChange={setPage}
         onEdit={openEdit}
         onDelete={handleDelete}
-        createLink="#"
-        createLabel="Add Album"
         keyExtractor={(item) => item.id}
       />
 

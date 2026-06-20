@@ -97,8 +97,15 @@
 /* Base Inputs */
 input,
 textarea,
-select {
+select,
+option {
   @apply bg-input border border-border text-foreground;
+}
+
+select,
+option {
+  color: var(--foreground) !important;
+  background-color: var(--background) !important;
 }
 
 input::placeholder,

@@ -64,7 +64,7 @@ function JudgesList() {
   const { data: bannerData } = usePageBanner('judges');
   const customTitle = bannerData?.data?.title || (showFeaturedOnly ? "Featured Judges" : "Judges");
   const customSubtitle = bannerData?.data?.subtitle || "Meet the world-class professionals bringing decades of expertise to evaluate our champions.";
-  const customImage = bannerData?.data?.bannerImage ? getImageUrl(bannerData.data.bannerImage) : '/images/judges-hero-premium.png';
+  const customImage = bannerData?.data?.bannerImage ? getImageUrl(bannerData.data.bannerImage) : '/images/judges_banner.png';
 
   return (
     <PageContainer>
@@ -249,12 +249,10 @@ function JudgesList() {
                         <div className={`flex flex-col w-full ${viewMode === 'list' ? 'justify-center items-start text-left' : 'items-center text-center'}`}>
                           {/* Name (Fixed height 2 lines) */}
                           <div className={`w-full flex items-center ${viewMode === 'list' ? 'justify-start h-auto mb-1' : 'justify-center h-[56px] mb-2'}`}>
-                            <h3 className="text-xl font-[800] text-foreground line-clamp-2 leading-[28px] group-hover:text-primary transition-colors flex items-center gap-1.5 justify-center">
+                            <h3 className={`text-xl font-[800] text-foreground line-clamp-2 leading-[28px] break-words group-hover:text-primary transition-colors w-full ${viewMode === 'list' ? 'text-left' : 'text-center'}`}>
                               {judge.name}
                               {judge.isFeatured && (
-                                <span title="Verified Judge">
-                                  <Shield className="w-4 h-4 text-blue-500 shrink-0" />
-                                </span>
+                                <Shield className="w-4 h-4 text-blue-500 inline-block ml-1.5 align-middle shrink-0" />
                               )}
                             </h3>
                           </div>
@@ -308,12 +306,12 @@ function JudgesList() {
                 <ChevronLeft className="w-5 h-5" />
               </button>
               
-              <div className="flex items-center gap-1.5 px-2">
+              <div className="flex flex-wrap items-center justify-center gap-1.5 px-2">
                 {[...Array(totalPages)].map((_, i) => (
                   <button
                     key={i + 1}
                     onClick={() => handlePageChange(i + 1)}
-                    className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${page === i + 1 ? 'bg-foreground text-white shadow-lg shadow-black/20' : 'bg-transparent text-muted-foreground hover:bg-accent'}`}
+                    className={`w-10 h-10 shrink-0 rounded-xl text-sm font-bold transition-all ${page === i + 1 ? 'bg-foreground text-white shadow-lg shadow-black/20' : 'bg-transparent text-muted-foreground hover:bg-accent'}`}
                   >
                     {i + 1}
                   </button>

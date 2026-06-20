@@ -78,3 +78,17 @@ export async function getOutdoorAlbumIds(): Promise<{ id: string }[]> {
   } catch { }
   return [{ id: '_' }];
 }
+
+/** Fetch all gallery category slugs for /gallery/[categorySlug] */
+export async function getGalleryCategorySlugs(): Promise<{ categorySlug: string }[]> {
+  const cats = await safeFetch<{ slug: string }>(`${API_BASE}/public/gallery/categories`);
+  if (cats.length === 0) return [{ categorySlug: '_' }];
+  return cats.filter((c) => c.slug).map((c) => ({ categorySlug: c.slug }));
+}
+
+/** Fetch all gallery album slugs for /gallery/album/[slug] */
+export async function getGalleryAlbumSlugs(): Promise<{ slug: string }[]> {
+  const albums = await safeFetch<{ slug: string }>(`${API_BASE}/public/gallery/albums`);
+  if (albums.length === 0) return [{ slug: '_' }];
+  return albums.filter((a) => a.slug).map((a) => ({ slug: a.slug }));
+}

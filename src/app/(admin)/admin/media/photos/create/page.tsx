@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Save, ArrowLeft, Loader2, ImagePlus } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, ImagePlus, X, Globe, Sliders, Eye, Info, FileText, Sparkles, MapPin, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
@@ -84,18 +84,22 @@ export default function AddPhotoForm() {
     }
   };
 
+  const inputClassName = "w-full px-4 py-3 bg-muted/10 dark:bg-muted/5 border border-border/80 rounded-xl text-foreground placeholder:text-muted-foreground outline-none transition-all duration-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/10 focus:bg-background/90 disabled:opacity-50 disabled:cursor-not-allowed";
+  const labelClassName = "block text-sm font-semibold text-muted-foreground mb-1.5 flex items-center gap-1.5";
+  const cardClassName = "bg-card p-6 rounded-2xl border border-border shadow-lg space-y-6";
+
   return (
     <div className="w-full max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-6 space-y-6">
-      <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-24 z-40">
+      <div className="flex justify-between items-center bg-card/80 backdrop-blur-md p-6 rounded-2xl border border-border shadow-xl sticky top-20 z-40">
         <div className="flex items-center gap-4">
           <Link href="/admin/media/photos">
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl transition-all">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Upload New Photo</h1>
-            <p className="text-muted-foreground text-sm mt-1">Direct upload to AWS S3 with metadata indexing.</p>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">Upload New Photo</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm mt-1">Direct upload to AWS S3 with metadata indexing.</p>
           </div>
         </div>
         <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={<Save className="w-4 h-4" />}>
@@ -103,85 +107,194 @@ export default function AddPhotoForm() {
         </AdminButton>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-card p-6 rounded-2xl border border-border shadow-xl space-y-4">
-        
-        <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl  bg-muted/50 transition-colors hover:bg-muted relative">
-          <input 
-            type="file" 
-            accept="image/*" 
-            onChange={handleFileChange} 
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-          />
-          {preview ? (
-            <div className="w-full max-w-md aspect-video relative rounded-lg overflow-hidden border border-border shadow-md">
-              <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left main content (Upload + Meta) */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Card 1: Upload Zone */}
+          <div className={cardClassName}>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <ImagePlus className="w-5 h-5 text-red-500" />
+                Image File
+              </h2>
+              <span className="text-xs text-muted-foreground font-medium">JPG, PNG, WEBP</span>
             </div>
-          ) : (
-            <div className="text-center">
-              <ImagePlus className="w-12 h-12 text-muted-foreground  mb-4" />
-              <p className="text-foreground font-medium text-lg">Click or Drag & Drop to upload</p>
-              <p className="text-muted-foreground text-sm mt-2">Supports JPG, PNG, WEBP</p>
+            
+            <div className="group relative flex flex-col items-center justify-center border-2 border-dashed border-border/80 hover:border-red-500/50 rounded-2xl p-6 bg-muted/20 dark:bg-muted/5 transition-all duration-300 min-h-[260px]">
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileChange} 
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+              />
+              {preview ? (
+                <div className="relative w-full max-w-lg aspect-video rounded-xl overflow-hidden border border-border shadow-lg group-hover:shadow-red-500/5 transition-all duration-300 bg-black/5 flex items-center justify-center">
+                  <img src={preview} alt="Preview" className="w-full h-full object-contain" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20">
+                    <span className="bg-white/95 text-black dark:bg-black/95 dark:text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md flex items-center gap-2 cursor-pointer">
+                      <ImagePlus className="w-4 h-4 text-red-500" />
+                      Change Image
+                    </span>
+                    <button 
+                      type="button" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setFile(null);
+                        setPreview(null);
+                      }}
+                      className="bg-red-500 text-white p-2.5 rounded-lg hover:bg-red-600 transition-colors shadow-md z-35 cursor-pointer"
+                      title="Remove image"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center pointer-events-none transition-transform duration-300 group-hover:scale-102">
+                  <div className="inline-flex p-4 bg-muted/80 dark:bg-muted/20 rounded-2xl mb-4 group-hover:bg-red-500/10 group-hover:text-red-500 transition-all duration-300">
+                    <ImagePlus className="w-10 h-10 text-muted-foreground group-hover:text-red-500 transition-colors" />
+                  </div>
+                  <p className="text-foreground font-semibold text-lg group-hover:text-red-500 transition-colors">Click or Drag & Drop to upload</p>
+                  <p className="text-muted-foreground text-sm mt-1">Supports JPG, PNG, WEBP (Max 10MB)</p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Card 2: Basic Metadata */}
+          <div className={cardClassName}>
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <FileText className="w-5 h-5 text-red-500" />
+              Basic Information
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className={labelClassName}>
+                  Title <span className="text-red-500">*</span>
+                </label>
+                <input required type="text" name="title" value={formData.title} onChange={handleInputChange} className={inputClassName} placeholder="e.g. Covai Manchester Kennel Club Winner" />
+              </div>
+              <div>
+                <label className={labelClassName}>
+                  Slug (Optional)
+                </label>
+                <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className={inputClassName} placeholder="auto-generated-if-blank" />
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelClassName}>
+                  Description
+                </label>
+                <textarea name="description" value={formData.description} onChange={handleInputChange} rows={4} className={inputClassName} placeholder="Write a description detailing the dog, owner, show details, etc..." />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: SEO Settings */}
+          <div className={cardClassName}>
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Globe className="w-5 h-5 text-red-500" />
+              Search Engine Optimization (SEO)
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className={labelClassName}>
+                  Alt Text
+                </label>
+                <input type="text" name="altText" value={formData.altText} onChange={handleInputChange} className={inputClassName} placeholder="Image accessibility description" />
+              </div>
+              <div>
+                <label className={labelClassName}>
+                  SEO Title
+                </label>
+                <input type="text" name="seoTitle" value={formData.seoTitle} onChange={handleInputChange} className={inputClassName} placeholder="Meta title for search results" />
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelClassName}>
+                  SEO Description
+                </label>
+                <textarea name="seoDescription" value={formData.seoDescription} onChange={handleInputChange} rows={3} className={inputClassName} placeholder="Meta description for search engines" />
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Title *</label>
-            <input required type="text" name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
+        {/* Right side options */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Details / Tags */}
+          <div className={cardClassName}>
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Sliders className="w-5 h-5 text-red-500" />
+              Details & Classifications
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className={labelClassName}>
+                  <Info className="w-4 h-4 text-muted-foreground" /> Photographer Name
+                </label>
+                <input type="text" name="photographer" value={formData.photographer} onChange={handleInputChange} className={inputClassName} placeholder="e.g. John Doe" />
+              </div>
+              <div>
+                <label className={labelClassName}>
+                  <Sparkles className="w-4 h-4 text-muted-foreground" /> Breed
+                </label>
+                <input type="text" name="breed" value={formData.breed} onChange={handleInputChange} className={inputClassName} placeholder="e.g. Golden Retriever" />
+              </div>
+              <div>
+                <label className={labelClassName}>
+                  <MapPin className="w-4 h-4 text-muted-foreground" /> Location
+                </label>
+                <input type="text" name="location" value={formData.location} onChange={handleInputChange} className={inputClassName} placeholder="e.g. Coimbatore, Tamil Nadu" />
+              </div>
+              <div>
+                <label className={labelClassName}>
+                  <Tag className="w-4 h-4 text-muted-foreground" /> Tags (Comma separated)
+                </label>
+                <input type="text" name="tags" value={formData.tags} onChange={handleInputChange} className={inputClassName} placeholder="winner, puppy, champion" />
+              </div>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Slug (Optional)</label>
-            <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-          <div className="md:col-span-2 2xl:col-span-3">
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Photographer Name</label>
-            <input type="text" name="photographer" value={formData.photographer} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Breed</label>
-            <input type="text" name="breed" value={formData.breed} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Location</label>
-            <input type="text" name="location" value={formData.location} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Tags (JSON or comma separated)</label>
-            <input type="text" name="tags" value={formData.tags} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-        </div>
 
-        <div className="border-t border-border pt-6 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Title</label>
-            <input type="text" name="seoTitle" value={formData.seoTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Alt Text</label>
-            <input type="text" name="altText" value={formData.altText} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-          <div className="md:col-span-2 2xl:col-span-3">
-            <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Description</label>
-            <textarea name="seoDescription" value={formData.seoDescription} onChange={handleInputChange} rows={2} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border" />
-          </div>
-        </div>
+          {/* Visibility / Status */}
+          <div className={cardClassName}>
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Eye className="w-5 h-5 text-red-500" />
+              Publishing Options
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className={labelClassName}>Status</label>
+                <select name="status" value={formData.status} onChange={handleInputChange} className={inputClassName}>
+                  <option value="ACTIVE">Active (Published)</option>
+                  <option value="DRAFT">Draft</option>
+                </select>
+              </div>
 
-        <div className="border-t border-border pt-6 flex gap-6">
-          <label className="flex items-center gap-3 cursor-pointer p-4 border border-border rounded-xl flex-1 bg-muted/20">
-            <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange} className="w-5 h-5 rounded" />
-            <span className="text-foreground font-medium">Featured Photo</span>
-          </label>
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Status</label>
-            <select name="status" value={formData.status} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground outline-none focus:border-border">
-              <option value="ACTIVE">Active (Published)</option>
-              <option value="DRAFT">Draft</option>
-            </select>
+              <div className="pt-2">
+                <label className="flex items-start gap-3 cursor-pointer p-4 border border-border rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
+                  <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange} className="mt-1 w-5 h-5 rounded border-border text-red-500 focus:ring-red-500/20 accent-red-500" />
+                  <div>
+                    <span className="text-foreground font-semibold block text-sm">Featured Photo</span>
+                    <span className="text-muted-foreground text-xs block mt-0.5">Feature this photo on homepage lists or special grids.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          {/* Helpful Tips Card */}
+          <div className="bg-muted/30 p-6 rounded-2xl border border-border/80 space-y-3">
+            <h3 className="text-sm font-extrabold text-foreground uppercase tracking-wider">Upload Checklist</h3>
+            <ul className="text-xs text-muted-foreground space-y-2 list-disc list-inside">
+              <li>High-resolution image file (up to 10MB).</li>
+              <li>Provide descriptive titles for better gallery display.</li>
+              <li>Ensure Alt Text matches image contents for web accessibility.</li>
+              <li>Featured photos display in premium slideshow panels.</li>
+            </ul>
           </div>
         </div>
       </form>

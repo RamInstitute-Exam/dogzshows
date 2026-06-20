@@ -19,7 +19,7 @@ export default function AboutPage() {
         slug="about"
         fallbackTitle={aboutData?.title || "About JuzDog"}
         fallbackSubtitle={aboutData?.content || "JuzDog is the premier enterprise platform for dog event management, bringing transparency, efficiency, and prestige to championships worldwide."}
-        fallbackImage={aboutData?.image || "/images/hero_banner.png"}
+        fallbackImage={aboutData?.image || "/images/about_banner.png"}
       />
 
       {/* Values Grid */}

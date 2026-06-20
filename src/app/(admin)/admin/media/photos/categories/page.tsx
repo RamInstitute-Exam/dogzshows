@@ -127,17 +127,10 @@ export default function PhotoCategoriesManagement() {
         onPageChange={setPage}
         onEdit={openEdit}
         onDelete={handleDelete}
-        createLink="#"
+        onCreate={openCreate}
         createLabel="Add Category"
         keyExtractor={(item) => item.id}
       />
-
-      {/* Button overlay hack since AdminDataTable createLink opens page */}
-      {!isLoading && (
-        <Button onClick={openCreate} className="absolute top-[48px] right-10 md:right-14 bg-blue-600 hover:bg-blue-700 text-white font-bold z-10 flex h-10 px-4 py-2 rounded-lg">
-          <Plus className="w-4 h-4 mr-2" /> Add Category
-        </Button>
-      )}
 
       {/* Modal */}
       <AnimatePresence>

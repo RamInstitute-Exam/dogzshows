@@ -327,10 +327,64 @@ export function useNavMenus(role?: string) {
     retry: 2,
   });
 
-  const menus = query.data;
+  const categoriesQuery = useQuery({
+    queryKey: ['public-gallery-categories'],
+    queryFn: async () => {
+      try {
+        const res = await api.get<{ success: boolean; data: any[] }>('/public/gallery/categories');
+        if (res?.success && Array.isArray(res.data)) return res.data;
+        return [];
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+        return [];
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Construct dynamic menus
+  const dynamicMenus = FALLBACK_MENUS.map(menu => {
+    if (menu.id === 'fallback-media') {
+      return {
+        ...menu,
+        children: [
+          {
+            id: 'fallback-all-photos',
+            name: 'All Photos',
+            url: '/gallery/all-photos',
+            position: 'NAVBAR',
+            displayOrder: 1,
+            visibility: true,
+            openNewTab: false,
+            parentId: 'fallback-media',
+            onlyLoggedUser: false,
+            onlyGuest: false,
+            onlyAdmin: false,
+            children: [],
+          },
+          {
+            id: 'fallback-outdoor-photos',
+            name: 'Outdoor Photos',
+            url: '/gallery/outdoor-photos',
+            position: 'NAVBAR',
+            displayOrder: 2,
+            visibility: true,
+            openNewTab: false,
+            parentId: 'fallback-media',
+            onlyLoggedUser: false,
+            onlyGuest: false,
+            onlyAdmin: false,
+            children: [],
+          }
+        ]
+      };
+    }
+    return menu;
+  });
+
   return {
     ...query,
-    data: FALLBACK_MENUS, // FORCE FALLBACK MENUS TO BYPASS API
+    data: dynamicMenus,
     isFallback: true,
   };
 }

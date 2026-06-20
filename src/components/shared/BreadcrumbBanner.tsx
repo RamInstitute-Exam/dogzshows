@@ -87,21 +87,21 @@ export default function BreadcrumbBanner({
         >
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 mb-4 sm:mb-6 font-mulish text-[13px] xl:text-[15px]">
-            <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/" className="text-zinc-300 hover:text-white transition-colors">
               Home
             </Link>
-            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[rgba(255,255,255,0.25)]" />
+            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30" />
             <span className="text-primary font-medium">{data.breadcrumbTitle}</span>
           </nav>
 
           {/* Title */}
-          <h1 className="text-[30px] md:text-[40px] lg:text-[52px] xl:text-[60px] font-[800] text-foreground leading-[1.1] mb-2 sm:mb-4 tracking-tight">
+          <h1 className="text-[30px] md:text-[40px] lg:text-[52px] xl:text-[60px] font-[800] text-white leading-[1.1] mb-2 sm:mb-4 tracking-tight">
             {data.title}
           </h1>
 
           {/* Description */}
           {data.subtitle && (
-            <p className="text-[16px] xl:text-[22px] text-muted-foreground leading-[1.8] max-w-[700px]">
+            <p className="text-[16px] xl:text-[22px] text-zinc-200 leading-[1.8] max-w-[700px]">
               {data.subtitle}
             </p>
           )}

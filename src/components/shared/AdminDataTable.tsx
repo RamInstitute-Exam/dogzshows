@@ -64,6 +64,22 @@ export function AdminDataTable<T>({
   limit = 10,
   onLimitChange
 }: AdminDataTableProps<T>) {
+  const [localSearch, setLocalSearch] = React.useState(search);
+
+  // Sync local search when search prop changes (e.g. on reset or clear)
+  React.useEffect(() => {
+    setLocalSearch(search);
+  }, [search]);
+
+  // Debounce search update
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localSearch !== search) {
+        onSearchChange(localSearch);
+      }
+    }, 600); // 600ms debounce
+    return () => clearTimeout(handler);
+  }, [localSearch, search, onSearchChange]);
   
   const getPageNumbers = () => {
     const pages = [];
@@ -105,8 +121,13 @@ export function AdminDataTable<T>({
             <input 
               type="text" 
               placeholder="Search..." 
-              value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onSearchChange(localSearch);
+                }
+              }}
               className="w-full pl-9 pr-4 h-10 bg-background border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
             />
           </div>
@@ -269,10 +290,10 @@ export function AdminDataTable<T>({
                 &lt;
               </Button>
               
-              <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center justify-center gap-1">
                 {getPageNumbers()[0] > 1 && (
                   <>
-                    <Button variant="ghost" size="sm" onClick={() => onPageChange(1)} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">1</Button>
+                    <Button variant="ghost" size="sm" onClick={() => onPageChange(1)} className="h-8 w-8 shrink-0 p-0 text-muted-foreground hover:text-foreground">1</Button>
                     {getPageNumbers()[0] > 2 && <span className="text-muted-foreground px-1">...</span>}
                   </>
                 )}
@@ -283,7 +304,7 @@ export function AdminDataTable<T>({
                     variant={p === page ? "default" : "ghost"}
                     size="sm"
                     onClick={() => onPageChange(p)}
-                    className={`h-8 w-8 p-0 ${p === page ? 'bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                    className={`h-8 w-8 shrink-0 p-0 ${p === page ? 'bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     {p}
                   </Button>
@@ -292,7 +313,7 @@ export function AdminDataTable<T>({
                 {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
                   <>
                     {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && <span className="text-muted-foreground px-1">...</span>}
-                    <Button variant="ghost" size="sm" onClick={() => onPageChange(totalPages)} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">{totalPages}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => onPageChange(totalPages)} className="h-8 w-8 shrink-0 p-0 text-muted-foreground hover:text-foreground">{totalPages}</Button>
                   </>
                 )}
               </div>

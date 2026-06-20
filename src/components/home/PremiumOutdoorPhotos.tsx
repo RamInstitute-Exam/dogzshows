@@ -91,7 +91,7 @@ export default function PremiumOutdoorPhotos() {
             <Link 
               key={album.id}
               href={`/gallery/album?slug=${album.slug}`}
-              className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-black/20 w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto"
+              className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
             >
               {/* Cover Image */}
               <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">

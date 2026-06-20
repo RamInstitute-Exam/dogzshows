@@ -51,7 +51,7 @@ export default function ContactUs() {
         slug="contact"
         fallbackTitle="Get In Touch"
         fallbackSubtitle="Booking for an upcoming dog show or need a private studio session for your champion? We'd love to hear from you."
-        fallbackImage="/images/events_banner.png"
+        fallbackImage="/images/contact_banner.png"
       />
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-12 lg:py-16">
 

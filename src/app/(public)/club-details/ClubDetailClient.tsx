@@ -173,11 +173,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
               className="flex-grow"
             >
               <div className="flex flex-wrap items-center gap-3 mb-3">
-                {club.kciApproved && (
-                  <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-bold uppercase tracking-wider border border-green-500/30 flex items-center gap-1.5 backdrop-blur-md">
-                    <Award className="w-3.5 h-3.5" /> KCI Approved
-                  </span>
-                )}
+
                 {club.clubType && (
                   <span className="px-3 py-1 bg-foreground/20 text-foreground rounded-full text-xs font-bold uppercase tracking-wider border border-border/30 backdrop-blur-md">
                     {club.clubType}

@@ -76,7 +76,7 @@ export default function DogEntriesCatalogPage() {
         slug="entries/dogs"
         fallbackTitle="APPROVED DOG ENTRIES"
         fallbackSubtitle="Browse verified canine registrations and classes active in current championships."
-        fallbackImage="/images/hero_banner.png"
+        fallbackImage="/images/competitions_banner.png"
       />
 
       {/* Filters & Search */}

@@ -224,12 +224,8 @@ export default function MediaGalleryClient({
           <div className="flex justify-center items-center py-24">
             <RefreshCw className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : (activeTab === 'photos' ? images : videos).length === 0 ? (
-          <div className="text-center py-20 bg-card rounded-[2rem] border border-border text-muted-foreground font-semibold">
-            No media items match your search or filters.
-          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 xl:gap-8">
             <AnimatePresence mode="popLayout">
               {activeTab === 'photos' ? (
                 // Photos Grid
@@ -244,7 +240,7 @@ export default function MediaGalleryClient({
                   >
                     <Link
                       href={`/gallery/${photo.category?.slug === 'show-photos' ? 'show-photos' : 'photos'}/details?slug=${photo.slug}`}
-                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto"
+                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
                     >
                       <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
                         <Image
@@ -312,7 +308,7 @@ export default function MediaGalleryClient({
                   >
                     <Link
                       href={`/gallery/${video.category?.slug === 'show-videos' ? 'show-videos' : 'videos'}/details?slug=${video.slug}`}
-                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto"
+                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
                     >
                       <div className="relative aspect-video w-full overflow-hidden bg-accent">
                         <img

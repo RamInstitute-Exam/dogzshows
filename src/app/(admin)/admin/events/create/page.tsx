@@ -233,10 +233,38 @@ export default function CreateEventForm() {
     setSecretaries(prev => prev.filter((_, idx) => idx !== index));
   };
 
-  const handleSecretaryChange = (index: number, field: string, value: any) => {
+  const handleSecretaryChange = async (index: number, field: string, value: any) => {
     setSecretaries(prev =>
       prev.map((s, idx) => (idx === index ? { ...s, [field]: value } : s))
     );
+
+    if (field === 'pincode') {
+      const zip = value.replace(/\s+/g, '');
+      if (zip.length === 6) {
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${zip}`);
+          const data = await res.json();
+          if (data && data[0] && data[0].Status === 'Success') {
+            const postOffice = data[0].PostOffice[0];
+            setSecretaries(prev =>
+              prev.map((s, idx) =>
+                idx === index
+                  ? {
+                      ...s,
+                      city: postOffice.District,
+                      state: postOffice.State,
+                      country: postOffice.Country
+                    }
+                  : s
+              )
+            );
+            toast.success('Location auto-filled based on ZIP Code');
+          }
+        } catch (err) {
+          console.error('ZIP lookup failed', err);
+        }
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

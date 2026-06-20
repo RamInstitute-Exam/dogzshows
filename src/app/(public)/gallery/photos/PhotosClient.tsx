@@ -89,7 +89,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                     setLightboxIndex(index);
                     setLightboxOpen(true);
                   }}
-                  className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-border/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full lg:w-[380px] lg:max-h-[560px] md:w-[320px] md:max-h-[480px] w-full min-h-[420px] max-h-[560px] h-auto mx-auto cursor-pointer"
+                  className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-border/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto cursor-pointer"
                 >
                   <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
                     <Image

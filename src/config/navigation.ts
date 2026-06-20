@@ -48,6 +48,7 @@ export const ADMIN_ROUTES = [
     { name: 'Entry Requests', href: '/admin/entries/requests' },
   ]},
   { name: 'Media Management', icon: Image, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'Media Gallery Mgmt', href: '/admin/media-gallery-mgmt' },
     { name: 'All Photos', href: '/admin/media/photos' },
     { name: 'Upload Photo', href: '/admin/media/photos/create' },
     { name: 'Photo Categories', href: '/admin/media/photos/categories' },
