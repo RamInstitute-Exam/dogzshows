@@ -101,18 +101,35 @@ export default function AllPhotosPage() {
                     }}
                     className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                   />
-                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5" />
-                    {album._count?.images || album.images?.length || 0} Photos
+                  <div className="absolute top-4 right-4 flex flex-col items-end gap-1 select-none pointer-events-none">
+                    <div className="bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      <ImageIcon className="w-3 h-3" />
+                      {album._count?.images || album.images?.length || 0} Photos
+                    </div>
+                    <div className="bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      Downloads: {(album.images?.reduce((sum: number, img: any) => sum + (img.downloadCount || 0), 0) || 0).toLocaleString()}
+                    </div>
                   </div>
                 </div>
 
                 {/* Card Info */}
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
-                      {album.title}
-                    </h3>
+                    <h3 className="text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
+                    {album.title}
+                  </h3>
+
+                  {album.subtitle && (
+                    <div className="text-[14px] font-medium text-primary leading-snug">
+                      {album.subtitle}
+                    </div>
+                  )}
+
+                  {album.shortDescription && (
+                    <div className="text-[13px] font-normal text-muted-foreground leading-snug line-clamp-2 mt-2">
+                      {album.shortDescription}
+                    </div>
+                  )}
                     
                     <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium">
                       {(album.city || album.state || album.location) && (

@@ -123,14 +123,14 @@ export default function FeaturedClubsSlider() {
                     {/* Content */}
                     <div className="flex flex-col justify-between flex-1 h-full">
                       <div className="flex flex-col">
-                        <h3 className="text-[clamp(22px,1.4vw,30px)] font-[800] leading-[1.25] text-foreground mb-3 line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] group-hover:text-foreground transition-colors uppercase">
-                          {club.name?.toUpperCase()}
+                        <h3 className="text-[clamp(22px,1.4vw,30px)] font-[800] leading-[1.25] text-foreground mb-3 line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] group-hover:text-foreground transition-colors normal-case">
+                          {club.name}
                         </h3>
 
-                        <div className="flex items-center gap-[8px] text-[16px] font-[600] text-muted-foreground mb-4 uppercase">
+                        <div className="flex items-center gap-[8px] text-[16px] font-[600] text-muted-foreground mb-4 normal-case">
                           <MapPin className="w-5 h-5 shrink-0 text-muted-foreground" />
                           <span className="truncate">
-                            {[club.city, club.state].filter(Boolean).join(', ')?.toUpperCase() || 'INDIA'}
+                            {[club.city, club.state].filter(Boolean).join(', ') || 'India'}
                           </span>
                         </div>
 

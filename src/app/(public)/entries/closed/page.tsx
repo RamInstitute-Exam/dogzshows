@@ -8,6 +8,7 @@ import PageContainer from '@/components/layout/PageContainer';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import { toTitleCase } from '@/lib/utils';
 
 export default function ClosedEntriesPage() {
   const [events, setEvents] = useState<any[]>([]);
@@ -107,18 +108,18 @@ export default function ClosedEntriesPage() {
 
                   <div className="space-y-4 mb-6 flex-grow pr-12">
                     <div>
-                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-foreground transition-colors line-clamp-2">{event.name}</h3>
-                      <p className="text-sm font-semibold text-muted-foreground">{event.club?.name || 'TBA'}</p>
+                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-foreground transition-colors line-clamp-2">{toTitleCase(event.name)}</h3>
+                      <p className="text-sm font-semibold text-muted-foreground">{toTitleCase(event.club?.name) || 'TBA'}</p>
                     </div>
 
                     <div className="grid grid-cols-1 gap-y-2 text-sm text-muted-foreground font-semibold">
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-foreground shrink-0" /> 
-                        <span className="truncate">{event.city ? `${event.city}, ${event.state || ''}` : event.venue || 'TBA'}</span>
+                        <span className="truncate">{event.city ? `${toTitleCase(event.city)}, ${toTitleCase(event.state) || ''}` : toTitleCase(event.venue) || 'TBA'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Trophy className="w-4 h-4 text-foreground shrink-0" /> 
-                        <span className="truncate">{event.type || 'Championship Show'}</span>
+                        <span className="truncate">{toTitleCase(event.type) || 'Championship Show'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Star className="w-4 h-4 text-foreground shrink-0" /> 

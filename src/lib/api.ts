@@ -57,6 +57,11 @@ export const getImageUrl = (path: string | undefined | null) => {
   // Clean up any leading slashes or 'uploads/' prefix if they were saved incorrectly
   const cleanPath = path.replace(/^\/+/, '').replace(/^uploads\//, '');
   
+  const cdnDomain = process.env.NEXT_PUBLIC_CDN_DOMAIN;
+  if (cdnDomain) {
+    return `https://${cdnDomain}/${cleanPath}`;
+  }
+  
   return `https://${bucket}.s3.${region}.amazonaws.com/${cleanPath}`;
 };
 

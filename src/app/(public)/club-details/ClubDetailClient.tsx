@@ -191,7 +191,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                 )}
               </div>
 
-              <h1 className="text-3xl md:text-5xl font-extrabold text-white font-outfit mb-4">{club.name}</h1>
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white font-outfit mb-4 normal-case">{club.name}</h1>
 
               <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-gray-400">
                 {(club.city || club.state) && (
@@ -239,7 +239,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
             >
               {activeTab === 'about' && (
                 <div className="max-w-3xl">
-                  <h2 className="text-2xl font-bold text-foreground mb-6">About {club.name}</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-6 normal-case">About {club.name}</h2>
                   <div className="prose prose-invert max-w-none text-muted-foreground leading-relaxed whitespace-pre-wrap">
                     {club.description || 'No description provided.'}
                   </div>
@@ -270,7 +270,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                 <div className="space-y-10">
                   {/* Platform Registered Shows */}
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground mb-6">Upcoming Registered Shows & Events</h2>
+                    <h2 className="text-2xl font-bold text-foreground mb-6 normal-case">Upcoming Registered Shows & Events</h2>
                     {club.events?.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {club.events.map((evt: any) => (
@@ -305,7 +305,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
 
                   {/* Club Activities */}
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground mb-6">Other Club Activities & Events</h2>
+                    <h2 className="text-2xl font-bold text-foreground mb-6 normal-case">Other Club Activities & Events</h2>
                     {club.clubEvents?.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {club.clubEvents.map((evt: any) => (
@@ -334,7 +334,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
 
               {activeTab === 'committee' && (
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground mb-6">Committee Members</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-6 normal-case">Committee Members</h2>
                   {club.clubCommittees?.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
                       {club.clubCommittees.map((member: any) => (
@@ -343,7 +343,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                             {member.photo ? <img src={getImageUrl(member.photo)} className="w-full h-full object-cover" alt={member.name} /> : getInitials(member.name)}
                           </div>
                           <div>
-                            <h3 className="font-bold text-foreground">{member.name}</h3>
+                            <h3 className="font-bold text-foreground normal-case">{member.name}</h3>
                             <div className="text-foreground text-sm font-semibold mb-1">{member.designation}</div>
                             {member.email && <div className="text-xs text-muted-foreground">{member.email}</div>}
                           </div>
@@ -374,7 +374,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
 
               {activeTab === 'contact' && (
                 <div className="w-full">
-                  <h2 className="text-2xl font-bold text-foreground mb-6">Contact Information</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-6 normal-case">Contact Information</h2>
                   
                   {secretaries.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[1400px]">
@@ -385,7 +385,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                               <Users className="w-6 h-6 text-primary" />
                             </div>
                             <div>
-                              <h3 className="font-bold text-lg text-foreground leading-tight">{sec.name}</h3>
+                              <h3 className="font-bold text-lg text-foreground leading-tight normal-case">{sec.name}</h3>
                               {sec.designation && <span className="text-sm font-semibold text-muted-foreground">{sec.designation}</span>}
                             </div>
                           </div>

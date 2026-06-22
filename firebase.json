@@ -8,6 +8,36 @@
     ],
     "cleanUrls": true,
     "trailingSlash": true,
+    "rewrites": [
+      {
+        "source": "/gallery/album/**",
+        "destination": "/gallery/album/_/index.html"
+      },
+      {
+        "source": "/gallery/shows/**",
+        "destination": "/gallery/shows/_/index.html"
+      },
+      {
+        "source": "/gallery/outdoor/**",
+        "destination": "/gallery/outdoor/_/index.html"
+      },
+      {
+        "source": "/clubs/category/**",
+        "destination": "/clubs/category/_/index.html"
+      },
+      {
+        "source": "/clubs/**",
+        "destination": "/clubs/_/index.html"
+      },
+      {
+        "source": "/admin/events/edit/**",
+        "destination": "/admin/events/edit/_/index.html"
+      },
+      {
+        "source": "/gallery/**",
+        "destination": "/gallery/_/index.html"
+      }
+    ],
     "headers": [
       {
         "source": "**/*.@(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|svg|webp|gif)",

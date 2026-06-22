@@ -53,16 +53,16 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
                 </div>
 
                 <div className="flex flex-col flex-1 w-full">
-                  <h3 className="text-xl font-[800] text-foreground mb-1 line-clamp-1 group-hover:text-primary transition-colors uppercase">{judge.name?.toUpperCase()}</h3>
+                  <h3 className="text-xl font-[800] text-foreground mb-1 line-clamp-1 group-hover:text-primary transition-colors normal-case">{judge.name}</h3>
 
-                  <p className="text-primary font-[700] text-sm mb-3 flex items-center justify-center gap-1.5 uppercase">
+                  <p className="text-primary font-[700] text-sm mb-3 flex items-center justify-center gap-1.5 normal-case">
                     <Globe className="w-3.5 h-3.5" />
-                    {(judge.country || 'International')?.toUpperCase()}
+                    {judge.country || 'International'}
                   </p>
 
-                  <div className="flex gap-4 mb-4 py-3 border-y border-border justify-center w-full uppercase">
+                  <div className="flex gap-4 mb-4 py-3 border-y border-border justify-center w-full">
                     <div className="w-full text-center">
-                      <p className="text-foreground font-[700] text-sm line-clamp-1">{(judge.groups || judge.specialization || 'All Groups')?.toUpperCase()}</p>
+                      <p className="text-foreground font-[700] text-sm line-clamp-1 normal-case">{judge.groups || judge.specialization || 'All Groups'}</p>
                       <p className="small-label text-[10px]">Specialization</p>
                     </div>
                     {(judge.experience || judge.exp) && (

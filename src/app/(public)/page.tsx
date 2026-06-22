@@ -6,6 +6,7 @@ import FeaturedClubsSlider from '@/components/home/FeaturedClubsSlider';
 import AboutUsSection from '@/components/home/AboutUsSection';
 import PremiumOutdoorPhotos from '@/components/home/PremiumOutdoorPhotos';
 import SlidingPhotoSections from '@/components/home/SlidingPhotoSections';
+import HomepageAlbumGallery from '@/components/home/HomepageAlbumGallery';
 import FeaturedMediaGallery from '@/components/home/FeaturedMediaGallery';
 import FeaturedJudgesSlider from '@/components/home/FeaturedJudgesSlider';
 import FCIGroupGrid from '@/components/home/FCIGroupGrid';
@@ -20,6 +21,7 @@ import {
   getFeaturedVideos,
   getFeaturedJudges,
   getFCIGroups,
+  getPublicAlbumsAPI,
 } from '@/lib/server-api';
 
 const SectionSkeleton = ({ height = 'h-64' }) => (
@@ -33,6 +35,7 @@ export default function Home() {
   const [banners, setBanners] = useState<any[]>([]);
   const [judges, setJudges] = useState<any[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
+  const [albums, setAlbums] = useState<any[]>([]);
   const [photos, setPhotos] = useState<any[]>([]);
   const [videos, setVideos] = useState<any[]>([]);
   
@@ -56,14 +59,16 @@ export default function Home() {
         setLoadingP1(false);
 
         // Priority 2: Other Data
-        const [judgesRes, groupsRes, photosRes, videosRes] = await Promise.all([
+        const [judgesRes, groupsRes, albumsRes, photosRes, videosRes] = await Promise.all([
           getFeaturedJudges().catch(() => ({ success: false, data: [] })),
           getFCIGroups().catch(() => ({ success: false, data: [] })),
+          getPublicAlbumsAPI().catch(() => ({ success: false, data: [] })),
           getFeaturedPhotos().catch(() => ({ success: false, data: [] })),
           getFeaturedVideos().catch(() => ({ success: false, data: [] }))
         ]);
         setJudges(judgesRes?.data || []);
         setGroups(groupsRes?.data || []);
+        setAlbums(albumsRes?.data || []);
         setPhotos(photosRes?.data || []);
         setVideos(videosRes?.data || []);
         setLoadingP2(false);
@@ -87,10 +92,17 @@ export default function Home() {
         banners.length > 0 && <HeroSlider banners={banners} />
       )}
       
-      {/* 2. Premium Personal Photos */}
+      {/* 2. Dynamic Album Gallery Section */}
+      {loadingP2 ? (
+        <SectionSkeleton height="h-96" />
+      ) : (
+        <HomepageAlbumGallery albums={albums} />
+      )}
+
+      {/* 3. Premium Personal Photos */}
       <SlidingPhotoSections />
 
-      {/* 3. Outdoor Photos - Hidden per user request */}
+      {/* 4. Outdoor Photos - Hidden per user request */}
       {/* <PremiumOutdoorPhotos /> */}
 
       {/* 4. Upcoming Show Calendars (Card Listing) */}

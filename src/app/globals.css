@@ -78,14 +78,14 @@
 
   h3 {
     font-weight: 700;
-    text-transform: uppercase;
+    /* No global uppercase — h3 is used for dynamic DB content (club names, cities, judges) */
   }
 
   h4,
   h5,
   h6 {
     font-weight: 700;
-    text-transform: uppercase;
+    /* No global uppercase — these may contain dynamic content */
   }
 
   p {

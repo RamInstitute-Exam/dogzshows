@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getImageUrl } from '@/lib/api';
 import PublicContainer from '@/components/layout/PublicContainer';
+import { toTitleCase } from '@/lib/utils';
 
 export interface ShowData {
   id: string;
@@ -80,8 +81,8 @@ export default function FeaturedShowsSlider({ shows }: FeaturedShowsSliderProps)
 
                   {/* Card Content Overlay */}
                   <div className="absolute bottom-6 left-6 right-6 z-20 flex flex-col items-start pointer-events-none">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-2 tracking-tight line-clamp-2 uppercase">
-                      {show.name?.toUpperCase()}
+                    <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-2 tracking-tight line-clamp-2 normal-case">
+                      {toTitleCase(show.name)}
                     </h3>
                     
                     {show.description && (

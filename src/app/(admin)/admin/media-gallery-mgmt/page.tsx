@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Plus, Pencil, Trash2, GripVertical, X, Save, Eye, Search, Filter, ImageIcon, Image as ImageIconLucide, Check, ArrowLeft, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, GripVertical, X, Save, Eye, Search, Filter, ImageIcon, Image as ImageIconLucide, Check, ArrowLeft, Loader2, Download, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -35,6 +35,8 @@ function MediaGalleryMgmtContent() {
 
   // Album Form State
   const [title, setTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const [shortDescription, setShortDescription] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [clubId, setClubId] = useState('');
@@ -46,6 +48,7 @@ function MediaGalleryMgmtContent() {
   const [featured, setFeatured] = useState(false);
   const [status, setStatus] = useState('DRAFT');
   const [displayOrder, setDisplayOrder] = useState('0');
+  const [allowDownload, setAllowDownload] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -131,6 +134,8 @@ function MediaGalleryMgmtContent() {
         const album = res.data;
         if (activeTab === 'add') {
           setTitle(album.title);
+          setSubtitle(album.subtitle || '');
+          setShortDescription(album.shortDescription || '');
           setCategoryId(album.categoryId || '');
           setClubId(album.clubId || '');
           setEventId(album.eventId || '');
@@ -140,6 +145,7 @@ function MediaGalleryMgmtContent() {
           setCoverImage(album.coverImage);
           setStatus(album.status);
           setFeatured(album.featured);
+          setAllowDownload(album.allowDownload || false);
           setAlbumDate(album.albumDate ? new Date(album.albumDate).toISOString().split('T')[0] : '');
           setDisplayOrder(album.displayOrder?.toString() || '0');
           setImages(album.images?.map((img: any) => img.imageUrl) || []);
@@ -157,6 +163,8 @@ function MediaGalleryMgmtContent() {
 
   const resetForm = () => {
     setTitle('');
+    setSubtitle('');
+    setShortDescription('');
     setCategoryId(categories[0]?.id || '');
     setClubId('');
     setEventId('');
@@ -166,6 +174,7 @@ function MediaGalleryMgmtContent() {
     setCoverImage('');
     setStatus('DRAFT');
     setFeatured(false);
+    setAllowDownload(false);
     setAlbumDate('');
     setDisplayOrder('0');
     setImages([]);
@@ -328,6 +337,28 @@ function MediaGalleryMgmtContent() {
     }
   };
 
+  const toggleGalleryPhotoDownload = async (photoId: string, currentVal: boolean) => {
+    try {
+      const nextVal = !currentVal;
+      await api.post(`/gallery/photo/${photoId}/toggle-download`, { allowDownload: nextVal });
+      toast.success(`Downloads ${nextVal ? 'enabled' : 'disabled'} for this photo`);
+      if (paramAlbumId) loadAlbumDetails(paramAlbumId);
+    } catch {
+      toast.error('Failed to toggle download permission');
+    }
+  };
+
+  const resetGalleryPhotoDownloads = async (photoId: string) => {
+    if (!confirm('Are you sure you want to reset the download count for this photo?')) return;
+    try {
+      await api.post(`/gallery/photo/${photoId}/reset-downloads`);
+      toast.success('Download count reset');
+      if (paramAlbumId) loadAlbumDetails(paramAlbumId);
+    } catch {
+      toast.error('Failed to reset download count');
+    }
+  };
+
   const handleSaveAlbum = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title) return toast.error('Album Title is required');
@@ -335,7 +366,7 @@ function MediaGalleryMgmtContent() {
     if (!coverImage) return toast.error('Cover image is required');
 
     const payload = {
-      title, description, categoryId,
+      title, subtitle, shortDescription, description, categoryId,
       clubId: clubId || null,
       eventId: eventId || null,
       city: city || null,
@@ -343,6 +374,7 @@ function MediaGalleryMgmtContent() {
       coverImage,
       albumDate: albumDate || null,
       status, featured,
+      allowDownload,
       displayOrder: parseInt(displayOrder) || 0,
       images: images
     };
@@ -566,11 +598,17 @@ function MediaGalleryMgmtContent() {
               <span className="text-sm font-bold text-foreground">
                 Selected {selectedAlbumIds.length} albums:
               </span>
-              <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap">
                 <Button size="sm" variant="outline" onClick={() => handleBulkAction('PUBLISH')}>Publish</Button>
                 <Button size="sm" variant="outline" onClick={() => handleBulkAction('UNPUBLISH')}>Unpublish</Button>
                 <Button size="sm" variant="outline" onClick={() => handleBulkAction('FEATURE')}>Feature</Button>
                 <Button size="sm" variant="outline" onClick={() => handleBulkAction('UNFEATURE')}>Unfeature</Button>
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => handleBulkAction('ALLOW_DOWNLOAD')}>
+                  <Download className="w-3 h-3 mr-1" /> Allow Download
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => handleBulkAction('DISALLOW_DOWNLOAD')}>
+                  <Download className="w-3 h-3 mr-1" /> Disable Download
+                </Button>
                 <Button size="sm" variant="destructive" onClick={() => handleBulkAction('DELETE')}>Delete Selected</Button>
               </div>
             </div>
@@ -589,12 +627,13 @@ function MediaGalleryMgmtContent() {
                       className="cursor-pointer"
                     />
                   </th>
-                  <th className="p-4 w-16 text-center">Order</th>
+                  <th className="p-4 w-12 text-center">Order</th>
                   <th className="p-4 w-28">Cover</th>
                   <th className="p-4">Album Details</th>
                   <th className="p-4">Category</th>
                   <th className="p-4 text-center">Photos</th>
                   <th className="p-4 text-center">Featured</th>
+                  <th className="p-4 text-center">Downloads</th>
                   <th className="p-4 text-center">Status</th>
                   <th className="p-4 text-right">Action</th>
                 </tr>
@@ -653,6 +692,30 @@ function MediaGalleryMgmtContent() {
                         <span className="text-muted-foreground text-xs">—</span>
                       )}
                     </td>
+                    {/* Downloads column */}
+                    <td className="p-4 text-center">
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            await api.put(`/media-gallery-mgmt/admin/albums/${album.id}`, { allowDownload: !album.allowDownload });
+                            fetchAlbums();
+                          } catch { toast.error('Failed to toggle download setting'); }
+                        }}
+                        title={album.allowDownload ? 'Disable downloads' : 'Enable downloads'}
+                        className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full transition-all cursor-pointer ${
+                          album.allowDownload
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-200'
+                            : 'bg-muted text-muted-foreground hover:bg-accent'
+                        }`}
+                      >
+                        <Download className="w-3 h-3" />
+                        {album.allowDownload ? 'ON' : 'OFF'}
+                      </button>
+                      <div className="text-[10px] text-muted-foreground mt-1 font-semibold">
+                        Total DL: {album.images?.reduce((sum: number, img: any) => sum + (img.downloadCount || 0), 0) || 0}
+                      </div>
+                    </td>
                     <td className="p-4 text-center">
                       <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${album.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
                         {album.status}
@@ -703,7 +766,7 @@ function MediaGalleryMgmtContent() {
                 ))}
                 {filteredAlbums.length === 0 && (
                   <tr>
-                    <td colSpan={9} className="p-12 text-center text-muted-foreground">
+                    <td colSpan={10} className="p-12 text-center text-muted-foreground">
                       <div className="max-w-sm mx-auto space-y-2">
                         <ImageIcon className="w-12 h-12 mx-auto text-muted-foreground/30" />
                         <h4 className="font-bold text-foreground">No Albums Found</h4>
@@ -726,7 +789,6 @@ function MediaGalleryMgmtContent() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Title */}
             <div className="space-y-2">
               <label className="text-sm font-semibold">Album Title *</label>
               <Input 
@@ -734,6 +796,16 @@ function MediaGalleryMgmtContent() {
                 placeholder="Enter album name" 
                 value={title} 
                 onChange={(e) => setTitle(e.target.value)} 
+              />
+            </div>
+
+            {/* Subtitle */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold">Album Subtitle</label>
+              <Input 
+                placeholder="e.g. 5th & 6th All Breeds Championship Dog Show" 
+                value={subtitle} 
+                onChange={(e) => setSubtitle(e.target.value)} 
               />
             </div>
 
@@ -818,10 +890,10 @@ function MediaGalleryMgmtContent() {
               />
             </div>
 
-            {/* Featured & Status */}
+            {/* Visibility, Status & Download */}
             <div className="space-y-2 flex flex-col justify-end lg:col-span-2">
               <label className="text-sm font-semibold mb-2">Visibility & Status</label>
-              <div className="flex gap-4">
+              <div className="flex gap-4 flex-wrap">
                 <select 
                   className="flex-1 h-10 px-3 rounded-md border border-input bg-background text-foreground text-sm cursor-pointer"
                   value={status} 
@@ -840,19 +912,42 @@ function MediaGalleryMgmtContent() {
                   />
                   <span className="text-sm font-semibold">Featured Album</span>
                 </label>
+
+                <label className="flex items-center gap-2 cursor-pointer border px-4 rounded-md border-emerald-500/40 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 select-none">
+                  <input 
+                    type="checkbox" 
+                    checked={allowDownload} 
+                    onChange={(e) => setAllowDownload(e.target.checked)} 
+                    className="rounded cursor-pointer w-4 h-4" 
+                  />
+                  <Download className="w-3.5 h-3.5" />
+                  <span className="text-sm font-semibold">Allow Download</span>
+                </label>
               </div>
             </div>
           </div>
 
-          {/* Description */}
-          <div className="space-y-2">
-            <label className="text-sm font-semibold">Description</label>
+          {/* Short Description */}
+          <div className="lg:col-span-2 space-y-2">
+            <label className="text-sm font-semibold">Short Description</label>
             <textarea 
-              placeholder="Enter brief description of the album event"
+              rows={2}
+              placeholder="Max 2 lines to show on the album card..." 
+              value={shortDescription} 
+              onChange={(e) => setShortDescription(e.target.value)} 
+              className="w-full p-3 rounded-md border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+
+          {/* Full Description */}
+          <div className="lg:col-span-2 space-y-2">
+            <label className="text-sm font-semibold">Full Description</label>
+            <textarea 
+              rows={4}
+              placeholder="Write an optional long description for this album..." 
               value={description} 
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 rounded-md border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-foreground focus:border-border"
-              rows={3}
+              onChange={(e) => setDescription(e.target.value)} 
+              className="w-full p-3 rounded-md border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -888,7 +983,7 @@ function MediaGalleryMgmtContent() {
                   disabled={isUploading} 
                   className="cursor-pointer" 
                 />
-                <p className="text-xs text-muted-foreground">Select a single cover image. This photo represents the album on display grids.</p>
+                <p className="text-xs text-muted-foreground">Select a single cover image. This photo represents the album on display grids. Recommended size: 800x1200px (Portrait).</p>
               </div>
             </div>
           </div>
@@ -1048,6 +1143,8 @@ function MediaGalleryMgmtContent() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4">
                     {images.map((url, index) => {
                       const isCover = selectedAlbum.coverImage === url;
+                      const photoInfo = selectedAlbum.images?.find((img: any) => img.imageUrl === url);
+                      const downloadCount = photoInfo?.downloadCount || 0;
                       return (
                         <div 
                           key={url + index} 
@@ -1062,22 +1159,33 @@ function MediaGalleryMgmtContent() {
                             alt={`Gallery item ${index + 1}`} 
                             className="w-full h-full object-cover pointer-events-none" 
                           />
-                          
-                          {/* Image Number Badge */}
-                          <div className="absolute bottom-2 left-2 bg-black/75 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-md border border-white/10">
-                            {index + 1}
+                                       {/* Image Number Badge */}
+                          <div className="absolute bottom-2 left-2 bg-black/75 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/10 select-none">
+                            #{index + 1}
+                          </div>
+
+                          {/* Views Count Badge */}
+                          <div className="absolute bottom-2 left-10 bg-black/75 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/10 flex items-center gap-0.5 select-none">
+                            <Eye className="w-2.5 h-2.5 text-blue-400" />
+                            {photoInfo?.viewCount ?? 0}
+                          </div>
+
+                          {/* Download Count Badge */}
+                          <div className="absolute bottom-2 right-2 bg-black/75 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/10 flex items-center gap-0.5 select-none">
+                            <Download className="w-2.5 h-2.5 text-emerald-400" />
+                            {downloadCount}
                           </div>
 
                           {/* Cover Badge */}
                           {isCover && (
-                            <div className="absolute top-2 left-2 bg-green-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
+                            <div className="absolute top-2 left-2 bg-green-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-md select-none">
                               <Check className="w-2.5 h-2.5" /> Cover
                             </div>
                           )}
 
                           {/* Hover Actions overlay */}
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                            <GripVertical className="text-white w-5 h-5 cursor-move" />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
+                            <GripVertical className="text-white w-4 h-4 cursor-move" />
                             
                             {!isCover && (
                               <button 
@@ -1086,7 +1194,31 @@ function MediaGalleryMgmtContent() {
                                 className="bg-green-500 hover:bg-green-600 text-white rounded-full p-1.5 hover:scale-110 transition-transform cursor-pointer shadow"
                                 title="Set as Cover Image"
                               >
-                                <Check className="w-4 h-4" />
+                                <Check className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+
+                            {photoInfo && (
+                              <button 
+                                type="button" 
+                                onClick={() => toggleGalleryPhotoDownload(photoInfo.id, photoInfo.allowDownload !== false)} 
+                                className={`rounded-full p-1.5 hover:scale-110 transition-transform cursor-pointer shadow text-white ${
+                                  photoInfo.allowDownload !== false ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-amber-500 hover:bg-amber-600'
+                                }`}
+                                title={photoInfo.allowDownload !== false ? "Disable Downloads" : "Enable Downloads"}
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+
+                            {photoInfo && (
+                              <button 
+                                type="button" 
+                                onClick={() => resetGalleryPhotoDownloads(photoInfo.id)} 
+                                className="bg-amber-600 hover:bg-amber-700 text-white rounded-full p-1.5 hover:scale-110 transition-transform cursor-pointer shadow"
+                                title="Reset Downloads"
+                              >
+                                <RefreshCw className="w-3.5 h-3.5" />
                               </button>
                             )}
 
@@ -1096,7 +1228,7 @@ function MediaGalleryMgmtContent() {
                               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-1.5 hover:scale-110 transition-transform cursor-pointer shadow"
                               title="Preview"
                             >
-                              <Eye className="w-4 h-4" />
+                              <Eye className="w-3.5 h-3.5" />
                             </button>
 
                             <button 
@@ -1105,7 +1237,7 @@ function MediaGalleryMgmtContent() {
                               className="bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 hover:scale-110 transition-transform cursor-pointer shadow"
                               title="Delete image"
                             >
-                              <X className="w-4 h-4" />
+                              <X className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </div>

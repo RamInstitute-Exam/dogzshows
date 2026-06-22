@@ -131,3 +131,7 @@ export async function getAllClubs() {
 export async function getClubBySlug(slug: string) {
   return fetchServerDataSingle(`/public/clubs/slug/${slug}`, 60);
 }
+
+export async function getPublicAlbumsAPI() {
+  return fetchServerData('/public/gallery/albums', 60);
+}

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Search, Camera, Eye, User, ZoomIn } from 'lucide-react';
+import { Search, Camera, Eye, User, ZoomIn, Download } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import ImageLightbox from '@/components/shared/ImageLightbox';
@@ -12,14 +12,30 @@ interface PhotosClientProps {
   initialPhotos?: any[];
 }
 
+function getApiBase(): string {
+  if (typeof window === 'undefined') return '';
+  const envUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/api\/v1$/, '');
+  return envUrl || '';
+}
+
 export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
 
-  // Lightbox State
+  // Lightbox
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxImages, setLightboxImages] = useState<any[]>([]);
+
+  // Download state
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadCounts, setDownloadCounts] = useState<Record<string, number>>(() => {
+    const map: Record<string, number> = {};
+    (initialPhotos || []).forEach((p: any) => {
+      if (p.id) map[p.id] = p.downloadCount ?? 0;
+    });
+    return map;
+  });
 
   const categories = ['All', ...Array.from(new Set((initialPhotos || []).map((p: any) => p.category?.name).filter(Boolean)))];
 
@@ -28,6 +44,42 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
     const matchFilter = activeFilter === 'All' || p.category?.name === activeFilter;
     return matchSearch && matchFilter;
   });
+
+  // Download handler (for MediaPhoto — uses album.allowDownload)
+  const handleDownload = useCallback(async (e: React.MouseEvent, photo: any) => {
+    e.stopPropagation();
+    if (downloadingId) return;
+
+    setDownloadingId(photo.id);
+    try {
+      const apiBase = getApiBase();
+      const url = `${apiBase}/api/v1/public/gallery/photos/${photo.id}/download`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        alert(err.message || 'Download failed.');
+        return;
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = objectUrl;
+      anchor.download = `juztdog-photo-${photo.id.slice(0, 8)}.jpg`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(objectUrl);
+
+      setDownloadCounts((prev) => ({ ...prev, [photo.id]: (prev[photo.id] ?? 0) + 1 }));
+    } catch (err) {
+      console.error('[download] Error:', err);
+      alert('Download failed.');
+    } finally {
+      setDownloadingId(null);
+    }
+  }, [downloadingId]);
 
   return (
     <PageContainer>
@@ -75,75 +127,115 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {filtered.map((photo: any, index: number) => (
-              <motion.div
-                key={photo.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.35, delay: (index % 12) * 0.04 }}
-              >
-                <div
-                  onClick={() => {
-                    setLightboxImages(filtered);
-                    setLightboxIndex(index);
-                    setLightboxOpen(true);
-                  }}
-                  className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-border/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto cursor-pointer"
+            {filtered.map((photo: any, index: number) => {
+              const albumAllowsDownload = photo.album?.allowDownload === true;
+              const dlCount = downloadCounts[photo.id] ?? photo.downloadCount ?? 0;
+
+              return (
+                <motion.div
+                  key={photo.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: (index % 12) * 0.04 }}
                 >
-                  <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
-                    <Image
-                      src={photo.s3Url || photo.imageUrl || photo.cdnUrl}
-                      alt={photo.altText || photo.title}
-                      fill={false}
-                      width={800}
-                      height={1200}
-                      quality={100}
-                      unoptimized
-                      sizes="100vw"
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        objectFit: "contain",
-                        objectPosition: "center"
+                  <div
+                    className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-border/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
+                  >
+                    {/* Image area */}
+                    <div
+                      className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden cursor-pointer"
+                      onClick={() => {
+                        setLightboxImages(filtered);
+                        setLightboxIndex(index);
+                        setLightboxOpen(true);
                       }}
-                      className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-foreground flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
-                        <ZoomIn className="w-5 h-5 text-white" />
+                      onContextMenu={(e) => e.preventDefault()}
+                    >
+                      <Image
+                        src={photo.s3Url || photo.imageUrl || photo.cdnUrl}
+                        alt={photo.altText || photo.title}
+                        fill={false}
+                        width={800}
+                        height={1200}
+                        quality={100}
+                        unoptimized
+                        sizes="100vw"
+                        style={{
+                          width: '100%',
+                          height: 'auto',
+                          objectFit: 'contain',
+                          objectPosition: 'center',
+                          pointerEvents: 'none',
+                        }}
+                        className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
+                        onContextMenu={(e) => e.preventDefault()}
+                        onDragStart={(e) => e.preventDefault()}
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-foreground flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                          <ZoomIn className="w-5 h-5 text-white" />
+                        </div>
+                      </div>
+                      {photo.category?.name && (
+                        <span className="absolute top-4 left-4 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                          {photo.category.name}
+                        </span>
+                      )}
+                      {photo.featured && (
+                        <span className="absolute top-4 right-4 bg-foreground text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                          Featured
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Info bar */}
+                    <div className="p-5 w-full flex flex-col justify-between space-y-3">
+                      <h3 className="font-bold text-foreground group-hover:text-foreground transition-colors line-clamp-1 text-base leading-snug">
+                        {photo.title}
+                      </h3>
+                      <div className="flex items-center justify-between border-t border-border pt-3 text-xs text-muted-foreground font-semibold">
+                        <div className="flex items-center gap-3">
+                          {photo.photographer && (
+                            <span className="flex items-center gap-1">
+                              <User className="w-3.5 h-3.5" />{photo.photographer}
+                            </span>
+                          )}
+                          <span className="flex items-center gap-1">
+                            <Eye className="w-3.5 h-3.5" />{photo.views || 0}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Download className="w-3.5 h-3.5" />{dlCount}
+                          </span>
+                        </div>
+
+                        {/* Download button — only when album allows it */}
+                        {albumAllowsDownload && (
+                          <button
+                            onClick={(e) => handleDownload(e, photo)}
+                            disabled={downloadingId === photo.id}
+                            title="Download this photo (watermarked)"
+                            className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-foreground text-white hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
+                          >
+                            {downloadingId === photo.id ? (
+                              <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                              <Download className="w-3 h-3" />
+                            )}
+                            {downloadingId === photo.id ? '…' : 'DL'}
+                          </button>
+                        )}
                       </div>
                     </div>
-                    {photo.category?.name && (
-                      <span className="absolute top-4 left-4 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                        {photo.category.name}
-                      </span>
-                    )}
-                    {photo.featured && (
-                      <span className="absolute top-4 right-4 bg-foreground text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                        Featured
-                      </span>
-                    )}
                   </div>
-                  <div className="p-5 w-full flex flex-col justify-between space-y-4">
-                    <h3 className="font-bold text-foreground group-hover:text-foreground transition-colors line-clamp-1 text-base leading-snug">
-                      {photo.title}
-                    </h3>
-                    <div className="flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground font-semibold">
-                      {photo.photographer && (
-                        <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" />{photo.photographer}</span>
-                      )}
-                      <span className="flex items-center gap-1 ml-auto"><Eye className="w-3.5 h-3.5" />{photo.views || 0}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </PublicContainer>
 
-      {/* Lightbox Popup */}
+      {/* Lightbox */}
       <ImageLightbox
         images={lightboxImages}
         initialIndex={lightboxIndex}

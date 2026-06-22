@@ -124,18 +124,18 @@ export default function PremiumOutdoorPhotos() {
                   {album.eventName && (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <Camera className="w-3.5 h-3.5" />
-                      {album.eventName?.toUpperCase()}
+                      {album.eventName}
                     </span>
                   )}
-                  <h3 className="text-base font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 uppercase">
-                    {album.title?.toUpperCase()}
+                  <h3 className="text-base font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 normal-case">
+                    {album.title}
                   </h3>
                   
-                  <div className="flex flex-col gap-1 text-[11px] text-muted-foreground font-medium uppercase">
+                  <div className="flex flex-col gap-1 text-[11px] text-muted-foreground font-medium normal-case">
                     {album.location && (
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                        <span className="truncate">{album.location?.toUpperCase()}</span>
+                        <span className="truncate">{album.location}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-1.5">

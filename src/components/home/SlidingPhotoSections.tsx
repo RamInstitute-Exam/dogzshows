@@ -1,14 +1,49 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Keyboard } from 'swiper/modules';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eye, Download } from 'lucide-react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import api, { getImageUrl } from '@/lib/api';
 import ImageLightbox from '@/components/shared/ImageLightbox';
+
+// Returns the public backend base URL
+function getApiBase(): string {
+  if (typeof window === 'undefined') return '';
+  const envUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/api\/v1$/, '');
+  return envUrl || '';
+}
+
+// Observed wrapper for viewport views tracking
+function ObservedPhotoCard({ photoId, onVisible, children }: { photoId: string; onVisible: () => void; children: React.ReactNode }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const observed = useRef(false);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || observed.current) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !observed.current) {
+          observed.current = true;
+          onVisible();
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    observer.observe(el);
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, [photoId, onVisible]);
+
+  return <div ref={cardRef} className="w-full h-full relative">{children}</div>;
+}
 
 export default function SlidingPhotoSections() {
   const [sections, setSections] = useState<any[]>([]);
@@ -19,11 +54,25 @@ export default function SlidingPhotoSections() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxImages, setLightboxImages] = useState<any[]>([]);
 
+  // Downloads & Views States
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadCounts, setDownloadCounts] = useState<Record<string, number>>({});
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await api.get('/public/homepage-sliding-sections/public');
-        setSections(res.data || []);
+        const sectionsData = res.data || [];
+        setSections(sectionsData);
+
+        // Seed initial download counts
+        const counts: Record<string, number> = {};
+        sectionsData.forEach((sec: any) => {
+          (sec.images || []).forEach((img: any) => {
+            counts[img.id] = img.downloadCount ?? 0;
+          });
+        });
+        setDownloadCounts(counts);
       } catch (error) {
         console.error('Failed to load sliding sections:', error);
       } finally {
@@ -33,6 +82,108 @@ export default function SlidingPhotoSections() {
     fetchData();
   }, []);
 
+  const handlePhotoVisible = useCallback((sectionId: string, photoId: string) => {
+    api.post(`/gallery/photo/${photoId}/view`)
+      .then((res) => {
+        if (res.success && res.viewCount !== undefined) {
+          setSections((prevSections) => 
+            prevSections.map((sec) => {
+              if (sec.id !== sectionId) return sec;
+              return {
+                ...sec,
+                images: sec.images.map((img: any) => 
+                  img.id === photoId ? { ...img, viewCount: res.viewCount } : img
+                )
+              };
+            })
+          );
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to increment view count on viewport enter:', err);
+      });
+  }, []);
+
+  const handleDownload = useCallback(async (e: React.MouseEvent | null, photoId: string) => {
+    if (e) e.stopPropagation();
+    if (downloadingId) return;
+
+    setDownloadingId(photoId);
+    try {
+      const apiBase = getApiBase();
+      const url = `${apiBase}/api/v1/public/gallery/photos/${photoId}/download`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        alert(errData.message || 'Download failed. Please try again.');
+        return;
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      const anchor = document.createElement('a');
+      anchor.href = objectUrl;
+      anchor.download = `juztdog-photo-${photoId.slice(0, 8)}.jpg`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(objectUrl);
+
+      // Optimistically increment local count
+      setDownloadCounts((prev) => ({
+        ...prev,
+        [photoId]: (prev[photoId] ?? 0) + 1,
+      }));
+
+      // Update local section images list
+      setSections((prevSections) => 
+        prevSections.map((sec) => ({
+          ...sec,
+          images: sec.images.map((img: any) => 
+            img.id === photoId ? { ...img, downloadCount: (img.downloadCount ?? 0) + 1 } : img
+          )
+        }))
+      );
+    } catch (err) {
+      console.error('[download] Error:', err);
+      alert('Download failed. Please try again.');
+    } finally {
+      setDownloadingId(null);
+    }
+  }, [downloadingId]);
+
+  const handleStatsUpdate = useCallback((photoId: string, stats: { viewCount?: number; downloadCount?: number }) => {
+    if (stats.viewCount !== undefined) {
+      setSections((prevSections) => 
+        prevSections.map((sec) => ({
+          ...sec,
+          images: sec.images.map((img: any) => 
+            img.id === photoId ? { ...img, viewCount: stats.viewCount } : img
+          )
+        }))
+      );
+    }
+    if (stats.downloadCount !== undefined) {
+      setDownloadCounts((prev) => ({
+        ...prev,
+        [photoId]: stats.downloadCount ?? 0,
+      }));
+      setSections((prevSections) => 
+        prevSections.map((sec) => ({
+          ...sec,
+          images: sec.images.map((img: any) => 
+            img.id === photoId ? { ...img, downloadCount: stats.downloadCount } : img
+          )
+        }))
+      );
+    }
+  }, []);
+
+  const preventDownload = (e: React.MouseEvent | React.DragEvent) => e.preventDefault();
+  const preventContextMenu = (e: React.MouseEvent) => e.preventDefault();
+
   if (isLoading) {
     return null;
   }
@@ -40,7 +191,7 @@ export default function SlidingPhotoSections() {
   if (sections.length === 0) return null;
 
   return (
-    <div className="w-full bg-background border-t border-border/50">
+    <div onContextMenu={preventContextMenu} className="w-full bg-background border-t border-border/50 select-none">
       {sections.map((section) => {
         if (!section.images || section.images.length === 0) return null;
 
@@ -98,26 +249,69 @@ export default function SlidingPhotoSections() {
                 >
                   {section.images.map((img: any, idx: number) => (
                     <SwiperSlide key={img.id || idx}>
-                      <div
-                        onClick={() => {
-                          setLightboxImages(section.images);
-                          setLightboxIndex(idx);
-                          setLightboxOpen(true);
-                        }}
-                        className="group personal-photo-card photo-card photo-wrapper cursor-pointer relative"
+                      <ObservedPhotoCard
+                        photoId={img.id}
+                        onVisible={() => handlePhotoVisible(section.id, img.id)}
                       >
-                        <Image
-                          src={getImageUrl(img.imageUrl)}
-                          alt={`${section.title} ${idx + 1}`}
-                          fill={false}
-                          width={800}
-                          height={1200}
-                          quality={100}
-                          unoptimized
-                          sizes="100vw"
-                          className="personal-photo-image photo-card-img"
-                        />
-                      </div>
+                        <div
+                          onClick={() => {
+                            setLightboxImages(section.images);
+                            setLightboxIndex(idx);
+                            setLightboxOpen(true);
+                          }}
+                          className="group personal-photo-card photo-card photo-wrapper cursor-pointer relative overflow-hidden rounded-2xl border border-border/40 select-none shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300"
+                        >
+                          <Image
+                            src={getImageUrl(img.imageUrl)}
+                            alt={`${section.title} ${idx + 1}`}
+                            fill={false}
+                            width={800}
+                            height={1200}
+                            quality={100}
+                            unoptimized
+                            sizes="100vw"
+                            className="personal-photo-image photo-card-img transform transition-transform duration-700 group-hover:scale-[1.03]"
+                            style={{ pointerEvents: 'none' }}
+                            onContextMenu={preventContextMenu}
+                            onDragStart={preventDownload}
+                          />
+
+                          {/* Dark transparent overlay actions bar */}
+                          <div className="absolute inset-0 bg-black/45 z-10 flex flex-col justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            {/* Top Row: Views and Downloads */}
+                            <div className="flex justify-between items-center w-full pointer-events-auto">
+                              <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+                                <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                                {(img.viewCount ?? 0).toLocaleString()} Visitors
+                              </span>
+                              <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+                                <Download className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                                {(downloadCounts[img.id] ?? img.downloadCount ?? 0).toLocaleString()}
+                              </span>
+                            </div>
+
+                            {/* Bottom Row: Download Button */}
+                            <div className="flex justify-center w-full pointer-events-auto mt-auto">
+                              {img.allowDownload !== false && (
+                                <button
+                                  onClick={(e) => handleDownload(e, img.id)}
+                                  disabled={downloadingId === img.id}
+                                  className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs md:text-sm transition-all shadow-lg border border-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                  {downloadingId === img.id ? (
+                                    <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                  ) : (
+                                    <>
+                                      <Download className="w-4 h-4" />
+                                      Download
+                                    </>
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </ObservedPhotoCard>
                     </SwiperSlide>
                   ))}
                 </Swiper>
@@ -209,7 +403,15 @@ export default function SlidingPhotoSections() {
         initialIndex={lightboxIndex}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
+        allowDownload={true}
+        onDownload={async (photoId) => {
+          await handleDownload(null, photoId);
+        }}
+        downloadingId={downloadingId}
+        downloadCounts={downloadCounts}
+        onStatsUpdate={handleStatsUpdate}
       />
     </div>
   );
 }
+

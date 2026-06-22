@@ -3,6 +3,7 @@
 import { Calendar, MapPin, Share2, Download, Timer, Trophy, Users, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { toTitleCase } from '@/lib/utils';
 
 export default function EventHero({ event }: { event: any }) {
   const formattedDate = event?.date
@@ -10,7 +11,7 @@ export default function EventHero({ event }: { event: any }) {
       ? new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
       : 'TBA');
 
-  const venue = event?.venue ?? event?.location ?? event?.city ?? 'TBA';
+  const venue = toTitleCase(event?.venue ?? event?.location ?? event?.city) || 'TBA';
   const closingDate = event?.closingDate ?? event?.registrationWindowEnd ?? '-';
   const entryFee = event?.entryFee != null ? `₹${event.entryFee}` : '-';
 
@@ -108,7 +109,7 @@ export default function EventHero({ event }: { event: any }) {
 
           {/* Title */}
           <h1
-            className="text-3xl md:text-4xl lg:text-[52px] font-extrabold tracking-tight mb-4 leading-tight"
+            className="text-3xl md:text-4xl lg:text-[52px] font-extrabold tracking-tight mb-4 leading-tight normal-case"
             style={{
               color: 'var(--hero-title)',
               textShadow: '0 2px 10px rgba(0,0,0,0.15)',
@@ -116,7 +117,7 @@ export default function EventHero({ event }: { event: any }) {
               lineHeight: 1.1,
             }}
           >
-            {event?.name ?? 'Event Details'}
+            {toTitleCase(event?.name) || 'Event Details'}
           </h1>
 
           {/* Description */}
@@ -124,10 +125,10 @@ export default function EventHero({ event }: { event: any }) {
             className="text-lg font-medium mb-8 leading-relaxed max-w-xl"
             style={{ color: 'var(--hero-desc)' }}
           >
-            Register your dogs in India's most prestigious{event?.type ? ` ${event.type}` : ''} championship,
+            Register your dogs in India's most prestigious{event?.type ? ` ${toTitleCase(event.type)}` : ''} championship,
             hosted by{' '}
             <strong style={{ color: 'var(--hero-title)' }}>
-              {event?.club?.name ?? 'KCI Official'}
+              {toTitleCase(event?.club?.name) || 'KCI Official'}
             </strong>.
           </p>
 

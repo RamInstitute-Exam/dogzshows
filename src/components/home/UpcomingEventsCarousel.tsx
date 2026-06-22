@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useEventsCMS } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Users, ArrowRight, Trophy, Tent, ChevronLeft, ChevronRight } from 'lucide-react';
+import { toTitleCase } from '@/lib/utils';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -206,7 +207,7 @@ export default function UpcomingEventsCarousel() {
                           {/* Location Badge */}
                           <div className="bg-black/40 backdrop-blur-md px-3.5 h-[34px] rounded-full text-white text-[13px] font-[600] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:bg-black/50 transition-all duration-300 cursor-default">
                             <MapPin className="w-[14px] h-[14px] text-white/80" />
-                            <span className="truncate max-w-[140px]">{event.venue || 'TBA'}</span>
+                            <span className="truncate max-w-[140px]">{toTitleCase(event.venue) || 'TBA'}</span>
                           </div>
 
                           {/* Championship Badge */}
@@ -221,8 +222,8 @@ export default function UpcomingEventsCarousel() {
                       <div className="p-4 flex-1 flex flex-col justify-between h-full">
                         <div className="flex flex-col h-full justify-between">
                           {/* Event Title */}
-                          <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere] uppercase">
-                            {event.name}
+                          <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere] normal-case">
+                            {toTitleCase(event.name)}
                           </h3>
 
                           {/* Event Info Icons */}
@@ -242,7 +243,7 @@ export default function UpcomingEventsCarousel() {
                               </div>
                               <div className="overflow-hidden flex-1">
                                 <p className="text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0.5">Organizer</p>
-                                <p className="text-[clamp(13px,1vw,16px)] font-[700] leading-[1.35] text-foreground line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] uppercase">{event.club?.name || 'KCI Affiliate'}</p>
+                                <p className="text-[clamp(13px,1vw,16px)] font-[700] leading-[1.35] text-foreground line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] normal-case">{toTitleCase(event.club?.name) || 'KCI Affiliate'}</p>
                               </div>
                             </div>
                           </div>

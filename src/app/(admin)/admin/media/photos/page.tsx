@@ -1,19 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Image as ImageIcon, 
-  Search, 
-  Star, 
-  X, 
+import {
+  Image as ImageIcon,
+  Search,
+  Star,
+  X,
   FolderInput,
-  ChevronLeft, 
-  ChevronRight, 
-  Loader2, 
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
   RefreshCw,
   AlertTriangle,
   FolderOpen,
-  Trash2
+  Trash2,
+  Eye,
+  Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
@@ -22,7 +24,9 @@ import axiosInstance from '@/lib/axios';
 export default function PhotoManagement() {
   const [photos, setPhotos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+  const [stats, setStats] = useState<any>(null);
+  const [loadingStats, setLoadingStats] = useState(true);
+
   // Filters and Pagination State
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
@@ -31,7 +35,8 @@ export default function PhotoManagement() {
   const [selectedAlbum, setSelectedAlbum] = useState('all');
   const [selectedFeatured, setSelectedFeatured] = useState('all');
   const [selectedDate, setSelectedDate] = useState('');
-  
+  const [sortBy, setSortBy] = useState('latest');
+
   // Counts and Meta
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -39,7 +44,7 @@ export default function PhotoManagement() {
   // Lists for Dropdowns
   const [categories, setCategories] = useState<any[]>([]);
   const [albums, setAlbums] = useState<any[]>([]);
-  
+
   // Bulk actions State
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -61,6 +66,20 @@ export default function PhotoManagement() {
     }
   };
 
+  const fetchStats = async () => {
+    setLoadingStats(true);
+    try {
+      const res = await api.get('/admin/photos/stats');
+      if (res && res.success) {
+        setStats(res.data || null);
+      }
+    } catch (error) {
+      console.error('Failed to load stats:', error);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
+
   // Fetch photos with current filters
   const fetchPhotos = async () => {
     setLoading(true);
@@ -72,9 +91,10 @@ export default function PhotoManagement() {
         category: selectedCategory !== 'all' ? selectedCategory : undefined,
         album: selectedAlbum !== 'all' ? selectedAlbum : undefined,
         featured: selectedFeatured !== 'all' ? selectedFeatured : undefined,
-        date: selectedDate || undefined
+        date: selectedDate || undefined,
+        sortBy: sortBy !== 'latest' ? sortBy : undefined
       };
-      
+
       const res = await api.get('/admin/photos', queryParams);
       if (res.success || Array.isArray(res.data)) {
         setPhotos(res.data || []);
@@ -95,11 +115,12 @@ export default function PhotoManagement() {
 
   useEffect(() => {
     fetchReferenceData();
+    fetchStats();
   }, []);
 
   useEffect(() => {
     fetchPhotos();
-  }, [page, selectedCategory, selectedAlbum, selectedFeatured, selectedDate]);
+  }, [page, selectedCategory, selectedAlbum, selectedFeatured, selectedDate, sortBy]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,12 +134,13 @@ export default function PhotoManagement() {
     setSelectedAlbum('all');
     setSelectedFeatured('all');
     setSelectedDate('');
+    setSortBy('latest');
     setPage(1);
   };
 
   // Checkbox interactions
   const isAllSelectedOnPage = photos.length > 0 && photos.every(p => selectedIds.has(p.id));
-  
+
   const handleSelectAllToggle = () => {
     const newSelected = new Set(selectedIds);
     if (isAllSelectedOnPage) {
@@ -153,11 +175,35 @@ export default function PhotoManagement() {
       newSelected.delete(id);
       setSelectedIds(newSelected);
       fetchPhotos();
+      fetchStats();
     } catch (error) {
       console.error('Failed to delete photo:', error);
       toast.error('Failed to delete photo');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleAllowDownload = async (photoId: string, currentVal: boolean) => {
+    try {
+      const nextVal = !currentVal;
+      await api.post(`/admin/photos/${photoId}/toggle-download`, { allowDownload: nextVal });
+      toast.success(`Downloads ${nextVal ? 'enabled' : 'disabled'} successfully`);
+      fetchPhotos();
+    } catch {
+      toast.error('Failed to update download permission');
+    }
+  };
+
+  const handleResetDownloads = async (photoId: string) => {
+    if (!confirm('Are you sure you want to reset the download count for this photo?')) return;
+    try {
+      await api.post(`/admin/photos/${photoId}/reset-downloads`);
+      toast.success('Download count reset');
+      fetchPhotos();
+      fetchStats();
+    } catch {
+      toast.error('Failed to reset download count');
     }
   };
 
@@ -169,6 +215,7 @@ export default function PhotoManagement() {
       toast.success(`Successfully ${featured ? 'marked' : 'removed'} featured status for ${ids.length} photos`);
       setSelectedIds(new Set());
       fetchPhotos();
+      fetchStats();
     } catch (error: any) {
       console.error('Bulk featured error:', error);
       toast.error('Failed to update featured status');
@@ -205,6 +252,7 @@ export default function PhotoManagement() {
       setShowDeleteModal(false);
       setPage(1);
       fetchPhotos();
+      fetchStats();
     } catch (error: any) {
       console.error('Bulk delete error:', error);
       toast.error('Failed to delete photos');
@@ -256,23 +304,96 @@ export default function PhotoManagement() {
         </a>
       </div>
 
+      {/* Statistics Panel */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+        {/* Total Unique Visitors Card */}
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-md flex items-center gap-4">
+          <div className="p-3.5 bg-blue-500/10 rounded-2xl text-blue-500 shrink-0">
+            <Eye className="w-7 h-7" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-extrabold text-foreground tracking-tight">
+              {loadingStats ? (
+                <div className="h-6 w-16 bg-muted animate-pulse rounded" />
+              ) : (
+                (stats?.totalUniqueVisitors ?? 0).toLocaleString()
+              )}
+            </h3>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-1">Total Unique Visitors</p>
+          </div>
+        </div>
+
+        {/* Total Downloads Card */}
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-md flex items-center gap-4">
+          <div className="p-3.5 bg-emerald-500/10 rounded-2xl text-emerald-500 shrink-0">
+            <Download className="w-7 h-7" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-extrabold text-foreground tracking-tight">
+              {loadingStats ? (
+                <div className="h-6 w-16 bg-muted animate-pulse rounded" />
+              ) : (
+                (stats?.totalDownloads ?? 0).toLocaleString()
+              )}
+            </h3>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-1">Total Downloads</p>
+          </div>
+        </div>
+
+        {/* Most Viewed Photos Card */}
+        <div className="bg-card p-5 rounded-2xl border border-border shadow-md xl:col-span-1 flex flex-col justify-between">
+          <div className="mb-3">
+            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Most Viewed Photos</h4>
+            <div className="space-y-2">
+              {loadingStats ? (
+                [1, 2, 3].map(i => <div key={i} className="h-9 bg-muted animate-pulse rounded" />)
+              ) : (stats?.mostViewedPhotos || []).slice(0, 3).map((p: any) => (
+                <div key={p.id} className="flex items-center gap-2 text-xs">
+                  <img src={getImageUrl(p.imageUrl)} className="w-7 h-7 rounded object-cover border border-border" />
+                  <span className="font-semibold text-foreground truncate max-w-[120px]">{p.title}</span>
+                  <span className="ml-auto font-bold text-blue-500">{p.views} visitors</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Most Downloaded Photos Card */}
+        <div className="bg-card p-5 rounded-2xl border border-border shadow-md xl:col-span-1 flex flex-col justify-between">
+          <div className="mb-3">
+            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Most Downloaded Photos</h4>
+            <div className="space-y-2">
+              {loadingStats ? (
+                [1, 2, 3].map(i => <div key={i} className="h-9 bg-muted animate-pulse rounded" />)
+              ) : (stats?.mostDownloadedPhotos || []).slice(0, 3).map((p: any) => (
+                <div key={p.id} className="flex items-center gap-2 text-xs">
+                  <img src={getImageUrl(p.imageUrl)} className="w-7 h-7 rounded object-cover border border-border" />
+                  <span className="font-semibold text-foreground truncate max-w-[120px]">{p.title}</span>
+                  <span className="ml-auto font-bold text-emerald-500">{p.downloadCount} dl</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Advanced Filters Panel */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-md mb-6 space-y-4">
         <form onSubmit={handleSearchSubmit} className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
           {/* Search bar */}
           <div className="relative flex-grow">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search by title, album, category, photographer, tags..." 
+            <input
+              type="text"
+              placeholder="Search by title, album, category, photographer, tags..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 h-11 bg-background border border-border rounded-xl text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-semibold"
             />
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="px-6 h-11 bg-secondary text-secondary-foreground hover:bg-secondary/80 font-bold rounded-xl transition-all flex items-center justify-center gap-2 border border-border"
           >
             <Search className="w-4 h-4" /> Search
@@ -328,17 +449,31 @@ export default function PhotoManagement() {
           {/* Date Filter */}
           <div className="flex flex-col min-w-[150px]">
             <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Date Uploaded</span>
-            <input 
-              type="date" 
+            <input
+              type="date"
               value={selectedDate}
               onChange={(e) => { setSelectedDate(e.target.value); setPage(1); }}
               className="h-10 px-3 bg-background border border-border rounded-xl text-xs font-bold text-foreground focus:outline-none cursor-pointer"
             />
           </div>
 
+          {/* Sort By Filter */}
+          <div className="flex flex-col min-w-[150px]">
+            <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Sort By</span>
+            <select
+              value={sortBy}
+              onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
+              className="h-10 px-3 bg-background border border-border rounded-xl text-xs font-bold text-foreground focus:outline-none cursor-pointer"
+            >
+              <option value="latest">Latest Uploads</option>
+              <option value="most-viewed">Most Viewed</option>
+              <option value="most-downloaded">Most Downloaded</option>
+            </select>
+          </div>
+
           {/* Clear Filters */}
           <div className="flex flex-col justify-end h-10 mt-auto">
-            <button 
+            <button
               onClick={handleClearFilters}
               className="h-10 px-4 bg-accent/20 hover:bg-accent/40 text-foreground font-bold text-xs rounded-xl transition-all border border-border/50 flex items-center justify-center gap-1.5"
             >
@@ -347,7 +482,7 @@ export default function PhotoManagement() {
           </div>
 
           <div className="flex flex-col justify-end h-10 mt-auto ml-auto">
-            <button 
+            <button
               onClick={fetchPhotos}
               className="h-10 w-10 bg-background hover:bg-accent border border-border rounded-xl flex items-center justify-center p-0 text-foreground"
             >
@@ -364,7 +499,7 @@ export default function PhotoManagement() {
             <thead>
               <tr className="bg-card border-b border-border sticky top-0 z-10">
                 <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider w-16 text-center">
-                  <input 
+                  <input
                     type="checkbox"
                     checked={isAllSelectedOnPage}
                     onChange={handleSelectAllToggle}
@@ -372,14 +507,16 @@ export default function PhotoManagement() {
                   />
                 </th>
                 <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider w-28">Thumbnail</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider">Title</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider">Album</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider">Category</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider">Featured</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider text-right w-36">Actions</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider">Photo Name</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider text-center">Unique Visitors</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider text-center">Downloads</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider text-center">Allow Download</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider text-center">Status</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider text-center">Featured</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-muted-foreground uppercase tracking-wider text-right w-56">Actions</th>
               </tr>
             </thead>
-            
+
             <tbody className="divide-y divide-border">
               {loading ? (
                 // Skeletons
@@ -396,23 +533,29 @@ export default function PhotoManagement() {
                       <div className="h-3 bg-muted rounded w-1/3" />
                     </td>
                     <td className="py-4 px-6">
-                      <div className="h-4 bg-muted rounded w-1/2" />
+                      <div className="h-4 bg-muted rounded w-12 mx-auto" />
                     </td>
                     <td className="py-4 px-6">
-                      <div className="h-4 bg-muted rounded w-1/2" />
+                      <div className="h-4 bg-muted rounded w-12 mx-auto" />
                     </td>
                     <td className="py-4 px-6">
-                      <div className="w-12 h-6 bg-muted rounded-full" />
+                      <div className="w-12 h-6 bg-muted rounded-full mx-auto" />
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="w-16 h-6 bg-muted rounded-full mx-auto" />
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="w-12 h-6 bg-muted rounded-full mx-auto" />
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <div className="w-16 h-8 bg-muted rounded ml-auto" />
+                      <div className="w-32 h-8 bg-muted rounded ml-auto" />
                     </td>
                   </tr>
                 ))
               ) : photos.length === 0 ? (
                 // Empty state
                 <tr>
-                  <td colSpan={7} className="py-24 text-center">
+                  <td colSpan={9} className="py-24 text-center">
                     <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
                       <ImageIcon className="w-16 h-16 text-muted-foreground mb-4" strokeWidth={1} />
                       <h3 className="text-xl font-bold text-foreground mb-2">No photos found</h3>
@@ -430,13 +573,13 @@ export default function PhotoManagement() {
                 photos.map((photo) => {
                   const isChecked = selectedIds.has(photo.id);
                   return (
-                    <tr 
+                    <tr
                       key={photo.id}
                       className={`hover:bg-accent/40 transition-colors group cursor-pointer ${isChecked ? 'bg-blue-600/5 hover:bg-blue-600/10' : ''}`}
                       onClick={() => handleSelectRow(photo.id)}
                     >
                       <td className="py-4 px-6 text-center" onClick={(e) => e.stopPropagation()}>
-                        <input 
+                        <input
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => handleSelectRow(photo.id)}
@@ -445,9 +588,9 @@ export default function PhotoManagement() {
                       </td>
                       <td className="py-4 px-6">
                         <div className="w-[72px] h-[72px] rounded-lg overflow-hidden bg-muted border border-border flex items-center justify-center">
-                          <img 
-                            src={getImageUrl(photo.cdnUrl || photo.s3Key)} 
-                            alt={photo.title} 
+                          <img
+                            src={getImageUrl(photo.cdnUrl || photo.s3Key)}
+                            alt={photo.title}
                             loading="lazy"
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
@@ -458,21 +601,50 @@ export default function PhotoManagement() {
                         {photo.photographer && (
                           <div className="text-[10px] text-muted-foreground font-semibold mt-1">Uploaded by: {photo.photographer}</div>
                         )}
+                        <div className="text-[10px] text-muted-foreground/80 font-medium mt-0.5">
+                          Album: {photo.album?.title || '-'} | Cat: {photo.category?.title || '-'}
+                        </div>
                       </td>
-                      <td className="py-4 px-6 text-sm text-muted-foreground font-semibold">
-                        {photo.album?.title || '-'}
+                      <td className="py-4 px-6 text-center text-sm font-bold text-foreground">
+                        {photo.views ?? 0}
                       </td>
-                      <td className="py-4 px-6 text-sm text-muted-foreground font-semibold">
-                        {photo.category?.title || '-'}
+                      <td className="py-4 px-6 text-center text-sm font-bold text-foreground">
+                        {photo.downloadCount ?? 0}
                       </td>
-                      <td className="py-4 px-6">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit ${photo.featured ? 'bg-amber-500/10 text-amber-500' : 'bg-muted text-muted-foreground'}`}>
-                          <Star className={`w-3.5 h-3.5 ${photo.featured ? 'fill-amber-500 text-amber-500' : ''}`} />
-                          {photo.featured ? 'Yes' : 'No'}
+                      <td className="py-4 px-6 text-center" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => toggleAllowDownload(photo.id, photo.allowDownload !== false)}
+                          className={`px-3 py-1 rounded-full text-xs font-bold transition-all border ${photo.allowDownload !== false
+                              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20'
+                              : 'bg-muted border-border text-muted-foreground hover:bg-muted/80'
+                            }`}
+                        >
+                          {photo.allowDownload !== false ? 'Enabled' : 'Disabled'}
+                        </button>
+                      </td>
+                      <td className="py-4 px-6 text-center">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide ${photo.status === 'ACTIVE'
+                            ? 'bg-blue-500/10 text-blue-500'
+                            : 'bg-muted text-muted-foreground'
+                          }`}>
+                          {photo.status || 'ACTIVE'}
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-right" onClick={(e) => e.stopPropagation()}>
-                        <button 
+                      <td className="py-4 px-6 text-center">
+                        <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full transition-all ${photo.featured ? 'bg-amber-500/10 text-amber-500' : 'text-muted-foreground/30'
+                          }`}>
+                          <Star className={`w-4 h-4 ${photo.featured ? 'fill-amber-500 text-amber-500' : ''}`} />
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 text-right space-x-1.5" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => handleResetDownloads(photo.id)}
+                          title="Reset downloads"
+                          className="p-1.5 bg-accent hover:bg-accent/80 text-foreground rounded-lg transition-colors inline-flex items-center justify-center"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                        </button>
+                        <button
                           onClick={() => handleDeleteSingle(photo.id)}
                           className="px-3 py-1.5 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-colors text-xs font-bold"
                         >
@@ -493,9 +665,9 @@ export default function PhotoManagement() {
             <div className="text-sm text-muted-foreground font-semibold">
               Displaying {startRecord}–{endRecord} of {totalCount} Photos
             </div>
-            
+
             <div className="flex gap-2 items-center">
-              <button 
+              <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="px-4 py-2 border border-border rounded-xl text-xs font-bold text-foreground bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-1"
@@ -515,7 +687,7 @@ export default function PhotoManagement() {
                 ))}
               </div>
 
-              <button 
+              <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
                 className="px-4 py-2 border border-border rounded-xl text-xs font-bold text-foreground bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-1"
@@ -533,9 +705,9 @@ export default function PhotoManagement() {
           <div className="text-sm font-extrabold text-foreground whitespace-nowrap px-3 py-1.5 bg-blue-600/10 text-blue-500 rounded-lg">
             {selectedIds.size} Selected
           </div>
-          
+
           <div className="h-6 w-[1px] bg-border hidden sm:block" />
-          
+
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => handleBulkFeaturedToggle(true)}

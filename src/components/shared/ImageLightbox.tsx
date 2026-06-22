@@ -3,20 +3,35 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
-import { getImageUrl } from '@/lib/api';
+import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Eye } from 'lucide-react';
+import api, { getImageUrl } from '@/lib/api';
 import Image from 'next/image';
 
-const MotionImage = motion(Image);
+const MotionImage = motion.create(Image);
 
 interface ImageLightboxProps {
   images: any[];
   initialIndex: number;
   isOpen: boolean;
   onClose: () => void;
+  allowDownload?: boolean;
+  onDownload?: (photoId: string, index: number) => Promise<void>;
+  downloadingId?: string | null;
+  downloadCounts?: Record<string, number>;
+  onStatsUpdate?: (photoId: string, stats: { viewCount?: number; downloadCount?: number }) => void;
 }
 
-export default function ImageLightbox({ images, initialIndex, isOpen, onClose }: ImageLightboxProps) {
+export default function ImageLightbox({
+  images,
+  initialIndex,
+  isOpen,
+  onClose,
+  allowDownload,
+  onDownload,
+  downloadingId,
+  downloadCounts,
+  onStatsUpdate,
+}: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isLoaded, setIsLoaded] = useState(false);
   const [scale, setScale] = useState(1);
@@ -60,6 +75,31 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
     setScale(1);
     setIsLoaded(false);
   }, [currentIndex]);
+
+  // Views counter tracking
+  useEffect(() => {
+    if (isOpen && images && images[currentIndex]) {
+      const activePhoto = images[currentIndex];
+      // Increment views count on the backend
+      api.post(`/gallery/photo/${activePhoto.id}/view`)
+        .then((res) => {
+          const newViewCount = (res.success && res.viewCount !== undefined) ? res.viewCount : (activePhoto.viewCount || 0) + 1;
+          activePhoto.viewCount = newViewCount;
+          if (onStatsUpdate) {
+            onStatsUpdate(activePhoto.id, { viewCount: newViewCount });
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to increment view count:', err);
+          // Fallback increment locally if api fails
+          const newViewCount = (activePhoto.viewCount || 0) + 1;
+          activePhoto.viewCount = newViewCount;
+          if (onStatsUpdate) {
+            onStatsUpdate(activePhoto.id, { viewCount: newViewCount });
+          }
+        });
+    }
+  }, [isOpen, currentIndex, images, onStatsUpdate]);
 
   // Keyboard navigation & Esc key close
   useEffect(() => {
@@ -128,7 +168,7 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
   const getImgSrc = (img: any) => {
     if (!img) return '';
     if (typeof img === 'string') return getImageUrl(img);
-    return getImageUrl(img.imageUrl || img.s3Url || img.cdnUrl || img.src || '');
+    return getImageUrl(img.mediumUrl || img.imageUrl || img.s3Url || img.cdnUrl || img.src || '');
   };
 
   const handlePrev = () => {
@@ -234,34 +274,83 @@ export default function ImageLightbox({ images, initialIndex, isOpen, onClose }:
           {prevSrc && <img src={prevSrc} className="hidden" aria-hidden="true" alt="preload" />}
 
           {/* Top-Left Corner: Image Counter */}
-          <div 
-            className="absolute top-6 left-6 z-50 text-white/80 font-bold text-sm tracking-wider bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm"
+          <div
+            className="absolute top-6 left-6 z-50 flex items-center text-white bg-black/40 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 shadow-lg select-none"
             onClick={(e) => e.stopPropagation()}
           >
-            {currentIndex + 1} / {images.length}
+            <span className="font-extrabold text-sm tracking-wider">
+              {currentIndex + 1} / {images.length}
+            </span>
           </div>
 
-          {/* Top-Right Corner: Close & Zoom buttons */}
-          <div 
-            className="absolute top-6 right-6 z-50 flex items-center gap-3"
+          {/* Top-Right Corner: Header Actions (Grouped Views, Downloads, Download Button, Zoom, Close) */}
+          <div
+            className="absolute top-6 right-6 z-50 flex items-center gap-2 md:gap-3 bg-black/40 backdrop-blur-md p-2 rounded-full border border-white/10 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Views Stat */}
+            <span className="text-white/90 text-xs font-bold flex items-center gap-1.5 px-3 select-none">
+              <Eye className="w-4 h-4 text-blue-400 shrink-0" />
+              <span className="hidden sm:inline">{(images[currentIndex]?.viewCount ?? 0).toLocaleString()} <span className="text-white/70">Visitors</span></span>
+              <span className="sm:hidden">{(images[currentIndex]?.viewCount ?? 0).toLocaleString()}</span>
+            </span>
+
+            {/* Downloads Stat */}
+            {allowDownload && images[currentIndex]?.allowDownload !== false && (
+              <span className="text-white/90 text-xs font-bold flex items-center gap-1.5 px-3 border-l border-white/15 select-none">
+                <Download className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="hidden sm:inline">{((downloadCounts && downloadCounts[images[currentIndex]?.id]) ?? images[currentIndex]?.downloadCount ?? 0).toLocaleString()} Downloads</span>
+                <span className="sm:hidden">{((downloadCounts && downloadCounts[images[currentIndex]?.id]) ?? images[currentIndex]?.downloadCount ?? 0).toLocaleString()}</span>
+              </span>
+            )}
+
+            {/* Download Button */}
+            {allowDownload && images[currentIndex]?.allowDownload !== false && (
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  const img = images[currentIndex];
+                  if (img && onDownload) {
+                    await onDownload(img.id, currentIndex);
+                    if (onStatsUpdate) {
+                      const currentCount = (downloadCounts && downloadCounts[img.id]) ?? img.downloadCount ?? 0;
+                      onStatsUpdate(img.id, { downloadCount: currentCount + 1 });
+                    }
+                  }
+                }}
+                disabled={downloadingId === images[currentIndex]?.id}
+                className="h-9 px-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-65 text-white flex items-center gap-1.5 transition-all cursor-pointer font-bold text-xs shadow-md border border-emerald-500/20 active:scale-95"
+                title="Download Image"
+              >
+                {downloadingId === images[currentIndex]?.id ? (
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    <span className="hidden md:inline">Download</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            {/* Zoom Toggle */}
             <button
               onClick={() => setScale((prev) => (prev > 1 ? 1 : 2.5))}
-              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-sm"
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
               title={scale > 1 ? "Zoom Out" : "Zoom In"}
               aria-label={scale > 1 ? "Zoom out" : "Zoom in"}
             >
-              {scale > 1 ? <ZoomOut className="w-5 h-5" /> : <ZoomIn className="w-5 h-5" />}
+              {scale > 1 ? <ZoomOut className="w-4.5 h-4.5" /> : <ZoomIn className="w-4.5 h-4.5" />}
             </button>
 
+            {/* Close Button */}
             <button
               onClick={onClose}
-              className="w-10 h-10 rounded-full bg-white text-black hover:scale-110 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-lg"
+              className="w-9 h-9 rounded-full bg-white text-black hover:scale-105 flex items-center justify-center transition-all cursor-pointer shadow-md"
               title="Close Gallery"
               aria-label="Close modal"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 

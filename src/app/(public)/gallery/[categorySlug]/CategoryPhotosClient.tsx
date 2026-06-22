@@ -136,9 +136,14 @@ export default function CategoryPhotosClient({ params }: { params: Promise<{ cat
                     }}
                     className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                   />
-                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5" />
-                    {album._count?.images || album.images?.length || 0} Photos
+                  <div className="absolute top-4 right-4 flex flex-col items-end gap-1 select-none pointer-events-none">
+                    <div className="bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      <ImageIcon className="w-3 h-3" />
+                      {album._count?.images || album.images?.length || 0} Photos
+                    </div>
+                    <div className="bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      Downloads: {(album.images?.reduce((sum: number, img: any) => sum + (img.downloadCount || 0), 0) || 0).toLocaleString()}
+                    </div>
                   </div>
                 </div>
 

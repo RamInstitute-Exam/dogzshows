@@ -109,14 +109,16 @@ export default function HomepageBannersAdmin() {
   const moveUp = async (index: number) => {
     if (index === 0) return;
     const newBanners = [...banners];
-    const temp = newBanners[index - 1].displayOrder;
-    newBanners[index - 1].displayOrder = newBanners[index].displayOrder;
-    newBanners[index].displayOrder = temp;
-
-    // Swap in array for immediate UI update
+    
+    // Swap items in array
     const item = newBanners[index];
     newBanners.splice(index, 1);
     newBanners.splice(index - 1, 0, item);
+
+    // Re-assign strict order 1, 2, 3...
+    newBanners.forEach((b, i) => {
+      b.displayOrder = i + 1;
+    });
     setBanners(newBanners);
 
     // Save to DB
@@ -126,14 +128,16 @@ export default function HomepageBannersAdmin() {
   const moveDown = async (index: number) => {
     if (index === banners.length - 1) return;
     const newBanners = [...banners];
-    const temp = newBanners[index + 1].displayOrder;
-    newBanners[index + 1].displayOrder = newBanners[index].displayOrder;
-    newBanners[index].displayOrder = temp;
-
-    // Swap in array for immediate UI update
+    
+    // Swap items in array
     const item = newBanners[index];
     newBanners.splice(index, 1);
     newBanners.splice(index + 1, 0, item);
+
+    // Re-assign strict order 1, 2, 3...
+    newBanners.forEach((b, i) => {
+      b.displayOrder = i + 1;
+    });
     setBanners(newBanners);
 
     // Save to DB
@@ -176,7 +180,7 @@ export default function HomepageBannersAdmin() {
             setCurrentBanner({
               status: 'ACTIVE',
               openNewTab: false,
-              displayOrder: banners.length,
+              displayOrder: banners.length > 0 ? Math.max(...banners.map(b => b.displayOrder || 0)) + 1 : 1,
               bannerMode: 'cover'
             });
             setIsModalOpen(true);

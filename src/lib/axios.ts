@@ -26,12 +26,26 @@ function isMutationMethod(method?: string): boolean {
 
 axiosInstance.interceptors.request.use(
   (req) => {
-    // Attach auth token
+    // Attach auth token and visitor ID
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
       if (token) {
         req.headers.set('Authorization', `Bearer ${token}`);
       }
+
+      let visitorId = localStorage.getItem('visitor_id');
+      if (!visitorId) {
+        try {
+          if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            visitorId = crypto.randomUUID();
+          }
+        } catch (e) {}
+        if (!visitorId) {
+          visitorId = 'v-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now().toString(36);
+        }
+        localStorage.setItem('visitor_id', visitorId);
+      }
+      req.headers.set('x-visitor-id', visitorId);
     }
     return req;
   },

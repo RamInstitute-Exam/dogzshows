@@ -1,13 +1,50 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, use, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Calendar, Camera, ImageIcon } from 'lucide-react';
+import Image from 'next/image';
+import { preload } from 'react-dom';
+import { ArrowLeft, MapPin, Calendar, Camera, ImageIcon, Download, Eye } from 'lucide-react';
 import Masonry from 'react-masonry-css';
 import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import ImageLightbox from '@/components/shared/ImageLightbox';
+
+// Returns the public backend base URL
+function getApiBase(): string {
+  if (typeof window === 'undefined') return '';
+  const envUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/api\/v1$/, '');
+  return envUrl || '';
+}
+
+// Observed wrapper for viewport views tracking
+function ObservedPhotoCard({ photoId, onVisible, children }: { photoId: string; onVisible: () => void; children: React.ReactNode }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const observed = useRef(false);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || observed.current) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !observed.current) {
+          observed.current = true;
+          onVisible();
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    observer.observe(el);
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, [photoId, onVisible]);
+
+  return <div ref={cardRef} className="w-full h-full relative">{children}</div>;
+}
 
 export default function AlbumDetailsClient({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -17,20 +54,25 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
   const [album, setAlbum] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadCounts, setDownloadCounts] = useState<Record<string, number>>({});
 
-  // Pagination states
+  // Pagination
   const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {
     async function fetchAlbumDetails() {
-      if (!slug) {
-        setLoading(false);
-        return;
-      }
+      if (!slug) { setLoading(false); return; }
       try {
         const res = await api.get(`/public/gallery/albums/${slug}`);
         if (res.success && res.data) {
           setAlbum(res.data);
+          // Seed local download count map from DB values
+          const counts: Record<string, number> = {};
+          (res.data.images || []).forEach((img: any) => {
+            counts[img.id] = img.downloadCount ?? 0;
+          });
+          setDownloadCounts(counts);
         }
       } catch (err) {
         console.error('Failed to fetch album details:', err);
@@ -41,15 +83,121 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
     fetchAlbumDetails();
   }, [slug]);
 
-  // Disable download handlers
-  const preventDownload = (e: React.MouseEvent | React.KeyboardEvent) => {
-    e.preventDefault();
-  };
+  // Preload first few images for LCP optimization
+  useEffect(() => {
+    if (album?.images && album.images.length > 0) {
+      const preloadCount = Math.min(album.images.length, 8);
+      for (let i = 0; i < preloadCount; i++) {
+        const url = getImageUrl(album.images[i].thumbnailUrl || album.images[i].imageUrl);
+        preload(url, { as: 'image' });
+      }
+    }
+  }, [album]);
 
-  const preventContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
-  };
+  const handlePhotoVisible = useCallback((photoId: string) => {
+    api.post(`/gallery/photo/${photoId}/view`)
+      .then((res) => {
+        if (res.success && res.viewCount !== undefined) {
+          setAlbum((prevAlbum: any) => {
+            if (!prevAlbum || !prevAlbum.images) return prevAlbum;
+            return {
+              ...prevAlbum,
+              images: prevAlbum.images.map((img: any) => 
+                img.id === photoId ? { ...img, viewCount: res.viewCount } : img
+              )
+            };
+          });
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to increment view count on viewport enter:', err);
+      });
+  }, []);
 
+  const handleDownload = useCallback(async (e: React.MouseEvent | null, photoId: string, index?: number) => {
+    if (e) e.stopPropagation(); // don't open lightbox
+    if (downloadingId) return;
+
+    setDownloadingId(photoId);
+    try {
+      const apiBase = getApiBase();
+      const url = `${apiBase}/api/v1/public/gallery/photos/${photoId}/download`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        alert(errData.message || 'Download failed. Please try again.');
+        return;
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      // Trigger browser download
+      const anchor = document.createElement('a');
+      anchor.href = objectUrl;
+      anchor.download = `juztdog-photo-${photoId.slice(0, 8)}.jpg`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(objectUrl);
+
+      // Optimistically increment local count
+      setDownloadCounts((prev) => ({
+        ...prev,
+        [photoId]: (prev[photoId] ?? 0) + 1,
+      }));
+      setAlbum((prevAlbum: any) => {
+        if (!prevAlbum || !prevAlbum.images) return prevAlbum;
+        return {
+          ...prevAlbum,
+          images: prevAlbum.images.map((img: any) => 
+            img.id === photoId ? { ...img, downloadCount: (img.downloadCount ?? 0) + 1 } : img
+          )
+        };
+      });
+    } catch (err) {
+      console.error('[download] Error:', err);
+      alert('Download failed. Please try again.');
+    } finally {
+      setDownloadingId(null);
+    }
+  }, [downloadingId]);
+
+  const handleStatsUpdate = useCallback((photoId: string, stats: { viewCount?: number; downloadCount?: number }) => {
+    if (stats.viewCount !== undefined) {
+      setAlbum((prevAlbum: any) => {
+        if (!prevAlbum || !prevAlbum.images) return prevAlbum;
+        return {
+          ...prevAlbum,
+          images: prevAlbum.images.map((img: any) => 
+            img.id === photoId ? { ...img, viewCount: stats.viewCount } : img
+          )
+        };
+      });
+    }
+    if (stats.downloadCount !== undefined) {
+      setDownloadCounts((prev) => ({
+        ...prev,
+        [photoId]: stats.downloadCount ?? 0,
+      }));
+      setAlbum((prevAlbum: any) => {
+        if (!prevAlbum || !prevAlbum.images) return prevAlbum;
+        return {
+          ...prevAlbum,
+          images: prevAlbum.images.map((img: any) => 
+            img.id === photoId ? { ...img, downloadCount: stats.downloadCount } : img
+          )
+        };
+      });
+    }
+  }, []);
+
+  // ─── Protection handlers ───────────────────────────────────────────────────
+  const preventDownload = (e: React.MouseEvent | React.DragEvent) => e.preventDefault();
+  const preventContextMenu = (e: React.MouseEvent) => e.preventDefault();
+
+  // ─── Loading / Not found ───────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
@@ -65,8 +213,8 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         <ImageIcon className="w-16 h-16 text-muted-foreground/30 mb-4" />
         <h1 className="text-3xl font-bold text-foreground">Album Not Found</h1>
         <p className="text-muted-foreground mt-2 mb-6">The photo album you are looking for does not exist or has been removed.</p>
-        <button 
-          onClick={() => router.back()} 
+        <button
+          onClick={() => router.back()}
           className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-foreground text-white font-bold hover:opacity-90 transition-opacity"
         >
           <ArrowLeft className="w-4 h-4" /> Go Back
@@ -75,19 +223,13 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
     );
   }
 
-  const masonryBreakpoints = {
-    default: 4,
-    1100: 3,
-    700: 2,
-    500: 1
-  };
-
+  const masonryBreakpoints = { default: 4, 1100: 3, 700: 2, 500: 1 };
   const displayedImages = album.images?.slice(0, visibleCount) || [];
   const hasMore = album.images && album.images.length > visibleCount;
+  const downloadsEnabled = album.allowDownload === true;
 
   return (
     <div onContextMenu={preventContextMenu} className="select-none no-download">
-      {/* CSS injection to disable image callouts and saving on iOS/Android */}
       <style jsx global>{`
         img {
           -webkit-touch-callout: none !important;
@@ -100,13 +242,12 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         }
       `}</style>
 
-      {/* Album Header/Banner */}
+      {/* Album Header */}
       <div className="relative w-full bg-background dark:bg-[#050505] overflow-hidden border-b border-border/40 pt-10 md:pt-16 pb-10 md:pb-12">
-        {/* Cover image blurred background */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
-          <img 
-            src={getImageUrl(album.coverImage)} 
-            alt="" 
+          <img
+            src={getImageUrl(album.coverImage)}
+            alt=""
             className="w-full h-full object-cover opacity-15 blur-2xl scale-110"
             onContextMenu={preventContextMenu}
           />
@@ -115,8 +256,8 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
 
         <PublicContainer className="relative z-10 w-full">
           <div className="space-y-6">
-            <button 
-              onClick={() => router.back()} 
+            <button
+              onClick={() => router.back()}
               className="group inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -124,65 +265,45 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
             </button>
 
             <div className="space-y-4">
-              <div className="flex flex-wrap gap-2.5">
-                <span className="bg-foreground/10 border border-border/20 text-foreground text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full">
-                  {album.category?.name || 'Photos'}
-                </span>
-                {album.club?.name && (
-                  <span className="bg-muted border border-border/40 text-muted-foreground text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full flex items-center gap-1">
-                    Club: {album.club.name}
-                  </span>
-                )}
-                {album.event?.name && (
-                  <span className="bg-muted border border-border/40 text-muted-foreground text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full flex items-center gap-1">
-                    <Camera className="w-3 h-3 shrink-0 text-foreground" />
-                    Show: {album.event.name}
-                  </span>
-                )}
-              </div>
-
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight max-w-4xl">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight max-w-4xl">
                 {album.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs md:text-sm font-medium text-muted-foreground">
-                {(album.city || album.state) && (
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-foreground shrink-0" />
-                    <span>{[album.city, album.state].filter(Boolean).join(', ')}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-foreground shrink-0" />
-                  <span>
-                    {album.albumDate 
-                      ? new Date(album.albumDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-                      : new Date(album.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {album.description && (
+                <p className="text-muted-foreground text-sm md:text-base font-medium max-w-3xl leading-relaxed">
+                  {album.description}
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs md:text-sm font-semibold text-muted-foreground pt-2">
+                {album.city && (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-4.5 h-4.5 text-foreground shrink-0" />
+                    {album.city}{album.state ? `, ${album.state}` : ''}
                   </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <ImageIcon className="w-4 h-4 text-foreground shrink-0" />
-                  <span>{album.images?.length || 0} Photos</span>
-                </div>
+                )}
+                {album.albumDate && (
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-4.5 h-4.5 text-foreground shrink-0" />
+                    {new Date(album.albumDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </span>
+                )}
               </div>
             </div>
-
-            {album.description && (
-              <p className="text-muted-foreground text-sm md:text-base max-w-3xl leading-relaxed border-l-2 border-border/50 pl-4 py-1">
-                {album.description}
-              </p>
-            )}
           </div>
         </PublicContainer>
       </div>
 
-      {/* Masonry / Grid of Photos */}
-      <PublicContainer className="py-16">
-        {(!album.images || album.images.length === 0) ? (
-          <div className="text-center py-20 bg-card rounded-[24px] border border-border border-dashed">
-            <ImageIcon className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-foreground">No Photos Found</h3>
-            <p className="text-muted-foreground text-sm mt-2">There are currently no photos uploaded to this album.</p>
+      {/* Masonry Image Gallery */}
+      <PublicContainer className="py-12 md:py-16">
+        {displayedImages.length === 0 ? (
+          <div className="text-center py-20 bg-muted/30 rounded-2xl border border-dashed border-border">
+            <ImageIcon className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">No photos uploaded to this album yet.</p>
           </div>
         ) : (
           <>
@@ -192,22 +313,75 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
               columnClassName="pl-4 bg-clip-padding"
             >
               {displayedImages.map((img: any, index: number) => (
-                <div 
-                  key={img.id || index} 
-                  className="mb-4 cursor-pointer overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300 select-none"
-                  onClick={() => setLightboxIndex(index)}
+                <div
+                  key={img.id || index}
+                  className="mb-4 overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300 select-none"
                   onContextMenu={preventContextMenu}
                 >
-                  <img 
-                    src={getImageUrl(img.imageUrl)} 
-                    alt={`${album.title} gallery ${index + 1}`} 
-                    loading="lazy"
-                    className="w-full block transform transition-transform duration-700 group-hover:scale-[1.03]" 
-                    style={{ pointerEvents: 'none' }}
-                    onContextMenu={preventContextMenu}
-                    onDragStart={preventDownload}
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                  <ObservedPhotoCard
+                    photoId={img.id}
+                    onVisible={() => handlePhotoVisible(img.id)}
+                  >
+                    {/* Photo (click → lightbox) */}
+                    <div
+                      className="cursor-pointer relative min-h-[200px]"
+                      onClick={() => setLightboxIndex(index)}
+                    >
+                      {/* Shimmer Skeleton Placeholder */}
+                      <div className="absolute inset-0 bg-muted/40 animate-pulse -z-10" />
+                      
+                      <Image
+                        src={getImageUrl(img.thumbnailUrl || img.imageUrl)}
+                        alt={`${album.title} gallery ${index + 1}`}
+                        priority={index < 12} // First 12 images load instantly
+                        loading={index < 12 ? undefined : "lazy"}
+                        width={800}
+                        height={1200}
+                        sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+                        unoptimized
+                        className="w-full block transform transition-transform duration-700 group-hover:scale-[1.03]"
+                        style={{ pointerEvents: 'none', width: '100%', height: 'auto' }}
+                        onContextMenu={preventContextMenu}
+                        onDragStart={preventDownload}
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
+                    </div>
+
+                    {/* Dark transparent overlay actions bar */}
+                    <div className="absolute inset-0 bg-black/45 z-10 flex flex-col justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      {/* Top Row: Views and Downloads */}
+                      <div className="flex justify-between items-center w-full pointer-events-auto">
+                        <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+                          <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                          {(img.viewCount ?? 0).toLocaleString()} Visitors
+                        </span>
+                        <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+                          <Download className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          {(downloadCounts[img.id] ?? img.downloadCount ?? 0).toLocaleString()}
+                        </span>
+                      </div>
+
+                      {/* Bottom Row: Download Button */}
+                      <div className="flex justify-center w-full pointer-events-auto mt-auto">
+                        {(downloadsEnabled && img.allowDownload !== false) && (
+                          <button
+                            onClick={(e) => handleDownload(e, img.id, index)}
+                            disabled={downloadingId === img.id}
+                            className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs md:text-sm transition-all shadow-lg border border-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+                          >
+                            {downloadingId === img.id ? (
+                              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                              <>
+                                <Download className="w-4 h-4" />
+                                Download
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </ObservedPhotoCard>
                 </div>
               ))}
             </Masonry>
@@ -215,7 +389,7 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
             {hasMore && (
               <div className="flex justify-center mt-12">
                 <button
-                  onClick={() => setVisibleCount(prev => prev + 12)}
+                  onClick={() => setVisibleCount((prev) => prev + 12)}
                   className="px-8 py-3 rounded-full bg-foreground hover:opacity-90 text-white font-bold transition-all shadow-md"
                 >
                   Load More Photos
@@ -226,12 +400,19 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         )}
       </PublicContainer>
 
-      {/* Premium Lightbox integration */}
-      <ImageLightbox 
-        images={album.images || []} 
-        initialIndex={lightboxIndex || 0} 
-        isOpen={lightboxIndex !== null} 
-        onClose={() => setLightboxIndex(null)} 
+      {/* Lightbox */}
+      <ImageLightbox
+        images={album.images || []}
+        initialIndex={lightboxIndex !== null ? lightboxIndex : 0}
+        isOpen={lightboxIndex !== null}
+        onClose={() => setLightboxIndex(null)}
+        allowDownload={downloadsEnabled}
+        onDownload={async (photoId, index) => {
+          await handleDownload(null, photoId, index);
+        }}
+        downloadingId={downloadingId}
+        downloadCounts={downloadCounts}
+        onStatsUpdate={handleStatsUpdate}
       />
     </div>
   );

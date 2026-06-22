@@ -136,6 +136,27 @@ export default function EventsPage() {
     return status;
   };
 
+  // Normalize text that may have been stored in ALL CAPS in the DB
+  // Converts "KENNEL CLUB OF BHOPAL" → "Kennel Club of Bhopal"
+  const toTitleCase = (str: string | null | undefined): string => {
+    if (!str) return '';
+    // Only convert if the entire string is uppercase (legacy DB data)
+    if (str === str.toUpperCase() && /[A-Z]/.test(str)) {
+      // Small words that shouldn't be capitalized in the middle of a title
+      const minors = new Set(['of', 'the', 'and', 'in', 'at', 'for', 'a', 'an', 'to', 'by', 'or']);
+      return str
+        .toLowerCase()
+        .split(' ')
+        .map((word, i) =>
+          i === 0 || !minors.has(word)
+            ? word.charAt(0).toUpperCase() + word.slice(1)
+            : word
+        )
+        .join(' ');
+    }
+    return str;
+  };
+
   return (
     <PageContainer>
       
@@ -255,18 +276,18 @@ export default function EventsPage() {
 
                     <div className="space-y-4 flex-1 pr-6">
                       <div>
-                        <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">{event.name}</h3>
-                        <p className="text-sm font-semibold text-muted-foreground">{event.club?.name || 'TBA'}</p>
+                        <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">{toTitleCase(event.name)}</h3>
+                        <p className="text-sm font-semibold text-muted-foreground">{toTitleCase(event.club?.name) || 'TBA'}</p>
                       </div>
 
                       <div className="grid grid-cols-1 gap-y-2 text-sm text-muted-foreground font-semibold">
                         <div className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-primary shrink-0" /> 
-                          <span className="truncate">{event.city ? `${event.city}, ${event.state || ''}` : event.venue || 'TBA'}</span>
+                          <span className="truncate">{event.city ? `${toTitleCase(event.city)}, ${toTitleCase(event.state) || ''}` : toTitleCase(event.venue) || 'TBA'}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Trophy className="w-4 h-4 text-primary shrink-0" /> 
-                          <span className="truncate">{event.type || 'Championship Show'}</span>
+                          <span className="truncate">{toTitleCase(event.type) || 'Championship Show'}</span>
                         </div>
                       </div>
                     </div>
