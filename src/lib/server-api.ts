@@ -13,8 +13,7 @@ export async function fetchServerData(endpoint: string, revalidate: number = 60)
   }
 
   try {
-    const separator = endpoint.includes('?') ? '&' : '?';
-    const url = `${getBaseUrl()}${endpoint}${separator}_cb=${Date.now()}`;
+    const url = `${getBaseUrl()}${endpoint}`;
     const res = await fetch(url, {
       next: { revalidate },
       headers: {
@@ -52,7 +51,7 @@ export async function getFeaturedVideos() {
 }
 
 export async function getFeaturedJudges() {
-  return fetchServerData('/public/judges', 60);
+  return fetchServerData('/public/judges?limit=8', 60);
 }
 
 export async function getFCIGroups() {
@@ -77,8 +76,7 @@ export async function fetchServerDataSingle(endpoint: string, revalidate: number
   }
 
   try {
-    const separator = endpoint.includes('?') ? '&' : '?';
-    const url = `${getBaseUrl()}${endpoint}${separator}_cb=${Date.now()}`;
+    const url = `${getBaseUrl()}${endpoint}`;
     const res = await fetch(url, {
       next: { revalidate },
       headers: {
@@ -133,5 +131,5 @@ export async function getClubBySlug(slug: string) {
 }
 
 export async function getPublicAlbumsAPI() {
-  return fetchServerData('/public/gallery/albums', 60);
+  return fetchServerData('/public/gallery/albums?limit=6', 60);
 }

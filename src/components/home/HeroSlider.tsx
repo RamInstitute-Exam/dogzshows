@@ -49,15 +49,17 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <img src="/Untitled-1.png" alt="Loading" className="w-[100px] h-auto animate-pulse opacity-50" />
+          <Image src="/Untitled-1.png" alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-50" />
         </div>
       )}
-      <img
+      <Image
         src={src}
         alt={alt}
+        width={1920}
+        height={1080}
         className="hero-image-render"
-        loading={isFirst ? "eager" : "lazy"}
-        onLoad={() => {
+        priority={isFirst}
+        onLoad={(e) => {
           setLoading(false);
           if (onLoadSuccess) onLoadSuccess();
         }}

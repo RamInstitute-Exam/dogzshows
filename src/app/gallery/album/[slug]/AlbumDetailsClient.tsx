@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { preload } from 'react-dom';
 import { ArrowLeft, MapPin, Calendar, Camera, ImageIcon, Download, Eye } from 'lucide-react';
-import Masonry from 'react-masonry-css';
+import { Masonry } from 'masonic';
 import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
@@ -18,37 +18,20 @@ function getApiBase(): string {
   return envUrl || '';
 }
 
-// Observed wrapper for viewport views tracking
-function ObservedPhotoCard({ photoId, onVisible, children }: { photoId: string; onVisible: () => void; children: React.ReactNode }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const observed = useRef(false);
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el || observed.current) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !observed.current) {
-          observed.current = true;
-          onVisible();
-          observer.unobserve(el);
-        }
-      });
-    }, { threshold: 0.15 });
-
-    observer.observe(el);
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, [photoId, onVisible]);
-
-  return <div ref={cardRef} className="w-full h-full relative">{children}</div>;
-}
+// Intersection observers removed for performance
 
 export default function AlbumDetailsClient({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
-  const slug = resolvedParams.slug;
+  let slug = resolvedParams.slug;
+
+  // If served via Firebase rewrite fallback (_/index.html), extract real slug from URL
+  if (slug === '_' && typeof window !== 'undefined') {
+    const match = window.location.pathname.match(/\/gallery\/album\/([^\/]+)/);
+    if (match && match[1]) {
+      slug = match[1];
+    }
+  }
+
   const router = useRouter();
 
   const [album, setAlbum] = useState<any>(null);
@@ -95,23 +78,7 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
   }, [album]);
 
   const handlePhotoVisible = useCallback((photoId: string) => {
-    api.post(`/gallery/photo/${photoId}/view`)
-      .then((res) => {
-        if (res.success && res.viewCount !== undefined) {
-          setAlbum((prevAlbum: any) => {
-            if (!prevAlbum || !prevAlbum.images) return prevAlbum;
-            return {
-              ...prevAlbum,
-              images: prevAlbum.images.map((img: any) => 
-                img.id === photoId ? { ...img, viewCount: res.viewCount } : img
-              )
-            };
-          });
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to increment view count on viewport enter:', err);
-      });
+    // Disabled view increment on scroll to prevent performance issues
   }, []);
 
   const handleDownload = useCallback(async (e: React.MouseEvent | null, photoId: string, index?: number) => {
@@ -151,7 +118,7 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         if (!prevAlbum || !prevAlbum.images) return prevAlbum;
         return {
           ...prevAlbum,
-          images: prevAlbum.images.map((img: any) => 
+          images: prevAlbum.images.map((img: any) =>
             img.id === photoId ? { ...img, downloadCount: (img.downloadCount ?? 0) + 1 } : img
           )
         };
@@ -170,7 +137,7 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         if (!prevAlbum || !prevAlbum.images) return prevAlbum;
         return {
           ...prevAlbum,
-          images: prevAlbum.images.map((img: any) => 
+          images: prevAlbum.images.map((img: any) =>
             img.id === photoId ? { ...img, viewCount: stats.viewCount } : img
           )
         };
@@ -185,7 +152,7 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         if (!prevAlbum || !prevAlbum.images) return prevAlbum;
         return {
           ...prevAlbum,
-          images: prevAlbum.images.map((img: any) => 
+          images: prevAlbum.images.map((img: any) =>
             img.id === photoId ? { ...img, downloadCount: stats.downloadCount } : img
           )
         };
@@ -298,105 +265,83 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         </PublicContainer>
       </div>
 
-      {/* Masonry Image Gallery */}
+      {/* Virtualized Masonry Image Gallery */}
       <PublicContainer className="py-12 md:py-16">
-        {displayedImages.length === 0 ? (
+        {(!album.images || album.images.length === 0) ? (
           <div className="text-center py-20 bg-muted/30 rounded-2xl border border-dashed border-border">
             <ImageIcon className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
             <p className="text-muted-foreground text-sm">No photos uploaded to this album yet.</p>
           </div>
         ) : (
-          <>
+          <div className="w-full">
             <Masonry
-              breakpointCols={masonryBreakpoints}
-              className="flex w-auto -ml-4"
-              columnClassName="pl-4 bg-clip-padding"
-            >
-              {displayedImages.map((img: any, index: number) => (
+              items={album.images}
+              columnGutter={16}
+              columnWidth={280}
+              overscanBy={2}
+              render={({ index, data: img, width }: { index: number; data: any; width: number }) => (
                 <div
-                  key={img.id || index}
                   className="mb-4 overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300 select-none"
                   onContextMenu={preventContextMenu}
                 >
-                  <ObservedPhotoCard
-                    photoId={img.id}
-                    onVisible={() => handlePhotoVisible(img.id)}
+                  <div
+                    className="cursor-pointer relative min-h-[200px]"
+                    onClick={() => setLightboxIndex(index)}
                   >
-                    {/* Photo (click → lightbox) */}
-                    <div
-                      className="cursor-pointer relative min-h-[200px]"
-                      onClick={() => setLightboxIndex(index)}
-                    >
-                      {/* Shimmer Skeleton Placeholder */}
-                      <div className="absolute inset-0 bg-muted/40 animate-pulse -z-10" />
-                      
-                      <Image
-                        src={getImageUrl(img.thumbnailUrl || img.imageUrl)}
-                        alt={`${album.title} gallery ${index + 1}`}
-                        priority={index < 12} // First 12 images load instantly
-                        loading={index < 12 ? undefined : "lazy"}
-                        width={800}
-                        height={1200}
-                        sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
-                        unoptimized
-                        className="w-full block transform transition-transform duration-700 group-hover:scale-[1.03]"
-                        style={{ pointerEvents: 'none', width: '100%', height: 'auto' }}
-                        onContextMenu={preventContextMenu}
-                        onDragStart={preventDownload}
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
+                    <div className="absolute inset-0 bg-muted/40 animate-pulse -z-10" />
+
+                    <Image
+                      src={getImageUrl(img.thumbnailUrl || img.imageUrl)}
+                      alt={`${album.title} gallery ${index + 1}`}
+                      priority={index < 8}
+                      loading={index < 8 ? undefined : "lazy"}
+                      width={400}
+                      height={600}
+                      quality={80}
+                      sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+                      className="w-full block transform transition-transform duration-700 group-hover:scale-[1.03]"
+                      style={{ pointerEvents: 'none', width: '100%', height: 'auto' }}
+                      onContextMenu={preventContextMenu}
+                      onDragStart={preventDownload}
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
+                  </div>
+
+                  <div className="absolute inset-0 bg-black/45 z-10 flex flex-col justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <div className="flex justify-between items-center w-full pointer-events-auto">
+                      <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+                        <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                        {(img.viewCount ?? 0).toLocaleString()} Visitors
+                      </span>
+                      <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+                        <Download className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        {(downloadCounts[img.id] ?? img.downloadCount ?? 0).toLocaleString()}
+                      </span>
                     </div>
 
-                    {/* Dark transparent overlay actions bar */}
-                    <div className="absolute inset-0 bg-black/45 z-10 flex flex-col justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                      {/* Top Row: Views and Downloads */}
-                      <div className="flex justify-between items-center w-full pointer-events-auto">
-                        <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
-                          <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                          {(img.viewCount ?? 0).toLocaleString()} Visitors
-                        </span>
-                        <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
-                          <Download className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          {(downloadCounts[img.id] ?? img.downloadCount ?? 0).toLocaleString()}
-                        </span>
-                      </div>
-
-                      {/* Bottom Row: Download Button */}
-                      <div className="flex justify-center w-full pointer-events-auto mt-auto">
-                        {(downloadsEnabled && img.allowDownload !== false) && (
-                          <button
-                            onClick={(e) => handleDownload(e, img.id, index)}
-                            disabled={downloadingId === img.id}
-                            className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs md:text-sm transition-all shadow-lg border border-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
-                          >
-                            {downloadingId === img.id ? (
-                              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                              <>
-                                <Download className="w-4 h-4" />
-                                Download
-                              </>
-                            )}
-                          </button>
-                        )}
-                      </div>
+                    <div className="flex justify-center w-full pointer-events-auto mt-auto">
+                      {(downloadsEnabled && img.allowDownload !== false) && (
+                        <button
+                          onClick={(e) => handleDownload(e, img.id, index)}
+                          disabled={downloadingId === img.id}
+                          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs md:text-sm transition-all shadow-lg border border-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                          {downloadingId === img.id ? (
+                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          ) : (
+                            <>
+                              <Download className="w-4 h-4" />
+                              Download
+                            </>
+                          )}
+                        </button>
+                      )}
                     </div>
-                  </ObservedPhotoCard>
+                  </div>
                 </div>
-              ))}
-            </Masonry>
-
-            {hasMore && (
-              <div className="flex justify-center mt-12">
-                <button
-                  onClick={() => setVisibleCount((prev) => prev + 12)}
-                  className="px-8 py-3 rounded-full bg-foreground hover:opacity-90 text-white font-bold transition-all shadow-md"
-                >
-                  Load More Photos
-                </button>
-              </div>
-            )}
-          </>
+              )}
+            />
+          </div>
         )}
       </PublicContainer>
 

@@ -7,8 +7,17 @@ import Masonry from 'react-masonry-css';
 import api, { getImageUrl } from '@/lib/api';
 import ImageLightbox from '@/components/shared/ImageLightbox';
 
-export default function ShowAlbumClient() {
-  const { id } = useParams();
+export default function OutdoorAlbumClient() {
+  const params = useParams();
+  let id = params.id as string;
+  
+  if (id === '_' && typeof window !== 'undefined') {
+    const match = window.location.pathname.match(/\/gallery\/outdoor\/([^\/]+)/);
+    if (match && match[1]) {
+      id = match[1];
+    }
+  }
+
   const router = useRouter();
   
   const [album, setAlbum] = useState<any>(null);
@@ -20,7 +29,7 @@ export default function ShowAlbumClient() {
   useEffect(() => {
     const fetchAlbum = async () => {
       try {
-        const res = await api.get(`/public/homepage-show-albums/${id}`);
+        const res = await api.get(`/public/homepage-outdoor-photos/${id}`);
         setAlbum(res.data);
       } catch (error) {
         console.error('Failed to load album:', error);
@@ -56,7 +65,7 @@ export default function ShowAlbumClient() {
       {/* Banner */}
       <div className="relative h-[400px] w-full bg-black">
         <div className="absolute inset-0">
-          <img src={getImageUrl(album.coverImage)} alt={album.title} className="w-full h-full object-cover opacity-50" />
+          <img src={getImageUrl(album.coverImage)} alt={album.albumName} className="w-full h-full object-cover opacity-50" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         
@@ -64,10 +73,11 @@ export default function ShowAlbumClient() {
           <button onClick={() => router.back()} className="flex items-center gap-2 text-white/80 hover:text-white font-medium mb-6 transition-colors">
             <ArrowLeft className="w-5 h-5" /> Back to Homepage
           </button>
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-md">{album.title}</h1>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-md">{album.albumName}</h1>
           <div className="flex flex-wrap items-center gap-6 text-white/90 font-medium">
+            {album.clubName && <span>⭐ {album.clubName}</span>}
             {album.location && <span>📍 {album.location}</span>}
-            {album.showDate && <span>📅 {new Date(album.showDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>}
+            {album.eventDate && <span>📅 {new Date(album.eventDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>}
             <span className="flex items-center gap-1"><ImageIcon className="w-4 h-4" /> {album.images?.length || 0} Photos</span>
           </div>
           {album.description && <p className="mt-6 text-white/80 max-w-3xl leading-relaxed">{album.description}</p>}

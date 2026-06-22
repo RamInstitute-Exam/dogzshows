@@ -33,13 +33,12 @@ interface EventData {
   club: { name: string };
 }
 
-export default function UpcomingEventsCarousel() {
+export default function UpcomingEventsCarousel({ initialEvents = [] }: { initialEvents?: any[] }) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
 
-  const { data, isLoading } = useEventsCMS();
-  let events: EventData[] = data?.success && Array.isArray(data.data) ? data.data : [];
+  let events: EventData[] = initialEvents;
 
   // Guarantee strict ascending chronological sorting & push past events to the bottom
   events = [...events].sort((a, b) => {
@@ -60,43 +59,6 @@ export default function UpcomingEventsCarousel() {
 
   // Limit to latest 10
   events = events.slice(0, 10);
-
-  // Skeleton Loader while API is loading
-  if (isLoading) {
-    return (
-      <section className="premium-section-spacing bg-background">
-        <div className="premium-container">
-          {/* Skeleton Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 sm:mb-16 gap-6">
-            <div className="space-y-4 w-full md:max-w-2xl">
-              <div className="h-4 w-32 bg-accent animate-pulse rounded" />
-              <div className="h-10 bg-accent/40 animate-pulse rounded w-3/4" />
-            </div>
-          </div>
-
-          {/* Skeleton Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="relative flex flex-col overflow-hidden h-[450px] animate-pulse bg-card border border-border rounded-[24px]"
-              >
-                <div className="h-[200px] w-full bg-accent/20 shrink-0" />
-                <div className="p-6 flex-1 flex flex-col space-y-6">
-                  <div className="h-6 bg-accent/20 rounded w-full" />
-                  <div className="space-y-4">
-                    <div className="h-12 bg-accent/10 rounded w-full" />
-                    <div className="h-12 bg-accent/10 rounded w-full" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   // If loading is complete and no events exist, hide the section completely
   if (events.length === 0) {
     return null;
@@ -175,16 +137,19 @@ export default function UpcomingEventsCarousel() {
                     >
                       {/* 1. Banner Image */}
                       <div className="h-[200px] w-full relative overflow-hidden shrink-0 bg-accent">
-                        <Image
-                          src={imageSrc}
-                          alt={event.name}
-                          fill
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                          loading="lazy"
-                          onError={() => {
-                            setImgErrors((prev) => ({ ...prev, [event.id]: true }));
-                          }}
-                        />
+                          <Image
+                            src={imageSrc}
+                            alt={event.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                            loading={i < 2 ? undefined : "lazy"}
+                            priority={i < 2}
+                            quality={80}
+                            onError={() => {
+                              setImgErrors((prev) => ({ ...prev, [event.id]: true }));
+                            }}
+                          />
 
                         {/* Dark Gradient Overlay for text readability */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />

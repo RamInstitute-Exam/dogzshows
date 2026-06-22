@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+
 import { motion } from 'framer-motion';
 import { MapPin, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
@@ -27,37 +26,11 @@ interface ClubData {
   };
 }
 
-export default function FeaturedClubsSlider() {
+export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClubs?: any[] }) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
 
-  const { data: response, isLoading } = useQuery({
-    queryKey: ['featured-clubs'],
-    queryFn: async () => {
-      return api.get('/public/clubs', { params: { limit: 10 } });
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const clubs: ClubData[] = response?.data || response?.items || [];
-
-  if (isLoading) {
-    return (
-      <section className="w-full pt-16 pb-20 bg-background relative overflow-hidden">
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 xl:px-12">
-          <div className="mb-10 sm:mb-16">
-            <div className="h-6 w-48 bg-accent animate-pulse rounded mb-4" />
-            <div className="h-10 w-3/4 max-w-2xl bg-accent/40 animate-pulse rounded" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-[480px] bg-accent/20 animate-pulse rounded-[24px]" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const clubs: ClubData[] = initialClubs;
 
   if (!clubs.length) return null;
 

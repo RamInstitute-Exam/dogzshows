@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, Video, Trophy, Radio, Image as ImageIcon, Building2, HelpCircle, ArrowRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
-import api, { getImageUrl } from '@/lib/api';
+import Image from 'next/image';
+import { getImageUrl } from '@/lib/api';
 
 // Map string identifier to React component
 const renderIcon = (iconName: string) => {
@@ -35,28 +36,8 @@ const iconStyles: Record<string, { bg: string; text: string }> = {
   Building2: { bg: 'from-emerald-500/20 to-emerald-500/5', text: 'text-emerald-500' },
 };
 
-export default function AboutUsSection() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api.get('/public/homepage-about-section')
-      .then(res => {
-        if (res.data) {
-          setData(res.data);
-        }
-      })
-      .catch(err => console.error('Error fetching About section details:', err))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="w-full py-20 flex justify-center items-center">
-        <div className="w-10 h-10 border-4 border-foreground/20 border-t-foreground rounded-full animate-spin" />
-      </div>
-    );
-  }
+export default function AboutUsSection({ initialData }: { initialData?: any }) {
+  const data = initialData;
 
   if (!data || data.status === 'INACTIVE') {
     return null;
@@ -221,10 +202,11 @@ const ImageOrPlaceholder = ({ src, index }: { src: string | undefined; index: nu
       className={`w-full ${heightStyles[index]} rounded-[24px] overflow-hidden shadow-lg hover:shadow-2xl border border-border/10 dark:border-white/5 relative group bg-card/40 backdrop-blur flex items-center justify-center transition-all duration-300`}
     >
       {hasImage ? (
-        <img
+        <Image
           src={getImageUrl(src)}
           alt={`Branding Section Gallery Item ${index + 1}`}
-          loading="lazy"
+          fill
+          sizes="(max-width: 768px) 50vw, 25vw"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (

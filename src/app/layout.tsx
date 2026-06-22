@@ -9,6 +9,7 @@ import AuthModal from '@/components/auth/AuthModal';
 import { Toaster } from 'sonner';
 import { LoaderProvider } from '@/components/common/loader/LoaderProvider';
 import ScrollPreservationProvider from '@/components/providers/ScrollPreservationProvider';
+import PublicLayoutWrapper from '@/components/layout/PublicLayoutWrapper';
 
 const mulish = Mulish({ 
   subsets: ["latin"], 
@@ -51,7 +52,9 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <LoaderProvider>
                 <QueryProvider>
-                  {children}
+                  <PublicLayoutWrapper>
+                    {children}
+                  </PublicLayoutWrapper>
                   <AuthModal />
                   <Toaster position="top-right" richColors />
                 </QueryProvider>

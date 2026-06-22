@@ -45,9 +45,9 @@ function ObservedPhotoCard({ photoId, onVisible, children }: { photoId: string; 
   return <div ref={cardRef} className="w-full h-full relative">{children}</div>;
 }
 
-export default function SlidingPhotoSections() {
-  const [sections, setSections] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function SlidingPhotoSections({ initialSections = [] }: { initialSections?: any[] }) {
+  const [sections, setSections] = useState<any[]>(initialSections);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Lightbox State
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -59,49 +59,21 @@ export default function SlidingPhotoSections() {
   const [downloadCounts, setDownloadCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await api.get('/public/homepage-sliding-sections/public');
-        const sectionsData = res.data || [];
-        setSections(sectionsData);
+    // Seed initial download counts
+    const counts: Record<string, number> = {};
+    initialSections.forEach((sec: any) => {
+      (sec.images || []).forEach((img: any) => {
+        counts[img.id] = img.downloadCount ?? 0;
+      });
+    });
+    setDownloadCounts(counts);
+    setSections(initialSections);
+  }, [initialSections]);
 
-        // Seed initial download counts
-        const counts: Record<string, number> = {};
-        sectionsData.forEach((sec: any) => {
-          (sec.images || []).forEach((img: any) => {
-            counts[img.id] = img.downloadCount ?? 0;
-          });
-        });
-        setDownloadCounts(counts);
-      } catch (error) {
-        console.error('Failed to load sliding sections:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+
 
   const handlePhotoVisible = useCallback((sectionId: string, photoId: string) => {
-    api.post(`/gallery/photo/${photoId}/view`)
-      .then((res) => {
-        if (res.success && res.viewCount !== undefined) {
-          setSections((prevSections) => 
-            prevSections.map((sec) => {
-              if (sec.id !== sectionId) return sec;
-              return {
-                ...sec,
-                images: sec.images.map((img: any) => 
-                  img.id === photoId ? { ...img, viewCount: res.viewCount } : img
-                )
-              };
-            })
-          );
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to increment view count on viewport enter:', err);
-      });
+    // Disabled to prevent massive performance issues on scroll
   }, []);
 
   const handleDownload = useCallback(async (e: React.MouseEvent | null, photoId: string) => {
@@ -249,10 +221,7 @@ export default function SlidingPhotoSections() {
                 >
                   {section.images.map((img: any, idx: number) => (
                     <SwiperSlide key={img.id || idx}>
-                      <ObservedPhotoCard
-                        photoId={img.id}
-                        onVisible={() => handlePhotoVisible(section.id, img.id)}
-                      >
+                      {/* Removed ObservedPhotoCard for performance */}
                         <div
                           onClick={() => {
                             setLightboxImages(section.images);
@@ -267,9 +236,10 @@ export default function SlidingPhotoSections() {
                             fill={false}
                             width={800}
                             height={1200}
-                            quality={100}
-                            unoptimized
-                            sizes="100vw"
+                            quality={80}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                            loading={idx < 2 ? undefined : "lazy"}
+                            priority={idx < 2}
                             className="personal-photo-image photo-card-img transform transition-transform duration-700 group-hover:scale-[1.03]"
                             style={{ pointerEvents: 'none' }}
                             onContextMenu={preventContextMenu}
@@ -311,7 +281,6 @@ export default function SlidingPhotoSections() {
                             </div>
                           </div>
                         </div>
-                      </ObservedPhotoCard>
                     </SwiperSlide>
                   ))}
                 </Swiper>
