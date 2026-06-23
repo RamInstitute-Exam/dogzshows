@@ -7,6 +7,7 @@ import { Calendar, MapPin, Image as ImageIcon, ArrowRight, Camera } from 'lucide
 import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function OutdoorPhotosPage() {
   const [albums, setAlbums] = useState<any[]>([]);
@@ -34,7 +35,7 @@ export default function OutdoorPhotosPage() {
       <div className="w-full bg-background dark:bg-[#050505] py-16 md:py-24 border-b border-border/40 relative overflow-hidden">
         {/* Background Image & Gradient Overlays */}
         <div className="absolute inset-0 z-0">
-          <img 
+          <OptimizedImage 
             src="https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=2000&auto=format&fit=crop" 
             alt="Outdoor Dog Show" 
             className="w-full h-full object-cover"
@@ -80,41 +81,39 @@ export default function OutdoorPhotosPage() {
               <Link 
                 key={album.id}
                 href={`/gallery/album/${album.slug}`}
-                className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
+                className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-md hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] h-[500px] md:h-[600px] mx-auto"
               >
                 {/* Cover Image */}
-                <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
+                <div className="relative w-full h-[240px] md:h-[320px] shrink-0 overflow-hidden bg-black">
                   <Image
                     src={getImageUrl(album.coverImage)}
                     alt={album.title}
-                    fill={false}
-                    width={800}
-                    height={1200}
+                    fill
                     quality={100}
-                    unoptimized
-                    sizes="100vw"
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      objectFit: "contain",
-                      objectPosition: "center"
-                    }}
-                    className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
+                    className="gallery-image transition-transform duration-700 group-hover:scale-[1.05] object-cover object-center"
                   />
-                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
+                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 z-10 shadow-md">
                     <ImageIcon className="w-3.5 h-3.5" />
                     {album._count?.images || album.images?.length || 0} Photos
                   </div>
                 </div>
 
                 {/* Card Info */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
+                <div className="p-6 flex-grow flex flex-col justify-between min-h-0">
+                  <div className="space-y-1">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 min-h-[3rem] md:min-h-[3.5rem]">
                       {album.title}
                     </h3>
                     
-                    <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium">
+                    <div className="text-[14px] font-medium text-primary leading-snug line-clamp-1 min-h-[1.25rem] md:min-h-[1.5rem]">
+                      {album.subtitle || <span className="invisible">No Subtitle</span>}
+                    </div>
+
+                    <div className="text-[13px] font-normal text-muted-foreground leading-snug line-clamp-2 mt-2 min-h-[2.5rem] md:min-h-[2.75rem]">
+                      {album.shortDescription || album.description || <span className="invisible">No Description</span>}
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium pt-2 min-h-[2.75rem] justify-end">
                       {(album.city || album.state || album.location) && (
                         <div className="flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5 text-foreground shrink-0" />
@@ -134,7 +133,7 @@ export default function OutdoorPhotosPage() {
                     </div>
                   </div>
 
-                  <div className="w-full pt-4 border-t border-border/40 mt-4">
+                  <div className="w-full pt-4 border-t border-border/40 shrink-0 mt-auto">
                     <div className="w-full py-3 rounded-xl bg-muted group-hover:bg-foreground group-hover:text-white text-foreground text-center font-bold text-sm transition-all flex items-center justify-center gap-1.5">
                       View Album
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

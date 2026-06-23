@@ -9,6 +9,7 @@ import Link from 'next/link';
 import api from '@/services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface DocumentDropzoneProps {
   label: string;
@@ -871,7 +872,7 @@ ${formData.remarks || ''}
                 
                 {formData.dogPhoto && (
                   <div className="w-full h-56 rounded-2xl overflow-hidden border border-border bg-accent relative">
-                    <img src={formData.dogPhoto} alt="Dog Photo Preview" className="w-full h-full object-cover" />
+                    <OptimizedImage src={formData.dogPhoto} alt="Dog Photo Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
 

@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 import LogoutModal from '@/components/auth/LogoutModal';
 import { ADMIN_ROUTES, USER_ROUTES } from '@/config/navigation';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function ProfileDropdown() {
   const { user } = useAuthStore();
@@ -78,7 +79,7 @@ export default function ProfileDropdown() {
         <div className="relative">
           <div className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-foreground font-bold text-sm shadow-sm overflow-hidden">
             {user?.profileImage ? (
-              <img src={user.profileImage} alt={user.firstName} className="w-full h-full object-cover" />
+              <OptimizedImage src={user.profileImage} alt={user.firstName} className="w-full h-full object-cover" />
             ) : (
               <span className="uppercase">{user?.firstName?.[0] || 'G'}</span>
             )}
@@ -112,7 +113,7 @@ export default function ProfileDropdown() {
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-foreground flex items-center justify-center text-foreground font-bold text-xl shadow-md overflow-hidden shrink-0">
                   {user?.profileImage ? (
-                    <img src={user.profileImage} alt={user.firstName} className="w-full h-full object-cover" />
+                    <OptimizedImage src={user.profileImage} alt={user.firstName} className="w-full h-full object-cover" />
                   ) : (
                     <span className="uppercase">{user?.firstName?.[0] || 'G'}</span>
                   )}

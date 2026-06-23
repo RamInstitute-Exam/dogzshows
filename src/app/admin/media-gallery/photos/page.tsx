@@ -9,6 +9,7 @@ import { useAdminMediaImages, useMediaCategories, useMediaAlbums } from '@/hooks
 import { getImageUrl } from '@/lib/api';
 import api from '@/lib/api';
 import ImageUploader from '@/components/shared/ImageUploader';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface PhotoFormData {
   id?: string;
@@ -116,7 +117,7 @@ export default function PhotosManagement() {
   }, [page, search]);
 
   const columns: ColumnDefinition<any>[] = [
-    { header: 'Preview', accessor: (p) => <img src={getImageUrl(p.imageUrl)} alt="Preview" className="w-16 h-12 object-cover rounded-lg border border-border" /> },
+    { header: 'Preview', accessor: (p) => <OptimizedImage src={getImageUrl(p.imageUrl)} alt="Preview" className="w-16 h-12 object-cover rounded-lg border border-border" /> },
     { header: 'Title', accessor: 'title', className: 'font-bold text-foreground' },
     { header: 'Category', accessor: (p) => p.category?.name || 'Uncategorized' },
     { header: 'Album', accessor: (p) => p.album?.title || 'None' },

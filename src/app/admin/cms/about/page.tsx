@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function AboutSectionAdminPage() {
   const [settings, setSettings] = useState<any>({
@@ -366,7 +367,7 @@ export default function AboutSectionAdminPage() {
                 <div key={idx} className="border border-border/80 rounded-2xl bg-background overflow-hidden relative flex flex-col justify-between group aspect-[3/4]">
                   {imgUrl ? (
                     <div className="w-full h-full relative">
-                      <img 
+                      <OptimizedImage 
                         src={getImageUrl(imgUrl)} 
                         alt={`Grid Image ${idx + 1}`} 
                         className="w-full h-full object-cover" 

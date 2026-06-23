@@ -6,6 +6,7 @@ import { Play, Clock, Eye, Calendar, X, Loader2, Video } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
 import { useMediaVideos, useVideoCategories } from '@/hooks/useMedia';
 import Link from 'next/link';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function VideoGallery() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -96,7 +97,7 @@ export default function VideoGallery() {
                     onClick={() => setActiveVideo(video)}
                   >
                     <div className="relative aspect-video overflow-hidden">
-                      <img 
+                      <OptimizedImage 
                         src={thumbSrc} 
                         alt={video.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -196,7 +197,7 @@ export default function VideoGallery() {
                       onClick={() => setActiveVideo(video)}
                     >
                       <div className="relative w-32 aspect-video rounded-xl overflow-hidden shrink-0">
-                        <img src={rThumbSrc} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <OptimizedImage src={rThumbSrc} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                         <div className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded font-bold">
                           {video.duration || '0:00'}
                         </div>

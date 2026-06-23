@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function CreateEventForm() {
   const router = useRouter();
@@ -604,7 +605,7 @@ export default function CreateEventForm() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                       {judge.photoUrl && (
-                                        <img src={judge.photoUrl} alt="" className="w-6 h-6 rounded-full object-cover shrink-0" />
+                                        <OptimizedImage src={judge.photoUrl} alt="" className="w-6 h-6 rounded-full object-cover shrink-0" />
                                       )}
                                       <span className="font-semibold text-foreground">{judge.name}</span>
                                       {judge.country && <span className="text-xs text-muted-foreground">({judge.country})</span>}

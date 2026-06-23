@@ -7,6 +7,7 @@ import api from '@/lib/api';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function ClubManagement() {
   const router = useRouter();
@@ -233,7 +234,7 @@ export default function ClubManagement() {
       accessor: (c) => (
         <div className="relative group/logo w-12 h-12 rounded-xl overflow-hidden border border-border bg-accent flex items-center justify-center shadow-inner">
           {c.logoUrl ? (
-            <img src={c.logoUrl} alt={c.name} className="w-full h-full object-cover group-hover/logo:scale-110 transition-transform duration-300" />
+            <OptimizedImage src={c.logoUrl} alt={c.name} className="w-full h-full object-cover group-hover/logo:scale-110 transition-transform duration-300" />
           ) : (
             <Tent className="w-6 h-6 text-muted-foreground" />
           )}
@@ -451,7 +452,7 @@ export default function ClubManagement() {
               <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
                 <div className="w-24 h-24 rounded-2xl overflow-hidden border border-border bg-accent shrink-0 flex items-center justify-center">
                   {selectedClub.logoUrl ? (
-                    <img src={selectedClub.logoUrl} alt={selectedClub.name} className="w-full h-full object-cover" />
+                    <OptimizedImage src={selectedClub.logoUrl} alt={selectedClub.name} className="w-full h-full object-cover" />
                   ) : (
                     <Tent className="w-12 h-12 text-muted-foreground" />
                   )}

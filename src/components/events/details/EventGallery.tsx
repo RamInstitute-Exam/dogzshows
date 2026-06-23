@@ -2,6 +2,7 @@
 
 import { Image as ImageIcon, PlayCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function EventGallery() {
   const media = [
@@ -26,7 +27,7 @@ export default function EventGallery() {
             transition={{ delay: i * 0.1 }}
             className={`relative rounded-2xl overflow-hidden group cursor-pointer ${item.span}`}
           >
-            <img src={item.src} alt="Gallery" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <OptimizedImage src={item.src} alt="Gallery" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
               {item.type === 'video' ? (
                 <PlayCircle className="w-12 h-12 text-foreground/90 drop-shadow-lg group-hover:scale-110 transition-transform" />

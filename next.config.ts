@@ -2,10 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  trailingSlash: true,
+  trailingSlash: false,
   images: {
-    unoptimized: true,
-    qualities: [100, 75, 80, 90],
+    loader: 'custom',
+    loaderFile: './src/lib/image-loader.ts',
+    qualities: [100, 75, 80, 90, 100],
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
       { protocol: 'http', hostname: 'localhost' },

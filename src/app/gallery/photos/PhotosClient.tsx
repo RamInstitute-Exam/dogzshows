@@ -159,7 +159,6 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                         width={800}
                         height={1200}
                         quality={100}
-                        unoptimized
                         sizes="100vw"
                         style={{
                           width: '100%',

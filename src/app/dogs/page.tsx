@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface DogProfile {
   id: string;
@@ -441,7 +442,7 @@ export default function SearchPage() {
               
               <div className="h-28 w-28 rounded-2xl overflow-hidden border-2 border-indigo-400/30 flex-shrink-0">
                 {aiRecommendation.images && aiRecommendation.images.length > 0 ? (
-                  <img src={getImageUrl(aiRecommendation.images[0].url)} alt="" className="h-full w-full object-cover" />
+                  <OptimizedImage src={getImageUrl(aiRecommendation.images[0].url)} alt="" className="h-full w-full object-cover" />
                 ) : (
                   <div className="bg-indigo-900 flex items-center justify-center h-full w-full"><Sparkles className="w-8 h-8 text-indigo-300" /></div>
                 )}
@@ -594,7 +595,7 @@ export default function SearchPage() {
                       >
                         <div className="h-44 w-full sm:w-56 bg-card relative flex-shrink-0">
                           {dog.images && dog.images.length > 0 ? (
-                            <img src={getImageUrl(dog.images[0].url)} alt="" className="h-full w-full object-cover" />
+                            <OptimizedImage src={getImageUrl(dog.images[0].url)} alt="" className="h-full w-full object-cover" />
                           ) : (
                             <div className="flex items-center justify-center h-full w-full"><Compass className="w-7 h-7 text-indigo-300" /></div>
                           )}
@@ -666,7 +667,7 @@ export default function SearchPage() {
                         >
                           <div className="h-7 w-7 rounded-lg overflow-hidden flex-shrink-0">
                             {dog.images && dog.images.length > 0 ? (
-                              <img src={getImageUrl(dog.images[0].url)} alt="" className="h-full w-full object-cover" />
+                              <OptimizedImage src={getImageUrl(dog.images[0].url)} alt="" className="h-full w-full object-cover" />
                             ) : (
                               <div className="bg-indigo-50 h-full w-full"></div>
                             )}
@@ -705,7 +706,7 @@ export default function SearchPage() {
                   >
                     <div className="h-10 w-10 rounded-lg overflow-hidden bg-card flex-shrink-0">
                       {dog.images && dog.images.length > 0 ? (
-                        <img src={getImageUrl(dog.images[0].url)} alt="" className="h-full w-full object-cover" />
+                        <OptimizedImage src={getImageUrl(dog.images[0].url)} alt="" className="h-full w-full object-cover" />
                       ) : (
                         <div className="bg-indigo-50 h-full w-full"></div>
                       )}

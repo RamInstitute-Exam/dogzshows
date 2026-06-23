@@ -8,6 +8,7 @@ import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import ImageLightbox from '@/components/shared/ImageLightbox';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 function PublicAlbumDetailsPageContent() {
   const searchParams = useSearchParams();
@@ -76,7 +77,7 @@ function PublicAlbumDetailsPageContent() {
       <div className="relative w-full bg-background dark:bg-[#050505] overflow-hidden border-b border-border/40 pt-10 md:pt-16 pb-10 md:pb-12">
         {/* Cover image blurred background */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
-          <img 
+          <OptimizedImage 
             src={getImageUrl(album.coverImage)} 
             alt="" 
             className="w-full h-full object-cover opacity-15 blur-2xl scale-110"
@@ -158,7 +159,7 @@ function PublicAlbumDetailsPageContent() {
                 className="mb-4 cursor-pointer overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300"
                 onClick={() => setLightboxIndex(index)}
               >
-                <img 
+                <OptimizedImage 
                   src={getImageUrl(img.imageUrl)} 
                   alt={`${album.title} gallery ${index + 1}`} 
                   loading="lazy"

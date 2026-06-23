@@ -6,6 +6,7 @@ import { ArrowRight, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import PublicContainer from '@/components/layout/PublicContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export interface FCIGroup {
   id: string;
@@ -75,7 +76,7 @@ export default function FCIGroupGrid({ groups }: FCIGroupGridProps) {
                 >
                   {/* Background Image */}
                   {group.cardImage && (
-                    <img 
+                    <OptimizedImage 
                       src={group.cardImage} 
                       alt={group.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

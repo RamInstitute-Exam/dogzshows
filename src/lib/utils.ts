@@ -29,3 +29,11 @@ export function toTitleCase(str: string | null | undefined): string {
   }
   return cleanStr;
 }
+
+export function formatTitle(text: string | null | undefined): string {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .replace(/\b\w/g, char => char.toUpperCase());
+}
+

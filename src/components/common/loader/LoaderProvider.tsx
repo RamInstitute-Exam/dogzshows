@@ -24,9 +24,9 @@ export const LoaderProvider = ({ children }: { children: React.ReactNode }) => {
       const exitTimer = setTimeout(() => {
         setIsBootstrapped(true);
         setIsExiting(false);
-      }, 300); // Fast fade
+      }, 500); // Smooth fade out duration
       return () => clearTimeout(exitTimer);
-    }, 1000);
+    }, 800); // Show for a short duration
 
     return () => clearTimeout(timer);
   }, []);

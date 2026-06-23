@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { config } from '@/lib/config';
 import api from '@/services/api';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface PageBanner {
   id: string;
@@ -149,7 +150,7 @@ export default function PageBannersCMS() {
                         /{banner.pageSlug}
                       </td>
                       <td className="p-4">
-                        <img src={banner.bannerImage} alt={banner.title} className="w-32 h-16 object-cover rounded-md border border-border" />
+                        <OptimizedImage src={banner.bannerImage} alt={banner.title} className="w-32 h-16 object-cover rounded-md border border-border" />
                       </td>
                       <td className="p-4">
                         <div className="font-bold text-foreground">{banner.title}</div>
@@ -222,7 +223,7 @@ export default function PageBannersCMS() {
                       required
                     />
                     {currentBanner?.bannerImage && (
-                      <img src={currentBanner.bannerImage} alt="Preview" className="mt-2 h-24 w-full object-cover rounded border border-border" />
+                      <OptimizedImage src={currentBanner.bannerImage} alt="Preview" className="mt-2 h-24 w-full object-cover rounded border border-border" />
                     )}
                   </div>
 

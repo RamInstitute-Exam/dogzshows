@@ -14,6 +14,7 @@ import api from '@/lib/api';
 import { ADMIN_ROUTES } from '@/config/navigation';
 import { Spinner } from '@/components/common/loader/Spinner';
 import { useRouter } from 'next/navigation';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -84,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           
           <div className="flex items-center">
             <Link href="/admin" className="flex items-center h-full">
-              <img src="/Untitled-1.png" alt="JuzDog Admin" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
+              <OptimizedImage src="/Untitled-1.png" alt="JuzDog Admin" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
             </Link>
           </div>
         </div>

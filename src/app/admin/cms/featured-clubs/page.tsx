@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function FeaturedClubsAdmin() {
   const [clubs, setClubs] = useState<any[]>([]);
@@ -178,7 +179,7 @@ export default function FeaturedClubsAdmin() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
                           {club.logoUrl ? (
-                            <img src={club.logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
+                            <OptimizedImage src={club.logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center font-bold text-gray-400">
                               {club.name.charAt(0)}

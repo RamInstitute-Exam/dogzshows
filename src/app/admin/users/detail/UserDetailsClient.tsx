@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { config } from '@/lib/config';
 import api from '@/services/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function UserDetailsView() {
   const params = useParams();
@@ -69,7 +70,7 @@ export default function UserDetailsView() {
             </Link>
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center text-2xl font-bold text-foreground overflow-hidden border-2 border-border">
-                {user.avatarUrl ? <img src={user.avatarUrl} className="w-full h-full object-cover" /> : (user.firstName?.charAt(0) || 'U')}
+                {user.avatarUrl ? <OptimizedImage src={user.avatarUrl} className="w-full h-full object-cover" /> : (user.firstName?.charAt(0) || 'U')}
               </div>
               <div>
                 <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">

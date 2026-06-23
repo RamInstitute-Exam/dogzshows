@@ -9,6 +9,8 @@ import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
+import { toTitleCase, formatTitle } from '@/lib/utils';
 
 export default function EventsPage() {
   const [events, setEvents] = useState<any[]>([]);
@@ -136,26 +138,7 @@ export default function EventsPage() {
     return status;
   };
 
-  // Normalize text that may have been stored in ALL CAPS in the DB
-  // Converts "KENNEL CLUB OF BHOPAL" → "Kennel Club of Bhopal"
-  const toTitleCase = (str: string | null | undefined): string => {
-    if (!str) return '';
-    // Only convert if the entire string is uppercase (legacy DB data)
-    if (str === str.toUpperCase() && /[A-Z]/.test(str)) {
-      // Small words that shouldn't be capitalized in the middle of a title
-      const minors = new Set(['of', 'the', 'and', 'in', 'at', 'for', 'a', 'an', 'to', 'by', 'or']);
-      return str
-        .toLowerCase()
-        .split(' ')
-        .map((word, i) =>
-          i === 0 || !minors.has(word)
-            ? word.charAt(0).toUpperCase() + word.slice(1)
-            : word
-        )
-        .join(' ');
-    }
-    return str;
-  };
+
 
   return (
     <PageContainer>
@@ -253,7 +236,7 @@ export default function EventsPage() {
                   className="bg-card rounded-[24px] overflow-hidden border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col group relative text-foreground h-full cursor-pointer block"
                 >
                   <div className="h-[220px] bg-accent relative overflow-hidden flex flex-col justify-between p-5 w-full">
-                    <img 
+                    <OptimizedImage 
                       src={event.bannerUrl || '/images/events_banner.png'} 
                       alt={event.name} 
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
@@ -276,7 +259,7 @@ export default function EventsPage() {
 
                     <div className="space-y-4 flex-1 pr-6">
                       <div>
-                        <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">{toTitleCase(event.name)}</h3>
+                        <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">{formatTitle(event.name)}</h3>
                         <p className="text-sm font-semibold text-muted-foreground">{toTitleCase(event.club?.name) || 'TBA'}</p>
                       </div>
 

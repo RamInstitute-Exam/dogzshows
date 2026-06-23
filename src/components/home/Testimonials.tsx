@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Quote, Star } from 'lucide-react';
 import PublicContainer from '@/components/layout/PublicContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 
 interface TestimonialsProps {
@@ -48,7 +49,7 @@ export default function Testimonials({ testimonialsData }: TestimonialsProps) {
               
               <div className="flex items-center gap-4">
                 {t.photoUrl ? (
-                  <img src={t.photoUrl} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+                  <OptimizedImage src={t.photoUrl} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-muted-foreground font-bold text-xl">
                     {t.name?.charAt(0)}

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronRight, Loader2, ArrowLeft, Dog, SearchX } from 'lucide-react';
-import { toTitleCase } from '@/lib/utils';
+import { toTitleCase, formatTitle } from '@/lib/utils';
 import { MOCK_EVENT_DETAIL, MOCK_EVENTS } from '@/lib/mock/eventsData';
 import PageContainer from '@/components/layout/PageContainer';
 import api from '@/lib/api';
@@ -212,7 +212,7 @@ export default function EventDetailClient() {
           <ChevronRight className="w-4 h-4 shrink-0" />
           <Link href="/events" className="hover:text-primary transition-colors">Events</Link>
           <ChevronRight className="w-4 h-4 shrink-0" />
-          <span className="text-foreground truncate max-w-[200px] sm:max-w-none">{toTitleCase(event?.name) || 'Event Details'}</span>
+          <span className="text-foreground truncate max-w-[200px] sm:max-w-none">{formatTitle(event?.name) || 'Event Details'}</span>
         </div>
       </div>
 

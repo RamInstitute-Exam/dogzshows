@@ -50,36 +50,26 @@ export default function PremiumShowPhotos() {
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {albums.map((album) => (
-            <Link key={album.id} href={`/gallery/shows/${album.id}`} className="group relative rounded-3xl overflow-hidden flex flex-col justify-between w-full max-w-[380px] min-h-[420px] h-auto mx-auto border border-border/50 bg-black">
+            <Link key={album.id} href={`/gallery/shows/${album.id}`} className="group relative rounded-3xl overflow-hidden flex flex-col justify-between w-full max-w-[380px] h-[360px] md:h-[460px] mx-auto border border-border/50 bg-black">
               
               {/* Background Image */}
-              <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden transition-transform duration-500 group-hover:scale-[1.08]">
+              <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
                 <Image 
                   src={getImageUrl(album.coverImage)} 
                   alt={album.title}
-                  fill={false}
-                  width={800}
-                  height={1200}
+                  fill
                   quality={100}
-                  unoptimized
-                  sizes="100vw"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "contain",
-                    objectPosition: "center"
-                  }}
-                  className="gallery-image"
+                  className="gallery-image object-cover object-center transition-transform duration-700 group-hover:scale-[1.08]"
                 />
               </div>
 
               {/* Dark Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
 
               {/* Content Overlay */}
-              <div className="absolute bottom-0 left-0 w-full p-6 text-white transform transition-transform duration-500 group-hover:-translate-y-2 uppercase">
-                <h3 className="text-2xl font-bold mb-2 leading-tight drop-shadow-md uppercase">{album.title?.toUpperCase()}</h3>
-                <div className="flex items-center gap-4 text-sm font-medium text-white/80">
+              <div className="absolute bottom-0 left-0 w-full p-6 text-white transform transition-transform duration-500 group-hover:-translate-y-2 uppercase z-20">
+                <h3 className="text-xl md:text-2xl font-bold mb-2 leading-tight drop-shadow-md line-clamp-2 uppercase min-h-[3rem] md:min-h-[3.5rem]">{album.title?.toUpperCase()}</h3>
+                <div className="flex items-center gap-4 text-xs md:text-sm font-medium text-white/80">
                   <span>{album.showDate ? new Date(album.showDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'RECENT'}</span>
                   <div className="flex items-center gap-1">
                     <ImageIcon className="w-4 h-4" />

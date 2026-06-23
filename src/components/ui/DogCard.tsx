@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, Heart } from 'lucide-react';
 import Link from 'next/link';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface DogCardProps {
   id: string;
@@ -30,7 +31,7 @@ const DogCard: React.FC<DogCardProps> = ({
         {/* Image Section */}
         <div className="relative aspect-[4/3] overflow-hidden">
           {/* Skeleton/Placeholder fallback if image fails, handled by using a div background or object-cover */}
-          <img 
+          <OptimizedImage 
             src={imageUrl || "/images/contact_banner.png"} 
             alt={name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

@@ -7,6 +7,7 @@ import { Eye, MapPin, Tag, Share2, ArrowLeft, Play, Clock, ChevronRight, Loader2
 import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
 import { useVideoBySlug, useMediaVideos } from '@/hooks/useMedia';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface VideoDetailClientProps {
   initialVideo?: any;
@@ -203,7 +204,7 @@ export default function VideoDetailClient({ initialVideo, initialVideos }: Video
                     >
                       <div className="relative aspect-video bg-black overflow-hidden">
                         {rThumb ? (
-                          <img src={rThumb} alt={v.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
+                          <OptimizedImage src={rThumb} alt={v.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-accent"><Play className="w-8 h-8 text-muted-foreground" /></div>
                         )}

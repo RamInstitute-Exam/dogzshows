@@ -20,6 +20,7 @@ import {
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import axiosInstance from '@/lib/axios';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function PhotoManagement() {
   const [photos, setPhotos] = useState<any[]>([]);
@@ -349,7 +350,7 @@ export default function PhotoManagement() {
                 [1, 2, 3].map(i => <div key={i} className="h-9 bg-muted animate-pulse rounded" />)
               ) : (stats?.mostViewedPhotos || []).slice(0, 3).map((p: any) => (
                 <div key={p.id} className="flex items-center gap-2 text-xs">
-                  <img src={getImageUrl(p.imageUrl)} className="w-7 h-7 rounded object-cover border border-border" />
+                  <OptimizedImage src={getImageUrl(p.imageUrl)} className="w-7 h-7 rounded object-cover border border-border" />
                   <span className="font-semibold text-foreground truncate max-w-[120px]">{p.title}</span>
                   <span className="ml-auto font-bold text-blue-500">{p.views} visitors</span>
                 </div>
@@ -367,7 +368,7 @@ export default function PhotoManagement() {
                 [1, 2, 3].map(i => <div key={i} className="h-9 bg-muted animate-pulse rounded" />)
               ) : (stats?.mostDownloadedPhotos || []).slice(0, 3).map((p: any) => (
                 <div key={p.id} className="flex items-center gap-2 text-xs">
-                  <img src={getImageUrl(p.imageUrl)} className="w-7 h-7 rounded object-cover border border-border" />
+                  <OptimizedImage src={getImageUrl(p.imageUrl)} className="w-7 h-7 rounded object-cover border border-border" />
                   <span className="font-semibold text-foreground truncate max-w-[120px]">{p.title}</span>
                   <span className="ml-auto font-bold text-emerald-500">{p.downloadCount} dl</span>
                 </div>

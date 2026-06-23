@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useAdminMediaVideos, useMediaCategories, useMediaAlbums } from '@/hooks/useMedia';
 import { getImageUrl } from '@/lib/api';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface VideoFormData {
   id?: string;
@@ -115,7 +116,7 @@ export default function VideosManagement() {
   }, [page, search]);
 
   const columns: ColumnDefinition<any>[] = [
-    { header: 'Thumbnail', accessor: (v) => <img src={getImageUrl(v.thumbnail)} alt="Thumbnail" className="w-16 h-12 object-cover rounded-lg border border-border" /> },
+    { header: 'Thumbnail', accessor: (v) => <OptimizedImage src={getImageUrl(v.thumbnail)} alt="Thumbnail" className="w-16 h-12 object-cover rounded-lg border border-border" /> },
     { header: 'Title', accessor: 'title', className: 'font-bold text-foreground' },
     { header: 'Category', accessor: (v) => v.category?.name || 'Uncategorized' },
     { header: 'Duration', accessor: 'duration' },

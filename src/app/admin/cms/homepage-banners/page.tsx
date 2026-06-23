@@ -10,6 +10,7 @@ import { config } from '@/lib/config';
 import ImageUploader from '@/components/shared/ImageUploader';
 import api from '@/services/api';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface HomepageBanner {
   id: string;
@@ -219,7 +220,7 @@ export default function HomepageBannersAdmin() {
                     </div>
                   </td>
                   <td className="p-4">
-                    <img src={banner.imageUrl} alt={banner.title} className="w-32 h-16 object-cover rounded-md border border-border" />
+                    <OptimizedImage src={banner.imageUrl} alt={banner.title} className="w-32 h-16 object-cover rounded-md border border-border" />
                   </td>
                   <td className="p-4 font-bold text-foreground">
                     {banner.title}

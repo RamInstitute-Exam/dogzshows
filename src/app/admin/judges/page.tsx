@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function JudgeManagement() {
   const router = useRouter();
@@ -529,7 +530,7 @@ export default function JudgeManagement() {
                       <td className="py-4 px-6">
                         <div className="relative group/avatar w-12 h-12 rounded-full overflow-hidden border border-border bg-accent flex items-center justify-center shadow-inner">
                           {j.photoUrl ? (
-                            <img src={j.photoUrl} alt={j.name} className="w-full h-full object-cover group-hover/avatar:scale-110 transition-transform duration-300" />
+                            <OptimizedImage src={j.photoUrl} alt={j.name} className="w-full h-full object-cover group-hover/avatar:scale-110 transition-transform duration-300" />
                           ) : (
                             <span className="text-muted-foreground text-lg font-extrabold">{j.name?.[0]?.toUpperCase() || 'J'}</span>
                           )}
@@ -725,7 +726,7 @@ export default function JudgeManagement() {
               <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
                 <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-yellow-500 bg-accent shrink-0 flex items-center justify-center">
                   {selectedJudge.photoUrl ? (
-                    <img src={selectedJudge.photoUrl} alt={selectedJudge.name} className="w-full h-full object-cover" />
+                    <OptimizedImage src={selectedJudge.photoUrl} alt={selectedJudge.name} className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-2xl font-extrabold text-muted-foreground">{selectedJudge.name?.[0]?.toUpperCase()}</span>
                   )}

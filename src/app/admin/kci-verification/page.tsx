@@ -6,6 +6,7 @@ import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataT
 import { Button } from '@/components/ui/button';
 import api from '@/lib/api';
 import { toast } from 'sonner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function AdminKciVerification() {
   const [data, setData] = useState<any[]>([]);
@@ -106,7 +107,7 @@ export default function AdminKciVerification() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 ga">
             <div className="border border-border rounded-xl overflow-hidden bg-accent flex items-center justify-center p-4">
-              <img src={selectedCert.url} alt="Certificate" className="max-w-full max-h-[600px] object-contain rounded-lg shadow-sm" />
+              <OptimizedImage src={selectedCert.url} alt="Certificate" className="max-w-full max-h-[600px] object-contain rounded-lg shadow-sm" />
             </div>
             
             <div className="space-y-4">

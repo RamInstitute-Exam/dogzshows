@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function SlidingSectionsAdminPage() {
   const [sections, setSections] = useState<any[]>([]);
@@ -17,7 +18,10 @@ export default function SlidingSectionsAdminPage() {
   const [currentSection, setCurrentSection] = useState<any>(null);
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');
   const [status, setStatus] = useState('ACTIVE');
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [showOnHomepage, setShowOnHomepage] = useState(true);
   const [displayOrder, setDisplayOrder] = useState(0);
   const [images, setImages] = useState<any[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -46,14 +50,20 @@ export default function SlidingSectionsAdminPage() {
       setCurrentSection(section);
       setName(section.name);
       setTitle(section.title);
+      setSubtitle(section.subtitle || '');
       setStatus(section.status);
+      setIsFeatured(section.isFeatured || false);
+      setShowOnHomepage(section.showOnHomepage ?? true);
       setDisplayOrder(section.displayOrder);
       setImages(section.images || []);
     } else {
       setCurrentSection(null);
       setName('');
       setTitle('');
+      setSubtitle('');
       setStatus('ACTIVE');
+      setIsFeatured(false);
+      setShowOnHomepage(true);
       setDisplayOrder(sections.length);
       setImages([]);
     }
@@ -119,7 +129,10 @@ export default function SlidingSectionsAdminPage() {
     const payload = {
       name,
       title,
+      subtitle,
       status,
+      isFeatured,
+      showOnHomepage,
       displayOrder: Number(displayOrder),
       images: images.map((img, i) => ({ ...img, displayOrder: i }))
     };
@@ -180,6 +193,7 @@ export default function SlidingSectionsAdminPage() {
                   <td className="p-4">
                     <div className="font-bold text-foreground">{sec.name}</div>
                     <div className="text-sm text-muted-foreground">{sec.title}</div>
+                    {sec.subtitle && <div className="text-xs text-muted-foreground italic mt-0.5">{sec.subtitle}</div>}
                   </td>
                   <td className="p-4">
                     <span className={`w-max px-2 py-1 text-xs font-bold rounded-full ${sec.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -218,16 +232,53 @@ export default function SlidingSectionsAdminPage() {
                   <label className="font-semibold text-sm">Public Title (e.g. Premium Personal Photos) *</label>
                   <Input required value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
-                <div className="space-y-2">
-                  <label className="font-semibold text-sm">Display Order</label>
-                  <Input type="number" required value={displayOrder} onChange={(e) => setDisplayOrder(parseInt(e.target.value))} />
+                <div className="space-y-2 col-span-2">
+                  <label className="font-semibold text-sm">Sub Title (Optional)</label>
+                  <Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="e.g. 5th & 6th All Breeds Championship Dog Show" maxLength={500} />
                 </div>
-                <div className="space-y-2">
-                  <label className="font-semibold text-sm">Status</label>
-                  <select className="w-full h-10 px-3 rounded-md border border-input bg-background" value={status} onChange={(e) => setStatus(e.target.value)}>
-                    <option value="ACTIVE">ACTIVE</option>
-                    <option value="INACTIVE">INACTIVE</option>
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block uppercase">Status</label>
+                    <select
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                      className="w-full flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="ACTIVE">Active</option>
+                      <option value="INACTIVE">Inactive</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block uppercase">Display Order</label>
+                    <Input type="number" value={displayOrder} onChange={(e) => setDisplayOrder(Number(e.target.value))} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isFeatured"
+                    checked={isFeatured}
+                    onChange={(e) => setIsFeatured(e.target.checked)}
+                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                  />
+                  <label htmlFor="isFeatured" className="text-sm font-bold text-gray-700 cursor-pointer select-none">
+                    Featured Album
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="showOnHomepage"
+                    checked={showOnHomepage}
+                    onChange={(e) => setShowOnHomepage(e.target.checked)}
+                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                  />
+                  <label htmlFor="showOnHomepage" className="text-sm font-bold text-gray-700 cursor-pointer select-none">
+                    Show on Homepage
+                  </label>
                 </div>
               </div>
 
@@ -249,7 +300,7 @@ export default function SlidingSectionsAdminPage() {
                       onDragOver={(e) => onDragOver(e, index)}
                       className="relative group aspect-square rounded-lg overflow-hidden bg-muted cursor-move border border-transparent hover:border-border transition-all"
                     >
-                      <img src={getImageUrl(img.imageUrl)} alt={`Gallery ${index}`} className="w-full h-full object-cover pointer-events-none" />
+                      <OptimizedImage src={getImageUrl(img.imageUrl)} alt={`Gallery ${index}`} className="w-full h-full object-cover pointer-events-none" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <GripVertical className="text-white w-5 h-5 cursor-move" />
                         <button type="button" onClick={() => setImages(images.filter((_, i) => i !== index))} className="bg-red-500 text-white rounded-full p-1 hover:scale-110 transition-transform">

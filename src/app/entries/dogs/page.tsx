@@ -7,6 +7,7 @@ import PageContainer from '@/components/layout/PageContainer';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function DogEntriesCatalogPage() {
   const [entries, setEntries] = useState<any[]>([]);
@@ -200,7 +201,7 @@ export default function DogEntriesCatalogPage() {
               >
                 {/* Photo container */}
                 <div className="h-[200px] relative overflow-hidden bg-accent">
-                  <img 
+                  <OptimizedImage 
                     src={entry.dogPhoto || '/images/hero_banner.png'} 
                     alt={entry.dogName} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -292,7 +293,7 @@ export default function DogEntriesCatalogPage() {
               <div className="p-6 overflow-y-auto max-h-[70vh] space-y-6">
                 {selectedEntry.dogPhoto && (
                   <div className="w-full h-52 rounded-2xl bg-accent overflow-hidden relative border border-border">
-                    <img src={selectedEntry.dogPhoto} alt="Dog Photo" className="w-full h-full object-cover" />
+                    <OptimizedImage src={selectedEntry.dogPhoto} alt="Dog Photo" className="w-full h-full object-cover" />
                   </div>
                 )}
                 

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
 import api from '@/services/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function AddPhotoForm() {
   const router = useRouter();
@@ -129,7 +130,7 @@ export default function AddPhotoForm() {
               />
               {preview ? (
                 <div className="relative w-full max-w-lg aspect-video rounded-xl overflow-hidden border border-border shadow-lg group-hover:shadow-red-500/5 transition-all duration-300 bg-black/5 flex items-center justify-center">
-                  <img src={preview} alt="Preview" className="w-full h-full object-contain" />
+                  <OptimizedImage src={preview} alt="Preview" className="w-full h-full object-contain" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20">
                     <span className="bg-white/95 text-black dark:bg-black/95 dark:text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md flex items-center gap-2 cursor-pointer">
                       <ImagePlus className="w-4 h-4 text-red-500" />

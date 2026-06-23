@@ -38,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("h-full", "antialiased", mulish.variable, "font-sans")} suppressHydrationWarning>
-      <body className="min-h-[100vh] flex flex-col bg-background font-sans text-foreground selection:bg-foreground selection:text-foreground overflow-x-hidden">
+      <body className="min-h-[100vh] flex flex-col bg-background font-sans text-foreground selection:bg-foreground selection:text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -46,9 +46,6 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           <AuthProvider>
-            <Suspense fallback={null}>
-              <ScrollPreservationProvider />
-            </Suspense>
             <Suspense fallback={null}>
               <LoaderProvider>
                 <QueryProvider>

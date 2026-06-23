@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 function MediaGalleryMgmtContent() {
   const searchParams = useSearchParams();
@@ -661,7 +662,7 @@ function MediaGalleryMgmtContent() {
                       <span className="ml-1 text-xs">{album.displayOrder}</span>
                     </td>
                     <td className="p-4">
-                      <img 
+                      <OptimizedImage 
                         src={getImageUrl(album.coverImage)} 
                         alt={album.title} 
                         className="w-20 h-14 object-cover rounded-md border border-border shadow-sm"
@@ -957,7 +958,7 @@ function MediaGalleryMgmtContent() {
             <div className="flex flex-col sm:flex-row items-center gap-6">
               {coverImage ? (
                 <div className="relative group shrink-0">
-                  <img 
+                  <OptimizedImage 
                     src={getImageUrl(coverImage)} 
                     alt="Cover Preview" 
                     className="h-28 w-40 object-cover rounded-lg shadow border border-border" 
@@ -1154,7 +1155,7 @@ function MediaGalleryMgmtContent() {
                           onDragEnd={onDragEnd}
                           className={`relative group aspect-[4/3] rounded-xl overflow-hidden bg-muted cursor-move border transition-all ${isCover ? 'border-green-500 ring-2 ring-green-500/20' : 'border-border/60 hover:border-border'}`}
                         >
-                          <img 
+                          <OptimizedImage 
                             src={getImageUrl(url)} 
                             alt={`Gallery item ${index + 1}`} 
                             className="w-full h-full object-cover pointer-events-none" 
@@ -1270,7 +1271,7 @@ function MediaGalleryMgmtContent() {
             >
               <X className="w-6 h-6" />
             </button>
-            <img 
+            <OptimizedImage 
               src={getImageUrl(previewImage)} 
               alt="Preview" 
               className="max-w-full max-h-[80vh] object-contain"

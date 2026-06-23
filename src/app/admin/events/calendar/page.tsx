@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import Link from 'next/link';
+import { formatTitle } from '@/lib/utils';
 
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -330,7 +331,7 @@ export default function CalendarPage() {
                                 'bg-gray-500/10 text-gray-400 border-gray-500'
                               }`}
                             >
-                              <div className="font-extrabold truncate">{event.name}</div>
+                              <div className="font-extrabold truncate">{formatTitle(event.name)}</div>
                               <div className="text-[10px] opacity-75 font-semibold">{event.city || 'Online'}</div>
                             </div>
                           ))}
@@ -367,7 +368,7 @@ export default function CalendarPage() {
                               }}
                               className={`p-3 rounded-xl cursor-pointer transition-all hover:-translate-y-0.5 border ${getStatusStyle(event.status)}`}
                             >
-                              <h4 className="font-black text-sm text-foreground line-clamp-2">{event.name}</h4>
+                              <h4 className="font-black text-sm text-foreground line-clamp-2">{formatTitle(event.name)}</h4>
                               <p className="text-xs text-muted-foreground mt-1 font-semibold">{event.club?.name}</p>
                               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
                                 <MapPin className="w-3.5 h-3.5 text-foreground" />
@@ -401,7 +402,7 @@ export default function CalendarPage() {
                           <span className={`px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider ${getStatusStyle(event.status)}`}>
                             {event.status}
                           </span>
-                          <h3 className="text-xl font-extrabold text-foreground">{event.name}</h3>
+                          <h3 className="text-xl font-extrabold text-foreground">{formatTitle(event.name)}</h3>
                           <p className="text-sm text-muted-foreground font-bold">{event.club?.name}</p>
                           <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-foreground" /> {event.venue}, {event.city}, {event.state}</span>
@@ -438,7 +439,7 @@ export default function CalendarPage() {
                           <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${getStatusStyle(event.status)}`}>
                             {event.status}
                           </span>
-                          <h3 className="text-lg font-black text-foreground">{event.name}</h3>
+                          <h3 className="text-lg font-black text-foreground">{formatTitle(event.name)}</h3>
                           <p className="text-sm text-muted-foreground font-semibold">{event.club?.name}</p>
                           <p className="text-sm text-muted-foreground/80 flex items-center gap-1.5"><MapPin className="w-4 h-4 text-foreground" /> {event.city}, {event.state}</p>
                         </div>
@@ -482,7 +483,7 @@ export default function CalendarPage() {
                   <span className={`px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider ${getStatusStyle(selectedEvent.status)}`}>
                     {selectedEvent.status}
                   </span>
-                  <h4 className="text-2xl font-black text-white mt-2 line-clamp-1">{selectedEvent.name}</h4>
+                  <h4 className="text-2xl font-black text-white mt-2 line-clamp-1">{formatTitle(selectedEvent.name)}</h4>
                 </div>
               </div>
 
@@ -630,7 +631,7 @@ export default function CalendarPage() {
               className="bg-card max-w-md w-full rounded-2xl border border-border shadow-2xl p-6"
             >
               <h3 className="text-lg font-black text-foreground">Confirm Deletion</h3>
-              <p className="text-sm text-muted-foreground mt-2">Are you sure you want to delete the show event "{selectedEvent?.name}"? This action cannot be undone.</p>
+              <p className="text-sm text-muted-foreground mt-2">Are you sure you want to delete the show event "{formatTitle(selectedEvent?.name)}"? This action cannot be undone.</p>
               <div className="flex justify-end gap-3 mt-6">
                 <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)} className="hover:bg-accent text-foreground">Cancel</Button>
                 <Button variant="destructive" onClick={handleDeleteShow} className="font-bold">Delete Show</Button>

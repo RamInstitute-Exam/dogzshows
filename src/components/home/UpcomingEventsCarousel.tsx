@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useEventsCMS } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Users, ArrowRight, Trophy, Tent, ChevronLeft, ChevronRight } from 'lucide-react';
-import { toTitleCase } from '@/lib/utils';
+import { toTitleCase, formatTitle } from '@/lib/utils';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -188,7 +188,7 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
                         <div className="flex flex-col h-full justify-between">
                           {/* Event Title */}
                           <h3 className="text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere] normal-case">
-                            {toTitleCase(event.name)}
+                            {formatTitle(event.name)}
                           </h3>
 
                           {/* Event Info Icons */}

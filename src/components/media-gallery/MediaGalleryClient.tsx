@@ -6,7 +6,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Camera, Play, ThumbsUp, Eye, X, Share2, Download, RefreshCw, ZoomIn, Clock } from 'lucide-react';
 import { useMediaImages, useMediaVideos, useMediaAlbums, useMediaCategories } from '@/hooks/useMedia';
-import { getImageUrl } from '@/lib/api';
+import { getImageUrl, getThumbnailUrl, getOriginalUrl } from '@/lib/api';
 import api from '@/lib/api';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import { Button } from '@/components/ui/button';
@@ -244,14 +244,14 @@ export default function MediaGalleryClient({
                     >
                       <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
                         <Image
-                          src={getImageUrl(photo.imageUrl)}
+                          src={getThumbnailUrl(photo.imageUrl)}
                           alt={photo.altText || photo.title}
                           fill={false}
-                          width={800}
-                          height={1200}
-                          quality={100}
-                          unoptimized
-                          sizes="100vw"
+                          width={400}
+                          height={600}
+                          quality={85}
+                          priority={idx < 4}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           style={{
                             width: "100%",
                             height: "auto",
@@ -311,11 +311,13 @@ export default function MediaGalleryClient({
                       className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
                     >
                       <div className="relative aspect-video w-full overflow-hidden bg-accent">
-                        <img
-                          src={getImageUrl(video.thumbnail)}
+                        <Image
+                          src={getThumbnailUrl(video.thumbnailUrl || video.s3VideoUrl || video.videoUrl)}
                           alt={video.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          fill
+                          priority={idx < 4}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-colors group-hover:bg-black/50">
                           <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg group-hover:scale-110 transform transition-transform duration-300">
@@ -413,11 +415,13 @@ export default function MediaGalleryClient({
               className="relative w-full max-w-6xl bg-card rounded-[16px] md:rounded-[24px] border border-border shadow-2xl overflow-hidden flex flex-col md:flex-row h-[calc(100vh-24px)] md:h-[calc(100vh-48px)] max-h-[850px]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex-grow bg-black/20 flex items-center justify-center p-4 md:p-6 min-h-[40vh] max-h-[55vh] md:max-h-none md:h-full md:w-2/3 lg:w-3/4">
-                <img
-                  src={getImageUrl(selectedPhoto.imageUrl)}
+              <div className="flex-grow bg-black/20 flex items-center justify-center p-4 md:p-6 min-h-[40vh] max-h-[55vh] md:max-h-none md:h-full md:w-2/3 lg:w-3/4 relative">
+                <Image
+                  src={getOriginalUrl(selectedPhoto.imageUrl)}
                   alt={selectedPhoto.altText || selectedPhoto.title}
-                  className="w-full h-full object-contain"
+                  fill
+                  sizes="100vw"
+                  className="object-contain"
                 />
               </div>
 

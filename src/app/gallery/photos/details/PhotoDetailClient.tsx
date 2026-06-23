@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface PhotoDetailClientProps {
   initialPhoto?: any;
@@ -180,7 +181,6 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                 width={800}
                 height={1200}
                 quality={100}
-                unoptimized
                 sizes="100vw"
                 style={{
                   width: "100%",
@@ -223,7 +223,7 @@ export default function PhotoDetailClient({ initialPhoto, initialPhotos }: Photo
                     return (
                       <Link href={`/gallery/show-photos/details?slug=${p.slug}`} key={p.id} className="snap-start shrink-0">
                         <div className={`relative w-[140px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 bg-black ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#020817] shadow-md' : 'opacity-50 hover:opacity-100 border border-white/10'}`}>
-                          <img src={p.cdnUrl} alt={p.title} className="w-full h-full object-contain" />
+                          <OptimizedImage src={p.cdnUrl} alt={p.title} className="w-full h-full object-contain" />
                         </div>
                       </Link>
                     );

@@ -2,7 +2,7 @@
 
 import { useState, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ChevronRight, Sparkles, Search, MapPin, Filter, LayoutGrid, List as ListIcon, ChevronLeft, Loader2, UserX, Award, Shield } from 'lucide-react';
+import { Star, ChevronRight, Sparkles, Search, MapPin, Filter, LayoutGrid, List as ListIcon, ChevronLeft, Loader2, UserX, Award, Shield, User } from 'lucide-react';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import PublicContainer from '@/components/layout/PublicContainer';
 import { useJudges } from '@/hooks/useJudges';
 import { usePageBanner } from '@/hooks/useCMS';
 import { getImageUrl } from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 function JudgesList() {
   const searchParams = useSearchParams();
@@ -233,10 +234,11 @@ function JudgesList() {
                         {/* Fixed Size Image */}
                         <div className={`shrink-0 overflow-hidden relative border-[3px] border-border bg-muted shadow-md rounded-[24px] ${viewMode === 'list' ? 'w-[140px] h-[140px] sm:self-center' : 'w-[140px] h-[140px] mx-auto mb-4'}`}>
                           {judge.photoUrl ? (
-                            <img src={judge.photoUrl} alt={judge.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
+                            <OptimizedImage src={judge.photoUrl} alt={judge.name} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-muted-foreground text-[48px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
-                              {judge.name?.[0]?.toUpperCase() || 'M'}
+                            <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center text-[#64748b] group-hover:scale-[1.05] transition-transform duration-300">
+                              <User className="w-12 h-12 mb-1 opacity-70" />
+                              <span className="text-[10px] font-[700] uppercase tracking-wider text-center px-2 leading-tight">Photo<br/>Coming<br/>Soon</span>
                             </div>
                           )}
                           {judge.isFeatured && (

@@ -11,6 +11,7 @@ import {
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 function CategoryPageContent() {
   const params = useParams();
@@ -177,7 +178,7 @@ function CategoryPageContent() {
                 >
                   <div className="relative h-40 bg-accent overflow-hidden">
                     {club.bannerUrl ? (
-                      <img src={club.bannerUrl} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <OptimizedImage src={club.bannerUrl} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <div className="w-full h-full bg-muted/40 flex items-center justify-center">
                         <Tent className="w-12 h-12 text-foreground/40" />
@@ -189,7 +190,7 @@ function CategoryPageContent() {
 
                     <div className="absolute -bottom-6 left-6 w-16 h-16 rounded-xl bg-card border-4 border-card shadow-lg overflow-hidden flex items-center justify-center z-10">
                       {club.logoUrl ? (
-                        <img src={club.logoUrl} alt={club.name} className="w-full h-full object-cover" />
+                        <OptimizedImage src={club.logoUrl} alt={club.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="bg-foreground text-white font-bold text-xl flex items-center justify-center w-full h-full">
                           {club.name?.substring(0, 2).toUpperCase()}

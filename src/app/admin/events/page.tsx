@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import { formatTitle } from '@/lib/utils';
 
 interface EventStats {
   totalEvents: number;
@@ -649,7 +650,7 @@ export default function BespokeEventManagement() {
 
                       {/* Event Title */}
                       <td className="py-4 px-6 truncate font-bold text-foreground">
-                        <span className="block truncate hover:text-foreground cursor-pointer" onClick={() => setActiveEvent(item)}>{item.name}</span>
+                        <span className="block truncate hover:text-foreground cursor-pointer" onClick={() => setActiveEvent(item)}>{formatTitle(item.name)}</span>
                         <span className="block text-xs font-semibold text-muted-foreground mt-0.5">{item.type}</span>
                       </td>
 
@@ -910,7 +911,7 @@ export default function BespokeEventManagement() {
                 </button>
                 <div className="absolute bottom-5 left-6 right-6">
                   <span className="mb-2 block">{getStatusBadge(activeEvent.status)}</span>
-                  <h2 className="text-2xl font-black text-white leading-tight drop-shadow-md">{activeEvent.name}</h2>
+                  <h2 className="text-2xl font-black text-white leading-tight drop-shadow-md">{formatTitle(activeEvent.name)}</h2>
                   <p className="text-xs font-bold text-slate-300 mt-1 uppercase tracking-wide flex items-center gap-1">
                     <Trophy className="w-3.5 h-3.5 text-foreground" /> {activeEvent.type} Show
                   </p>

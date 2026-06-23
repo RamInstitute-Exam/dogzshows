@@ -9,6 +9,7 @@ import { useAdminMediaAlbums } from '@/hooks/useMedia';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import ImageUploader from '@/components/shared/ImageUploader';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface AlbumFormData {
   id?: string;
@@ -128,7 +129,7 @@ export default function PhotoAlbumsManagement() {
       accessor: (a) => (
         <div className="w-12 h-12 rounded-lg overflow-hidden border border-border bg-accent flex items-center justify-center">
           {a.coverImage ? (
-            <img src={a.coverImage} alt={a.title} className="w-full h-full object-cover" />
+            <OptimizedImage src={a.coverImage} alt={a.title} className="w-full h-full object-cover" />
           ) : (
             <Image className="w-5 h-5 text-muted-foreground" />
           )}

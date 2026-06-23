@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import api from '@/services/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function AllEntriesPage() {
   const [entries, setEntries] = useState<any[]>([]);
@@ -470,7 +471,7 @@ export default function AllEntriesPage() {
               <div className="p-6 overflow-y-auto max-h-[70vh] space-y-6">
                 {selectedEntry.dogPhoto && (
                   <div className="w-full h-48 rounded-xl bg-accent overflow-hidden relative border border-border">
-                    <img src={selectedEntry.dogPhoto} alt="Dog Photo" className="w-full h-full object-cover" />
+                    <OptimizedImage src={selectedEntry.dogPhoto} alt="Dog Photo" className="w-full h-full object-cover" />
                   </div>
                 )}
                 

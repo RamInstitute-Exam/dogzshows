@@ -8,6 +8,7 @@ import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import PageContainer from '@/components/layout/PageContainer';
 import { config } from '@/lib/config';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -117,7 +118,7 @@ export default function ContactUs() {
 
             {/* Google Map Mock */}
             <div className="w-full h-64 bg-gray-200 rounded-[2.5rem] overflow-hidden border border-border relative group">
-              <img src="/images/hero_banner.png" alt="Map View" className="w-full h-full object-cover opacity-60" />
+              <OptimizedImage src="/images/hero_banner.png" alt="Map View" className="w-full h-full object-cover opacity-60" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="bg-card px-4 py-2 rounded-lg premium-shadow text-brand-dark font-bold text-sm flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-foreground" /> View on Google Maps

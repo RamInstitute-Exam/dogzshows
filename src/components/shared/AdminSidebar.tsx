@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { LayoutDashboard, Calendar, Users, Trophy, Settings, LogOut, Dog, Tent } from 'lucide-react';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -43,7 +44,7 @@ export default function AdminSidebar() {
     <div className="w-64 h-screen bg-card text-foreground hidden md:flex flex-col border-r border-border fixed left-0 top-0 z-40 shadow-xl">
       <div className="h-[72px] flex items-center px-6 border-b border-border">
         <Link href="/admin">
-          <img src="/Untitled-1.png" alt="JuzDog Admin" className="h-[46px] w-auto transition-all hover:opacity-90" />
+          <OptimizedImage src="/Untitled-1.png" alt="JuzDog Admin" className="h-[46px] w-auto transition-all hover:opacity-90" />
         </Link>
       </div>
 

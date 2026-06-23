@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function OutdoorPhotosAdminPage() {
   const [settings, setSettings] = useState<any>({ smallHeading: '', title: '', subtitle: '', status: 'ACTIVE' });
@@ -235,7 +236,7 @@ export default function OutdoorPhotosAdminPage() {
               {albums.map((album) => (
                 <tr key={album.id} className="hover:bg-muted/20 transition-colors">
                   <td className="p-4">
-                    <img src={getImageUrl(album.coverImage)} alt="Cover" className="w-24 h-16 object-cover rounded-md shadow-sm" />
+                    <OptimizedImage src={getImageUrl(album.coverImage)} alt="Cover" className="w-24 h-16 object-cover rounded-md shadow-sm" />
                   </td>
                   <td className="p-4">
                     <div className="font-bold text-foreground">{album.albumName}</div>
@@ -310,7 +311,7 @@ export default function OutdoorPhotosAdminPage() {
                 <div className="flex items-center gap-6">
                   {coverImage ? (
                     <div className="relative group">
-                      <img src={getImageUrl(coverImage)} alt="Cover" className="h-32 w-48 object-cover rounded-lg shadow-md" />
+                      <OptimizedImage src={getImageUrl(coverImage)} alt="Cover" className="h-32 w-48 object-cover rounded-lg shadow-md" />
                       <button type="button" onClick={() => setCoverImage('')} className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                         <X className="w-4 h-4" />
                       </button>
@@ -345,7 +346,7 @@ export default function OutdoorPhotosAdminPage() {
                       onDragOver={(e) => onDragOver(e, index)}
                       className="relative group aspect-square rounded-lg overflow-hidden bg-muted cursor-move border border-transparent hover:border-border transition-all"
                     >
-                      <img src={getImageUrl(url)} alt={`Gallery ${index}`} className="w-full h-full object-cover pointer-events-none" />
+                      <OptimizedImage src={getImageUrl(url)} alt={`Gallery ${index}`} className="w-full h-full object-cover pointer-events-none" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <GripVertical className="text-white w-5 h-5 cursor-move" />
                         <button type="button" onClick={() => setImages(images.filter((_, i) => i !== index))} className="bg-red-500 text-white rounded-full p-1 hover:scale-110 transition-transform">

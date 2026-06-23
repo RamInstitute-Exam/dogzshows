@@ -4,6 +4,7 @@ import { Dog, Mail, Phone, MapPin, Globe } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import PublicContainer from '@/components/layout/PublicContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function PremiumFooter() {
   return (
@@ -14,7 +15,7 @@ export default function PremiumFooter() {
           {/* Brand Col */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <img src="/Untitled-1.png" alt="JuzDog" className="w-[180px] h-auto object-contain" />
+              <OptimizedImage src="/Untitled-1.png" alt="JuzDog" className="w-[180px] h-auto object-contain" />
             </div>
             <p className="text-muted-foreground text-[18px] mb-8 max-w-sm leading-[1.8] font-[400]">
               The premium enterprise dog event management ERP. Combining KCI registration, competition tracking, and professional media into one unified platform.

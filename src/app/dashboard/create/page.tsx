@@ -6,6 +6,7 @@ import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { Camera, Loader2, ArrowLeft, Image as ImageIcon, X } from 'lucide-react';
 import Link from 'next/link';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function CreateProfilePage() {
   const router = useRouter();
@@ -191,7 +192,7 @@ export default function CreateProfilePage() {
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                   {previews.map((src, index) => (
                     <div key={index} className="relative group rounded-xl overflow-hidden aspect-square bg-input border border-border">
-                      <img src={src} alt="Preview" className="object-cover w-full h-full" />
+                      <OptimizedImage src={src} alt="Preview" className="object-cover w-full h-full" />
                       <button
                         type="button"
                         onClick={() => removeFile(index)}

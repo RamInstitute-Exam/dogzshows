@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, ChevronRight, QrCode, CreditCard, Dog, Calendar } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function EventRegistrationWorkflow() {
   const [step, setStep] = useState(1);
@@ -97,7 +98,7 @@ export default function EventRegistrationWorkflow() {
                   <div className="space-y-4">
                     <div className="p-4 border-2 border-border bg-foreground/10/50 rounded-2xl cursor-pointer transition-colors flex justify-between items-center">
                       <div className="flex items-center gap-4">
-                        <img src="/images/hero_banner.png" alt="Dog" className="w-12 h-12 rounded-full object-cover" />
+                        <OptimizedImage src="/images/hero_banner.png" alt="Dog" className="w-12 h-12 rounded-full object-cover" />
                         <div>
                           <p className="font-bold text-foreground">Sir Maximus</p>
                           <p className="text-sm text-muted-foreground">Golden Retriever • KCI-2023-4589</p>

@@ -1,6 +1,9 @@
 import { config } from './config';
 
 const getBaseUrl = () => {
+  if (process.env.INTERNAL_API_URL) {
+    return process.env.INTERNAL_API_URL;
+  }
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 };
 
@@ -8,9 +11,7 @@ const getBaseUrl = () => {
  * Reusable server-side fetcher with built-in revalidation.
  */
 export async function fetchServerData(endpoint: string, revalidate: number = 60) {
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    return { success: true, data: [] };
-  }
+  // Removed NEXT_PHASE check to allow Next.js to fetch data during static generation
 
   try {
     const url = `${getBaseUrl()}${endpoint}`;
@@ -71,9 +72,7 @@ export async function getSponsors() {
 }
 
 export async function fetchServerDataSingle(endpoint: string, revalidate: number = 60) {
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    return { success: true, data: null };
-  }
+  // Removed NEXT_PHASE check to allow Next.js to fetch data during static generation
 
   try {
     const url = `${getBaseUrl()}${endpoint}`;

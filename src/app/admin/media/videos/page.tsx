@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Video as VideoIcon } from 'lucide-react';
 import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataTable';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function VideoManagement() {
   const [data, setData] = useState<any[]>([]);
@@ -58,7 +59,7 @@ export default function VideoManagement() {
       accessor: (video) => (
         <div className="w-20 h-12 rounded-md overflow-hidden bg-muted relative flex items-center justify-center">
           {video.thumbnailUrl ? (
-            <img src={video.thumbnailUrl} alt={video.title} className="w-full h-full object-cover" />
+            <OptimizedImage src={video.thumbnailUrl} alt={video.title} className="w-full h-full object-cover" />
           ) : (
             <VideoIcon className="w-5 h-5 text-muted-foreground" />
           )}

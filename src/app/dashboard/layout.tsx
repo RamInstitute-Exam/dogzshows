@@ -17,6 +17,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/lib/axios';
 import { Spinner } from '@/components/common/loader/Spinner';
 import { useRouter } from 'next/navigation';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -91,7 +92,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             ) : (
               <Link href="/dashboard" className="flex items-center h-full">
-                <img src="/Untitled-1.png" alt="JuzDog Logo" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
+                <OptimizedImage src="/Untitled-1.png" alt="JuzDog Logo" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
               </Link>
             )}
           </div>

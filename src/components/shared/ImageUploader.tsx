@@ -6,6 +6,7 @@ import Cropper from "react-easy-crop";
 import imageCompression from "browser-image-compression";
 import { UploadCloud, X, Crop as CropIcon, Check, Loader2, Image as ImageIcon, Trash2, Maximize2, ZoomIn, ZoomOut } from "lucide-react";
 import api from "@/lib/api";
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface ImageUploaderProps {
   currentImage?: string;
@@ -338,7 +339,7 @@ export default function ImageUploader({
       {preview && !isCropping && (
         <div className={previewClassName || "relative group rounded-xl overflow-hidden border border-border bg-card inline-block"}>
           <div className={previewClassName ? "w-full h-full" : "w-[180px] h-[180px] rounded-[24px] overflow-hidden border-[3px] border-[#1f2937] bg-[#f8fafc] shadow-[0_10px_30px_rgba(0,0,0,0.12)] flex items-center justify-center p-0"}>
-            <img 
+            <OptimizedImage 
               src={preview} 
               alt="Preview" 
               className={imageClassName || "w-full h-full object-cover object-center"}

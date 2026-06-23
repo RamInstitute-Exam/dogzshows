@@ -9,6 +9,7 @@ import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function EditEventClient() {
   const searchParams = useSearchParams();
@@ -713,7 +714,7 @@ export default function EditEventClient() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                       {judge.photoUrl && (
-                                        <img src={judge.photoUrl} alt="" className="w-6 h-6 rounded-full object-cover shrink-0" />
+                                        <OptimizedImage src={judge.photoUrl} alt="" className="w-6 h-6 rounded-full object-cover shrink-0" />
                                       )}
                                       <span className="font-semibold text-foreground">{judge.name}</span>
                                       {judge.country && <span className="text-xs text-muted-foreground">({judge.country})</span>}

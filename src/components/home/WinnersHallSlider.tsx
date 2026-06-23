@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Award, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 const WINNERS = [
   { dog: 'Sir Maximus', breed: 'Golden Retriever', award: 'Best in Show', event: 'Winter Classic 2025', image: '/images/winners_banner.png' },
@@ -38,7 +39,7 @@ export default function WinnersHallSlider() {
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-muted-foreground z-20" />
               
               <div className="h-[120px] sm:h-[160px] lg:h-[220px] relative overflow-hidden shrink-0">
-                <img src={winner.image} alt={winner.dog} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <OptimizedImage src={winner.image} alt={winner.dog} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                 <div className="absolute bottom-2 left-2 flex items-center gap-1.5 text-foreground bg-black/50 backdrop-blur rounded-lg px-2 py-1 border border-border">
                   <Award className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />

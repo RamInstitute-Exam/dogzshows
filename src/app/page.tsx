@@ -12,11 +12,11 @@ import {
 
 const HeroSlider = dynamic(() => import('@/components/home/HeroSlider'), { ssr: true });
 const HomepageAlbumGallery = dynamic(() => import('@/components/home/HomepageAlbumGallery'), { ssr: true });
-const SlidingPhotoSections = dynamic(() => import('@/components/home/SlidingPhotoSections'), { ssr: true });
-const UpcomingEventsCarousel = dynamic(() => import('@/components/home/UpcomingEventsCarousel'), { ssr: true });
-const FeaturedClubsSlider = dynamic(() => import('@/components/home/FeaturedClubsSlider'), { ssr: true });
-const FeaturedJudgesSlider = dynamic(() => import('@/components/home/FeaturedJudgesSlider'), { ssr: true });
-const AboutUsSection = dynamic(() => import('@/components/home/AboutUsSection'), { ssr: true });
+const SlidingPhotoSections = dynamic(() => import('@/components/home/SlidingPhotoSections'));
+const UpcomingEventsCarousel = dynamic(() => import('@/components/home/UpcomingEventsCarousel'));
+const FeaturedClubsSlider = dynamic(() => import('@/components/home/FeaturedClubsSlider'));
+const FeaturedJudgesSlider = dynamic(() => import('@/components/home/FeaturedJudgesSlider'));
+const AboutUsSection = dynamic(() => import('@/components/home/AboutUsSection'));
 
 const SectionSkeleton = ({ height = 'h-64' }: { height?: string }) => (
   <PublicContainer className="py-16 space-y-4">
@@ -27,69 +27,74 @@ const SectionSkeleton = ({ height = 'h-64' }: { height?: string }) => (
 
 export const revalidate = 300; // ISR revalidation every 5 minutes
 
-export default async function Home() {
-  // Parallel Data Fetching on the Server
-  const [
-    bannersRes,
-    judgesRes,
-    albumsRes,
-    slidingSectionsRes,
-    eventsRes,
-    clubsRes,
-    aboutRes
-  ] = await Promise.all([
-    getHeroSlides().catch(() => ({ success: false, data: [] })),
-    getFeaturedJudges().catch(() => ({ success: false, data: [] })),
-    getPublicAlbumsAPI().catch(() => ({ success: false, data: [] })),
-    fetchServerData('/public/homepage-sliding-sections/public', 300).catch(() => ({ success: false, data: [] })),
-    fetchServerData('/public/events/upcoming?limit=6', 300).catch(() => ({ success: false, data: [] })),
-    fetchServerData('/public/clubs?limit=10', 300).catch(() => ({ success: false, data: [] })),
-    fetchServerData('/public/homepage-about-section', 300).catch(() => ({ success: false, data: [] })),
-  ]);
-
+async function HeroSectionWrapper() {
+  const bannersRes = await getHeroSlides().catch(() => ({ success: false, data: [] }));
   const banners = bannersRes?.data || [];
-  const judges = judgesRes?.data || [];
-  const albums = albumsRes?.data || [];
-  const slidingSections = slidingSectionsRes?.data || [];
-  const events = eventsRes?.data || [];
-  const clubs = clubsRes?.data || [];
-  const aboutData = aboutRes?.data || null;
+  if (!banners.length) return null;
+  return <HeroSlider banners={banners} />;
+}
 
+async function PremiumPhotosWrapper() {
+  const slidingSectionsRes = await fetchServerData('/public/homepage-sliding-sections/public', 300).catch(() => ({ success: false, data: [] }));
+  const slidingSections = slidingSectionsRes?.data || [];
+  return <SlidingPhotoSections initialSections={slidingSections} />;
+}
+
+async function EventsWrapper() {
+  const eventsRes = await fetchServerData('/public/events/upcoming?limit=6', 300).catch(() => ({ success: false, data: [] }));
+  const events = eventsRes?.data || [];
+  return <UpcomingEventsCarousel initialEvents={events} />;
+}
+
+async function ClubsWrapper() {
+  const clubsRes = await fetchServerData('/public/clubs?limit=10', 300).catch(() => ({ success: false, data: [] }));
+  const clubs = clubsRes?.data || [];
+  return <FeaturedClubsSlider initialClubs={clubs} />;
+}
+
+async function JudgesWrapper() {
+  const judgesRes = await getFeaturedJudges().catch(() => ({ success: false, data: [] }));
+  const judges = judgesRes?.data || [];
+  return <FeaturedJudgesSlider judges={judges} />;
+}
+
+async function AboutWrapper() {
+  const aboutRes = await fetchServerData('/public/homepage-about-section', 300).catch(() => ({ success: false, data: [] }));
+  const aboutData = aboutRes?.data || null;
+  return <AboutUsSection initialData={aboutData} />;
+}
+
+export default function Home() {
   return (
     <PageContainer>
-      {/* 1. Hero Banner Slider */}
+      {/* 1. Hero Banner Slider (Loads ASAP) */}
       <Suspense fallback={<div className="w-full h-[60vh] bg-accent/20 animate-pulse" />}>
-        {banners.length > 0 && <HeroSlider banners={banners} />}
-      </Suspense>
-      
-      {/* 2. Dynamic Album Gallery Section */}
-      <Suspense fallback={<SectionSkeleton height="h-96" />}>
-        <HomepageAlbumGallery albums={albums} />
+        <HeroSectionWrapper />
       </Suspense>
 
-      {/* 3. Premium Personal Photos */}
+      {/* 3. Premium Personal Photos (Lazy) */}
       <Suspense fallback={<SectionSkeleton height="h-96" />}>
-        <SlidingPhotoSections initialSections={slidingSections} />
+        <PremiumPhotosWrapper />
       </Suspense>
 
-      {/* 4. Upcoming Show Calendars (Card Listing) */}
+      {/* 4. Upcoming Show Calendars (Lazy) */}
       <Suspense fallback={<SectionSkeleton height="h-72" />}>
-        <UpcomingEventsCarousel initialEvents={events} />
+        <EventsWrapper />
       </Suspense>
 
-      {/* 5. Featured Kennel Clubs (Card Listing) */}
+      {/* 5. Featured Kennel Clubs (Lazy) */}
       <Suspense fallback={<SectionSkeleton height="h-64" />}>
-        <FeaturedClubsSlider initialClubs={clubs} />
+        <ClubsWrapper />
       </Suspense>
 
-      {/* 6. Elite International Judges (Card Listing) */}
+      {/* 6. Elite International Judges (Lazy) */}
       <Suspense fallback={<SectionSkeleton height="h-64" />}>
-        <FeaturedJudgesSlider judges={judges} />
+        <JudgesWrapper />
       </Suspense>
 
-      {/* 7. About JuzDog Media */}
+      {/* 7. About JuzDog Media (Lazy) */}
       <Suspense fallback={<SectionSkeleton height="h-64" />}>
-        <AboutUsSection initialData={aboutData} />
+        <AboutWrapper />
       </Suspense>
     </PageContainer>
   );

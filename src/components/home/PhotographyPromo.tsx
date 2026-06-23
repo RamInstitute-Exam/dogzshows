@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Camera, Video, Plane, Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function PhotographyPromo() {
   return (
@@ -58,11 +59,11 @@ export default function PhotographyPromo() {
             className="grid grid-cols-2 gap-4 relative"
           >
             <div className="space-y-4 translate-y-12">
-              <img src="/images/hero_banner.png" alt="Photography 1" className="rounded-3xl w-full h-64 object-cover border-4 border-border" />
-              <img src="/images/events_banner.png" alt="Photography 2" className="rounded-3xl w-full h-80 object-cover border-4 border-border" />
+              <OptimizedImage src="/images/hero_banner.png" alt="Photography 1" className="rounded-3xl w-full h-64 object-cover border-4 border-border" />
+              <OptimizedImage src="/images/events_banner.png" alt="Photography 2" className="rounded-3xl w-full h-80 object-cover border-4 border-border" />
             </div>
             <div className="space-y-4 -translate-y-4">
-              <img src="/images/winners_banner.png" alt="Photography 3" className="rounded-3xl w-full h-80 object-cover border-4 border-border" />
+              <OptimizedImage src="/images/winners_banner.png" alt="Photography 3" className="rounded-3xl w-full h-80 object-cover border-4 border-border" />
               <div className="bg-foreground rounded-3xl w-full h-64 p-8 flex flex-col justify-end text-white border-4 border-border shadow-lg">
                 <Camera className="w-12 h-12 mb-4 opacity-80" />
                 <h3 className="text-2xl font-bold mb-2">Winner Portraits</h3>

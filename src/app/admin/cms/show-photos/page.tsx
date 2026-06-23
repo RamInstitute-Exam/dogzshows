@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function ShowPhotosAdminPage() {
   const [albums, setAlbums] = useState<any[]>([]);
@@ -170,7 +171,7 @@ export default function ShowPhotosAdminPage() {
             {albums.map((album) => (
               <tr key={album.id} className="hover:bg-muted/20 transition-colors">
                 <td className="p-4">
-                  <img src={getImageUrl(album.coverImage)} alt="Cover" className="w-20 h-14 object-cover rounded-md" />
+                  <OptimizedImage src={getImageUrl(album.coverImage)} alt="Cover" className="w-20 h-14 object-cover rounded-md" />
                 </td>
                 <td className="p-4">
                   <div className="font-bold text-foreground">{album.title}</div>
@@ -228,7 +229,7 @@ export default function ShowPhotosAdminPage() {
               <div className="space-y-2">
                 <label className="font-semibold text-sm">Cover Image *</label>
                 <div className="flex items-center gap-4">
-                  {coverImage && <img src={getImageUrl(coverImage)} alt="Cover" className="h-20 rounded-md object-cover" />}
+                  {coverImage && <OptimizedImage src={getImageUrl(coverImage)} alt="Cover" className="h-20 rounded-md object-cover" />}
                   <Input type="file" accept="image/*" onChange={(e) => handleUpload(e, true)} disabled={isUploading} />
                 </div>
               </div>
@@ -239,7 +240,7 @@ export default function ShowPhotosAdminPage() {
                 <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 mt-2">
                   {images.map((url, idx) => (
                     <div key={idx} className="relative group aspect-square rounded-md overflow-hidden bg-muted">
-                      <img src={getImageUrl(url)} alt="Gallery" className="w-full h-full object-cover" />
+                      <OptimizedImage src={getImageUrl(url)} alt="Gallery" className="w-full h-full object-cover" />
                       <button type="button" onClick={() => setImages(images.filter((_, i) => i !== idx))} className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <X className="w-4 h-4" />
                       </button>

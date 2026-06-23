@@ -3,7 +3,7 @@
 import { Calendar, MapPin, Share2, Download, Timer, Trophy, Users, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { toTitleCase } from '@/lib/utils';
+import { toTitleCase, formatTitle } from '@/lib/utils';
 
 export default function EventHero({ event }: { event: any }) {
   const formattedDate = event?.date
@@ -117,7 +117,7 @@ export default function EventHero({ event }: { event: any }) {
               lineHeight: 1.1,
             }}
           >
-            {toTitleCase(event?.name) || 'Event Details'}
+            {formatTitle(event?.name) || 'Event Details'}
           </h1>
 
           {/* Description */}

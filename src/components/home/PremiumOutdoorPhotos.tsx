@@ -91,47 +91,45 @@ export default function PremiumOutdoorPhotos() {
             <Link 
               key={album.id}
               href={`/gallery/album?slug=${album.slug}`}
-              className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-sm hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
+              className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-md hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] h-[500px] md:h-[600px] mx-auto"
             >
               {/* Cover Image */}
-              <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
+              <div className="relative w-full h-[240px] md:h-[320px] shrink-0 overflow-hidden bg-black">
                 <Image
                   src={getImageUrl(album.coverImage)}
                   alt={album.title}
-                  fill={false}
-                  width={800}
-                  height={1200}
+                  fill
                   quality={100}
-                  unoptimized
-                  sizes="100vw"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "contain",
-                    objectPosition: "center"
-                  }}
-                  className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
+                  className="gallery-image transition-transform duration-700 group-hover:scale-[1.05] object-cover object-center"
                 />
-                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md uppercase">
+                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md uppercase z-10">
                   <ImageIcon className="w-3.5 h-3.5 text-muted-foreground" />
                   {album._count?.images || album.images?.length || 0} PHOTOS
                 </div>
               </div>
 
               {/* Card Info */}
-              <div className="p-5 flex-1 flex flex-col justify-between">
-                <div className="space-y-2">
+              <div className="p-6 flex-grow flex flex-col justify-between min-h-0">
+                <div className="space-y-1">
                   {album.eventName && (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <Camera className="w-3.5 h-3.5" />
                       {album.eventName}
                     </span>
                   )}
-                  <h3 className="text-base font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 normal-case">
+                  <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 normal-case min-h-[3rem] md:min-h-[3.5rem]">
                     {album.title}
                   </h3>
+
+                  <div className="text-[14px] font-medium text-primary leading-snug line-clamp-1 min-h-[1.25rem] md:min-h-[1.5rem]">
+                    {album.subtitle || <span className="invisible">No Subtitle</span>}
+                  </div>
+
+                  <div className="text-[13px] font-normal text-muted-foreground leading-snug line-clamp-2 mt-2 min-h-[2.5rem] md:min-h-[2.75rem]">
+                    {album.shortDescription || album.description || <span className="invisible">No Description</span>}
+                  </div>
                   
-                  <div className="flex flex-col gap-1 text-[11px] text-muted-foreground font-medium normal-case">
+                  <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium pt-2 min-h-[2.75rem] justify-end normal-case">
                     {album.location && (
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
@@ -145,7 +143,7 @@ export default function PremiumOutdoorPhotos() {
                   </div>
                 </div>
 
-                <div className="w-full pt-4 border-t border-border/40 mt-4">
+                <div className="w-full pt-4 border-t border-border/40 shrink-0 mt-auto">
                   <div className="w-full py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 group-hover:bg-black dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-black text-center font-bold text-xs transition-all flex items-center justify-center gap-1.5 duration-300 uppercase">
                     VIEW ALBUM
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />

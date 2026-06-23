@@ -6,6 +6,7 @@ import { Camera, X } from 'lucide-react';
 import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataTable';
 import { Button } from '@/components/ui/button';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface GalleryData {
   id?: string;
@@ -80,7 +81,7 @@ export default function GalleryManagement() {
   }, [page, search]);
 
   const columns: ColumnDefinition<any>[] = [
-    { header: 'Preview', accessor: (g) => <img src={g.url} alt="Preview" className="w-16 h-16 object-cover rounded-md" /> },
+    { header: 'Preview', accessor: (g) => <OptimizedImage src={g.url} alt="Preview" className="w-16 h-16 object-cover rounded-md" /> },
     { header: 'Title', accessor: 'title', className: 'font-bold text-foreground' },
     { header: 'Type', accessor: 'type' },
     { header: 'Album', accessor: (g) => g.album || 'Uncategorized' },

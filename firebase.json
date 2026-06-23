@@ -11,31 +11,31 @@
     "rewrites": [
       {
         "source": "/gallery/album/**",
-        "destination": "/gallery/album/_/index.html"
+        "destination": "/gallery/album/_.html"
       },
       {
         "source": "/gallery/shows/**",
-        "destination": "/gallery/shows/_/index.html"
+        "destination": "/gallery/shows/_.html"
       },
       {
         "source": "/gallery/outdoor/**",
-        "destination": "/gallery/outdoor/_/index.html"
+        "destination": "/gallery/outdoor/_.html"
       },
       {
         "source": "/clubs/category/**",
-        "destination": "/clubs/category/_/index.html"
+        "destination": "/clubs/category/_.html"
       },
       {
         "source": "/clubs/**",
-        "destination": "/clubs/_/index.html"
+        "destination": "/clubs/_.html"
       },
       {
         "source": "/admin/events/edit/**",
-        "destination": "/admin/events/edit/_/index.html"
+        "destination": "/admin/events/edit/_.html"
       },
       {
         "source": "/gallery/**",
-        "destination": "/gallery/_/index.html"
+        "destination": "/gallery/_.html"
       }
     ],
     "headers": [

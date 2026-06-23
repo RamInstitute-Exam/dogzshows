@@ -6,6 +6,7 @@ import api, { getImageUrl } from '@/lib/api';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, ArrowLeft, Image as ImageIcon, X } from 'lucide-react';
 import Link from 'next/link';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function EditProfileClient() {
   const router = useRouter();
@@ -199,7 +200,7 @@ export default function EditProfileClient() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                     {existingImages.map((img) => (
                       <div key={img.id} className="relative rounded-xl overflow-hidden aspect-square bg-input border border-border">
-                        <img src={getImageUrl(img.url)} alt="Existing" className="object-cover w-full h-full" />
+                        <OptimizedImage src={getImageUrl(img.url)} alt="Existing" className="object-cover w-full h-full" />
                       </div>
                     ))}
                   </div>
@@ -239,7 +240,7 @@ export default function EditProfileClient() {
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                   {previews.map((src, index) => (
                     <div key={index} className="relative group rounded-xl overflow-hidden aspect-square bg-input border border-border">
-                      <img src={src} alt="Preview" className="object-cover w-full h-full" />
+                      <OptimizedImage src={src} alt="Preview" className="object-cover w-full h-full" />
                       <button
                         type="button"
                         onClick={() => removeFile(index)}

@@ -7,6 +7,7 @@ import { AdminDataTable, ColumnDefinition } from '@/components/shared/AdminDataT
 import { Button } from '@/components/ui/button';
 import { useAdminMediaAlbums, useMediaCategories } from '@/hooks/useMedia';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface AlbumFormData {
   id?: string;
@@ -76,7 +77,7 @@ export default function AlbumsManagement() {
   }, [page, search]);
 
   const columns: ColumnDefinition<any>[] = [
-    { header: 'Cover', accessor: (a) => <img src={a.coverImage || '/images/placeholder.webp'} alt="Cover" className="w-16 h-12 object-cover rounded-lg border border-border" /> },
+    { header: 'Cover', accessor: (a) => <OptimizedImage src={a.coverImage || '/images/placeholder.webp'} alt="Cover" className="w-16 h-12 object-cover rounded-lg border border-border" /> },
     { header: 'Title', accessor: 'title', className: 'font-bold text-foreground' },
     { header: 'Slug', accessor: 'slug' },
     { header: 'Category', accessor: (a) => a.category?.name || 'Uncategorized' }

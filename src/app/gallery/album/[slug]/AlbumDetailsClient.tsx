@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { preload } from 'react-dom';
 import { ArrowLeft, MapPin, Calendar, Camera, ImageIcon, Download, Eye } from 'lucide-react';
-import { Masonry } from 'masonic';
+import Masonry from 'react-masonry-css';
 import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
@@ -18,7 +18,99 @@ function getApiBase(): string {
   return envUrl || '';
 }
 
-// Intersection observers removed for performance
+// Dynamic image card with skeleton loader
+function GalleryCard({
+  img,
+  index,
+  albumTitle,
+  downloadsEnabled,
+  downloadingId,
+  downloadCounts,
+  handleDownload,
+  setLightboxIndex,
+  preventContextMenu,
+  preventDownload
+}: {
+  img: any;
+  index: number;
+  albumTitle: string;
+  downloadsEnabled: boolean;
+  downloadingId: string | null;
+  downloadCounts: Record<string, number>;
+  handleDownload: (e: React.MouseEvent | null, id: string, idx: number) => void;
+  setLightboxIndex: (idx: number) => void;
+  preventContextMenu: (e: React.MouseEvent) => void;
+  preventDownload: (e: React.MouseEvent | React.DragEvent) => void;
+}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <div
+      className="mb-4 overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300 select-none"
+      onContextMenu={preventContextMenu}
+    >
+      <div
+        className="cursor-pointer relative min-h-[200px]"
+        onClick={() => setLightboxIndex(index)}
+      >
+        {!isLoaded && (
+          <div className="absolute inset-0 bg-muted/40 animate-pulse z-10 rounded-2xl" />
+        )}
+
+        <Image
+          src={getImageUrl(img.thumbnailUrl || img.imageUrl)}
+          alt={`${albumTitle} gallery ${index + 1}`}
+          priority={index < 8}
+          loading={index < 8 ? undefined : "lazy"}
+          width={500}
+          height={500}
+          quality={80}
+          sizes="(max-width: 640px) 300px, (max-width: 1024px) 400px, 500px"
+          onLoad={() => setIsLoaded(true)}
+          className={`w-full h-auto block transform transition-transform duration-700 group-hover:scale-[1.03] transition-opacity duration-300 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ pointerEvents: 'none' }}
+          onContextMenu={preventContextMenu}
+          onDragStart={preventDownload}
+        />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
+      </div>
+
+      <div className="absolute inset-0 bg-black/45 z-10 flex flex-col justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+        <div className="flex justify-between items-center w-full pointer-events-auto">
+          <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+            <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            {(img.viewCount ?? 0).toLocaleString()} Visitors
+          </span>
+          <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
+            <Download className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            {(downloadCounts[img.id] ?? img.downloadCount ?? 0).toLocaleString()}
+          </span>
+        </div>
+
+        <div className="flex justify-center w-full pointer-events-auto mt-auto">
+          {(downloadsEnabled && img.allowDownload !== false) && (
+            <button
+              onClick={(e) => handleDownload(e, img.id, index)}
+              disabled={downloadingId === img.id}
+              className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs md:text-sm transition-all shadow-lg border border-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {downloadingId === img.id ? (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  Download
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function AlbumDetailsClient({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -41,7 +133,8 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
   const [downloadCounts, setDownloadCounts] = useState<Record<string, number>>({});
 
   // Pagination
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchAlbumDetails() {
@@ -76,6 +169,27 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
       }
     }
   }, [album]);
+
+  const hasMore = album?.images && album.images.length > visibleCount;
+
+  useEffect(() => {
+    const target = observerTarget.current;
+    if (!target || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => prev + 8);
+        }
+      },
+      { threshold: 0.1, rootMargin: '200px' }
+    );
+
+    observer.observe(target);
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [hasMore]);
 
   const handlePhotoVisible = useCallback((photoId: string) => {
     // Disabled view increment on scroll to prevent performance issues
@@ -192,7 +306,6 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
 
   const masonryBreakpoints = { default: 4, 1100: 3, 700: 2, 500: 1 };
   const displayedImages = album.images?.slice(0, visibleCount) || [];
-  const hasMore = album.images && album.images.length > visibleCount;
   const downloadsEnabled = album.allowDownload === true;
 
   return (
@@ -232,9 +345,15 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
             </button>
 
             <div className="space-y-4">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight max-w-4xl">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-[700] text-foreground tracking-tight max-w-4xl">
                 {album.title}
               </h1>
+
+              {album.subtitle && album.subtitle.trim() !== '' && album.subtitle !== 'null' && album.subtitle !== 'undefined' && album.subtitle !== 'N/A' && album.subtitle !== '-' && (
+                <p className="font-[400] text-[#666] text-[14px] mt-2 max-w-3xl">
+                  {album.subtitle}
+                </p>
+              )}
 
               {album.description && (
                 <p className="text-muted-foreground text-sm md:text-base font-medium max-w-3xl leading-relaxed">
@@ -275,72 +394,31 @@ export default function AlbumDetailsClient({ params }: { params: Promise<{ slug:
         ) : (
           <div className="w-full">
             <Masonry
-              items={album.images}
-              columnGutter={16}
-              columnWidth={280}
-              overscanBy={2}
-              render={({ index, data: img, width }: { index: number; data: any; width: number }) => (
-                <div
-                  className="mb-4 overflow-hidden rounded-2xl bg-card border border-border/40 relative group shadow-sm hover:shadow-xl hover:border-border/20 transition-all duration-300 select-none"
-                  onContextMenu={preventContextMenu}
-                >
-                  <div
-                    className="cursor-pointer relative min-h-[200px]"
-                    onClick={() => setLightboxIndex(index)}
-                  >
-                    <div className="absolute inset-0 bg-muted/40 animate-pulse -z-10" />
-
-                    <Image
-                      src={getImageUrl(img.thumbnailUrl || img.imageUrl)}
-                      alt={`${album.title} gallery ${index + 1}`}
-                      priority={index < 8}
-                      loading={index < 8 ? undefined : "lazy"}
-                      width={400}
-                      height={600}
-                      quality={80}
-                      sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
-                      className="w-full block transform transition-transform duration-700 group-hover:scale-[1.03]"
-                      style={{ pointerEvents: 'none', width: '100%', height: 'auto' }}
-                      onContextMenu={preventContextMenu}
-                      onDragStart={preventDownload}
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
-                  </div>
-
-                  <div className="absolute inset-0 bg-black/45 z-10 flex flex-col justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    <div className="flex justify-between items-center w-full pointer-events-auto">
-                      <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
-                        <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                        {(img.viewCount ?? 0).toLocaleString()} Visitors
-                      </span>
-                      <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
-                        <Download className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        {(downloadCounts[img.id] ?? img.downloadCount ?? 0).toLocaleString()}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-center w-full pointer-events-auto mt-auto">
-                      {(downloadsEnabled && img.allowDownload !== false) && (
-                        <button
-                          onClick={(e) => handleDownload(e, img.id, index)}
-                          disabled={downloadingId === img.id}
-                          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs md:text-sm transition-all shadow-lg border border-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
-                        >
-                          {downloadingId === img.id ? (
-                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          ) : (
-                            <>
-                              <Download className="w-4 h-4" />
-                              Download
-                            </>
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            />
+              breakpointCols={masonryBreakpoints}
+              className="flex w-auto -ml-4"
+              columnClassName="pl-4 bg-clip-padding"
+            >
+              {displayedImages.map((img: any, index: number) => (
+                <GalleryCard
+                  key={img.id || index}
+                  img={img}
+                  index={index}
+                  albumTitle={album.title}
+                  downloadsEnabled={downloadsEnabled}
+                  downloadingId={downloadingId}
+                  downloadCounts={downloadCounts}
+                  handleDownload={handleDownload}
+                  setLightboxIndex={setLightboxIndex}
+                  preventContextMenu={preventContextMenu}
+                  preventDownload={preventDownload}
+                />
+              ))}
+            </Masonry>
+            {hasMore && (
+              <div ref={observerTarget} className="flex justify-center mt-12 mb-4">
+                <div className="w-8 h-8 border-4 border-foreground border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
           </div>
         )}
       </PublicContainer>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function WinnersPage() {
   const { data, isLoading } = useWinners();
@@ -55,7 +56,7 @@ export default function WinnersPage() {
                 <div className={`absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full p-1 bg-gradient-to-br ${color} shadow-lg`}>
                   <div className="w-full h-full object-cover rounded-full border-4 border-[#020817] bg-card flex items-center justify-center overflow-hidden">
                     {winner.dog?.images && winner.dog.images.length > 0 ? (
-                      <img src={getImageUrl(winner.dog.images[0].url)} alt={winner.dog?.name} className="w-full h-full object-cover" />
+                      <OptimizedImage src={getImageUrl(winner.dog.images[0].url)} alt={winner.dog?.name} className="w-full h-full object-cover" />
                     ) : (
                       <Trophy className="w-12 h-12 text-muted-foreground" />
                     )}

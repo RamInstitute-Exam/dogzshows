@@ -30,7 +30,15 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
 
-  const clubs: ClubData[] = initialClubs;
+  const rawClubs = initialClubs || [];
+  const clubs: ClubData[] = Array.from(
+    new Map(
+      rawClubs.map((club: any) => [
+        (club.name || '').trim().toLowerCase(),
+        club
+      ])
+    ).values()
+  );
 
   if (!clubs.length) return null;
 

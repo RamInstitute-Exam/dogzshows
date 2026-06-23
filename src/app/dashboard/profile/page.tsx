@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/useAuthStore';
 import api from '@/lib/api';
 import { toast } from 'sonner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function ProfilePage() {
   const { user: authUser, login } = useAuthStore();
@@ -116,7 +117,7 @@ export default function ProfilePage() {
               <div className="relative inline-block">
                 <div className="w-24 h-24 rounded-full bg-foreground text-foreground flex items-center justify-center text-3xl font-bold border-4 border-border shadow-xl overflow-hidden mx-auto">
                   {userData?.avatarUrl ? (
-                    <img src={userData.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                    <OptimizedImage src={userData.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <span>{userData?.firstName?.[0] || authUser?.firstName?.[0] || 'G'}</span>
                   )}
@@ -242,7 +243,7 @@ export default function ProfilePage() {
                   <div className="flex items-center justify-between p-4 rounded-2xl border border-border bg-card">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-card shadow-sm flex items-center justify-center border border-border">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+                        <OptimizedImage src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
                       </div>
                       <div>
                         <h4 className="font-bold text-foreground">Google</h4>

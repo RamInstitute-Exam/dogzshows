@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import PageContainer from '@/components/layout/PageContainer';
 import { useMediaPhotos, useMediaCategories } from '@/hooks/useMedia';
 import Link from 'next/link';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function PhotoGallery() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -129,7 +130,7 @@ export default function PhotoGallery() {
                     className="break-inside-avoid relative rounded-[20px] overflow-hidden group cursor-zoom-in bg-input shadow-sm"
                     onClick={() => setSelectedPhoto(photo)}
                   >
-                    <img 
+                    <OptimizedImage 
                       src={photoSrc} 
                       alt={photo.altText || photo.title}
                       loading="lazy"
@@ -186,7 +187,7 @@ export default function PhotoGallery() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex-grow bg-black/20 flex items-center justify-center p-4 md:p-6 min-h-[40vh] max-h-[55vh] md:max-h-none md:h-full md:w-2/3 lg:w-3/4">
-                <img 
+                <OptimizedImage 
                   src={selectedPhoto.s3Url || selectedPhoto.imageUrl || selectedPhoto.cdnUrl} 
                   alt={selectedPhoto.altText || selectedPhoto.title}
                   className="w-full h-full object-contain"

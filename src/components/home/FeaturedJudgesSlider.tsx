@@ -1,10 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Award, Globe, ArrowRight } from 'lucide-react';
+import { Award, Globe, ArrowRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getThumbnailUrl } from '@/lib/api';
 
 interface FeaturedJudgesSliderProps {
   judges: any[];
@@ -45,10 +46,11 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
               >
                 <div className="shrink-0 overflow-hidden relative border-[3px] border-[#1f2937] bg-[#f8fafc] shadow-[0_10px_30px_rgba(0,0,0,0.12)] rounded-[24px] w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] mb-[20px]">
                   {judge.photoUrl ? (
-                    <Image src={judge.photoUrl} alt={judge.name} width={150} height={150} quality={80} className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
+                    <Image src={getThumbnailUrl(judge.photoUrl)} alt={judge.name} width={150} height={150} quality={80} className="w-full h-full object-cover object-top group-hover:scale-[1.05] transition-transform duration-300" />
                   ) : (
-                    <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center text-[#64748b] text-[64px] font-[700] group-hover:scale-[1.05] transition-transform duration-300">
-                      {judge.name?.[0]?.toUpperCase() || 'M'}
+                    <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center text-[#64748b] group-hover:scale-[1.05] transition-transform duration-300">
+                      <User className="w-10 h-10 mb-1 opacity-70" />
+                      <span className="text-[9px] font-[700] uppercase tracking-wider text-center px-2 leading-tight">Photo<br/>Coming<br/>Soon</span>
                     </div>
                   )}
                 </div>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Trophy, Award, Scroll, Info, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PageContainer from '@/components/layout/PageContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function DogProfileClient({ id }: { id: string }) {
   return (
@@ -12,7 +13,7 @@ export default function DogProfileClient({ id }: { id: string }) {
       {/* Hero Cover */}
       <div className="h-96 relative">
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent z-10" />
-        <img 
+        <OptimizedImage 
           src="/images/hero_banner.png" 
           alt="Dog Cover" 
           className="w-full h-full object-cover"
@@ -24,7 +25,7 @@ export default function DogProfileClient({ id }: { id: string }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             className="w-40 h-40 rounded-full border-4 border-border shadow-2xl overflow-hidden bg-card shrink-0"
           >
-            <img 
+            <OptimizedImage 
               src="/images/hero_banner.png" 
               alt="Dog Avatar" 
               className="w-full h-full object-cover"

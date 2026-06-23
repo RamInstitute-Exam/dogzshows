@@ -8,6 +8,7 @@ import { Dog, CheckCircle2, Star, User, Mail, Lock, MapPin, ArrowRight, ArrowLef
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function RegisterForm() {
   const { setView, closeModal } = useAuthModalStore();
@@ -150,7 +151,7 @@ export default function RegisterForm() {
       {/* LEFT PANEL - 40% Desktop, 45% Tablet */}
       <div className="hidden md:flex w-[45%] lg:w-[40%] relative bg-card text-foreground flex-col justify-between p-10 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
+          <OptimizedImage 
             src="https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=1974&auto=format&fit=crop" 
             alt="Dog Show" 
             className="w-full h-full object-cover opacity-30 mix-blend-overlay"

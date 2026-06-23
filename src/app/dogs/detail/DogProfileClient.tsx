@@ -30,6 +30,7 @@ import {
   HeartHandshake
 } from 'lucide-react';
 import Link from 'next/link';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface DogProfile {
   id: string;
@@ -364,7 +365,7 @@ export default function DogProfileClient() {
                         activeImage === img.url ? 'border-border ring-2 ring-border/20' : 'border-transparent hover:border-pink-300'
                       }`}
                     >
-                      <img src={getImageUrl(img.url)} alt={dog.name} className="object-cover w-full h-full" />
+                      <OptimizedImage src={getImageUrl(img.url)} alt={dog.name} className="object-cover w-full h-full" />
                     </button>
                   ))}
                 </div>
@@ -570,7 +571,7 @@ export default function DogProfileClient() {
                 >
                   <div className="h-44 bg-input overflow-hidden relative">
                     {simImageSrc ? (
-                      <img src={getImageUrl(simImageSrc)} alt="" className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-550" />
+                      <OptimizedImage src={getImageUrl(simImageSrc)} alt="" className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-550" />
                     ) : (
                       <div className="bg-foreground/10/50 h-full w-full flex items-center justify-center text-muted-foreground">
                         <span className="font-semibold text-muted-foregroundxs">No Photo</span>
@@ -604,7 +605,7 @@ export default function DogProfileClient() {
             <X className="w-8 h-8" />
           </button>
           <div className="max-w-4xl max-h-[85vh] rounded-3xl overflow-hidden border border-border shadow-2xl">
-            <img src={getImageUrl(activeImage)} alt="" className="max-w-full max-h-[85vh] object-contain" />
+            <OptimizedImage src={getImageUrl(activeImage)} alt="" className="max-w-full max-h-[85vh] object-contain" />
           </div>
         </div>
       )}

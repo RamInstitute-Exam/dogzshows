@@ -6,6 +6,7 @@ import { Search, Filter, Download, FileText, CheckCircle2, XCircle, Clock } from
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function KCIVerificationPage() {
   const [data, setData] = useState<any[]>([]);
@@ -100,7 +101,7 @@ export default function KCIVerificationPage() {
                     <td className="p-4">
                       <a href={cert.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 group">
                         <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center overflow-hidden border border-border group-hover:border-border transition-colors">
-                          <img src={cert.url} alt="Certificate" className="w-full h-full object-cover opacity-80 group-hover:opacity-100" onError={(e) => { e.currentTarget.style.display='none' }} />
+                          <OptimizedImage src={cert.url} alt="Certificate" className="w-full h-full object-cover opacity-80 group-hover:opacity-100" onError={(e) => { e.currentTarget.style.display='none' }} />
                           <FileText className="w-5 h-5 text-muted-foreground absolute -z-10" />
                         </div>
                         <span className="text-foreground font-bold text-xs hover:underline">View File</span>

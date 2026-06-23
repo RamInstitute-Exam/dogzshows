@@ -12,6 +12,7 @@ import Spinner from '@/components/common/loader/Spinner';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export interface HeroBannerData {
   id: string;
@@ -49,7 +50,7 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <Image src="/Untitled-1.png" alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-50" />
+          <Image src="/Untitled-1.png" alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-50" priority style={{ width: '100px', height: 'auto' }} />
         </div>
       )}
       <Image
@@ -112,7 +113,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
     return (
       <section className="premium-section-spacing">
         <div className="hero-carousel-container premium-container premium-carousel-wrapper flex items-center justify-center">
-          <img src="/Untitled-1.png" alt="Loading" className="w-[120px] h-auto animate-pulse" />
+          <OptimizedImage src="/Untitled-1.png" alt="Loading" className="w-[120px] h-auto animate-pulse" fetchPriority="high" style={{ width: '120px', height: 'auto' }} />
         </div>
       </section>
     );
@@ -168,7 +169,9 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
                 onLoadSuccess={() => {
                   if (swiperRef.current) {
                     setTimeout(() => {
-                      swiperRef.current.updateAutoHeight();
+                      if (swiperRef.current && !swiperRef.current.destroyed && swiperRef.current.params) {
+                        swiperRef.current.updateAutoHeight();
+                      }
                     }, 100);
                   }
                 }}
@@ -247,7 +250,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
 
       <style jsx global>{`
         .hero-section {
-          padding-top: 32px;
+          padding-top: 0px;
           padding-bottom: 32px;
         }
 
@@ -393,10 +396,10 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           .hero-carousel-container { height: auto !important; }
         }
         @media (max-width: 1024px) {
-          .hero-section { padding-top: 24px; padding-bottom: 24px; }
+          .hero-section { padding-top: 0px; padding-bottom: 24px; }
         }
         @media (max-width: 767px) {
-          .hero-section { padding-top: 16px; padding-bottom: 16px; }
+          .hero-section { padding-top: 0px; padding-bottom: 16px; }
           .hero-carousel-container { 
             height: auto !important; 
             min-height: auto !important;
@@ -459,7 +462,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           .hero-carousel-container { height: auto !important; min-height: auto !important; }
         }
         @media (max-width: 480px) {
-          .hero-section { padding-top: 16px; padding-bottom: 16px; }
+          .hero-section { padding-top: 0px; padding-bottom: 16px; }
           .hero-carousel-container { 
             height: auto !important; 
             min-height: auto !important;

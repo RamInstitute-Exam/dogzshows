@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { config } from '@/lib/config';
 import api from '@/services/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function UserManagementListing() {
   const [users, setUsers] = useState<any[]>([]);
@@ -166,7 +167,7 @@ export default function UserManagementListing() {
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center font-bold text-foreground overflow-hidden">
-                              {user.avatarUrl ? <img src={user.avatarUrl} className="w-full h-full object-cover" /> : (user.firstName?.charAt(0) || 'U')}
+                              {user.avatarUrl ? <OptimizedImage src={user.avatarUrl} className="w-full h-full object-cover" /> : (user.firstName?.charAt(0) || 'U')}
                             </div>
                             <div>
                               <p className="font-bold text-foreground group-hover:text-blue-400 transition-colors">

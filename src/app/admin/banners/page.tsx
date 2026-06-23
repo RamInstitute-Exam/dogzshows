@@ -11,6 +11,7 @@ import api, { getImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
 import Spinner from '@/components/common/loader/Spinner';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface HeroBanner {
   id: string;
@@ -390,7 +391,7 @@ export default function BannerManagement() {
                     <td className="p-4 align-middle">
                       <div className="flex gap-3">
                         <div className="relative">
-                          <img 
+                          <OptimizedImage 
                             src={getImageUrl(banner.desktopImage)} 
                             alt="Desktop" 
                             className="w-24 h-12 object-cover rounded-lg border border-border/80 shadow-sm"
@@ -399,7 +400,7 @@ export default function BannerManagement() {
                         </div>
                         {banner.mobileImage && (
                           <div className="relative">
-                            <img 
+                            <OptimizedImage 
                               src={getImageUrl(banner.mobileImage)} 
                               alt="Mobile" 
                               className="w-8 h-12 object-cover rounded-lg border border-border/80 shadow-sm"
@@ -577,7 +578,7 @@ export default function BannerManagement() {
                         <Spinner size="md" className="py-4" />
                       ) : currentBanner.desktopImage ? (
                         <div className="w-full flex flex-col items-center gap-3">
-                          <img 
+                          <OptimizedImage 
                             src={getImageUrl(currentBanner.desktopImage)} 
                             alt="Uploaded Desktop" 
                             className="h-20 w-auto object-cover rounded-lg border border-border"
@@ -617,7 +618,7 @@ export default function BannerManagement() {
                         <Spinner size="md" className="py-4" />
                       ) : currentBanner.mobileImage ? (
                         <div className="w-full flex flex-col items-center gap-3">
-                          <img 
+                          <OptimizedImage 
                             src={getImageUrl(currentBanner.mobileImage)} 
                             alt="Uploaded Mobile" 
                             className="h-20 w-auto object-cover rounded-lg border border-border"

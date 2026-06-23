@@ -3,7 +3,7 @@
 import { Calendar, MapPin, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { toTitleCase } from '@/lib/utils';
+import { toTitleCase, formatTitle } from '@/lib/utils';
 
 export default function RelatedEvents({ events }: { events: any[] }) {
   // Only show first 2 for carousel preview
@@ -36,7 +36,7 @@ export default function RelatedEvents({ events }: { events: any[] }) {
               </span>
             </div>
             <div className="p-5 flex-1 flex flex-col">
-              <h4 className="font-extrabold text-foreground text-lg mb-3 line-clamp-1 group-hover:text-foreground transition-colors">{toTitleCase(event.name)}</h4>
+              <h4 className="font-extrabold text-foreground text-lg mb-3 line-clamp-1 group-hover:text-foreground transition-colors">{formatTitle(event.name)}</h4>
               <div className="space-y-2 text-sm text-muted-foreground font-medium mb-4">
                 <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-muted-foreground" /> {event.date}</div>
                 <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-muted-foreground" /> {toTitleCase(event.location)}</div>

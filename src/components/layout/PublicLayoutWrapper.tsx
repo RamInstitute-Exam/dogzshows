@@ -27,9 +27,9 @@ export default function PublicLayoutWrapper({
   return (
     <>
       <Navbar />
-      <div className="flex-grow flex flex-col relative z-0">
+      <main className="flex-grow flex flex-col relative z-0">
         {children}
-      </div>
+      </main>
       <Footer />
     </>
   );

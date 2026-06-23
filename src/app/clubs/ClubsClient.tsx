@@ -51,7 +51,16 @@ export default function ClubsClient() {
       
       const res = await api.get(url);
       if (res.success) {
-        setClubs(res.data || res.clubs || []);
+        const rawClubs = res.data || res.clubs || [];
+        const uniqueClubs = Array.from(
+          new Map(
+            rawClubs.map((club: any) => [
+              (club.name || '').trim().toLowerCase(),
+              club
+            ])
+          ).values()
+        );
+        setClubs(uniqueClubs);
         setTotalPages(res.totalPages || 1);
         setTotalCount(res.total || res.totalCount || 0);
       }

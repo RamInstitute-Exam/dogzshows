@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Eye } from 'lucide-react';
-import api, { getImageUrl } from '@/lib/api';
+import api, { getImageUrl, getOriginalUrl } from '@/lib/api';
 import Image from 'next/image';
 
 const MotionImage = motion.create(Image);
@@ -167,8 +167,8 @@ export default function ImageLightbox({
 
   const getImgSrc = (img: any) => {
     if (!img) return '';
-    if (typeof img === 'string') return getImageUrl(img);
-    return getImageUrl(img.mediumUrl || img.imageUrl || img.s3Url || img.cdnUrl || img.src || '');
+    if (typeof img === 'string') return getOriginalUrl(img);
+    return getOriginalUrl(img.mediumUrl || img.imageUrl || img.s3Url || img.cdnUrl || img.src || '');
   };
 
   const handlePrev = () => {

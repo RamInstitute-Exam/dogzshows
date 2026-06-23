@@ -6,6 +6,7 @@ import { Calendar, MapPin, Trophy, Upload, CheckCircle, ChevronRight, FileText, 
 import { Button } from '@/components/ui/button';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 // Mock Data
 const SHOWS = [
@@ -280,7 +281,7 @@ export default function ShowEntries() {
                     >
                       {/* Banner Image */}
                       <div className="relative w-full aspect-[16/9] overflow-hidden bg-input">
-                        <img 
+                        <OptimizedImage 
                           src={show.image} 
                           alt={show.title}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

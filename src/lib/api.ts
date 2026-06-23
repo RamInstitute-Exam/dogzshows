@@ -48,7 +48,14 @@ export const api = {
 export const getImageUrl = (path: string | undefined | null) => {
   if (!path) return '/images/placeholder.webp';
   // Full URLs (S3, CDN, etc) pass through directly
-  if (path.startsWith('http') || path.startsWith('/images/') || path.startsWith('data:')) return path;
+  if (
+    path.startsWith('http') ||
+    path.startsWith('/images/') ||
+    path.startsWith('data:') ||
+    (path.startsWith('/') && !path.startsWith('/uploads/'))
+  ) {
+    return path;
+  }
 
   // If path is just a key, construct the S3 URL
   const bucket = process.env.NEXT_PUBLIC_S3_BUCKET || process.env.AWS_BUCKET_NAME || 'juzdog-media';
@@ -63,6 +70,52 @@ export const getImageUrl = (path: string | undefined | null) => {
   }
   
   return `https://${bucket}.s3.${region}.amazonaws.com/${cleanPath}`;
+};
+
+export const getThumbnailUrl = (path: string | undefined | null) => {
+  const url = getImageUrl(path);
+  if (!url) return '/images/placeholder.webp';
+
+  // Support for both old (-preview.webp) and new (-medium.webp) file names
+  if (url.includes('-preview.webp')) {
+    return url.replace('-preview.webp', '-thumb.webp'); // Old generated format
+  }
+  if (url.includes('-medium.webp')) {
+    return url.replace('-medium.webp', '-thumbnail.webp'); // New generated format
+  }
+  if (url.includes('-original.webp')) {
+    return url.replace('-original.webp', '-thumbnail.webp');
+  }
+  
+  return url;
+};
+
+export const getOriginalUrl = (path: string | undefined | null) => {
+  const url = getImageUrl(path);
+  if (!url) return '/images/placeholder.webp';
+
+  if (url.includes('-preview.webp')) {
+    return url.replace('-preview.webp', '-original.webp');
+  }
+  if (url.includes('-medium.webp')) {
+    return url.replace('-medium.webp', '-original.webp');
+  }
+  if (url.includes('-thumb.webp')) {
+    return url.replace('-thumb.webp', '-original.webp');
+  }
+  if (url.includes('-thumbnail.webp')) {
+    return url.replace('-thumbnail.webp', '-original.webp');
+  }
+  
+  return url;
+};
+
+export const getOptimizedUrl = (path: string | undefined | null, width: number = 800) => {
+  const url = getImageUrl(path);
+  if (url.startsWith('http') && !url.includes('wsrv.nl')) {
+    return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&q=75&output=webp`;
+  }
+  return url;
 };
 
 export default api;

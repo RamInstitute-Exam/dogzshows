@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function LoginForm() {
   const { setView, closeModal } = useAuthModalStore();
@@ -52,7 +53,7 @@ export default function LoginForm() {
     <div className="p-8 pt-[24px]">
       <div className="flex justify-center items-center gap-4 mb-[20px]">
         <Link href="/" onClick={closeModal} className="cursor-pointer">
-          <img 
+          <OptimizedImage 
             src="/Untitled-1.png" 
             alt="JUZDOG" 
             className="w-[100px] md:w-[140px] h-auto object-contain animate-in fade-in duration-500"

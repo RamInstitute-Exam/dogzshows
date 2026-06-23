@@ -8,7 +8,8 @@ import PageContainer from '@/components/layout/PageContainer';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { toTitleCase } from '@/lib/utils';
+import { toTitleCase, formatTitle } from '@/lib/utils';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function ClosedEntriesPage() {
   const [events, setEvents] = useState<any[]>([]);
@@ -87,7 +88,7 @@ export default function ClosedEntriesPage() {
                 className="bg-card rounded-[24px] overflow-hidden shadow-lg border border-border hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative text-foreground"
               >
                 <div className="h-[220px] bg-accent relative overflow-hidden flex flex-col justify-between p-5">
-                  <img 
+                  <OptimizedImage 
                     src={event.bannerUrl || '/images/events_banner.png'} 
                     alt={event.name} 
                     className="absolute inset-0 w-full h-full object-cover grayscale transition-transform duration-500" 
@@ -108,7 +109,7 @@ export default function ClosedEntriesPage() {
 
                   <div className="space-y-4 mb-6 flex-grow pr-12">
                     <div>
-                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-foreground transition-colors line-clamp-2">{toTitleCase(event.name)}</h3>
+                      <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-foreground transition-colors line-clamp-2">{formatTitle(event.name)}</h3>
                       <p className="text-sm font-semibold text-muted-foreground">{toTitleCase(event.club?.name) || 'TBA'}</p>
                     </div>
 

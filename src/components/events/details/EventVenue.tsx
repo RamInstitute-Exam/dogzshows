@@ -2,6 +2,7 @@
 
 import { MapPin, Navigation2, Car, Building, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 export default function EventVenue({ event }: { event: any }) {
   return (
@@ -50,7 +51,7 @@ export default function EventVenue({ event }: { event: any }) {
 
         {/* Right: Map/Image */}
         <div className="h-full min-h-[300px] bg-gray-200 rounded-[16px] overflow-hidden relative group cursor-pointer border border-border">
-          <img src="/images/hero_banner.png" alt="Venue Map" className="w-full h-full object-cover blur-[2px] group-hover:blur-none transition-all duration-500" />
+          <OptimizedImage src="/images/hero_banner.png" alt="Venue Map" className="w-full h-full object-cover blur-[2px] group-hover:blur-none transition-all duration-500" />
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-transparent transition-all duration-500">
             <div className="bg-card/90 backdrop-blur-sm text-foreground font-bold px-6 py-3 rounded-full shadow-xl flex items-center gap-2">
               <MapPin className="w-4 h-4 text-foreground" /> Open in Google Maps

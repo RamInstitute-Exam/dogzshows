@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   MapPin, Phone, Mail, Award, ChevronLeft, 
-  UserCircle, Star
+  UserCircle, Star, User
 } from 'lucide-react';
 import { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface JudgeDetailClientProps {
   judge: any;
@@ -59,12 +60,15 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-40 h-40 md:w-56 md:h-56 rounded-[20px] md:rounded-[32px] bg-[#f5f5f5] border-[4px] border-[#111827] shadow-[0_8px_20px_rgba(0,0,0,0.12)] flex items-center justify-center text-6xl font-[700] overflow-hidden shrink-0 relative"
+              className="w-40 h-40 md:w-56 md:h-56 rounded-[20px] md:rounded-[32px] bg-[#f8fafc] border-[4px] border-[#111827] shadow-[0_8px_20px_rgba(0,0,0,0.12)] flex items-center justify-center text-6xl font-[700] overflow-hidden shrink-0 relative"
             >
               {judge.photoUrl ? (
-                <img src={getImageUrl(judge.photoUrl)} alt={judge.name} className="w-full h-full object-cover object-center" />
+                <OptimizedImage src={getImageUrl(judge.photoUrl)} alt={judge.name} className="w-full h-full object-cover object-center" />
               ) : (
-                <span className="text-[#64748b] text-[72px]">{getInitials(judge.name)}</span>
+                <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center text-[#64748b]">
+                  <User className="w-16 h-16 mb-2 opacity-70" />
+                  <span className="text-sm font-[700] uppercase tracking-wider text-center px-2 leading-tight">Photo<br/>Coming<br/>Soon</span>
+                </div>
               )}
               {judge.isFeatured && (
                 <div className="absolute bottom-2 right-6 bg-primary text-primary-foreground p-1.5 rounded-full border-2 border-[#020817]">

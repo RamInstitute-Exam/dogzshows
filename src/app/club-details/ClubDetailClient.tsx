@@ -11,6 +11,7 @@ import {
 import { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
+import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface ClubDetailClientProps {
   club: any;
@@ -62,7 +63,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                   <Link key={rec.id} href={`/clubs/${rec.slug || rec.id}`} className="group bg-card rounded-2xl border border-border overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 block">
                     <div className="h-32 bg-accent relative overflow-hidden">
                       {rec.bannerUrl ? (
-                        <img src={getImageUrl(rec.bannerUrl)} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <OptimizedImage src={getImageUrl(rec.bannerUrl)} alt="Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
                         <div className="w-full h-full bg-muted/40 flex items-center justify-center">
                           <Tent className="w-8 h-8 text-foreground/40" />
@@ -137,7 +138,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
       <section className="relative pt-6 md:pt-8 pb-12 overflow-hidden bg-black border-b border-border">
         {club.bannerUrl && (
           <div className="absolute inset-0 opacity-30">
-            <img src={getImageUrl(club.bannerUrl)} alt="Banner" className="w-full h-full object-cover" />
+            <OptimizedImage src={getImageUrl(club.bannerUrl)} alt="Banner" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#020817] via-[#020817]/80 to-transparent"></div>
           </div>
         )}
@@ -160,7 +161,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
               className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-card border-4 border-card shadow-2xl flex items-center justify-center text-4xl font-bold overflow-hidden shrink-0"
             >
               {club.logoUrl ? (
-                <img src={getImageUrl(club.logoUrl)} alt={club.name} className="w-full h-full object-cover" />
+                <OptimizedImage src={getImageUrl(club.logoUrl)} alt={club.name} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-muted-foreground bg-foreground w-full h-full flex items-center justify-center text-white">{getInitials(club.name)}</span>
               )}
@@ -253,7 +254,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                     <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
                       {club.clubGalleries.map((img: any) => (
                         <div key={img.id} className="aspect-square rounded-xl overflow-hidden bg-accent border border-border group relative">
-                          <img src={getImageUrl(img.image)} alt={img.title || 'Gallery Image'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          <OptimizedImage src={getImageUrl(img.image)} alt={img.title || 'Gallery Image'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           {img.title && <div className="absolute bottom-0 inset-x-0 bg-black/60 p-2 text-white text-xs font-bold backdrop-blur-sm">{img.title}</div>}
                         </div>
                       ))}
@@ -281,7 +282,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                           >
                             {evt.bannerUrl ? (
                               <div className="h-40 bg-accent overflow-hidden">
-                                <img src={getImageUrl(evt.bannerUrl)} alt={evt.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <OptimizedImage src={getImageUrl(evt.bannerUrl)} alt={evt.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                               </div>
                             ) : (
                               <div className="h-40 bg-muted/40 flex items-center justify-center">
@@ -312,7 +313,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                           <div key={evt.id} className="bg-card rounded-2xl border border-border overflow-hidden group">
                             {evt.banner && (
                               <div className="h-40 bg-accent overflow-hidden">
-                                <img src={getImageUrl(evt.banner)} alt={evt.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <OptimizedImage src={getImageUrl(evt.banner)} alt={evt.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                               </div>
                             )}
                             <div className="p-6">
@@ -340,7 +341,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                       {club.clubCommittees.map((member: any) => (
                         <div key={member.id} className="bg-card rounded-2xl border border-border p-6 flex items-center gap-4">
                           <div className="w-16 h-16 rounded-full bg-accent overflow-hidden shrink-0 flex items-center justify-center font-bold text-xl text-muted-foreground border border-border">
-                            {member.photo ? <img src={getImageUrl(member.photo)} className="w-full h-full object-cover" alt={member.name} /> : getInitials(member.name)}
+                            {member.photo ? <OptimizedImage src={getImageUrl(member.photo)} className="w-full h-full object-cover" alt={member.name} /> : getInitials(member.name)}
                           </div>
                           <div>
                             <h3 className="font-bold text-foreground normal-case">{member.name}</h3>
