@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, useMemo } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Search, Filter, Trophy, ArrowRight, Share2, Heart, Award, Users, CreditCard, Clock, ChevronDown, RefreshCw } from 'lucide-react';
@@ -12,16 +13,29 @@ import api from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
 import { toTitleCase, formatTitle } from '@/lib/utils';
 
-export default function EventsPage() {
+function EventsPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const [events, setEvents] = useState<any[]>([]);
   const [clubs, setClubs] = useState<any[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [selectedClub, setSelectedClub] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
-  const [page, setPage] = useState(1);
+
+  // Filter States
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [selectedClub, setSelectedClub] = useState(searchParams.get('clubId') || '');
+  const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || '');
+  
+  const [selectedMonth, setSelectedMonth] = useState(searchParams.get('month') || '');
+  const [selectedYear, setSelectedYear] = useState(searchParams.get('year') || '');
+  const [fromDate, setFromDate] = useState(searchParams.get('fromDate') || '');
+  const [toDate, setToDate] = useState(searchParams.get('toDate') || '');
+  const [quickFilter, setQuickFilter] = useState(searchParams.get('quickFilter') || '');
+  
+  const [page, setPage] = useState(parseInt(searchParams.get('page') || '1', 10));
   const [totalPages, setTotalPages] = useState(1);
 
   // Debounce search
@@ -63,6 +77,22 @@ export default function EventsPage() {
     loadCities();
   }, []);
 
+  // Sync URL params
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (debouncedSearch) params.set('search', debouncedSearch);
+    if (selectedClub) params.set('clubId', selectedClub);
+    if (selectedCity) params.set('city', selectedCity);
+    if (selectedMonth) params.set('month', selectedMonth);
+    if (selectedYear) params.set('year', selectedYear);
+    if (fromDate) params.set('fromDate', fromDate);
+    if (toDate) params.set('toDate', toDate);
+    if (quickFilter) params.set('quickFilter', quickFilter);
+    if (page > 1) params.set('page', String(page));
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [debouncedSearch, selectedClub, selectedCity, selectedMonth, selectedYear, fromDate, toDate, quickFilter, page, router, pathname]);
+
   // Fetch filtered events
   const loadEvents = async () => {
     setLoading(true);
@@ -70,12 +100,59 @@ export default function EventsPage() {
       const queryParams = new URLSearchParams({
         page: String(page),
         limit: '12',
-        search: debouncedSearch,
-        clubId: selectedClub,
-        city: selectedCity,
+        sortBy: 'startDate',
+        sortOrder: 'asc',
+        isPublic: 'true'
       });
 
-      const endpoint = '/public/shows/upcoming';
+      if (debouncedSearch) queryParams.set('search', debouncedSearch);
+      if (selectedClub) queryParams.set('clubId', selectedClub);
+      if (selectedCity) queryParams.set('city', selectedCity);
+
+      let effectiveMonth = selectedMonth;
+      let effectiveYear = selectedYear;
+      let effectiveFromDate = fromDate;
+      let effectiveToDate = toDate;
+
+      const today = new Date();
+      if (quickFilter === 'upcoming') {
+        effectiveFromDate = today.toISOString().split('T')[0];
+        effectiveToDate = '';
+        effectiveMonth = '';
+        effectiveYear = '';
+      } else if (quickFilter === 'past') {
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        effectiveToDate = yesterday.toISOString().split('T')[0];
+        effectiveFromDate = '';
+        effectiveMonth = '';
+        effectiveYear = '';
+      } else if (quickFilter === 'this_month') {
+        effectiveMonth = String(today.getMonth() + 1);
+        effectiveYear = String(today.getFullYear());
+        effectiveFromDate = '';
+        effectiveToDate = '';
+      } else if (quickFilter === 'next_month') {
+        let m = today.getMonth() + 2;
+        let y = today.getFullYear();
+        if (m > 12) { m = 1; y++; }
+        effectiveMonth = String(m);
+        effectiveYear = String(y);
+        effectiveFromDate = '';
+        effectiveToDate = '';
+      } else if (quickFilter === 'today') {
+        effectiveFromDate = today.toISOString().split('T')[0];
+        effectiveToDate = today.toISOString().split('T')[0];
+        effectiveMonth = '';
+        effectiveYear = '';
+      }
+
+      if (effectiveMonth) queryParams.set('month', effectiveMonth);
+      if (effectiveYear) queryParams.set('year', effectiveYear);
+      if (effectiveFromDate) queryParams.set('fromDate', effectiveFromDate);
+      if (effectiveToDate) queryParams.set('toDate', effectiveToDate);
+
+      const endpoint = '/public/shows';
 
       const res = await api.get(`${endpoint}?${queryParams.toString()}`);
       if (res.success) {
@@ -108,14 +185,8 @@ export default function EventsPage() {
 
   useEffect(() => {
     loadEvents();
-  }, [page, debouncedSearch, selectedClub, selectedCity]);
+  }, [page, debouncedSearch, selectedClub, selectedCity, selectedMonth, selectedYear, fromDate, toDate, quickFilter]);
 
-  const formatDate = (dateStr: string | null | undefined) => {
-    if (!dateStr) return 'TBA';
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
-  // Get list of unique cities from existing shows for filters
   const uniqueCities = cities;
 
   const getStatusBadgeClass = (status: string) => {
@@ -138,7 +209,50 @@ export default function EventsPage() {
     return status;
   };
 
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear, currentYear + 1, currentYear + 2, currentYear + 3];
 
+  const scrollToEvents = () => {
+    setTimeout(() => {
+      document.getElementById('events-listing')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 100);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    scrollToEvents();
+  };
+
+  const handleQuickFilter = (val: string) => {
+    if (quickFilter === val) {
+      setQuickFilter('');
+    } else {
+      setQuickFilter(val);
+      // Clear manual date range when clicking quick filters to avoid confusion
+      setFromDate('');
+      setToDate('');
+      setSelectedMonth('');
+      setSelectedYear('');
+    }
+    setPage(1);
+    scrollToEvents();
+  };
+
+  const resetFilters = () => {
+    setSearch('');
+    setSelectedClub('');
+    setSelectedCity('');
+    setSelectedMonth('');
+    setSelectedYear('');
+    setFromDate('');
+    setToDate('');
+    setQuickFilter('');
+    setPage(1);
+    scrollToEvents();
+  };
 
   return (
     <PageContainer>
@@ -151,60 +265,109 @@ export default function EventsPage() {
       />
 
       {/* Filter / Search Bar */}
-      <PublicContainer className="mb-12 mt-12">
-        <div className="bg-card rounded-[24px] p-5 shadow-sm border border-border flex flex-wrap gap-4 items-center">
-          <div className="flex-1 min-w-[250px] relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search Event Name or Club..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-foreground"
-            />
-          </div>
+      <PublicContainer className="mb-12 mt-6">
+        <div className="flex flex-col gap-6">
           
-          <div className="flex flex-wrap gap-3">
-            {/* Club filter */}
+          {/* Row 1: Search Box */}
+          <div className="w-full lg:w-[70%]">
+            <div className="relative w-full">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input 
+                type="text" 
+                placeholder="Search Event Name, Club Name, Location..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full h-[56px] pl-12 pr-4 rounded-[16px] bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-foreground text-base shadow-sm"
+              />
+            </div>
+          </div>
+
+          {/* Row 2: Quick Filter Tabs */}
+          <div className="flex overflow-x-auto pb-2 -mb-2 gap-3 w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <button onClick={() => handleQuickFilter('upcoming')} className={`shrink-0 h-[44px] px-5 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${quickFilter === 'upcoming' ? 'bg-foreground text-background' : 'bg-background border border-border text-foreground hover:bg-muted'}`}>Upcoming Shows</button>
+            <button onClick={() => handleQuickFilter('this_month')} className={`shrink-0 h-[44px] px-5 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${quickFilter === 'this_month' ? 'bg-foreground text-background' : 'bg-background border border-border text-foreground hover:bg-muted'}`}>This Month</button>
+            <button onClick={() => handleQuickFilter('next_month')} className={`shrink-0 h-[44px] px-5 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${quickFilter === 'next_month' ? 'bg-foreground text-background' : 'bg-background border border-border text-foreground hover:bg-muted'}`}>Next Month</button>
+            <button onClick={() => handleQuickFilter('today')} className={`shrink-0 h-[44px] px-5 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${quickFilter === 'today' ? 'bg-foreground text-background' : 'bg-background border border-border text-foreground hover:bg-muted'}`}>Today's Events</button>
+            <button onClick={() => handleQuickFilter('past')} className={`shrink-0 h-[44px] px-5 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${quickFilter === 'past' ? 'bg-foreground text-background' : 'bg-background border border-border text-foreground hover:bg-muted'}`}>Past Events</button>
+          </div>
+
+          {/* Row 3: Dropdowns */}
+          <div className="flex flex-col md:flex-row flex-wrap gap-3 items-center w-full">
+            <select
+              value={selectedMonth}
+              onChange={(e) => { setSelectedMonth(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }}
+              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
+            >
+              <option value="">All Months</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+
+            <select
+              value={selectedYear}
+              onChange={(e) => { setSelectedYear(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }}
+              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
+            >
+              <option value="">All Years</option>
+              {years.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+
             <select
               value={selectedClub}
-              onChange={(e) => { setSelectedClub(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
+              onChange={(e) => { setSelectedClub(e.target.value); setPage(1); scrollToEvents(); }}
+              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
             >
               <option value="">All Clubs</option>
               {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
 
-            {/* City/Location filter */}
             <select
               value={selectedCity}
-              onChange={(e) => { setSelectedCity(e.target.value); setPage(1); }}
-              className="px-4 py-3.5 bg-background border border-border rounded-xl font-semibold text-muted-foreground text-sm outline-none focus:border-primary"
+              onChange={(e) => { setSelectedCity(e.target.value); setPage(1); scrollToEvents(); }}
+              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
             >
               <option value="">All Locations</option>
               {uniqueCities.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-          </div>
+            
+            <div className="flex items-center gap-2 h-[44px] bg-background border border-border rounded-xl px-3 w-full md:w-auto">
+              <input 
+                type="date" 
+                value={fromDate} 
+                onChange={e => { setFromDate(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }} 
+                className="bg-transparent outline-none w-full text-sm font-medium text-muted-foreground min-w-[110px]" 
+              />
+              <span className="text-muted-foreground font-bold">-</span>
+              <input 
+                type="date" 
+                value={toDate} 
+                onChange={e => { setToDate(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }} 
+                className="bg-transparent outline-none w-full text-sm font-medium text-muted-foreground min-w-[110px]" 
+              />
+            </div>
 
-          <div className="flex gap-3 ml-auto">
-            <Button 
-              onClick={() => {
-                setSearch('');
-                setSelectedClub('');
-                setSelectedCity('');
-                setPage(1);
-              }}
-              variant="outline" 
-              className="h-[52px] px-6 rounded-xl border-border text-muted-foreground font-bold hover:bg-card"
+            <button 
+              onClick={resetFilters}
+              className="h-[44px] px-6 rounded-xl border border-border text-muted-foreground font-bold hover:bg-muted w-full md:w-auto bg-background transition-colors"
             >
               Reset Filters
-            </Button>
+            </button>
           </div>
         </div>
       </PublicContainer>
 
       {/* Shows Grid */}
-      <PublicContainer className="pb-20">
+      <PublicContainer className="pb-20" id="events-listing">
         <div className="flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Dog Show Events</h2>
@@ -287,7 +450,7 @@ export default function EventsPage() {
             <Button
               variant="outline"
               disabled={page === 1}
-              onClick={() => setPage(p => p - 1)}
+              onClick={() => handlePageChange(page - 1)}
               className="border-border text-foreground hover:bg-card"
             >
               Previous
@@ -296,7 +459,7 @@ export default function EventsPage() {
             <Button
               variant="outline"
               disabled={page === totalPages}
-              onClick={() => setPage(p => p + 1)}
+              onClick={() => handlePageChange(page + 1)}
               className="border-border text-foreground hover:bg-card"
             >
               Next
@@ -305,5 +468,13 @@ export default function EventsPage() {
         )}
       </PublicContainer>
     </PageContainer>
+  );
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="h-screen flex items-center justify-center font-bold text-muted-foreground">Loading Calendar...</div>}>
+      <EventsPageContent />
+    </Suspense>
   );
 }

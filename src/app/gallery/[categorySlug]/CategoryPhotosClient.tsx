@@ -141,29 +141,27 @@ export default function CategoryPhotosClient({ params }: { params: Promise<{ cat
                 {/* Card Info */}
                 <div className="p-6 flex-grow flex flex-col justify-between min-h-0">
                   <div className="space-y-1">
-                    <h3 className="text-xl md:text-2xl font-bold text-[#111827] dark:text-[#FFFFFF] group-hover:text-foreground transition-colors leading-snug line-clamp-2 min-h-[3rem] md:min-h-[3.5rem]">
+                    <h3 className="text-xl md:text-2xl font-bold text-[#111827] dark:text-[#FFFFFF] group-hover:text-foreground transition-colors leading-snug line-clamp-2">
                       {album.title}
                     </h3>
 
-                    <div className="text-[14px] font-medium text-primary leading-snug line-clamp-1 min-h-[1.25rem] md:min-h-[1.5rem]">
-                      {album.subtitle || <span className="invisible">No Subtitle</span>}
-                    </div>
-
-                    <div className="text-[13px] font-normal text-muted-foreground leading-snug line-clamp-2 mt-2 min-h-[2.5rem] md:min-h-[2.75rem]">
-                      {album.shortDescription || album.description || <span className="invisible">No Description</span>}
-                    </div>
+                    {album.subtitle && album.subtitle.trim() !== '' && album.subtitle !== 'null' && album.subtitle !== 'undefined' && (
+                      <div className="text-[14px] font-medium text-primary leading-snug line-clamp-1 mt-1">
+                        {album.subtitle}
+                      </div>
+                    )}
                     
-                    <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium pt-2 min-h-[2.75rem] justify-end">
+                    <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium pt-2 justify-end">
                       {(album.city || album.state || album.location) && (
                         <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-foreground shrink-0" />
+                          <span className="shrink-0 text-sm">📍</span>
                           <span className="truncate">
                             {[album.city, album.state].filter(Boolean).join(', ') || album.location}
                           </span>
                         </div>
                       )}
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-foreground shrink-0" />
+                        <span className="shrink-0 text-sm">📅</span>
                         <span>
                           {album.albumDate 
                             ? new Date(album.albumDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })

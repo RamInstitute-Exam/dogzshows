@@ -39,8 +39,6 @@
     overflow-x: hidden;
     margin: 0;
     padding: 0;
-    touch-action: pan-y;
-    overscroll-behavior-y: none;
     background: #000000;
     color: #ffffff;
   }

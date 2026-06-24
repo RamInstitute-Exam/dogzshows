@@ -140,11 +140,11 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                   transition={{ duration: 0.35, delay: (index % 12) * 0.04 }}
                 >
                   <div
-                    className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-border/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
+                    className="group bg-card border border-border rounded-[1.5rem] overflow-hidden hover:border-border/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] h-auto mx-auto"
                   >
                     {/* Image area */}
                     <div
-                      className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden cursor-pointer"
+                      className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden cursor-pointer aspect-auto md:aspect-[4/5]"
                       onClick={() => {
                         setLightboxImages(filtered);
                         setLightboxIndex(index);
@@ -159,23 +159,13 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                         width={800}
                         height={1200}
                         quality={100}
-                        sizes="100vw"
-                        style={{
-                          width: '100%',
-                          height: 'auto',
-                          objectFit: 'contain',
-                          objectPosition: 'center',
-                          pointerEvents: 'none',
-                        }}
-                        className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
                         onContextMenu={(e) => e.preventDefault()}
                         onDragStart={(e) => e.preventDefault()}
+                        draggable={false}
+                        className="w-full h-auto object-contain md:object-cover md:h-full max-h-[70vh] md:max-h-none transition-transform duration-700 ease-in-out group-hover:scale-[1.03] select-none pointer-events-none"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full bg-foreground flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
-                          <ZoomIn className="w-5 h-5 text-white" />
-                        </div>
-                      </div>
+
                       {photo.category?.name && (
                         <span className="absolute top-4 left-4 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
                           {photo.category.name}
@@ -200,30 +190,8 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
                               <User className="w-3.5 h-3.5" />{photo.photographer}
                             </span>
                           )}
-                          <span className="flex items-center gap-1">
-                            <Eye className="w-3.5 h-3.5" />{photo.views || 0}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Download className="w-3.5 h-3.5" />{dlCount}
-                          </span>
                         </div>
-
-                        {/* Download button — only when album allows it */}
-                        {albumAllowsDownload && (
-                          <button
-                            onClick={(e) => handleDownload(e, photo)}
-                            disabled={downloadingId === photo.id}
-                            title="Download this photo (watermarked)"
-                            className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-foreground text-white hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
-                          >
-                            {downloadingId === photo.id ? (
-                              <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                              <Download className="w-3 h-3" />
-                            )}
-                            {downloadingId === photo.id ? '…' : 'DL'}
-                          </button>
-                        )}
+                        {/* Download button removed */}
                       </div>
                     </div>
                   </div>

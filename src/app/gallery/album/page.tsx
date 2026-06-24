@@ -112,6 +112,12 @@ function PublicAlbumDetailsPageContent() {
                 {album.title}
               </h1>
 
+              {album.subtitle && album.subtitle.trim() !== '' && album.subtitle !== 'null' && album.subtitle !== 'undefined' && (
+                <p className="font-[400] text-gray-600 dark:text-gray-400 text-[15px] md:text-[17px] mt-2 max-w-3xl">
+                  {album.subtitle}
+                </p>
+              )}
+
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs md:text-sm font-medium text-muted-foreground">
                 {album.location && (
                   <div className="flex items-center gap-1.5">

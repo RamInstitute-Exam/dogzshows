@@ -143,40 +143,6 @@ function JudgesList() {
                 onBlur={handleSearchSubmit}
               />
             </form>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative min-w-[180px]">
-                <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <select 
-                  className="w-full bg-background border border-border text-foreground text-sm rounded-xl pl-9 pr-4 py-3 appearance-none focus:outline-none focus:ring-2 ring-border/50"
-                  value={specializationFilter}
-                  onChange={(e) => handleFilterChange(setSpecializationFilter, e.target.value)}
-                >
-                  <option value="">All Specializations</option>
-                  <option value="All Breed">All Breed</option>
-                  <option value="Group">Group Judge</option>
-                  <option value="Specialty">Specialty Judge</option>
-                  <option value="Working">Working Class</option>
-                </select>
-              </div>
-              
-              <div className="hidden sm:flex items-center bg-background border border-border rounded-xl p-1 shrink-0 ml-auto xl:ml-0">
-                <button
-                  type="button"
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-foreground text-white' : 'text-muted-foreground hover:bg-muted'}`}
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-foreground text-white' : 'text-muted-foreground hover:bg-muted'}`}
-                >
-                  <ListIcon className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Results Section */}

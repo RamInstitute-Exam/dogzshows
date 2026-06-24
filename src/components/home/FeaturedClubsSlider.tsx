@@ -56,15 +56,8 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
           </div>
         </div>
 
-        <div className="carousel-wrapper w-full">
-          {/* Custom Navigation Buttons */}
-          <button
-            ref={(node) => setPrevEl(node)}
-            className="carousel-prev hidden md:flex"
-            aria-label="Previous slide"
-          >
-            <ChevronLeft size={22} />
-          </button>
+        <div className="carousel-wrapper w-full relative">
+          {/* Custom Navigation Buttons will be placed below Swiper on mobile and sides on desktop */}
 
           <Swiper
             modules={[Autoplay, Navigation, Pagination]}
@@ -92,18 +85,23 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
               1200: { slidesPerView: 4, spaceBetween: 20 },
               1440: { slidesPerView: 5, spaceBetween: 24 },
             }}
-            className="!pb-12 custom-swiper premium-carousel-track"
+            className="!pb-0 md:!pb-0 custom-swiper premium-carousel-track"
           >
             {clubs.map((club) => (
               <SwiperSlide key={club.id} className="!h-auto flex">
-                <Link href={`/clubs/${club.slug || club.id}`} className="w-full">
+                <Link href={`/clubs/${club.slug || club.id}`} className="w-full h-full flex">
                   <motion.div
                     whileHover={{ y: -6 }}
-                    className="group relative flex flex-col h-full bg-card border border-border/50 rounded-[20px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-border/30 transition-all duration-500 p-6"
+                    className="group relative flex flex-col w-full h-full bg-card border border-border/50 rounded-[20px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-border/30 transition-all duration-500 p-6"
                   >
                     {/* Content */}
-                    <div className="flex flex-col justify-between flex-1 h-full">
+                    <div className="flex flex-col justify-between flex-1 h-full min-h-[auto]">
                       <div className="flex flex-col">
+                        {club.logoUrl && (
+                          <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-white shadow-sm flex items-center justify-center mb-4 border border-border/50 shrink-0">
+                            <img src={club.logoUrl} alt={club.name} className="w-full h-full object-contain p-1.5" />
+                          </div>
+                        )}
                         <h3 className="text-[clamp(22px,1.4vw,30px)] font-[800] leading-[1.25] text-foreground mb-3 line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] group-hover:text-foreground transition-colors normal-case">
                           {club.name}
                         </h3>
@@ -115,7 +113,7 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
                           </span>
                         </div>
 
-                        <p className="text-[15px] leading-[1.7] text-muted-foreground line-clamp-3 overflow-hidden break-words [overflow-wrap:anywhere] mb-6">
+                        <p className="text-[15px] leading-[1.7] text-muted-foreground line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] mb-6 min-h-[auto]">
                           {club.description || 'India\'s leading kennel club organizing prestigious canine events.'}
                         </p>
                       </div>
@@ -137,13 +135,23 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
             ))}
           </Swiper>
 
-          <button
-            ref={(node) => setNextEl(node)}
-            className="carousel-next hidden md:flex"
-            aria-label="Next slide"
-          >
-            <ChevronRight size={22} />
-          </button>
+          {/* Navigation Container - Mobile: Below, Tablet: Inside, Desktop: Outside */}
+          <div className="flex md:absolute md:top-1/2 md:-translate-y-1/2 md:left-4 md:right-4 xl:-left-[64px] xl:-right-[64px] justify-center md:justify-between items-center gap-4 mt-6 md:mt-0 z-20 pointer-events-none">
+            <button
+              ref={(node) => setPrevEl(node)}
+              className="pointer-events-auto shrink-0 flex items-center justify-center !w-[52px] !h-[52px] !min-w-[52px] !max-w-[52px] bg-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:scale-[1.08] active:scale-[0.96] transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-border/5"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={20} className="text-black" />
+            </button>
+            <button
+              ref={(node) => setNextEl(node)}
+              className="pointer-events-auto shrink-0 flex items-center justify-center !w-[52px] !h-[52px] !min-w-[52px] !max-w-[52px] bg-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:scale-[1.08] active:scale-[0.96] transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-border/5"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={20} className="text-black" />
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col items-center justify-center mt-12 gap-3 text-center">

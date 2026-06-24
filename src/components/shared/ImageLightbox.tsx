@@ -3,11 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Eye } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Download, Eye } from 'lucide-react';
 import api, { getImageUrl, getOriginalUrl } from '@/lib/api';
 import Image from 'next/image';
-
-const MotionImage = motion.create(Image);
 
 interface ImageLightboxProps {
   images: any[];
@@ -33,7 +31,6 @@ export default function ImageLightbox({
   onStatsUpdate,
 }: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [scale, setScale] = useState(1);
   const [lastTap, setLastTap] = useState(0);
 
@@ -51,6 +48,9 @@ export default function ImageLightbox({
     setMounted(true);
     return () => {
       document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
     };
   }, []);
 
@@ -59,21 +59,31 @@ export default function ImageLightbox({
     if (isOpen) {
       setCurrentIndex(initialIndex);
       setScale(1);
-      setIsLoaded(false);
-      // Lock body scroll
+      document.body.classList.add('lightbox-active');
+      // Lock both body and html scroll completely to prevent any mobile scroll leakage or bouncing
       document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.style.height = '100vh';
     } else {
+      document.body.classList.remove('lightbox-active');
       document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
     }
     return () => {
+      document.body.classList.remove('lightbox-active');
       document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
     };
   }, [isOpen, initialIndex]);
 
-  // Reset scale and loader on image change
+  // Reset scale on image change
   useEffect(() => {
     setScale(1);
-    setIsLoaded(false);
   }, [currentIndex]);
 
   // Views counter tracking
@@ -101,11 +111,13 @@ export default function ImageLightbox({
     }
   }, [isOpen, currentIndex, images, onStatsUpdate]);
 
-  // Keyboard navigation & Esc key close
+  // Keyboard navigation & Esc key close (disabled on mobile)
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (typeof window !== 'undefined' && window.innerWidth <= 768) return;
+
       switch (e.key) {
         case 'ArrowLeft':
           e.preventDefault();
@@ -239,203 +251,265 @@ export default function ImageLightbox({
     setTouchEnd(null);
   };
 
-  // Preload previous and next images in cache
-  const nextIndex = (currentIndex + 1) % images.length;
-  const prevIndex = (currentIndex - 1 + images.length) % images.length;
-  const nextSrc = getImgSrc(images[nextIndex]);
-  const prevSrc = getImgSrc(images[prevIndex]);
-
   if (!mounted) return null;
+
+  const activeImage = images[currentIndex];
+  const imageSrc = activeImage ? getImgSrc(activeImage) : '';
 
   return createPortal(
     <AnimatePresence>
       {isOpen && images && images.length > 0 && (
-        <motion.div
-          ref={modalRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Image lightbox"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          style={{
-            width: '100vw',
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(0,0,0,0.95)',
-          }}
-          className="fixed inset-0 z-[999999999] backdrop-blur-md outline-none select-none overflow-hidden"
-        >
-          {/* Background Preloaders */}
-          {nextSrc && <img src={nextSrc} className="hidden" aria-hidden="true" alt="preload" />}
-          {prevSrc && <img src={prevSrc} className="hidden" aria-hidden="true" alt="preload" />}
-
-          {/* Top-Left Corner: Image Counter */}
-          <div
-            className="absolute top-6 left-6 z-50 flex items-center text-white bg-black/40 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 shadow-lg select-none"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <span className="font-extrabold text-sm tracking-wider">
-              {currentIndex + 1} / {images.length}
-            </span>
-          </div>
-
-          {/* Top-Right Corner: Header Actions (Grouped Views, Downloads, Download Button, Zoom, Close) */}
-          <div
-            className="absolute top-6 right-6 z-50 flex items-center gap-2 md:gap-3 bg-black/40 backdrop-blur-md p-2 rounded-full border border-white/10 shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Views Stat */}
-            <span className="text-white/90 text-xs font-bold flex items-center gap-1.5 px-3 select-none">
-              <Eye className="w-4 h-4 text-blue-400 shrink-0" />
-              <span className="hidden sm:inline">{(images[currentIndex]?.viewCount ?? 0).toLocaleString()} <span className="text-white/70">Visitors</span></span>
-              <span className="sm:hidden">{(images[currentIndex]?.viewCount ?? 0).toLocaleString()}</span>
-            </span>
-
-            {/* Downloads Stat */}
-            {allowDownload && images[currentIndex]?.allowDownload !== false && (
-              <span className="text-white/90 text-xs font-bold flex items-center gap-1.5 px-3 border-l border-white/15 select-none">
-                <Download className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="hidden sm:inline">{((downloadCounts && downloadCounts[images[currentIndex]?.id]) ?? images[currentIndex]?.downloadCount ?? 0).toLocaleString()} Downloads</span>
-                <span className="sm:hidden">{((downloadCounts && downloadCounts[images[currentIndex]?.id]) ?? images[currentIndex]?.downloadCount ?? 0).toLocaleString()}</span>
-              </span>
-            )}
-
-            {/* Download Button */}
-            {allowDownload && images[currentIndex]?.allowDownload !== false && (
-              <button
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  const img = images[currentIndex];
-                  if (img && onDownload) {
-                    await onDownload(img.id, currentIndex);
-                    if (onStatsUpdate) {
-                      const currentCount = (downloadCounts && downloadCounts[img.id]) ?? img.downloadCount ?? 0;
-                      onStatsUpdate(img.id, { downloadCount: currentCount + 1 });
-                    }
-                  }
-                }}
-                disabled={downloadingId === images[currentIndex]?.id}
-                className="h-9 px-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-65 text-white flex items-center gap-1.5 transition-all cursor-pointer font-bold text-xs shadow-md border border-emerald-500/20 active:scale-95"
-                title="Download Image"
-              >
-                {downloadingId === images[currentIndex]?.id ? (
-                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <Download className="w-4 h-4" />
-                    <span className="hidden md:inline">Download</span>
-                  </>
-                )}
-              </button>
-            )}
-
-            {/* Zoom Toggle */}
-            <button
-              onClick={() => setScale((prev) => (prev > 1 ? 1 : 2.5))}
-              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
-              title={scale > 1 ? "Zoom Out" : "Zoom In"}
-              aria-label={scale > 1 ? "Zoom out" : "Zoom in"}
-            >
-              {scale > 1 ? <ZoomOut className="w-4.5 h-4.5" /> : <ZoomIn className="w-4.5 h-4.5" />}
-            </button>
-
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="w-9 h-9 rounded-full bg-white text-black hover:scale-105 flex items-center justify-center transition-all cursor-pointer shadow-md"
-              title="Close Gallery"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Fixed Vertically Centered Previous Arrow */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePrev();
+        <>
+          <style dangerouslySetInnerHTML={{ __html: `
+            body.lightbox-active > *:not(.lightbox-portal) {
+              visibility: hidden !important;
+            }
+            .lightbox-portal {
+              width: 100vw !important;
+              max-width: 100vw !important;
+              height: 100vh !important;
+              max-height: 100vh !important;
+              overflow: hidden !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+          `}} />
+          <motion.div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image lightbox"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              width: '100vw',
+              height: '100vh',
+              zIndex: 99999,
+              background: '#000000',
             }}
-            className="absolute left-6 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10 backdrop-blur-sm"
-            aria-label="Previous image"
+            className="fixed inset-0 z-[99999] outline-none select-none overflow-hidden touch-none w-screen h-screen bg-black lightbox-portal"
           >
-            <ChevronLeft className="w-6 h-6 md:w-8 md:h-8 mr-0.5" />
-          </button>
+            {/* Main Full-Screen Layout Container */}
+            <div className="relative w-full h-full flex flex-col justify-between p-4 md:p-6">
+            
+            {/* Header: height 60px, flex, space-between, items-center */}
+            <div 
+              style={{
+                height: '60px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+                zIndex: 9999,
+              }}
+              className="px-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button: Left, width auto, padding 0 16px */}
+              <button
+                onClick={onClose}
+                style={{
+                  width: 'auto',
+                  padding: '0 16px',
+                  height: '44px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  borderRadius: '9999px',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  backdropFilter: 'blur(10px)',
+                  color: '#ffffff',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                }}
+                className="cursor-pointer transition-all hover:bg-white/20 active:scale-95 flex-shrink-0 whitespace-nowrap"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5 text-white" />
+                <span>Close</span>
+              </button>
 
-          {/* Centered Image Container */}
-          <div
-            className="relative flex items-center justify-center pointer-events-auto"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Shimmer / Spinner Loading State */}
-            {!isLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="w-[85vw] h-[65vh] max-w-[1200px] max-h-[800px] bg-white/5 animate-pulse rounded-2xl flex items-center justify-center">
-                  <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-                </div>
+              {/* Counter: Right, fixed right */}
+              <div 
+                style={{
+                  height: '44px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 16px',
+                  borderRadius: '9999px',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  backdropFilter: 'blur(10px)',
+                  color: '#ffffff',
+                  fontWeight: 'extrabold',
+                  fontSize: '14px',
+                  letterSpacing: '0.05em',
+                }}
+                className="flex-shrink-0 whitespace-nowrap select-none"
+              >
+                {currentIndex + 1} / {images.length}
               </div>
-            )}
+            </div>
 
-            <MotionImage
-              key={currentIndex}
-              src={getImgSrc(images[currentIndex])}
-              alt={images[currentIndex]?.altText || `Lightbox Image ${currentIndex + 1}`}
-              onLoad={() => setIsLoaded(true)}
+            {/* Middle Image Area (flex-grow/flex-1, display flex, items-center, justify-center, centering the image) */}
+            <div 
+              className="w-full flex-1 flex items-center justify-center min-h-0 relative my-auto px-12 touch-none select-none"
+              onClick={(e) => e.stopPropagation()}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {imageSrc && (
+                <Image
+                  src={imageSrc}
+                  alt={activeImage?.altText || `Lightbox Image ${currentIndex + 1}`}
+                  width={activeImage?.width || 1920}
+                  height={activeImage?.height || 1080}
+                  priority
+                  unoptimized
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleTap(e);
+                  }}
+                  className={`max-w-full max-h-[75vh] object-contain select-none pointer-events-auto w-auto h-auto ${scale > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+                  style={{
+                    transform: `scale(${scale})`,
+                    transformOrigin: 'center center',
+                    transition: 'transform 0.2s ease',
+                  }}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                  draggable={false}
+                />
+              )}
+            </div>
+
+            {/* Left Navigation Arrow: 48px x 48px, background rgba(0,0,0,.55), backdrop blur, over image */}
+            <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleTap(e);
-              }}
-              width={images[currentIndex]?.width || 1920}
-              height={images[currentIndex]?.height || 1080}
-              unoptimized
-              initial={{ opacity: 0 }}
-              animate={{
-                scale: scale,
-                opacity: isLoaded ? 1 : 0,
-              }}
-              transition={{
-                scale: { type: 'spring', stiffness: 300, damping: 25 },
-                opacity: { duration: 0.2 }
+                handlePrev();
               }}
               style={{
-                width: 'auto',
-                height: 'auto',
-                maxWidth: '95vw',
-                maxHeight: '90vh',
-                objectFit: 'contain',
-                cursor: scale > 1 ? 'zoom-out' : 'zoom-in',
-                transformOrigin: 'center center',
+                position: 'absolute',
+                left: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 9999,
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                background: 'rgba(0,0,0,.55)',
+                backdropFilter: 'blur(10px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                border: '1px solid rgba(255,255,255,0.15)',
               }}
-              className="shadow-2xl select-none"
-            />
-          </div>
+              className="cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-lg"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
 
-          {/* Fixed Vertically Centered Next Arrow */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNext();
-            }}
-            className="absolute right-6 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white/10 hover:bg-white text-white hover:text-black hover:scale-110 shadow-2xl transition-all duration-200 cursor-pointer border border-white/10 backdrop-blur-sm"
-            aria-label="Next image"
-          >
-            <ChevronRight className="w-6 h-6 md:w-8 md:h-8 ml-0.5" />
-          </button>
+            {/* Right Navigation Arrow: 48px x 48px, background rgba(0,0,0,.55), backdrop blur, over image */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 9999,
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                background: 'rgba(0,0,0,.55)',
+                backdropFilter: 'blur(10px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                border: '1px solid rgba(255,255,255,0.15)',
+              }}
+              className="cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-lg"
+              aria-label="Next image"
+            >
+              <ChevronRight className="w-6 h-6 text-white" />
+            </button>
 
-          {/* Mobile swipe helper */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none md:hidden">
-            <span className="text-white/40 text-xs font-semibold uppercase tracking-widest bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
-              Swipe to navigate
-            </span>
+            {/* Bottom Controls Area (Stats, Download Button, Swipe helper) */}
+            <div 
+              className="w-full max-w-md mx-auto flex flex-col items-center gap-3.5 pb-2 select-none z-[9999] bg-black/90 px-4 py-3 rounded-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Statistics Row - Hidden on mobile */}
+              <div className="hidden md:flex items-center justify-center gap-4 text-sm font-semibold text-white/90">
+                <span className="flex items-center gap-1.5">
+                  <Eye className="w-4.5 h-4.5 text-blue-400 shrink-0" />
+                  {(activeImage?.viewCount ?? 0).toLocaleString()} <span className="text-white/70">Visitors</span>
+                </span>
+
+                {allowDownload && activeImage?.allowDownload !== false && (
+                  <>
+                    <span className="text-white/30">|</span>
+                    <span className="flex items-center gap-1.5">
+                      <Download className="w-4.5 h-4.5 text-emerald-400 shrink-0" />
+                      {((downloadCounts && downloadCounts[activeImage?.id]) ?? activeImage?.downloadCount ?? 0).toLocaleString()} <span className="text-white/70">Downloads</span>
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* Download Button */}
+              {allowDownload && activeImage?.allowDownload !== false && (
+                <button
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (activeImage && onDownload) {
+                      await onDownload(activeImage.id, currentIndex);
+                      if (onStatsUpdate) {
+                        const currentCount = (downloadCounts && downloadCounts[activeImage.id]) ?? activeImage.downloadCount ?? 0;
+                        onStatsUpdate(activeImage.id, { downloadCount: currentCount + 1 });
+                      }
+                    }
+                  }}
+                  disabled={downloadingId === activeImage?.id}
+                  className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-65 text-white flex items-center justify-center gap-2 transition-all cursor-pointer font-bold text-sm shadow-md border border-emerald-500/20 active:scale-95"
+                  title="Download Photo"
+                >
+                  {downloadingId === activeImage?.id ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Download className="w-5 h-5" />
+                      Download Photo
+                    </>
+                  )}
+                </button>
+              )}
+
+              {/* Swipe Helper Text */}
+              <div className="pointer-events-none mt-1 text-center">
+                <span className="text-white/30 text-xs font-semibold uppercase tracking-widest">
+                  Swipe Left / Right To Navigate
+                </span>
+              </div>
+            </div>
+
           </div>
         </motion.div>
+        </>
       )}
     </AnimatePresence>,
     document.body

@@ -45,21 +45,22 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
 
   return (
     <div
-      className={`relative w-full h-full hero-slide bg-transparent ${onClick ? 'cursor-zoom-in' : ''}`}
+      className={`relative w-full h-full hero-slide bg-[#0a0a0a] ${onClick ? 'cursor-zoom-in' : ''}`}
       onClick={onClick}
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <Image src="/Untitled-1.png" alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-50" priority style={{ width: '100px', height: 'auto' }} />
+          <Image src="/Untitled-1.png" alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-30" priority />
         </div>
       )}
       <Image
         src={src}
         alt={alt}
-        width={1920}
-        height={1080}
-        className="hero-image-render"
-        priority={isFirst}
+        fill
+        className="hero-image-render cinematic-zoom"
+        priority={true}
+        quality={100}
+        sizes="100vw"
         onLoad={(e) => {
           setLoading(false);
           if (onLoadSuccess) onLoadSuccess();
@@ -70,10 +71,8 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
           onFail();
         }}
         style={{
-          width: "100%",
-          height: "auto",
-          objectFit: "contain",
-          objectPosition: "center",
+          objectFit: "cover",
+          objectPosition: "top center",
           display: "block"
         }}
       />
@@ -123,7 +122,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
 
   return (
     <section className="hero-section w-full relative">
-      <div className={`hero-carousel-container premium-container premium-carousel-wrapper transition-opacity duration-700 ${isInitialized ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`hero-carousel-container transition-opacity duration-700 ${isInitialized ? 'opacity-100' : 'opacity-0'}`}>
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
@@ -131,16 +130,16 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           onInit={() => setTimeout(() => setIsInitialized(true), 50)}
           modules={[Autoplay, Navigation, Pagination, Keyboard]}
           loop={true}
-          speed={500}
+          speed={1000}
           grabCursor={true}
           observer={true}
           observeParents={true}
           watchOverflow={true}
-          autoplay={showNav ? {
-            delay: 5000,
+          autoplay={{
+            delay: 4000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
-          } : false}
+          }}
           keyboard={{ enabled: true }}
           navigation={false}
           pagination={showNav ? {
@@ -149,10 +148,13 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             bulletClass: 'hero-dot',
             bulletActiveClass: 'hero-dot-active',
           } : false}
-          slidesPerView={1}
-          spaceBetween={0}
+          slidesPerView={'auto'}
           centeredSlides={true}
-          autoHeight={true}
+          spaceBetween={24}
+          breakpoints={{
+            768: { spaceBetween: 32 },
+            1024: { spaceBetween: 40 },
+          }}
           className="hero-swiper premium-carousel-track"
         >
           {validBanners.map((slide, index) => {
@@ -167,32 +169,28 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
                   }
                 }}
                 onLoadSuccess={() => {
-                  if (swiperRef.current) {
-                    setTimeout(() => {
-                      if (swiperRef.current && !swiperRef.current.destroyed && swiperRef.current.params) {
-                        swiperRef.current.updateAutoHeight();
-                      }
-                    }, 100);
-                  }
+                  // Removed dynamic height update to preserve center alignment
                 }}
                 onClick={!slide.redirectUrl ? () => setZoomedImage(getImageUrl(slide.imageUrl)) : undefined}
               />
             );
 
             return (
-              <SwiperSlide key={slide.id || index} className="hero-slide-item-wrapper">
-                {slide.redirectUrl ? (
-                  <a
-                    href={slide.redirectUrl}
-                    target={slide.openNewTab ? "_blank" : "_self"}
-                    rel={slide.openNewTab ? "noopener noreferrer" : ""}
-                    className="block w-full h-full"
-                  >
-                    {innerContent}
-                  </a>
-                ) : (
-                  innerContent
-                )}
+              <SwiperSlide key={slide.id || index} className="hero-slide-wrapper">
+                <div className="hero-slide-inner">
+                  {slide.redirectUrl ? (
+                    <a
+                      href={slide.redirectUrl}
+                      target={slide.openNewTab ? "_blank" : "_self"}
+                      rel={slide.openNewTab ? "noopener noreferrer" : ""}
+                      className="block w-full h-full"
+                    >
+                      {innerContent}
+                    </a>
+                  ) : (
+                    innerContent
+                  )}
+                </div>
               </SwiperSlide>
             );
           })}
@@ -200,24 +198,23 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
 
         {showNav && (
           <>
-            {/* Navigation Arrows */}
             <button
-              aria-label="Previous slide"
               onClick={() => swiperRef.current?.slidePrev()}
-              className="premium-slider-nav premium-slider-prev"
+              className="hero-nav-btn hero-nav-btn-prev"
+              aria-label="Previous slide"
             >
-              <ChevronLeft className="w-8 h-8" />
+              <ChevronLeft className="w-6 h-6 md:w-7 md:h-7 xl:w-[28px] xl:h-[28px]" />
             </button>
             <button
-              aria-label="Next slide"
               onClick={() => swiperRef.current?.slideNext()}
-              className="premium-slider-nav premium-slider-next"
+              className="hero-nav-btn hero-nav-btn-next"
+              aria-label="Next slide"
             >
-              <ChevronRight className="w-8 h-8" />
+              <ChevronRight className="w-6 h-6 md:w-7 md:h-7 xl:w-[28px] xl:h-[28px]" />
             </button>
 
             {/* Pagination Dots */}
-            <div className="hero-dots" />
+            <div className="hero-dots mt-4 md:mt-0" />
           </>
         )}
       </div>
@@ -250,114 +247,141 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
 
       <style jsx global>{`
         .hero-section {
-          padding-top: 0px;
-          padding-bottom: 32px;
+          padding-top: 24px;
+          padding-bottom: 24px;
+          margin-top: 20px;
         }
 
         .hero-carousel-container {
           position: relative !important;
-          height: auto;
-          min-height: auto;
+          width: 100%;
+          max-width: 1900px;
+          height: 700px;
+          margin: 0 auto !important;
           background: transparent;
+          overflow: hidden !important;
+          padding: 0 !important;
           display: flex;
-          align-items: center;
           justify-content: center;
-          margin-bottom: 0;
-          overflow: visible !important;
-          
-          /* Desktop (>= 768px): padding left/right for outside arrows, bottom padding for dots */
-          padding-left: 60px !important;
-          padding-right: 60px !important;
-          padding-bottom: 28px !important;
+          align-items: center;
         }
 
         .hero-swiper {
           width: 100%;
-          height: auto;
-          padding: 0;
+          height: 100%;
+          padding: 0 !important;
+          margin: 0 !important;
         }
 
-        .hero-slide-item-wrapper {
-          height: auto;
-          min-height: auto;
-          transition: all 0.5s ease-in-out;
-          transform: scale(1) !important;
-          opacity: 1 !important;
-          border-radius: 24px;
+        .hero-slide-wrapper {
+          width: 82% !important;
+          height: 700px !important;
+          flex-shrink: 0;
+          position: relative;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .hero-slide-inner {
+          width: 100%;
+          height: 100%;
+          transition: all 1s cubic-bezier(0.25, 1, 0.5, 1) !important;
+          transform: scale(0.92) !important;
+          opacity: 0.45 !important;
+          filter: blur(4px) !important;
+          border-radius: 32px;
           overflow: hidden;
-          background: transparent;
+          background: #0a0a0a;
         }
 
-        .hero-slide-item-wrapper.swiper-slide-active {
-          transform: scale(1) !important;
+        .hero-slide-wrapper.swiper-slide-active .hero-slide-inner {
+          transform: scale(1) translateZ(0) !important;
           opacity: 1 !important;
+          filter: none !important;
+          box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+          z-index: 10;
+        }
+
+        .hero-slide-wrapper:hover .hero-slide-inner {
+          opacity: 0.85 !important;
+        }
+
+        .hero-slide-wrapper.swiper-slide-active:hover .hero-slide-inner {
+          opacity: 1 !important;
+          filter: none !important;
         }
 
         .hero-slide {
-          position: relative;
+          position: absolute;
+          inset: 0;
           width: 100%;
-          height: auto;
-          overflow: hidden;
-          background: transparent;
+          height: 100%;
         }
 
         .hero-slide img.hero-image-render {
           width: 100% !important;
-          height: auto !important;
-          object-fit: contain !important;
-          object-position: center;
-          display: block;
-          margin-bottom: 0;
+          height: 100% !important;
+          object-fit: cover !important;
+          object-position: top center !important;
+          image-rendering: auto;
+          backface-visibility: hidden;
+          transform: translateZ(0);
         }
 
-        /* Desktop premium slider nav positioning (vertically centered on left/right edges outside banner) */
-        .hero-carousel-container .premium-slider-nav {
-          position: absolute !important;
-          top: 50% !important;
-          transform: translateY(-50%) !important;
-          bottom: auto !important;
-          z-index: 20 !important;
-          width: 44px !important;
-          height: 44px !important;
-          border-radius: 9999px !important;
-          background: rgba(255, 255, 255, 0.95) !important;
-          backdrop-filter: blur(10px) !important;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
-          border: 1px solid rgba(0, 0, 0, 0.08) !important;
-          cursor: pointer !important;
-          transition: all 0.25s ease !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          color: #000 !important;
-          margin-top: 0 !important;
+        /* Cinematic Zoom Animation */
+        .cinematic-zoom {
+          transform: scale(1.15);
+          transition: transform 8s ease-out;
         }
 
-        .dark .hero-carousel-container .premium-slider-nav {
-          background: rgba(0, 0, 0, 0.8) !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
-          color: white !important;
+        .hero-slide-wrapper.swiper-slide-active .cinematic-zoom {
+          transform: scale(1);
         }
 
-        .hero-carousel-container .premium-slider-nav:hover {
-          transform: translateY(-50%) scale(1.08) !important;
-          background: #ffffff !important;
-          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25) !important;
+        /* Arrows styling */
+        .hero-nav-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+          width: 72px !important;
+          height: 72px !important;
+          border-radius: 50%;
+          background: rgba(0,0,0,0.45);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255,255,255,0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          transition: all 0.3s ease;
+          pointer-events: auto;
+          cursor: pointer;
         }
 
-        .hero-carousel-container .premium-slider-prev {
-          left: 8px !important;
-          right: auto !important;
+        .hero-nav-btn:hover {
+          transform: translateY(-50%) scale(1.08);
+          background: rgba(0,0,0,0.75);
         }
 
-        .hero-carousel-container .premium-slider-next {
-          right: 8px !important;
-          left: auto !important;
+        .hero-nav-btn:active {
+          transform: translateY(-50%) scale(0.96);
+        }
+
+        .hero-nav-btn-prev {
+          left: 40px;
+        }
+
+        .hero-nav-btn-next {
+          right: 40px;
         }
 
         .hero-carousel-container .hero-dots {
           position: absolute !important;
-          bottom: 4px !important;
+          bottom: 24px !important;
           left: 50% !important;
           transform: translateX(-50%) !important;
           z-index: 15 !important;
@@ -382,112 +406,47 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           border-radius: 999px;
         }
 
-        /* RESPONSIVE BREAKPOINTS */
-        @media (max-width: 1600px) {
-          .hero-carousel-container { height: auto !important; }
-        }
-        @media (max-width: 1400px) {
-          .hero-carousel-container { height: auto !important; }
-        }
-        @media (max-width: 1200px) {
-          .hero-carousel-container { height: auto !important; }
-        }
-        @media (max-width: 992px) {
-          .hero-carousel-container { height: auto !important; }
-        }
+        /* Responsive Breakpoints */
         @media (max-width: 1024px) {
-          .hero-section { padding-top: 0px; padding-bottom: 24px; }
+          .hero-carousel-container {
+            height: 500px !important;
+          }
+          .hero-slide-wrapper {
+            width: 90% !important;
+            height: 500px !important;
+          }
+          .hero-nav-btn {
+            width: 56px !important;
+            height: 56px !important;
+          }
+          .hero-nav-btn-prev { left: 20px; }
+          .hero-nav-btn-next { right: 20px; }
         }
+
         @media (max-width: 767px) {
-          .hero-section { padding-top: 0px; padding-bottom: 16px; }
-          .hero-carousel-container { 
-            height: auto !important; 
-            min-height: auto !important;
-            padding-left: 12px !important;
-            padding-right: 12px !important;
-            margin-bottom: 0 !important;
-            padding-bottom: 60px !important; /* reserve space for dots & arrows */
+          .hero-carousel-container {
+            height: 280px !important;
           }
-          .hero-slide-item-wrapper {
-            border-radius: 20px !important;
+          .hero-swiper {
+            padding: 0 !important;
+            height: 280px !important;
+          }
+          .hero-slide-wrapper {
+            width: 100% !important;
+            height: 280px !important;
+          }
+          .hero-slide-inner {
+            border-radius: 0;
             transform: scale(1) !important;
             opacity: 1 !important;
+            filter: blur(0px) !important;
           }
-          .hero-slide-item-wrapper.swiper-slide-active {
-            transform: scale(1) !important;
-            opacity: 1 !important;
+          .hero-nav-btn {
+            width: 48px !important;
+            height: 48px !important;
           }
-
-          /* Move navigation arrows below the banner on mobile */
-          .hero-carousel-container .premium-slider-nav {
-            top: auto !important;
-            bottom: 8px !important;
-            transform: none !important;
-            width: 40px !important;
-            height: 40px !important;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
-            background: #ffffff !important;
-          }
-
-          .dark .hero-carousel-container .premium-slider-nav {
-            background: rgba(0, 0, 0, 0.8) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-          }
-
-          .hero-carousel-container .premium-slider-nav:hover {
-            transform: scale(1.05) !important;
-            background: #ffffff !important;
-          }
-
-          .hero-carousel-container .premium-slider-prev {
-            left: 20px !important;
-            right: auto !important;
-          }
-
-          .hero-carousel-container .premium-slider-next {
-            right: 20px !important;
-            left: auto !important;
-          }
-
-          /* Center pagination dots between arrows */
-          .hero-carousel-container .hero-dots {
-            bottom: 24px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: auto !important;
-          }
-        }
-        @media (max-width: 576px) {
-          .hero-carousel-container { height: auto !important; min-height: auto !important; }
-        }
-        @media (max-width: 480px) {
-          .hero-section { padding-top: 0px; padding-bottom: 16px; }
-          .hero-carousel-container { 
-            height: auto !important; 
-            min-height: auto !important;
-            padding-left: 12px !important;
-            padding-right: 12px !important;
-            margin-bottom: 0 !important;
-            padding-bottom: 60px !important; /* maintain 60px on smaller screens */
-            border-radius: 20px !important;
-          }
-          .hero-slide-item-wrapper {
-            height: auto !important;
-            min-height: auto !important;
-            transform: scale(1) !important;
-            opacity: 1 !important;
-            border-radius: 20px !important;
-            background: transparent;
-          }
-          .hero-slide-item-wrapper.swiper-slide-active {
-            transform: scale(1) !important;
-            opacity: 1 !important;
-          }
-          .hero-swiper { padding: 0 !important; }
-        }
-        @media (max-width: 360px) {
-          .hero-carousel-container { height: auto !important; }
+          .hero-nav-btn-prev { left: 16px; }
+          .hero-nav-btn-next { right: 16px; }
         }
       `}</style>
     </section>

@@ -240,9 +240,9 @@ export default function MediaGalleryClient({
                   >
                     <Link
                       href={`/gallery/${photo.category?.slug === 'show-photos' ? 'show-photos' : 'photos'}/details?slug=${photo.slug}`}
-                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] min-h-[420px] h-auto mx-auto"
+                      className="bg-card rounded-[2rem] border border-border overflow-hidden cursor-pointer group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col justify-between block w-full max-w-[380px] h-auto mx-auto"
                     >
-                      <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
+                      <div className="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden aspect-auto md:aspect-[4/5]">
                         <Image
                           src={getThumbnailUrl(photo.imageUrl)}
                           alt={photo.altText || photo.title}
@@ -252,19 +252,12 @@ export default function MediaGalleryClient({
                           quality={85}
                           priority={idx < 4}
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                            objectFit: "contain",
-                            objectPosition: "center"
-                          }}
-                          className="gallery-image transition-transform duration-700 group-hover:scale-[1.02]"
+                          className="w-full h-auto object-contain md:object-cover md:h-full max-h-[70vh] md:max-h-none transition-transform duration-700 group-hover:scale-[1.02] select-none pointer-events-none"
+                          onContextMenu={(e) => e.preventDefault()}
+                          onDragStart={(e) => e.preventDefault()}
+                          draggable={false}
                         />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-lg">
-                            <ZoomIn className="w-5 h-5 text-primary-foreground" />
-                          </div>
-                        </div>
+
                         {photo.category?.name && (
                           <span className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                             {photo.category.name}
@@ -283,13 +276,7 @@ export default function MediaGalleryClient({
                         </div>
 
                         <div className="flex items-center justify-between border-t border-border pt-4 text-xs font-bold text-muted-foreground">
-                          <span className="flex items-center gap-1"><Eye className="w-4 h-4" /> {photo.views}</span>
-                          <button
-                            onClick={(e) => handleLike(e, photo.id, 'image')}
-                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full hover:bg-primary/10 hover:text-primary transition-colors active:scale-95"
-                          >
-                            <ThumbsUp className="w-4 h-4" /> {photo.likes}
-                          </button>
+                          {/* Top stats moved to glass strip */}
                         </div>
                       </div>
                     </Link>
@@ -421,7 +408,10 @@ export default function MediaGalleryClient({
                   alt={selectedPhoto.altText || selectedPhoto.title}
                   fill
                   sizes="100vw"
-                  className="object-contain"
+                  className="object-contain select-none pointer-events-auto"
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                  draggable={false}
                 />
               </div>
 

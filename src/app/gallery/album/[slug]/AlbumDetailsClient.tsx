@@ -67,47 +67,17 @@ function GalleryCard({
           quality={80}
           sizes="(max-width: 640px) 300px, (max-width: 1024px) 400px, 500px"
           onLoad={() => setIsLoaded(true)}
-          className={`w-full h-auto block transform transition-transform duration-700 group-hover:scale-[1.03] transition-opacity duration-300 ${
+          className={`w-full h-full object-cover block transform transition-transform duration-700 group-hover:scale-[1.03] transition-opacity duration-300 select-none ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           style={{ pointerEvents: 'none' }}
           onContextMenu={preventContextMenu}
           onDragStart={preventDownload}
+          draggable={false}
         />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
       </div>
 
-      <div className="absolute inset-0 bg-black/45 z-10 flex flex-col justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-        <div className="flex justify-between items-center w-full pointer-events-auto">
-          <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
-            <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-            {(img.viewCount ?? 0).toLocaleString()} Visitors
-          </span>
-          <span className="flex items-center gap-1.5 text-white text-xs md:text-sm font-semibold drop-shadow-md select-none">
-            <Download className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            {(downloadCounts[img.id] ?? img.downloadCount ?? 0).toLocaleString()}
-          </span>
-        </div>
 
-        <div className="flex justify-center w-full pointer-events-auto mt-auto">
-          {(downloadsEnabled && img.allowDownload !== false) && (
-            <button
-              onClick={(e) => handleDownload(e, img.id, index)}
-              disabled={downloadingId === img.id}
-              className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs md:text-sm transition-all shadow-lg border border-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {downloadingId === img.id ? (
-                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  <Download className="w-4 h-4" />
-                  Download
-                </>
-              )}
-            </button>
-          )}
-        </div>
-      </div>
     </div>
   );
 }

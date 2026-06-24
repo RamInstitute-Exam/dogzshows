@@ -1,14 +1,15 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-interface PublicContainerProps {
+interface PublicContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
 }
 
-export default function PublicContainer({ children, className }: PublicContainerProps) {
+export default function PublicContainer({ children, className, ...props }: PublicContainerProps) {
   return (
     <div 
+      {...props}
       className={cn(
         "w-full mx-auto box-border transition-all duration-300",
         // Mobile (< 768px): width 100%, padding 16px

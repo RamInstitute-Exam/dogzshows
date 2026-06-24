@@ -128,7 +128,7 @@ export default function ClubsClient() {
         <PublicContainer>
           <div className="flex flex-col lg:flex-row items-center gap-4 justify-between">
             {/* Search */}
-            <div className="relative w-full lg:max-w-md">
+            <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
@@ -138,74 +138,7 @@ export default function ClubsClient() {
                 className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none text-foreground"
               />
             </div>
-
-            {/* Filter Toggle & Sort */}
-            <div className="flex items-center gap-3 w-full lg:w-auto">
-              <button 
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`flex items-center gap-2 px-4 py-2.5 border rounded-xl font-medium transition-colors flex-1 lg:flex-none justify-center ${isFilterOpen ? 'bg-foreground text-white border-border' : 'bg-background border-border text-foreground hover:bg-accent'}`}
-              >
-                <Filter className="w-4 h-4" /> Filters
-              </button>
-              
-              <div className="relative flex-1 lg:flex-none">
-                <select 
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-4 py-2.5 appearance-none bg-background border border-border rounded-xl font-medium text-foreground focus:ring-2 focus:ring-foreground outline-none"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="name_asc">Name (A-Z)</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-              </div>
-            </div>
           </div>
-
-          {/* Expanded Filters */}
-          <AnimatePresence>
-            {isFilterOpen && (
-              <motion.div 
-                initial={{ height: 0, opacity: 0 }} 
-                animate={{ height: 'auto', opacity: 1 }} 
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden mt-4 pt-4 border-t border-border grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
-              >
-                <div>
-                  <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase">State</label>
-                  <select value={stateFilter} onChange={(e) => { setStateFilter(e.target.value); setPage(1); }} className="w-full p-2.5 bg-background border border-border rounded-lg text-sm text-foreground">
-                    <option value="">All States</option>
-                    {availableStates.map(state => (
-                      <option key={state} value={state}>{state}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase">City</label>
-                  <select value={cityFilter} onChange={(e) => { setCityFilter(e.target.value); setPage(1); }} className="w-full p-2.5 bg-background border border-border rounded-lg text-sm text-foreground">
-                    <option value="">All Cities</option>
-                    {availableCities.map(city => (
-                      <option key={city} value={city}>{city}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase">Breed Focus</label>
-                  <input type="text" value={breedFilter} onChange={(e) => { setBreedFilter(e.target.value); setPage(1); }} placeholder="e.g. German Shepherd" className="w-full p-2.5 bg-background border border-border rounded-lg text-sm text-foreground" />
-                </div>
-                <div className="flex items-end pb-2.5">
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${kciApproved ? 'bg-foreground border-border' : 'border-border group-hover:border-border'}`}>
-                      {kciApproved && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-                    </div>
-                    <span className="text-sm font-medium text-foreground">KCI Approved Only</span>
-                    <input type="checkbox" className="hidden" checked={kciApproved} onChange={(e) => { setKciApproved(e.target.checked); setPage(1); }} />
-                  </label>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </PublicContainer>
       </section>
 

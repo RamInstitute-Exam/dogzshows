@@ -36,14 +36,13 @@ function GalleryCard({
         height={500}
         sizes="(max-width: 640px) 300px, (max-width: 1024px) 400px, 500px"
         onLoad={() => setIsLoaded(true)}
-        className={`w-full h-auto block transform transition-transform duration-500 group-hover:scale-105 transition-opacity duration-300 ${
+        className={`w-full h-full object-cover block transform transition-transform duration-500 group-hover:scale-105 transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ pointerEvents: 'none' }}
         priority={index < 8}
         loading={index < 8 ? undefined : 'lazy'}
       />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
     </div>
   );
 }
@@ -149,6 +148,9 @@ export default function ShowAlbumClient() {
             <ArrowLeft className="w-5 h-5" /> Back to Homepage
           </button>
           <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-md">{album.title}</h1>
+          {album.subtitle && album.subtitle.trim() !== '' && album.subtitle !== 'null' && album.subtitle !== 'undefined' && (
+            <p className="text-lg md:text-xl text-white/80 mb-4 font-[400] drop-shadow-sm">{album.subtitle}</p>
+          )}
           <div className="flex flex-wrap items-center gap-6 text-white/90 font-medium">
             {album.location && <span>📍 {album.location}</span>}
             {album.showDate && <span>📅 {new Date(album.showDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>}

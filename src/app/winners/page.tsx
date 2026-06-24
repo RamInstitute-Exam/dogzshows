@@ -44,6 +44,15 @@ export default function WinnersPage() {
               <div className="col-span-full text-center text-gray-500 py-10">No winners have been announced yet.</div>
             ) : winners.map((winner: any, i: number) => {
               const color = getGradient(i);
+              
+              // Handle both manual entries and complex related entries
+              const dogName = winner.dogName || winner.dog?.name || 'Unknown Dog';
+              const breedName = winner.breedName || winner.dog?.breed || 'Unknown Breed';
+              const ownerName = winner.ownerName || (winner.dog?.owner ? `${winner.dog.owner.firstName} ${winner.dog.owner.lastName}` : 'Private');
+              const breederName = winner.breederName;
+              const eventName = winner.competition || winner.event?.name || 'Unknown Event';
+              const imgUrl = winner.imageUrl || (winner.dog?.images && winner.dog.images.length > 0 ? winner.dog.images[0].url : null);
+              
               return (
               <motion.div 
                 key={winner.id}
@@ -55,8 +64,8 @@ export default function WinnersPage() {
                 {/* Floating Avatar */}
                 <div className={`absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full p-1 bg-gradient-to-br ${color} shadow-lg`}>
                   <div className="w-full h-full object-cover rounded-full border-4 border-[#020817] bg-card flex items-center justify-center overflow-hidden">
-                    {winner.dog?.images && winner.dog.images.length > 0 ? (
-                      <OptimizedImage src={getImageUrl(winner.dog.images[0].url)} alt={winner.dog?.name} className="w-full h-full object-cover" />
+                    {imgUrl ? (
+                      <OptimizedImage src={getImageUrl(imgUrl)} alt={dogName} className="w-full h-full object-cover" />
                     ) : (
                       <Trophy className="w-12 h-12 text-muted-foreground" />
                     )}
@@ -71,12 +80,13 @@ export default function WinnersPage() {
                     <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-[700] uppercase tracking-wider mb-4 bg-gradient-to-r ${color} text-foreground`}>
                       {winner.awardTitle || 'Champion'}
                     </span>
-                    <h3 className="text-2xl font-[800] text-foreground mb-1">{winner.dog?.name || 'Unknown Dog'}</h3>
-                    <p className="text-primary font-[700] text-sm mb-4">{winner.dog?.breed || 'Unknown Breed'}</p>
+                    <h3 className="text-2xl font-[800] text-foreground mb-1">{dogName}</h3>
+                    <p className="text-primary font-[700] text-sm mb-4">{breedName}</p>
                     
                     <div className="space-y-2 mb-6 text-sm text-muted-foreground font-[500]">
-                      <p>Owner: <span className="text-foreground">{winner.dog?.owner ? `${winner.dog.owner.firstName} ${winner.dog.owner.lastName}` : 'Private'}</span></p>
-                      <p>Event: <span className="text-foreground">{winner.event?.name || 'Unknown Event'}</span></p>
+                      <p>Owner: <span className="text-foreground">{ownerName}</span></p>
+                      {breederName && <p>Breeder: <span className="text-foreground">{breederName}</span></p>}
+                      <p>Event: <span className="text-foreground">{eventName} {winner.year ? `(${winner.year})` : ''}</span></p>
                     </div>
                   </div>
                   

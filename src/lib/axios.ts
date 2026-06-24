@@ -28,7 +28,19 @@ axiosInstance.interceptors.request.use(
   (req) => {
     // Attach auth token and visitor ID
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
+      let token = localStorage.getItem('token');
+      
+      // Fallback to Zustand persisted store if localStorage 'token' is missing
+      if (!token) {
+        try {
+          const authStorage = localStorage.getItem('juzdog-auth-storage');
+          if (authStorage) {
+            const parsed = JSON.parse(authStorage);
+            token = parsed?.state?.accessToken;
+          }
+        } catch (e) {}
+      }
+
       if (token) {
         req.headers.set('Authorization', `Bearer ${token}`);
       }
@@ -70,12 +82,22 @@ axiosInstance.interceptors.response.use(
       const message = data?.message || data?.error || 'An error occurred';
 
       if (status === 401) {
-        const hasToken =
-          typeof window !== 'undefined' && !!localStorage.getItem('token');
+        let hasToken = typeof window !== 'undefined' && !!localStorage.getItem('token');
+        if (!hasToken && typeof window !== 'undefined') {
+          try {
+            const authStorage = localStorage.getItem('juzdog-auth-storage');
+            if (authStorage) {
+              const parsed = JSON.parse(authStorage);
+              hasToken = !!parsed?.state?.accessToken;
+            }
+          } catch (e) {}
+        }
+
         if (hasToken) {
           toast.error('Session expired. Please log in again.');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
+          localStorage.removeItem('juzdog-auth-storage'); // Also clear Zustand storage
           window.location.href = '/login';
         }
       } else if (status === 404) {
