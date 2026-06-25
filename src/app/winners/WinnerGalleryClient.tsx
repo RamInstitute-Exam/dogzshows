@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WinnerPosterGrid from '@/components/winners/WinnerPosterGrid';
 
@@ -9,74 +9,94 @@ interface WinnerGalleryClientProps {
   hallOfFameWinners: any[];
 }
 
+const FILTER_CHIPS = [
+  'ALL',
+  'BEST IN SHOW',
+  'RESERVE BEST IN SHOW',
+  'BEST PUPPY',
+  'BEST JUNIOR',
+  'BEST OF BREED',
+  'BEST OF GROUP',
+  'CHAMPION WINNER',
+  'SPECIAL AWARD',
+  'HALL OF FAME'
+];
+
 export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: WinnerGalleryClientProps) {
   const searchParams = useSearchParams();
-  const activeCategory = searchParams.get('category') || 'All';
+  const [activeCategory, setActiveCategory] = useState(
+    (searchParams.get('category') || 'ALL').toUpperCase()
+  );
 
-  // Group Hall of Fame winners by year
-  const groupedHallOfFame = hallOfFameWinners.reduce((acc: any, curr: any) => {
-    const year = curr.showYear || curr.year || 'Unknown';
-    if (!acc[year]) acc[year] = [];
-    acc[year].push(curr);
-    return acc;
-  }, {});
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (cat) {
+      setActiveCategory(cat.toUpperCase());
+    }
+  }, [searchParams]);
 
-  const years = Object.keys(groupedHallOfFame).sort((a, b) => parseInt(b) - parseInt(a));
+  // Combine and deduplicate all winners
+  const allCombined = [...allWinners, ...hallOfFameWinners];
+  const uniqueWinnersMap = new Map();
+  allCombined.forEach(w => {
+    if (!uniqueWinnersMap.has(w.id)) {
+      uniqueWinnersMap.set(w.id, w);
+    }
+  });
+  const allUniqueWinners = Array.from(uniqueWinnersMap.values());
 
-  if (activeCategory === 'Hall Of Fame') {
-    return (
-      <div className="space-y-16">
-        <div className="text-center max-w-3xl mx-auto px-4 mb-16">
-          <h2 className="text-4xl md:text-5xl font-black mb-4">Hall Of <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-yellow-300">Fame</span></h2>
-          <p className="text-lg text-muted-foreground">Discover the historic legends and top champions from past dog shows.</p>
-        </div>
+  // Filter logic
+  let filteredWinners = activeCategory === 'ALL' 
+    ? allUniqueWinners 
+    : allUniqueWinners.filter(w => {
+        // Ensure we check against possible fields case-insensitively
+        const categoryMatch = w.awardCategory?.toUpperCase() === activeCategory || 
+                              w.category?.name?.toUpperCase() === activeCategory || 
+                              w.awardTitle?.toUpperCase() === activeCategory;
+        
+        // If "HALL OF FAME" is selected, also check if it came from the hallOfFameWinners list specifically
+        if (activeCategory === 'HALL OF FAME') {
+          return categoryMatch || hallOfFameWinners.some(hof => hof.id === w.id);
+        }
 
-        <div className="space-y-16">
-          {years.map((year) => (
-            <div key={year} className="space-y-8">
-              <div className="flex items-center gap-4">
-                <h3 className="text-3xl font-black text-foreground">{year}</h3>
-                <div className="h-px flex-1 bg-border"></div>
-              </div>
-              <WinnerPosterGrid winners={groupedHallOfFame[year]} />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+        return categoryMatch;
+      });
 
-  // Filter winners based on the active category
-  const filteredWinners = activeCategory === 'All' 
-    ? allWinners 
-    : allWinners.filter(w => w.awardCategory === activeCategory || w.category?.name === activeCategory);
+  // Sort by createdAt DESC
+  filteredWinners = filteredWinners.sort((a, b) => {
+    const dateA = new Date(a.createdAt || 0).getTime();
+    const dateB = new Date(b.createdAt || 0).getTime();
+    return dateB - dateA;
+  });
 
   return (
-    <div className="space-y-16">
-      <div className="mt-8">
-        <WinnerPosterGrid winners={filteredWinners} />
+    <div className="space-y-8">
+      {/* FILTER CHIPS */}
+      <div className="flex flex-wrap justify-center gap-3 mb-12">
+        {FILTER_CHIPS.map(chip => (
+          <button 
+            key={chip}
+            onClick={() => setActiveCategory(chip)}
+            className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
+              activeCategory === chip 
+                ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20 scale-105'
+                : 'bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50'
+            }`}
+          >
+            {chip}
+          </button>
+        ))}
       </div>
 
-      {activeCategory === 'All' && hallOfFameWinners.length > 0 && (
-        <div className="pt-24 border-t border-border/50">
-          <div className="text-center max-w-3xl mx-auto px-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-4">Hall Of <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-yellow-300">Fame</span></h2>
-            <p className="text-lg text-muted-foreground">Discover the historic legends and top champions from past dog shows.</p>
+      <div className="space-y-16">
+        {filteredWinners.length > 0 ? (
+          <WinnerPosterGrid winners={filteredWinners} />
+        ) : (
+          <div className="text-center py-20">
+            <h3 className="text-2xl font-bold text-muted-foreground">No winners found for this category.</h3>
           </div>
-
-          <div className="space-y-16">
-            {years.map((year) => (
-              <div key={year} className="space-y-8">
-                <div className="flex items-center gap-4">
-                  <h3 className="text-3xl font-black text-foreground">{year}</h3>
-                  <div className="h-px flex-1 bg-border"></div>
-                </div>
-                <WinnerPosterGrid winners={groupedHallOfFame[year]} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

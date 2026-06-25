@@ -22,6 +22,12 @@ export default function GalleryPage() {
 
   return (
     <PageContainer>
+      <BreadcrumbBanner
+        slug="/gallery"
+        fallbackTitle="Photo Gallery"
+        fallbackSubtitle="Relive the finest moments from our dog shows."
+        fallbackBreadcrumb="Gallery"
+      />
       
       {/* Filters and Search */}
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 pt-8">

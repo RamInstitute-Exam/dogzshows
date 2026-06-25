@@ -163,11 +163,26 @@ export default function ClubManagement() {
     }
   };
 
-  const handleExport = () => {
+  const handleExport = async (type: 'single' | 'bulk' = 'single') => {
     try {
-      const dataToExport = selectedIds.size > 0 
-        ? data.filter(c => selectedIds.has(c.id)) 
-        : data;
+      let dataToExport: any[] = [];
+      
+      if (type === 'bulk') {
+        const loadingToast = toast.loading('Fetching all records for export...');
+        const res = await api.get('/clubs?limit=10000');
+        toast.dismiss(loadingToast);
+        
+        if (res.success) {
+          dataToExport = Array.isArray(res.data) ? res.data : (res.data?.clubs || []);
+        } else {
+          toast.error('Failed to fetch bulk data');
+          return;
+        }
+      } else {
+        dataToExport = selectedIds.size > 0 
+          ? data.filter(c => selectedIds.has(c.id)) 
+          : data;
+      }
 
       if (dataToExport.length === 0) {
         toast.error('No data to export');
@@ -197,7 +212,7 @@ export default function ClubManagement() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', `juzdog_clubs_export_${Date.now()}.csv`);
+      link.setAttribute('download', `juzdog_clubs_export_${type}_${Date.now()}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -354,7 +369,7 @@ export default function ClubManagement() {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={handleExport}
+                onClick={() => handleExport('single')}
                 className="text-foreground hover:text-foreground hover:bg-foreground/10 rounded-full px-4"
               >
                 <Download className="w-4 h-4 mr-2" /> Export

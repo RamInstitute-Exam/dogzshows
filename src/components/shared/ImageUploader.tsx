@@ -21,21 +21,23 @@ interface ImageUploaderProps {
   previewClassName?: string;
   imageClassName?: string;
   highResolution?: boolean;
+  enableCropping?: boolean;
 }
 
 export default function ImageUploader({
   currentImage,
   onUploadSuccess,
   onRemove,
-  maxSizeMB = 10,
+  maxSizeMB = 50,
   folder = "general",
   label = "Image",
   aspectRatio = 1,
-  helpText = "PNG, JPG, WEBP. Maximum Size: 10 MB",
+  helpText = "PNG, JPG, WEBP. Maximum Size: 50 MB",
   dropzoneClassName,
   previewClassName,
   imageClassName,
   highResolution = false,
+  enableCropping = true,
 }: ImageUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(currentImage || null);
@@ -50,6 +52,8 @@ export default function ImageUploader({
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [originalAspect, setOriginalAspect] = useState<number | undefined>(undefined);
+  const [currentAspect, setCurrentAspect] = useState<number>(aspectRatio || 1);
   const blobUrlRef = useRef<string>("");
 
   const onDrop = useCallback(async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
@@ -72,9 +76,13 @@ export default function ImageUploader({
       setFile(selectedFile);
       setPreview(objectUrl);
       
-      setIsCropping(true);
+      if (enableCropping) {
+        setIsCropping(true);
+      } else {
+        handleUpload(selectedFile);
+      }
     }
-  }, []);
+  }, [enableCropping]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -275,12 +283,16 @@ export default function ImageUploader({
                 image={preview}
                 crop={crop}
                 zoom={zoom}
-                aspect={aspectRatio}
+                aspect={currentAspect}
                 minZoom={0.2}
                 restrictPosition={false}
                 onCropChange={setCrop}
                 onCropComplete={(_, croppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels)}
                 onZoomChange={setZoom}
+                onMediaLoaded={(mediaSize) => {
+                  const ratio = mediaSize.width / mediaSize.height;
+                  setOriginalAspect(ratio);
+                }}
                 showGrid={true}
               />
             </div>
@@ -319,18 +331,54 @@ export default function ImageUploader({
                 >
                   Cancel
                 </button>
-                <button
-                  type="button"
-                  onClick={handleApplyCrop}
-                  disabled={isUploading}
-                  className="px-6 py-2.5 text-sm font-bold bg-foreground text-white rounded-xl flex items-center space-x-2 hover:bg-foreground shadow-lg shadow-black/20 transition-all disabled:opacity-70"
-                >
-                  {isUploading ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /><span>Processing image...</span></>
-                  ) : (
-                    <><CropIcon className="w-4 h-4" /><span>Apply & Upload</span></>
-                  )}
-                </button>
+              </div>
+
+              {/* Ratios & Actions */}
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">
+                <div className="flex items-center gap-2 bg-muted/50 p-1.5 rounded-xl border border-border/50">
+                  <button 
+                    type="button"
+                    onClick={() => setCurrentAspect(aspectRatio || 1)}
+                    className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${currentAspect === aspectRatio ? 'bg-foreground text-background shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    Portrait Form
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => { if(originalAspect) setCurrentAspect(originalAspect); }}
+                    className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${currentAspect === originalAspect ? 'bg-foreground text-background shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    Original Ratio
+                  </button>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (file) {
+                        setIsCropping(false);
+                        handleUpload(file);
+                      }
+                    }}
+                    disabled={isUploading}
+                    className="px-5 py-2.5 text-sm font-bold text-muted-foreground bg-card border border-border hover:bg-accent rounded-xl transition-colors disabled:opacity-70"
+                  >
+                    Skip Cropping
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleApplyCrop}
+                    disabled={isUploading}
+                    className="px-6 py-2.5 text-sm font-bold bg-foreground text-white rounded-xl flex items-center space-x-2 hover:bg-foreground shadow-lg shadow-black/20 transition-all disabled:opacity-70"
+                  >
+                    {isUploading ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /><span>Processing image...</span></>
+                    ) : (
+                      <><CropIcon className="w-4 h-4" /><span>Apply & Upload</span></>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

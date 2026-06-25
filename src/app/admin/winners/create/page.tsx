@@ -9,10 +9,12 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import api, { getImageUrl } from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
+import ImageUploader from '@/components/shared/ImageUploader';
 
 export default function AddWinnerForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [enableCropping, setEnableCropping] = useState(true);
   const [uploadingWinnerImg, setUploadingWinnerImg] = useState(false);
   const [uploadingGalleryImg, setUploadingGalleryImg] = useState(false);
   
@@ -26,11 +28,14 @@ export default function AddWinnerForm() {
     eventId: '',
     clubId: '',
     awardTitle: '',
+    winningTitle: '',
     dogName: '',
     breed: '',
     ownerName: '',
     breederName: '',
     handlerName: '',
+    judgeName: '',
+    location: '',
     winnerImage: '',
     imageUrl: '', // fallback duplicate for backend compatibility
     galleryImages: [] as string[],
@@ -39,6 +44,8 @@ export default function AddWinnerForm() {
     year: new Date().getFullYear(),
     showYear: new Date().getFullYear(), // fallback duplicate
     showOnHomepage: false,
+    isFeatured: false,
+    displayOrder: 0,
     status: 'PUBLISHED',
   });
 
@@ -154,12 +161,12 @@ export default function AddWinnerForm() {
       toast.error('Award Title is required');
       return;
     }
-    if (!formData.dogName) {
-      toast.error('Dog Name is required');
+    if (!formData.winningTitle) {
+      toast.error('Winning Title is required');
       return;
     }
-    if (!formData.breed) {
-      toast.error('Breed is required');
+    if (!formData.dogName) {
+      toast.error('Dog Name is required');
       return;
     }
     if (!formData.year) {
@@ -278,7 +285,11 @@ export default function AddWinnerForm() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-muted-foreground mb-2">Award Title *</label>
-                    <input required type="text" name="awardTitle" value={formData.awardTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 1st Best In Show" />
+                    <input required type="text" name="awardTitle" value={formData.awardTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 5TH ALL BREEDS CHAMPIONSHIP SHOW" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Winning Title *</label>
+                    <input required type="text" name="winningTitle" value={formData.winningTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. BEST IN SHOW" />
                   </div>
                 </div>
 
@@ -305,8 +316,8 @@ export default function AddWinnerForm() {
                     <input required type="text" name="dogName" value={formData.dogName} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. LUZZY OF HIMALAYAS" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-muted-foreground mb-2">Breed *</label>
-                    <input required type="text" name="breed" value={formData.breed} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. German Shepherd" />
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Breed</label>
+                    <input type="text" name="breed" value={formData.breed} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. German Shepherd" />
                   </div>
                 </div>
 
@@ -327,6 +338,17 @@ export default function AddWinnerForm() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Judge Name</label>
+                    <input type="text" name="judgeName" value={formData.judgeName} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. Mr. Smith" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Location</label>
+                    <input type="text" name="location" value={formData.location} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. Chennai" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
                     <label className="block text-sm font-bold text-muted-foreground mb-2">Show Date</label>
                     <input type="date" name="showDate" value={formData.showDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" />
                   </div>
@@ -341,10 +363,18 @@ export default function AddWinnerForm() {
                   <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none resize-none" placeholder="Add custom comments or description..." />
                 </div>
 
-                <div className="flex items-center gap-6 pt-4 border-t border-border">
+                <div className="flex items-center gap-6 pt-4 border-t border-border flex-wrap">
                   <div className="flex items-center gap-3">
                     <input type="checkbox" id="showOnHomepage" name="showOnHomepage" checked={formData.showOnHomepage} onChange={handleInputChange} className="w-5 h-5 rounded border-border" />
                     <label htmlFor="showOnHomepage" className="font-bold text-foreground text-sm cursor-pointer">Show On Homepage (Featured Slider)</label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" id="isFeatured" name="isFeatured" checked={formData.isFeatured} onChange={handleInputChange} className="w-5 h-5 rounded border-border" />
+                    <label htmlFor="isFeatured" className="font-bold text-foreground text-sm cursor-pointer">Featured Winner</label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <label className="block text-sm font-bold text-muted-foreground">Display Order</label>
+                    <input type="number" name="displayOrder" value={formData.displayOrder} onChange={handleInputChange} className="w-20 px-2 py-1 bg-background border border-border rounded-lg text-foreground outline-none" />
                   </div>
                 </div>
               </motion.div>
@@ -356,24 +386,38 @@ export default function AddWinnerForm() {
                 
                 {/* Winner Image */}
                 <div>
-                  <label className="block text-sm font-bold text-muted-foreground mb-2">Winner Image *</label>
-                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-8 hover:bg-accent/10 transition-colors relative">
-                    {uploadingWinnerImg ? (
-                      <div className="flex flex-col items-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground mb-2" /><p className="text-xs text-muted-foreground">Uploading image...</p></div>
-                    ) : formData.winnerImage ? (
-                      <div className="w-full flex flex-col items-center gap-4">
-                        <OptimizedImage src={getImageUrl(formData.winnerImage)} alt="Winner Image" className="max-h-64 object-contain rounded-xl shadow-lg border border-border" />
-                        <button type="button" onClick={() => setFormData(prev => ({ ...prev, winnerImage: '', imageUrl: '' }))} className="px-4 py-2 text-sm font-bold text-red-500 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors">
-                          Remove Image
-                        </button>
-                      </div>
-                    ) : (
-                      <label className="flex flex-col items-center justify-center cursor-pointer w-full py-4">
-                        <UploadCloud className="w-8 h-8 text-muted-foreground mb-2" />
-                        <span className="text-xs font-bold text-foreground mb-1">Click to upload winner image</span>
-                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, false)} className="hidden" />
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <label className="block text-sm font-bold text-foreground">Winner Image *</label>
+                      <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">Recommended: 1400x1800 (Portrait) or original ratio. Max 50MB.</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-semibold text-muted-foreground cursor-pointer" htmlFor="toggle-crop">
+                        Enable Cropping
                       </label>
-                    )}
+                      <input 
+                        type="checkbox" 
+                        id="toggle-crop"
+                        checked={enableCropping}
+                        onChange={(e) => setEnableCropping(e.target.checked)}
+                        className="w-4 h-4 rounded border-border"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="border-2 border-dashed border-border rounded-2xl p-6 bg-background hover:bg-accent/5 transition-colors">
+                    <ImageUploader 
+                      currentImage={formData.winnerImage ? getImageUrl(formData.winnerImage) : undefined}
+                      onUploadSuccess={(url) => setFormData(prev => ({ ...prev, winnerImage: url, imageUrl: url }))}
+                      onRemove={() => setFormData(prev => ({ ...prev, winnerImage: '', imageUrl: '' }))}
+                      folder="winners"
+                      label=""
+                      aspectRatio={3/4}
+                      maxSizeMB={50}
+                      enableCropping={enableCropping}
+                      helpText="PNG, JPG, WEBP. Max: 50MB. Recommended ratio: 3:4 (Portrait)"
+                      dropzoneClassName="border-none bg-transparent hover:bg-transparent shadow-none"
+                    />
                   </div>
                 </div>
 

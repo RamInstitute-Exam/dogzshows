@@ -65,7 +65,8 @@ export function usePageBanner(slug: string) {
   return useQuery({
     queryKey: ['page-banner', slug],
     queryFn: async () => {
-      return api.get(`/public/page-banners/${slug}`);
+      // Encode slug so nested paths like /winners/categories are passed as a single param
+      return api.get(`/public/page-banners/${encodeURIComponent(slug)}`);
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,

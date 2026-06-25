@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PublicContainer from '@/components/layout/PublicContainer';
 import PageContainer from '@/components/layout/PageContainer';
-import WinnerCard from '@/components/winners/WinnerCard';
-import WinnerPreviewModal from '@/components/winners/WinnerPreviewModal';
+import WinnerCertificateCard from '@/components/winners/WinnerCertificateCard';
 import api, { getImageUrl } from '@/lib/api';
 import { Search, MapPin, SlidersHorizontal, Trophy, RefreshCw, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -24,7 +23,6 @@ export default function CategoryWinnersClient({
 }: CategoryWinnersClientProps) {
   const [winners, setWinners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedWinner, setSelectedWinner] = useState<any | null>(null);
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
@@ -318,8 +316,8 @@ export default function CategoryWinnersClient({
 
         {/* Winners Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 max-w-[1600px] mx-auto px-4">
+            {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-zinc-900/40 rounded-2xl aspect-[4/5] animate-pulse border border-border/30" />
             ))}
           </div>
@@ -330,12 +328,11 @@ export default function CategoryWinnersClient({
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">We couldn't find any winners matching your filters. Try resetting search parameters.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10 max-w-[1600px] mx-auto px-4">
             {winners.map((winner) => (
-              <WinnerCard 
+              <WinnerCertificateCard 
                 key={winner.id} 
                 winner={winner} 
-                onPreviewClick={() => setSelectedWinner(winner)}
               />
             ))}
           </div>
@@ -365,13 +362,6 @@ export default function CategoryWinnersClient({
         )}
 
       </PublicContainer>
-
-      {/* Preview Modal */}
-      <WinnerPreviewModal 
-        winner={selectedWinner}
-        isOpen={!!selectedWinner}
-        onClose={() => setSelectedWinner(null)}
-      />
     </PageContainer>
   );
 }

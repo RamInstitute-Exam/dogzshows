@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getImageUrl } from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
 import { Award, Trophy, ChevronRight } from 'lucide-react';
+import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 
 export const revalidate = 60; // Cache for 1 minute
 
@@ -95,20 +96,12 @@ export default function WinnerCategoriesPage() {
   return (
     <PageContainer>
       {/* Hero Banner Section */}
-      <div className="bg-gradient-to-b from-black to-zinc-950 pt-36 pb-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay pointer-events-none"></div>
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <PublicContainer className="relative z-10 text-center">
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
-            Winner <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-200">Categories</span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium leading-relaxed">
-            Browse championship winners by award category, title, and achievement level from dog shows across India.
-          </p>
-        </PublicContainer>
-      </div>
+      <BreadcrumbBanner
+        slug="/winners/categories"
+        fallbackTitle="Winner Categories"
+        fallbackSubtitle="Browse championship winners by award category, title, and achievement level from dog shows across India."
+        fallbackBreadcrumb="Categories"
+      />
 
       {/* Grid Content */}
       <PublicContainer className="pb-32 relative z-10">

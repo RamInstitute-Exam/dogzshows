@@ -15,6 +15,7 @@ export default function WinnerManagement() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
   
   // Filters
@@ -60,6 +61,7 @@ export default function WinnerManagement() {
       const res = await api.get(`/winners?${queryParams.toString()}`);
       if (res?.success) {
         setData(res.data || []);
+        setTotalPages(res.totalPages || 1);
       }
     } catch (error) {
       toast.error('Failed to load winners');
@@ -272,6 +274,31 @@ export default function WinnerManagement() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-between items-center bg-card p-4 rounded-2xl border border-border shadow-sm">
+          <div className="text-sm font-medium text-muted-foreground">
+            Showing Page <span className="text-foreground">{page}</span> of <span className="text-foreground">{totalPages}</span>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="px-4 py-2 text-sm font-bold border rounded-xl hover:bg-accent disabled:opacity-50 transition"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="px-4 py-2 text-sm font-bold border rounded-xl hover:bg-accent disabled:opacity-50 transition"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

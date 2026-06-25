@@ -59,8 +59,8 @@ export default function RegisterClubForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email) {
-      toast.error('Club Name and Contact Email are required');
+    if (!formData.name) {
+      toast.error('Club Name is required');
       return;
     }
     setLoading(true);
@@ -167,8 +167,8 @@ export default function RegisterClubForm() {
                 <input type="text" name="secretary" value={formData.secretary} onChange={handleInputChange} placeholder="E.g. Mr. Rajiv Sharma" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Contact Email *</label>
-                <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="E.g. info@kennelclub.org" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Contact Email</label>
+                <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="E.g. info@kennelclub.org" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">System Login Password</label>

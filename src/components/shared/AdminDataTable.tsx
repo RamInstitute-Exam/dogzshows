@@ -28,7 +28,7 @@ interface AdminDataTableProps<T> {
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
   onView?: (item: T) => void;
-  onExport?: () => void;
+  onExport?: (type?: 'single' | 'bulk') => void;
   createLink?: string;
   onCreate?: () => void;
   createLabel?: string;
@@ -65,6 +65,7 @@ export function AdminDataTable<T>({
   onLimitChange
 }: AdminDataTableProps<T>) {
   const [localSearch, setLocalSearch] = React.useState(search);
+  const [showExportModal, setShowExportModal] = React.useState(false);
 
   // Sync local search when search prop changes (e.g. on reset or clear)
   React.useEffect(() => {
@@ -135,7 +136,7 @@ export function AdminDataTable<T>({
             <Filter className="w-4 h-4 sm:mr-2" /> <span className="inline">Filters</span>
           </Button>
           {onExport && (
-            <Button variant="outline" onClick={onExport} className="flex-1 sm:flex-none h-10 border-border text-foreground hover:bg-accent whitespace-nowrap">
+            <Button variant="outline" onClick={() => setShowExportModal(true)} className="flex-1 sm:flex-none h-10 border-border text-foreground hover:bg-accent whitespace-nowrap">
               <Download className="w-4 h-4 mr-2" /> Export
             </Button>
           )}
@@ -340,6 +341,42 @@ export function AdminDataTable<T>({
           </div>
         )}
       </div>
+
+      {/* Export Choice Modal */}
+      {showExportModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+          <div className="bg-card w-full max-w-sm rounded-3xl border border-border shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 p-6 text-center space-y-6">
+            <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto">
+              <Download className="w-8 h-8 text-blue-500" />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-foreground">Export Data</h2>
+              <p className="text-muted-foreground text-sm mt-2">How would you like to export the records?</p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Button 
+                onClick={() => { setShowExportModal(false); onExport?.('single'); }} 
+                className="w-full bg-accent hover:bg-accent/80 text-foreground border border-border"
+              >
+                Single Page (Current {limit})
+              </Button>
+              <Button 
+                onClick={() => { setShowExportModal(false); onExport?.('bulk'); }} 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
+              >
+                Bulk Export (All Records)
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowExportModal(false)} 
+                className="w-full mt-2 text-muted-foreground"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

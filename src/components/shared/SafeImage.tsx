@@ -16,6 +16,10 @@ export function SafeImage({
 }: SafeImageProps) {
   const [imgSrc, setImgSrc] = useState(src || fallbackSrc);
 
+  React.useEffect(() => {
+    setImgSrc(src || fallbackSrc);
+  }, [src, fallbackSrc]);
+
   return (
     <Image
       src={imgSrc}

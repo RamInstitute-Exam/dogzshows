@@ -112,7 +112,7 @@ export default function ClubsClient() {
   return (
     <PageContainer>
       <BreadcrumbBanner
-        slug="clubs"
+        slug="/clubs"
         fallbackTitle={
           typeParam.toLowerCase() === 'all-breeds' ? 'All Breeds Clubs' :
           typeParam.toLowerCase() === 'specialty' ? 'Specialty Clubs' :
@@ -156,23 +156,23 @@ export default function ClubsClient() {
               ))}
             </div>
           ) : clubs.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1280px] mx-auto w-full">
               {clubs.map((club, idx) => (
                 <motion.div
                   key={club.id}
-                  className="h-full"
+                  className="h-full flex justify-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.05 }}
                 >
                   <Link
                     href={`/clubs/${club.slug || club.id}`}
-                    className="group relative flex flex-col h-full bg-card border border-border rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] hover:border-blue-500/30"
+                    className="group relative flex flex-col h-full bg-card border border-border rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-[6px] shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.18)] w-full max-w-[300px]"
                   >
                     {/* Top Logo Section */}
-                    <div className="relative w-full aspect-[4/3] bg-muted/30 border-b border-border flex items-center justify-center p-6 overflow-hidden">
+                    <div className="relative w-full h-[180px] sm:h-[200px] bg-muted/30 border-b border-border flex items-center justify-center p-4 overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/10 z-0"></div>
-                      <div className="relative z-10 w-32 h-32 md:w-40 md:h-40 shrink-0 drop-shadow-xl transition-transform duration-500 group-hover:scale-105">
+                      <div className="relative z-10 w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] shrink-0 drop-shadow-md transition-transform duration-500 group-hover:translate-y-[-2px]">
                         {club.logoThumbnailUrl || club.logoUrl ? (
                           <Image 
                             src={getImageUrl(club.logoThumbnailUrl || club.logoUrl)} 
@@ -190,35 +190,35 @@ export default function ClubsClient() {
                     </div>
 
                     {/* Content Section */}
-                    <div className="flex-grow flex flex-col p-6 text-center">
-                      <div className="mb-3">
+                    <div className="flex-grow flex flex-col p-[20px] text-center">
+                      <div className="mb-2">
                         {club.clubType && (
-                          <span className="inline-block px-3 py-1 text-[10px] uppercase font-black tracking-widest bg-blue-500/10 text-blue-500 rounded-full mb-3">
+                          <span className="inline-block px-3 py-1 text-[12px] uppercase font-bold tracking-wider bg-blue-500/10 text-blue-500 rounded-full mb-2">
                             {club.clubType}
                           </span>
                         )}
-                        <h3 className="text-xl font-black text-foreground line-clamp-2 leading-tight">
+                        <h3 className="text-[20px] font-bold text-foreground line-clamp-2 leading-tight">
                           {club.name}
                         </h3>
                       </div>
                       
-                      <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground mb-6 font-medium">
+                      <div className="flex flex-col items-center gap-1.5 text-muted-foreground mb-4 font-medium">
                         {(club.city || club.state) && (
                           <div className="flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-foreground/50" />
-                            <span className="line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
+                            <MapPin className="w-3.5 h-3.5 text-foreground/50" />
+                            <span className="text-[15px] line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
                           </div>
                         )}
                         {club.email && (
                           <div className="flex items-center gap-2">
-                            <span className="text-base leading-none">📧</span>
-                            <span className="line-clamp-1">{club.email}</span>
+                            <span className="text-sm leading-none">📧</span>
+                            <span className="text-[14px] line-clamp-1">{club.email}</span>
                           </div>
                         )}
                         {club.phone && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-base leading-none">📞</span>
-                            <span className="line-clamp-1">{club.phone}</span>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-sm leading-none">📞</span>
+                            <span className="text-[14px] line-clamp-1">{club.phone}</span>
                           </div>
                         )}
                       </div>

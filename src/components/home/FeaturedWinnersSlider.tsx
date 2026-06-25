@@ -8,18 +8,15 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import PublicContainer from '../layout/PublicContainer';
 import Link from 'next/link';
-import { Trophy, ChevronRight, Image as ImageIcon } from 'lucide-react';
-import OptimizedImage from '../shared/OptimizedImage';
+import { Trophy, ChevronRight } from 'lucide-react';
 import { getImageUrl } from '@/lib/api';
-import WinnerPreviewModal from '../winners/WinnerPreviewModal';
+import WinnerCertificateCard from '../winners/WinnerCertificateCard';
 
 interface WinnerProps {
   initialWinners?: any[];
 }
 
 export default function FeaturedWinnersSlider({ initialWinners = [] }: WinnerProps) {
-  const [selectedWinner, setSelectedWinner] = useState<any | null>(null);
-
   if (!initialWinners || initialWinners.length === 0) return null;
 
   return (
@@ -50,53 +47,21 @@ export default function FeaturedWinnersSlider({ initialWinners = [] }: WinnerPro
             spaceBetween={24}
             slidesPerView={1.2}
             breakpoints={{
-              640: { slidesPerView: 2.2 },
-              1024: { slidesPerView: 3 },
-              1280: { slidesPerView: 4 },
-              1536: { slidesPerView: 5 }
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 2.5 },
+              1280: { slidesPerView: 3 },
+              1536: { slidesPerView: 3.5 }
             }}
             navigation
             pagination={{ clickable: true, dynamicBullets: true }}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
             className="w-full !pb-14 home-slider-nav"
           >
-            {initialWinners.map((winner, idx) => {
-              const displayImg = winner.winnerImage || winner.imageUrl;
-              const dogName = winner.dogName || 'Champion';
-              const awardTitle = winner.awardTitle || winner.awardCategory || 'Winner';
-              
-              return (
-                <SwiperSlide key={winner.id || idx} className="h-auto pb-4">
-                  <div 
-                    onClick={() => setSelectedWinner(winner)}
-                    className="cursor-pointer block h-full group bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 relative"
-                  >
-                    <div className="relative aspect-[4/5] bg-muted w-full h-full flex items-center justify-center">
-                      {displayImg ? (
-                        <OptimizedImage
-                          src={getImageUrl(displayImg)}
-                          alt={dogName}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                      ) : (
-                        <ImageIcon className="w-12 h-12 text-muted-foreground/30" />
-                      )}
-                      
-                      {/* Top Overlay Badge */}
-                      <div className="absolute top-3 left-3 bg-black/75 border border-border/40 text-amber-400 text-[9px] font-black uppercase px-2 py-0.5 rounded shadow backdrop-blur">
-                        {awardTitle}
-                      </div>
-
-                      {/* Bottom Info Banner */}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent pt-10 text-left opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <h4 className="text-white text-sm font-black tracking-tight line-clamp-1">{dogName}</h4>
-                        <p className="text-amber-500 text-[10px] font-bold uppercase tracking-wider line-clamp-1">{winner.breed || winner.breedName || 'Unknown Breed'}</p>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              );
-            })}
+            {initialWinners.map((winner, idx) => (
+              <SwiperSlide key={winner.id || idx} className="h-auto pb-4">
+                <WinnerCertificateCard winner={winner} />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
 
@@ -108,13 +73,6 @@ export default function FeaturedWinnersSlider({ initialWinners = [] }: WinnerPro
           </Link>
         </div>
       </PublicContainer>
-
-      {/* Winner Detail Modal */}
-      <WinnerPreviewModal 
-        winner={selectedWinner}
-        isOpen={!!selectedWinner}
-        onClose={() => setSelectedWinner(null)}
-      />
     </section>
   );
 }
