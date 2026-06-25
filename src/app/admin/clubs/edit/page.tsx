@@ -38,7 +38,8 @@ function EditClubFormContent() {
     isActive: true,
     isFeatured: false,
     displayOrder: 999,
-    logoUrl: ''
+    logoUrl: '',
+    logoThumbnailUrl: ''
   });
 
   useEffect(() => {
@@ -66,7 +67,8 @@ function EditClubFormContent() {
             isActive: cd.isActive === true,
             isFeatured: cd.isFeatured === true,
             displayOrder: cd.displayOrder ?? 999,
-            logoUrl: cd.logoUrl || ''
+            logoUrl: cd.logoUrl || '',
+            logoThumbnailUrl: cd.logoThumbnailUrl || ''
           });
         } else {
           toast.error('Failed to load club details');
@@ -162,8 +164,16 @@ function EditClubFormContent() {
           <div className="bg-card p-6 rounded-2xl border border-border shadow-xl flex flex-col items-center justify-center xl:col-span-1">
             <ImageUploader
               currentImage={formData.logoUrl}
-              onUploadSuccess={(url) => setFormData(prev => ({ ...prev, logoUrl: url }))}
-              onRemove={() => setFormData(prev => ({ ...prev, logoUrl: '' }))}
+              onUploadSuccess={(url, payload) => setFormData(prev => ({ 
+                ...prev, 
+                logoUrl: url,
+                logoThumbnailUrl: payload?.thumbnailUrl || url 
+              }))}
+              onRemove={() => setFormData(prev => ({ 
+                ...prev, 
+                logoUrl: '',
+                logoThumbnailUrl: '' 
+              }))}
               folder="clubs"
               label=""
               aspectRatio={1}

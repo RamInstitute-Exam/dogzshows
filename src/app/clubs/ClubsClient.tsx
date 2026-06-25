@@ -167,62 +167,62 @@ export default function ClubsClient() {
                 >
                   <Link
                     href={`/clubs/${club.slug || club.id}`}
-                    className="group relative flex flex-col h-full bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#222222] rounded-2xl p-6 transition-all duration-[350ms] ease-in-out cursor-pointer hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl dark:hover:shadow-[0_10px_30px_rgba(255,255,255,0.06)]"
+                    className="group relative flex flex-col h-full bg-card border border-border rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] hover:border-blue-500/30"
                   >
-
-
-                    {/* Logo Area */}
-                    <div className="flex justify-center pt-6 pb-4 relative">
-                      <div className="w-[90px] h-[90px] rounded-full bg-white dark:bg-[#111111] border-[3px] border-[#E5E7EB] dark:border-[#222222] group-hover:border-border shadow-md overflow-hidden flex items-center justify-center transition-all duration-[350ms] ease group-hover:scale-108 group-hover:rotate-[5deg] shrink-0 relative">
-                        {club.logoUrl ? (
+                    {/* Top Logo Section */}
+                    <div className="relative w-full aspect-[4/3] bg-muted/30 border-b border-border flex items-center justify-center p-6 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/10 z-0"></div>
+                      <div className="relative z-10 w-32 h-32 md:w-40 md:h-40 shrink-0 drop-shadow-xl transition-transform duration-500 group-hover:scale-105">
+                        {club.logoThumbnailUrl || club.logoUrl ? (
                           <Image 
-                            src={getImageUrl(club.logoUrl)} 
+                            src={getImageUrl(club.logoThumbnailUrl || club.logoUrl)} 
                             alt={club.name} 
-                            width={90} 
-                            height={90} 
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-contain"
                             loading="lazy"
                           />
                         ) : (
-                          <Tent className="w-10 h-10 text-foreground/60" />
+                          <div className="w-full h-full rounded-full bg-accent/50 flex items-center justify-center">
+                            <Tent className="w-12 h-12 text-muted-foreground/50" />
+                          </div>
                         )}
                       </div>
                     </div>
 
                     {/* Content Section */}
-                    <div className="flex-grow flex flex-col items-center text-center">
-                      <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2 line-clamp-2 min-h-[3rem] flex items-center justify-center text-center font-outfit">
-                        {club.name}
-                      </h3>
+                    <div className="flex-grow flex flex-col p-6 text-center">
+                      <div className="mb-3">
+                        {club.clubType && (
+                          <span className="inline-block px-3 py-1 text-[10px] uppercase font-black tracking-widest bg-blue-500/10 text-blue-500 rounded-full mb-3">
+                            {club.clubType}
+                          </span>
+                        )}
+                        <h3 className="text-xl font-black text-foreground line-clamp-2 leading-tight">
+                          {club.name}
+                        </h3>
+                      </div>
                       
-                      <div className="flex items-center text-sm text-muted-foreground mb-4 justify-center">
-                        <MapPin className="w-3.5 h-3.5 mr-1 text-foreground" />
-                        <span className="line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
+                      <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground mb-6 font-medium">
+                        {(club.city || club.state) && (
+                          <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-foreground/50" />
+                            <span className="line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
+                          </div>
+                        )}
+                        {club.email && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-base leading-none">📧</span>
+                            <span className="line-clamp-1">{club.email}</span>
+                          </div>
+                        )}
+                        {club.phone && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-base leading-none">📞</span>
+                            <span className="line-clamp-1">{club.phone}</span>
+                          </div>
+                        )}
                       </div>
 
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-6 text-center min-h-[2.5rem] overflow-hidden">
-                        {club.description || 'A registered kennel club organizing dog shows and events.'}
-                      </p>
-
-                      {/* Stats Section */}
-                      {((club.memberCount || 0) > 0 || (club.eventCount || 0) > 0) && (
-                        <div className="grid grid-cols-2 gap-3 w-full mt-auto">
-                          <div className="bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-xl p-2.5 flex flex-col items-center justify-center border border-[#E5E7EB] dark:border-[#222222]">
-                            <div className="flex items-center gap-1.5 text-foreground mb-0.5">
-                              <Users className="w-4 h-4" />
-                              <span className="font-bold text-base leading-none">{club.memberCount || 0}</span>
-                            </div>
-                            <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Members</span>
-                          </div>
-                          <div className="bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-xl p-2.5 flex flex-col items-center justify-center border border-[#E5E7EB] dark:border-[#222222]">
-                            <div className="flex items-center gap-1.5 text-blue-500 mb-0.5">
-                              <CalendarDays className="w-4 h-4" />
-                              <span className="font-bold text-base leading-none">{club.eventCount || 0}</span>
-                            </div>
-                            <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Events</span>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </Link>
                 </motion.div>

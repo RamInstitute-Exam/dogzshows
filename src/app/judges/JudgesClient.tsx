@@ -69,7 +69,7 @@ function JudgesList() {
 
   return (
     <PageContainer>
-      <section className="relative w-full h-[320px] md:h-[420px] xl:h-[520px] flex items-center overflow-hidden bg-black">
+      <section className="relative w-full h-[300px] md:h-[380px] lg:h-[470px] xl:h-[520px] flex items-center overflow-hidden bg-background">
         <motion.div
           initial={{ scale: 1.05 }}
           animate={{ scale: 1 }}
@@ -79,26 +79,29 @@ function JudgesList() {
           <img
             src={customImage}
             alt="Judges Hero Banner"
+            fetchPriority="high"
             className="w-full h-full object-cover object-center"
+            style={{ filter: 'brightness(1.08) contrast(1.05) saturate(1.08)' }}
           />
         </motion.div>
 
-        {/* Dark black gradient overlay (65-75% opacity) */}
+        {/* Premium Cinematic Gradient Overlay */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.70) 50%, rgba(0,0,0,0.4) 100%)',
+            background: 'linear-gradient(90deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.30) 25%, rgba(0,0,0,.18) 50%, rgba(0,0,0,.08) 75%, rgba(0,0,0,0) 100%)',
           }}
         />
 
         <PublicContainer className="relative z-10 w-full py-10 flex flex-col justify-center h-full">
           <motion.div
+            className="max-w-[620px]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 mb-4 font-medium text-sm md:text-base">
+            <nav className="flex items-center gap-2 mb-4 font-medium text-sm md:text-base" style={{ textShadow: '0 4px 20px rgba(0,0,0,.35)' }}>
               <Link href="/" className="text-[rgba(255,255,255,0.75)] hover:text-white transition-colors">
                 Home
               </Link>
@@ -107,12 +110,12 @@ function JudgesList() {
             </nav>
 
             {/* Title */}
-            <h1 className="text-[32px] md:text-[42px] xl:text-[64px] font-[800] text-[#FFFFFF] leading-tight mb-4 drop-shadow-md">
+            <h1 className="text-[32px] md:text-[42px] xl:text-[64px] font-[800] text-[#FFFFFF] leading-tight mb-4" style={{ textShadow: '0 4px 20px rgba(0,0,0,.35)' }}>
               {customTitle}
             </h1>
 
             {/* Description */}
-            <p className="text-[18px] xl:text-[22px] text-[rgba(255,255,255,0.92)] leading-[1.8] max-w-[650px] drop-shadow-sm">
+            <p className="text-[18px] xl:text-[22px] text-[rgba(255,255,255,0.95)] leading-[1.8]" style={{ textShadow: '0 4px 20px rgba(0,0,0,.35)' }}>
               {customSubtitle}
             </p>
           </motion.div>

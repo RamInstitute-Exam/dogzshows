@@ -10,7 +10,7 @@ import OptimizedImage from '@/components/shared/OptimizedImage';
 
 interface ImageUploaderProps {
   currentImage?: string;
-  onUploadSuccess?: (url: string) => void;
+  onUploadSuccess?: (url: string, payload?: any) => void;
   onRemove?: () => void;
   maxSizeMB?: number;
   folder?: string;
@@ -189,7 +189,7 @@ export default function ImageUploader({
       if (response?.success && response?.url) {
         setUploadProgress(100);
         setPreview(response.url); 
-        if (onUploadSuccess) onUploadSuccess(response.url);
+        if (onUploadSuccess) onUploadSuccess(response.url, response);
         import('sonner').then(({ toast }) => {
           toast.success('Image uploaded successfully.');
         });
@@ -252,7 +252,7 @@ export default function ImageUploader({
       {/* Cropper Modal View */}
       {preview && isCropping && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-card w-full max-w-[700px] rounded-2xl overflow-hidden shadow-2xl border border-border flex flex-col">
+          <div className="bg-card w-[95vw] max-w-[1200px] rounded-2xl overflow-hidden shadow-2xl border border-border flex flex-col">
             <div className="flex items-center justify-between p-5 border-b border-border bg-muted/30">
               <div>
                 <h4 className="font-bold text-lg text-foreground">Crop Image</h4>
@@ -270,12 +270,14 @@ export default function ImageUploader({
               </button>
             </div>
             
-            <div className="relative w-full h-[500px] bg-black">
+            <div className="relative w-full h-[75vh] min-h-[500px] max-h-[800px] bg-black">
               <Cropper
                 image={preview}
                 crop={crop}
                 zoom={zoom}
                 aspect={aspectRatio}
+                minZoom={0.2}
+                restrictPosition={false}
                 onCropChange={setCrop}
                 onCropComplete={(_, croppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels)}
                 onZoomChange={setZoom}
@@ -289,7 +291,7 @@ export default function ImageUploader({
                 <input
                   type="range"
                   value={zoom}
-                  min={1}
+                  min={0.2}
                   max={3}
                   step={0.1}
                   aria-labelledby="Zoom"

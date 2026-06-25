@@ -35,7 +35,8 @@ export default function RegisterClubForm() {
     isActive: true,
     isFeatured: false,
     displayOrder: 999,
-    logoUrl: ''
+    logoUrl: '',
+    logoThumbnailUrl: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -106,8 +107,16 @@ export default function RegisterClubForm() {
           <div className="bg-card p-6 rounded-2xl border border-border shadow-xl flex flex-col items-center justify-center xl:col-span-1">
             <ImageUploader
               currentImage={formData.logoUrl}
-              onUploadSuccess={(url) => setFormData(prev => ({ ...prev, logoUrl: url }))}
-              onRemove={() => setFormData(prev => ({ ...prev, logoUrl: '' }))}
+              onUploadSuccess={(url, payload) => setFormData(prev => ({ 
+                ...prev, 
+                logoUrl: url,
+                logoThumbnailUrl: payload?.thumbnailUrl || url 
+              }))}
+              onRemove={() => setFormData(prev => ({ 
+                ...prev, 
+                logoUrl: '',
+                logoThumbnailUrl: '' 
+              }))}
               folder="clubs"
               label=""
               aspectRatio={1}

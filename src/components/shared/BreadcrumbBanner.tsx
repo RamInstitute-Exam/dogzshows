@@ -52,7 +52,7 @@ export default function BreadcrumbBanner({
       };
 
   return (
-    <section className="relative w-full h-[140px] md:h-[260px] lg:h-[300px] xl:h-[340px] flex items-center overflow-hidden bg-background">
+    <section className="relative w-full h-[280px] sm:h-[320px] md:h-[380px] lg:h-[460px] xl:h-[520px] flex items-center overflow-hidden bg-background">
       {/* Background Image with Zoom Animation */}
       <motion.div
         initial={{ scale: 1.1 }}
@@ -66,27 +66,28 @@ export default function BreadcrumbBanner({
           alt={data.title}
           fill
           priority
-          className="object-cover"
+          className="object-cover object-center"
         />
       </motion.div>
 
-      {/* Dark Overlay with Glass effect */}
+      {/* Premium Gradient Overlay */}
       <div
-        className="absolute inset-0 backdrop-blur-[2px]"
+        className="absolute inset-0"
         style={{
-          background: 'linear-gradient(90deg, rgba(0,0,0,.92), rgba(0,0,0,.72), rgba(0,0,0,.45))',
+          background: 'linear-gradient(90deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.28) 40%, rgba(0,0,0,0.18) 70%, rgba(0,0,0,0.08) 100%)',
         }}
       />
 
       {/* Content Container */}
-      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 xl:px-8 py-6 sm:py-15 md:py-20 flex flex-col justify-center h-full">
+      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 xl:px-12 py-6 sm:py-15 md:py-20 flex flex-col justify-center h-full">
         <motion.div
+          className="max-w-[600px]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 mb-4 sm:mb-6 font-mulish text-[13px] xl:text-[15px]">
+          <nav className="flex items-center gap-2 mb-4 sm:mb-6 font-mulish text-[13px] xl:text-[15px] drop-shadow-md">
             <Link href="/" className="text-zinc-300 hover:text-white transition-colors">
               Home
             </Link>
@@ -95,13 +96,13 @@ export default function BreadcrumbBanner({
           </nav>
 
           {/* Title */}
-          <h1 className="text-[30px] md:text-[40px] lg:text-[52px] xl:text-[60px] font-[800] text-white leading-[1.1] mb-2 sm:mb-4 tracking-tight">
+          <h1 className="text-[30px] md:text-[40px] lg:text-[52px] xl:text-[60px] font-[800] text-white leading-[1.1] mb-2 sm:mb-4 tracking-tight drop-shadow-md">
             {data.title}
           </h1>
 
           {/* Description */}
           {data.subtitle && (
-            <p className="text-[16px] xl:text-[22px] text-zinc-200 leading-[1.8] max-w-[700px]">
+            <p className="text-[16px] xl:text-[22px] text-zinc-100 leading-[1.8] drop-shadow-md">
               {data.subtitle}
             </p>
           )}

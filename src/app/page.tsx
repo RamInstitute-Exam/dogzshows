@@ -16,6 +16,7 @@ const SlidingPhotoSections = dynamic(() => import('@/components/home/SlidingPhot
 const UpcomingEventsCarousel = dynamic(() => import('@/components/home/UpcomingEventsCarousel'));
 const FeaturedClubsSlider = dynamic(() => import('@/components/home/FeaturedClubsSlider'));
 const FeaturedJudgesSlider = dynamic(() => import('@/components/home/FeaturedJudgesSlider'));
+const FeaturedWinnersSlider = dynamic(() => import('@/components/home/FeaturedWinnersSlider'));
 const AboutUsSection = dynamic(() => import('@/components/home/AboutUsSection'));
 
 const SectionSkeleton = ({ height = 'h-64' }: { height?: string }) => (
@@ -58,6 +59,12 @@ async function JudgesWrapper() {
   return <FeaturedJudgesSlider judges={judges} />;
 }
 
+async function WinnersWrapper() {
+  const winnersRes = await fetchServerData('/public/winners/public/featured', 300).catch(() => ({ success: false, data: [] }));
+  const winners = winnersRes?.data || [];
+  return <FeaturedWinnersSlider initialWinners={winners} />;
+}
+
 async function AboutWrapper() {
   const aboutRes = await fetchServerData('/public/homepage-about-section', 300).catch(() => ({ success: false, data: [] }));
   const aboutData = aboutRes?.data || null;
@@ -72,14 +79,19 @@ export default function Home() {
         <HeroSectionWrapper />
       </Suspense>
 
-      {/* 3. Premium Personal Photos (Lazy) */}
+      {/* 2. Premium Personal Photos (Lazy) */}
       <Suspense fallback={<SectionSkeleton height="h-96" />}>
         <PremiumPhotosWrapper />
       </Suspense>
 
-      {/* 4. Upcoming Show Calendars (Lazy) */}
+      {/* 3. Upcoming Show Calendars (Lazy) */}
       <Suspense fallback={<SectionSkeleton height="h-72" />}>
         <EventsWrapper />
+      </Suspense>
+
+      {/* 4. Latest Winners Slider (Lazy) */}
+      <Suspense fallback={<SectionSkeleton height="h-96" />}>
+        <WinnersWrapper />
       </Suspense>
 
       {/* 5. Featured Kennel Clubs (Lazy) */}

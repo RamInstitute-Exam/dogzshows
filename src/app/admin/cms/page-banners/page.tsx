@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
-import { Plus, Edit, Trash2, LayoutTemplate } from 'lucide-react';
+import { Plus, Edit, Trash2, LayoutTemplate, UploadCloud } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
 import api from '@/services/api';
@@ -27,6 +27,7 @@ export default function PageBannersCMS() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentBanner, setCurrentBanner] = useState<Partial<PageBanner> | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchBanners();
@@ -85,6 +86,32 @@ export default function PageBannersCMS() {
     } catch (error) {
       console.error('Error saving banner:', error);
       toast.error('An error occurred while saving');
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    setUploading(true);
+
+    try {
+      const res = await api.post('/uploads', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (res.success || res.url) {
+        setCurrentBanner(prev => ({ ...prev, bannerImage: res.url || res.data?.url || '' }));
+        toast.success('Image uploaded successfully');
+      } else {
+        toast.error(res.message || 'Upload failed');
+      }
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      toast.error('Upload failed');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -213,18 +240,42 @@ export default function PageBannersCMS() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-muted-foreground mb-1">Banner Image URL *</label>
-                    <input 
-                      type="text" 
-                      value={currentBanner?.bannerImage || ''} 
-                      onChange={e => setCurrentBanner({...currentBanner, bannerImage: e.target.value})}
-                      className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground"
-                      placeholder="/images/events_banner.png"
-                      required
-                    />
-                    {currentBanner?.bannerImage && (
-                      <OptimizedImage src={currentBanner.bannerImage} alt="Preview" className="mt-2 h-24 w-full object-cover rounded border border-border" />
-                    )}
+                    <label className="block text-sm font-bold text-muted-foreground mb-1">Banner Image *</label>
+                    <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-xl p-4 hover:bg-muted/10 transition-colors relative min-h-[120px]">
+                      {uploading ? (
+                        <Spinner size="md" className="py-4" />
+                      ) : currentBanner?.bannerImage ? (
+                        <div className="w-full flex flex-col items-center gap-3">
+                          <OptimizedImage 
+                            src={currentBanner.bannerImage.startsWith('http') || currentBanner.bannerImage.startsWith('/') ? currentBanner.bannerImage : config.apiUrl.replace('/api/v1', '') + currentBanner.bannerImage} 
+                            alt="Uploaded Banner" 
+                            className="h-24 w-auto object-cover rounded-lg border border-border"
+                          />
+                          <div className="flex gap-2 items-center">
+                            <span className="text-[10px] text-muted-foreground truncate max-w-[200px]">{currentBanner.bannerImage}</span>
+                            <button 
+                              type="button" 
+                              onClick={() => setCurrentBanner(prev => ({ ...prev, bannerImage: '' }))}
+                              className="text-red-500 hover:underline text-[10px] font-bold"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center cursor-pointer w-full h-full">
+                          <UploadCloud className="w-8 h-8 text-muted-foreground/60 mb-2" />
+                          <span className="text-xs font-semibold text-foreground hover:underline">Click to upload Image</span>
+                          <span className="text-[10px] text-muted-foreground mt-1">PNG, JPG or WEBP</span>
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden" 
+                          />
+                        </label>
+                      )}
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

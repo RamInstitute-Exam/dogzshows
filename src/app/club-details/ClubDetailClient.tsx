@@ -158,7 +158,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-card border-4 border-card shadow-2xl flex items-center justify-center text-4xl font-bold overflow-hidden shrink-0"
+              className="w-[140px] h-[140px] rounded-full bg-card border-[4px] border-card shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] flex items-center justify-center text-4xl font-bold overflow-hidden shrink-0 mx-auto md:mx-0"
             >
               {club.logoUrl ? (
                 <OptimizedImage src={getImageUrl(club.logoUrl)} alt={club.name} className="w-full h-full object-cover" />
@@ -171,9 +171,9 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="flex-grow"
+              className="flex-grow flex flex-col items-center md:items-start text-center md:text-left"
             >
-              <div className="flex flex-wrap items-center gap-3 mb-3">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-3">
 
                 {club.clubType && (
                   <span className="px-3 py-1 bg-foreground/20 text-foreground rounded-full text-xs font-bold uppercase tracking-wider border border-border/30 backdrop-blur-md">
@@ -192,16 +192,42 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                 )}
               </div>
 
-              <h1 className="text-3xl md:text-5xl font-extrabold text-white font-outfit mb-4 normal-case">{club.name}</h1>
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white font-outfit mb-4 normal-case leading-tight">{club.name}</h1>
 
-              <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-gray-400">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-sm font-medium text-gray-400 mb-5">
                 {(club.city || club.state) && (
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-primary" />
                     {[club.city, club.state, club.country].filter(Boolean).join(', ')}
                   </div>
                 )}
+                {club.email && (
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-primary" />
+                    {club.email}
+                  </div>
+                )}
+                {club.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-primary" />
+                    {club.phone}
+                  </div>
+                )}
+                {club.website && (
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-primary" />
+                    <a href={club.website.startsWith('http') ? club.website : `https://${club.website}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                      {club.website}
+                    </a>
+                  </div>
+                )}
               </div>
+
+              {club.description && (
+                <p className="text-gray-300 text-sm md:text-base leading-relaxed max-w-3xl line-clamp-3">
+                  {club.description}
+                </p>
+              )}
             </motion.div>
           </div>
         </PublicContainer>

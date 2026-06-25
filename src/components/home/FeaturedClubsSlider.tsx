@@ -92,42 +92,44 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
                 <Link href={`/clubs/${club.slug || club.id}`} className="w-full h-full flex">
                   <motion.div
                     whileHover={{ y: -6 }}
-                    className="group relative flex flex-col w-full h-full bg-card border border-border/50 rounded-[20px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-border/30 transition-all duration-500 p-6"
+                    className="group relative flex flex-col h-full bg-card border border-border rounded-[20px] overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] hover:border-blue-500/30"
                   >
-                    {/* Content */}
-                    <div className="flex flex-col justify-between flex-1 h-full min-h-[auto]">
-                      <div className="flex flex-col">
-                        {club.logoUrl && (
-                          <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-white shadow-sm flex items-center justify-center mb-4 border border-border/50 shrink-0">
-                            <img src={club.logoUrl} alt={club.name} className="w-full h-full object-contain p-1.5" />
+                    {/* Top Logo Section */}
+                    <div className="relative w-full aspect-[4/3] bg-muted/30 border-b border-border flex items-center justify-center p-6 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/10 z-0"></div>
+                      <div className="relative z-10 w-24 h-24 sm:w-32 sm:h-32 shrink-0 drop-shadow-xl transition-transform duration-500 group-hover:scale-105">
+                        {club.logoUrl ? (
+                          <img 
+                            src={club.logoUrl} 
+                            alt={club.name} 
+                            className="w-full h-full object-contain"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full rounded-full bg-accent/50 flex items-center justify-center">
+                            <MapPin className="w-8 h-8 text-muted-foreground/50" />
                           </div>
                         )}
-                        <h3 className="text-[clamp(22px,1.4vw,30px)] font-[800] leading-[1.25] text-foreground mb-3 line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] group-hover:text-foreground transition-colors normal-case">
+                      </div>
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="flex-grow flex flex-col p-6 text-center">
+                      <div className="mb-3">
+                        <h3 className="text-xl font-black text-foreground line-clamp-2 leading-tight">
                           {club.name}
                         </h3>
-
-                        <div className="flex items-center gap-[8px] text-[16px] font-[600] text-muted-foreground mb-4 normal-case">
-                          <MapPin className="w-5 h-5 shrink-0 text-muted-foreground" />
-                          <span className="truncate">
-                            {[club.city, club.state].filter(Boolean).join(', ') || 'India'}
-                          </span>
-                        </div>
-
-                        <p className="text-[15px] leading-[1.7] text-muted-foreground line-clamp-2 overflow-hidden break-words [overflow-wrap:anywhere] mb-6 min-h-[auto]">
-                          {club.description || 'India\'s leading kennel club organizing prestigious canine events.'}
-                        </p>
                       </div>
-
-                      <div className="mt-auto flex flex-col w-full pt-4 border-t border-border/50">
-                        <div className="flex justify-between items-center w-full">
-                          <span className="text-[15px] font-[700] text-foreground transition-colors uppercase">
-                            VIEW CLUB
-                          </span>
-                          <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center group-hover:bg-foreground group-hover:scale-110 transition-all duration-300">
-                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-background transition-colors duration-300" />
+                      
+                      <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground mb-6 font-medium">
+                        {(club.city || club.state) && (
+                          <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-foreground/50" />
+                            <span className="line-clamp-1">{[club.city, club.state].filter(Boolean).join(', ') || 'India'}</span>
                           </div>
-                        </div>
+                        )}
                       </div>
+
                     </div>
                   </motion.div>
                 </Link>

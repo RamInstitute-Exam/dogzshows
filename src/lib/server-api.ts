@@ -28,7 +28,17 @@ export async function fetchServerData(endpoint: string, revalidate: number = 60)
     }
 
     const json = await res.json();
-    return { success: true, data: Array.isArray(json) ? json : json.data || [] };
+    let resultData = [];
+    if (Array.isArray(json)) {
+      resultData = json;
+    } else if (Array.isArray(json.data)) {
+      resultData = json.data;
+    } else if (Array.isArray(json.items)) {
+      resultData = json.items;
+    } else if (json.data && Array.isArray(json.data.items)) {
+      resultData = json.data.items;
+    }
+    return { success: true, data: resultData };
   } catch (error) {
     console.error(`Error fetching ${endpoint}:`, error);
     return { success: false, data: [] };

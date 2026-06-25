@@ -1,0 +1,412 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Save, ArrowLeft, ImagePlus, Info, UploadCloud, Loader2 } from 'lucide-react';
+import { AdminButton } from '@/components/ui/admin-button';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import api, { getImageUrl } from '@/lib/api';
+import OptimizedImage from '@/components/shared/OptimizedImage';
+
+export default function AddWinnerForm() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [uploadingWinnerImg, setUploadingWinnerImg] = useState(false);
+  const [uploadingGalleryImg, setUploadingGalleryImg] = useState(false);
+  
+  const [clubs, setClubs] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState('basic');
+
+  const [formData, setFormData] = useState({
+    categoryId: '',
+    eventId: '',
+    clubId: '',
+    awardTitle: '',
+    dogName: '',
+    breed: '',
+    ownerName: '',
+    breederName: '',
+    handlerName: '',
+    winnerImage: '',
+    imageUrl: '', // fallback duplicate for backend compatibility
+    galleryImages: [] as string[],
+    description: '',
+    showDate: '',
+    year: new Date().getFullYear(),
+    showYear: new Date().getFullYear(), // fallback duplicate
+    showOnHomepage: false,
+    status: 'PUBLISHED',
+  });
+
+  useEffect(() => {
+    fetchOptions();
+  }, []);
+
+  const fetchOptions = async () => {
+    try {
+      const [cRes, eRes, catRes] = await Promise.all([
+        api.get('/public/clubs?limit=1000'),
+        api.get('/public/events?limit=1000'),
+        api.get('/public/winner-categories?limit=1000')
+      ]);
+      if (cRes?.success) setClubs(cRes.data || cRes.items || []);
+      if (eRes?.success) setEvents(eRes.data || eRes.events || []);
+      if (catRes?.success) setCategories(catRes.data || catRes.items || []);
+    } catch (error) {
+      console.error('Failed to fetch options', error);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData(prev => {
+        const nextData = { ...prev, [name]: type === 'number' ? Number(value) : value };
+        if (name === 'winnerImage') {
+          nextData.imageUrl = value; // keep fallback in sync
+        }
+        if (name === 'year') {
+          nextData.showYear = Number(value); // keep fallback in sync
+        }
+        return nextData;
+      });
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isGallery = false) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    if (!isGallery) {
+      const file = files[0];
+      const form = new FormData();
+      form.append('file', file);
+      setUploadingWinnerImg(true);
+      try {
+        const res = await api.post('/uploads', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+        if (res.success) {
+          setFormData(prev => ({ 
+            ...prev, 
+            winnerImage: res.url,
+            imageUrl: res.url // keep in sync
+          }));
+          toast.success('Winner Image uploaded successfully');
+        } else {
+          toast.error('Upload failed');
+        }
+      } catch (err: any) {
+        toast.error('Upload failed');
+      } finally {
+        setUploadingWinnerImg(false);
+      }
+    } else {
+      const form = new FormData();
+      form.append('file', files[0]);
+      setUploadingGalleryImg(true);
+      try {
+        const res = await api.post('/uploads', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+        if (res.success) {
+          setFormData(prev => ({ 
+            ...prev, 
+            galleryImages: [...prev.galleryImages, res.url] 
+          }));
+          toast.success('Gallery Image added successfully');
+        } else {
+          toast.error('Upload failed');
+        }
+      } catch (err: any) {
+        toast.error('Upload failed');
+      } finally {
+        setUploadingGalleryImg(false);
+      }
+    }
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      galleryImages: prev.galleryImages.filter((_, idx) => idx !== index)
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.categoryId) {
+      toast.error('Winner Category is required');
+      return;
+    }
+    if (!formData.eventId) {
+      toast.error('Event is required');
+      return;
+    }
+    if (!formData.clubId) {
+      toast.error('Club is required');
+      return;
+    }
+    if (!formData.awardTitle) {
+      toast.error('Award Title is required');
+      return;
+    }
+    if (!formData.dogName) {
+      toast.error('Dog Name is required');
+      return;
+    }
+    if (!formData.breed) {
+      toast.error('Breed is required');
+      return;
+    }
+    if (!formData.year) {
+      toast.error('Year is required');
+      return;
+    }
+    if (!formData.winnerImage) {
+      toast.error('Winner Image is required');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = {
+        ...formData,
+        breedName: formData.breed, // duplicate for backend compatibility
+        awardCategory: categories.find(c => c.id === formData.categoryId)?.name || '', // sync string category name
+        // Parse date properly if provided
+        showDate: formData.showDate ? new Date(formData.showDate).toISOString() : undefined,
+        year: Number(formData.year),
+        showYear: Number(formData.year),
+        galleryImages: JSON.stringify(formData.galleryImages) // parse gallery images as json string
+      };
+
+      const res = await api.post('/winners', payload);
+      if (res.success) {
+        toast.success('Winner added successfully!');
+        router.push('/admin/winners');
+      } else {
+        toast.error(res.message || 'Failed to add winner');
+      }
+    } catch (error: any) {
+      console.error('Submit error:', error);
+      toast.error(error.message || 'An error occurred during submission');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 py-6 space-y-6">
+      {/* Top Sticky Bar */}
+      <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-4 z-50">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/winners">
+            <button className="text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl p-2 transition">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Add New Winner</h1>
+            <p className="text-muted-foreground text-sm mt-1">Record a new dog show champion with full credentials.</p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <select name="status" value={formData.status} onChange={handleInputChange} className="px-4 py-2 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none">
+            <option value="PUBLISHED">Published</option>
+            <option value="DRAFT">Draft</option>
+          </select>
+          <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={loading ? undefined : <Save className="w-4 h-4" />}>
+            Save Winner
+          </AdminButton>
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Left Nav */}
+        <div className="w-full md:w-64 shrink-0 space-y-2">
+          {[
+            { id: 'basic', label: 'Winner Details', icon: Info },
+            { id: 'media', label: 'Images & Gallery', icon: ImagePlus }
+          ].map(tab => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                type="button"
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                  activeTab === tab.id 
+                    ? 'bg-foreground text-background shadow-lg' 
+                    : 'text-muted-foreground hover:bg-card hover:text-foreground'
+                }`}
+              >
+                <Icon className="w-5 h-5" /> {tab.label}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Right Form Area */}
+        <div className="flex-1 bg-card p-6 rounded-2xl border border-border shadow-xl">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {activeTab === 'basic' && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                <h2 className="text-xl font-bold text-foreground border-b border-border pb-4 font-mono">Winner Details Form</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Winner Category *</label>
+                    <select required name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none">
+                      <option value="">Select Category...</option>
+                      {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Gallery Category *</label>
+                    <select required name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none">
+                      <option value="">Select Gallery Category...</option>
+                      {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Award Title *</label>
+                    <input required type="text" name="awardTitle" value={formData.awardTitle} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 1st Best In Show" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Event / Show *</label>
+                    <select required name="eventId" value={formData.eventId} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none">
+                      <option value="">Select Event...</option>
+                      {events.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Club Name *</label>
+                    <select required name="clubId" value={formData.clubId} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none">
+                      <option value="">Select Club...</option>
+                      {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Dog Name *</label>
+                    <input required type="text" name="dogName" value={formData.dogName} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. LUZZY OF HIMALAYAS" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Breed *</label>
+                    <input required type="text" name="breed" value={formData.breed} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. German Shepherd" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Owner Name</label>
+                    <input type="text" name="ownerName" value={formData.ownerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. HEENA" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Breeder Name</label>
+                    <input type="text" name="breederName" value={formData.breederName} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. MR.ACHUTHANANTHAN" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Handler Name</label>
+                    <input type="text" name="handlerName" value={formData.handlerName} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. John Doe" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Show Date</label>
+                    <input type="date" name="showDate" value={formData.showDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2">Year *</label>
+                    <input required type="number" name="year" value={formData.year} onChange={handleInputChange} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-muted-foreground mb-2">Award Description</label>
+                  <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-border outline-none resize-none" placeholder="Add custom comments or description..." />
+                </div>
+
+                <div className="flex items-center gap-6 pt-4 border-t border-border">
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" id="showOnHomepage" name="showOnHomepage" checked={formData.showOnHomepage} onChange={handleInputChange} className="w-5 h-5 rounded border-border" />
+                    <label htmlFor="showOnHomepage" className="font-bold text-foreground text-sm cursor-pointer">Show On Homepage (Featured Slider)</label>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'media' && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                <h2 className="text-xl font-bold text-foreground border-b border-border pb-4 font-mono">Winner Media</h2>
+                
+                {/* Winner Image */}
+                <div>
+                  <label className="block text-sm font-bold text-muted-foreground mb-2">Winner Image *</label>
+                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-8 hover:bg-accent/10 transition-colors relative">
+                    {uploadingWinnerImg ? (
+                      <div className="flex flex-col items-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground mb-2" /><p className="text-xs text-muted-foreground">Uploading image...</p></div>
+                    ) : formData.winnerImage ? (
+                      <div className="w-full flex flex-col items-center gap-4">
+                        <OptimizedImage src={getImageUrl(formData.winnerImage)} alt="Winner Image" className="max-h-64 object-contain rounded-xl shadow-lg border border-border" />
+                        <button type="button" onClick={() => setFormData(prev => ({ ...prev, winnerImage: '', imageUrl: '' }))} className="px-4 py-2 text-sm font-bold text-red-500 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors">
+                          Remove Image
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center cursor-pointer w-full py-4">
+                        <UploadCloud className="w-8 h-8 text-muted-foreground mb-2" />
+                        <span className="text-xs font-bold text-foreground mb-1">Click to upload winner image</span>
+                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, false)} className="hidden" />
+                      </label>
+                    )}
+                  </div>
+                </div>
+
+                {/* Gallery Images */}
+                <div className="space-y-4">
+                  <label className="block text-sm font-bold text-muted-foreground">Gallery Images</label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {formData.galleryImages.map((img, idx) => (
+                      <div key={idx} className="relative aspect-video rounded-xl overflow-hidden border border-border group bg-background">
+                        <OptimizedImage src={getImageUrl(img)} alt="Gallery preview" className="w-full h-full object-cover" />
+                        <button type="button" onClick={() => removeGalleryImage(idx)} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition-opacity">
+                          Delete
+                        </button>
+                      </div>
+                    ))}
+                    
+                    {uploadingGalleryImg ? (
+                      <div className="aspect-video rounded-xl border border-dashed flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+                    ) : (
+                      <label className="aspect-video rounded-xl border border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-accent/10 transition">
+                        <ImagePlus className="w-6 h-6 text-muted-foreground mb-1" />
+                        <span className="text-[10px] text-muted-foreground font-semibold">Add to Gallery</span>
+                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, true)} className="hidden" />
+                      </label>
+                    )}
+                  </div>
+                </div>
+
+              </motion.div>
+            )}
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

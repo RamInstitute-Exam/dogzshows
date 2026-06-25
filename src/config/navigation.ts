@@ -47,6 +47,13 @@ export const ADMIN_ROUTES = [
     { name: 'Entry Categories', href: '/admin/entries/categories' },
     { name: 'Entry Requests', href: '/admin/entries/requests' },
   ]},
+  { name: 'Winner Management', icon: Award, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'Winners List', href: '/admin/winners' },
+    { name: 'Add Winner', href: '/admin/winners/create' },
+    { name: 'Winner Categories', href: '/admin/winners/categories' },
+    { name: 'Hall Of Fame', href: '/admin/winners/hall-of-fame' },
+    { name: 'Special Awards', href: '/admin/winners/special-awards' },
+  ]},
   { name: 'Media Management', icon: Image, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
     { name: 'Media Gallery Mgmt', href: '/admin/media-gallery-mgmt' },
     { name: 'All Photos', href: '/admin/media/photos' },
@@ -61,6 +68,7 @@ export const ADMIN_ROUTES = [
   ]},
   { name: 'CMS', icon: LayoutTemplate, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
     { name: 'Homepage Banner', href: '/admin/cms/homepage-banners' },
+    { name: 'Page Banners', href: '/admin/cms/page-banners' },
     { name: 'Homepage Show Photos', href: '/admin/cms/show-photos' },
     { name: 'Homepage Outdoor Photos', href: '/admin/cms/outdoor-photos' },
     { name: 'Sliding Photo Sections', href: '/admin/cms/sliding-sections' },
