@@ -13,7 +13,7 @@ interface PageProps {
 export async function generateStaticParams() {
   try {
     const res = await fetchServerData('/public/winner-categories', 300).catch(() => null);
-    const categories = res?.data || res?.items || [];
+    const categories = (res as any)?.data || (res as any)?.items || [];
     if (Array.isArray(categories) && categories.length > 0) {
       return categories.map((cat: any) => ({ slug: cat.slug || cat.id }));
     }
@@ -40,7 +40,7 @@ export default async function CategoryDetailPage({ params }: PageProps) {
   const catRes = await fetchServerData(`/public/winner-categories/public/slug/${slug}`, 60)
     .catch(() => null);
 
-  const category = catRes?.data || catRes?.item || catRes;
+  const category = (catRes as any)?.data || (catRes as any)?.item || catRes;
 
   if (!category || !category.id) {
     notFound();
@@ -53,9 +53,9 @@ export default async function CategoryDetailPage({ params }: PageProps) {
     fetchServerData('/public/breeds?limit=1000', 300).catch(() => ({ success: false, data: [] }))
   ]);
 
-  const events = eventsRes?.data || eventsRes?.events || [];
-  const clubs = clubsRes?.data || clubsRes?.items || [];
-  const breeds = breedsRes?.data || breedsRes?.items || [];
+  const events = (eventsRes as any)?.data || (eventsRes as any)?.events || [];
+  const clubs = (clubsRes as any)?.data || (clubsRes as any)?.items || [];
+  const breeds = (breedsRes as any)?.data || (breedsRes as any)?.items || [];
 
   return (
     <CategoryWinnersClient 

@@ -12,12 +12,17 @@ export const revalidate = 60; // 1 minute
 export async function generateStaticParams() {
   const res = await fetchServerData('/public/winners?limit=1000', 300).catch(() => ({ success: false, data: [] }));
   const winners = res?.data || [];
-  return winners.map((w: any) => ({
-    id: w.id
-  }));
+  return winners
+    .filter((w: any) => w && w.id)
+    .map((w: any) => ({
+      id: String(w.id)
+    }));
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
+  if (!params.id || params.id === 'undefined') {
+    return { title: 'Winner Not Found' };
+  }
   const res = await fetchServerData(`/public/winners/${params.id}`, 60).catch(() => ({ success: false, data: null }));
   const winner = res?.data;
 
@@ -35,6 +40,18 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 export default async function WinnerDetailsPage({ params }: { params: { id: string } }) {
+  if (!params.id || params.id === 'undefined') {
+    return (
+      <PageContainer>
+        <PublicContainer className="py-24 text-center">
+          <h1 className="text-4xl font-bold mb-4">Winner Not Found</h1>
+          <p className="text-muted-foreground mb-8">The winner you are looking for does not exist or has been removed.</p>
+          <Link href="/winners" className="text-amber-500 font-bold hover:underline">&larr; Back to Winners</Link>
+        </PublicContainer>
+      </PageContainer>
+    );
+  }
+
   const res = await fetchServerData(`/public/winners/${params.id}`, 60).catch(() => ({ success: false, data: null }));
   const winner = res?.data;
 

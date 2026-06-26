@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { getImageUrl } from '@/lib/api';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 
-export default function ClubsClient() {
+export default function ClubsClient({ initialBannerData }: { initialBannerData?: any }) {
   const searchParams = useSearchParams();
   const typeParam = searchParams.get('type') || '';
 
@@ -39,8 +39,8 @@ export default function ClubsClient() {
   const fetchClubs = async () => {
     setLoading(true);
     try {
-      // Added a cache buster timestamp to instantly invalidate the old 24h stale cache
-      let url = `/public/clubs?page=${page}&limit=20&status=ACTIVE&_cb=${Date.now()}`;
+      // Removed cache buster to utilize caching and improve load time
+      let url = `/public/clubs?page=${page}&limit=20&status=ACTIVE`;
       if (debouncedSearch) url += `&search=${encodeURIComponent(debouncedSearch)}`;
       if (stateFilter) url += `&state=${encodeURIComponent(stateFilter)}`;
       if (cityFilter) url += `&city=${encodeURIComponent(cityFilter)}`;
@@ -111,16 +111,13 @@ export default function ClubsClient() {
 
   return (
     <PageContainer>
-      <BreadcrumbBanner
-        slug="/clubs"
-        fallbackTitle={
-          typeParam.toLowerCase() === 'all-breeds' ? 'All Breeds Clubs' :
-          typeParam.toLowerCase() === 'specialty' ? 'Specialty Clubs' :
-          typeParam.toLowerCase() === 'kennel' ? 'Kennel Clubs' :
-          typeParam.toLowerCase() === 'state' ? 'State Clubs' : 'Club Directory'
-        }
+      <BreadcrumbBanner 
+        slug="clubs"
+        fallbackTitle="CLUB DIRECTORY"
         fallbackSubtitle="Discover registered kennel clubs across India. Connect with local chapters for events, dog shows, and community support."
-        fallbackImage="/images/dogshows_banner.png"
+        fallbackImage="/images/clubs_banner.png"
+        fallbackBreadcrumb="Club Directory"
+        initialBannerData={initialBannerData}
       />
 
       {/* Filters Bar */}
@@ -156,7 +153,7 @@ export default function ClubsClient() {
               ))}
             </div>
           ) : clubs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1280px] mx-auto w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1280px] mx-auto w-full">
               {clubs.map((club, idx) => (
                 <motion.div
                   key={club.id}
@@ -167,7 +164,7 @@ export default function ClubsClient() {
                 >
                   <Link
                     href={`/clubs/${club.slug || club.id}`}
-                    className="group relative flex flex-col h-full bg-card border border-border rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-[6px] shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.18)] w-full max-w-[300px]"
+                    className="group relative flex flex-col h-full bg-card border border-border rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-[6px] shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.18)] w-full"
                   >
                     {/* Top Logo Section */}
                     <div className="relative w-full h-[180px] sm:h-[200px] bg-muted/30 border-b border-border flex items-center justify-center p-4 overflow-hidden">

@@ -61,7 +61,7 @@ export function useFCIGroups() {
   });
 }
 
-export function usePageBanner(slug: string) {
+export function usePageBanner(slug: string, initialData?: any) {
   return useQuery({
     queryKey: ['page-banner', slug],
     queryFn: async () => {
@@ -72,6 +72,7 @@ export function usePageBanner(slug: string) {
     gcTime: 10 * 60 * 1000,
     retry: 2,
     enabled: !!slug,
+    initialData: initialData,
   });
 }
 

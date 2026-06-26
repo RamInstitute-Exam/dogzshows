@@ -220,16 +220,15 @@ export default function WinnerManagement() {
               </th>
               <th className="py-4 px-6 w-20">Poster</th>
               <th className="py-4 px-6 font-bold text-muted-foreground uppercase">Poster Title</th>
-              <th className="py-4 px-6 font-bold text-muted-foreground uppercase">Category & Event</th>
-              <th className="py-4 px-6 font-bold text-muted-foreground uppercase">Status</th>
+              <th className="py-4 px-6 font-bold text-muted-foreground uppercase">Event Show Listing</th>
               <th className="py-4 px-6 text-right font-bold text-muted-foreground uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {loading ? (
-              <tr><td colSpan={7} className="py-24 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" /></td></tr>
+              <tr><td colSpan={6} className="py-24 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" /></td></tr>
             ) : data.length === 0 ? (
-              <tr><td colSpan={7} className="py-24 text-center text-muted-foreground">No winners found.</td></tr>
+              <tr><td colSpan={6} className="py-24 text-center text-muted-foreground">No winners found.</td></tr>
             ) : (
               data.map((item) => (
                 <tr key={item.id} className="hover:bg-accent/40 transition">
@@ -252,11 +251,6 @@ export default function WinnerManagement() {
                   <td className="py-4 px-6 truncate">
                     <div className="font-bold text-foreground truncate">{item.awardCategory || item.awardTitle}</div>
                     <div className="text-xs text-muted-foreground truncate">{item.event?.name}</div>
-                  </td>
-                  <td className="py-4 px-6">
-                    <span className={`px-2 py-1 text-xs font-bold rounded-full ${item.status === 'PUBLISHED' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}`}>
-                      {item.status}
-                    </span>
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">

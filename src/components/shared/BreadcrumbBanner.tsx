@@ -22,6 +22,7 @@ interface BreadcrumbBannerProps {
   fallbackSubtitle?: string;
   fallbackImage?: string;
   fallbackBreadcrumb?: string;
+  initialBannerData?: any;
 }
 
 export default function BreadcrumbBanner({
@@ -30,8 +31,9 @@ export default function BreadcrumbBanner({
   fallbackSubtitle,
   fallbackImage = '/images/hero_banner.png',
   fallbackBreadcrumb,
+  initialBannerData,
 }: BreadcrumbBannerProps) {
-  const { data: queryData } = usePageBanner(slug);
+  const { data: queryData } = usePageBanner(slug, initialBannerData);
 
   const data: PageBannerData = queryData?.success && queryData.data
     ? {

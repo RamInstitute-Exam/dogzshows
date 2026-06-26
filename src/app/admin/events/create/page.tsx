@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
+import ImageUploader from '@/components/shared/ImageUploader';
 
 export default function CreateEventForm() {
   const router = useRouter();
@@ -903,13 +904,18 @@ export default function CreateEventForm() {
                       <label className="block text-sm font-bold text-muted-foreground mb-2">Hero Banner Image URL</label>
                       <input type="text" name="bannerUrl" value={formData.bannerUrl} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="https://example.com/banner.jpg or /images/..." />
                     </div>
-
-                    <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl py-12 px-4 bg-accent/5">
-                      <ImagePlus className="w-12 h-12 text-muted-foreground mb-3" />
-                      <h4 className="font-bold text-foreground mb-1">Upload files visually</h4>
-                      <p className="text-xs text-muted-foreground text-center max-w-sm mb-4">You can paste file URL above directly. S3 uploads are integrated.</p>
-                      <Button variant="outline" type="button" className="border-border text-foreground hover:bg-accent rounded-xl">Browse Files</Button>
-                    </div>
+                    <ImageUploader
+                      currentImage={formData.bannerUrl}
+                      onUploadSuccess={(url) => setFormData(prev => ({ 
+                        ...prev, 
+                        bannerUrl: url
+                      }))}
+                      onRemove={() => setFormData(prev => ({ 
+                        ...prev, 
+                        bannerUrl: ''
+                      }))}
+                      folder="shows"
+                    />
                   </motion.div>
                 )}
 

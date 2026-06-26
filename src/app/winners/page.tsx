@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import PublicContainer from '@/components/layout/PublicContainer';
 import PageContainer from '@/components/layout/PageContainer';
-import { fetchServerData } from '@/lib/server-api';
+import { fetchServerData, fetchServerDataSingle } from '@/lib/server-api';
 import WinnerGalleryClient from './WinnerGalleryClient';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 
@@ -21,7 +21,10 @@ async function GalleryWrapper() {
   );
 }
 
-export default function WinnersPage() {
+export default async function WinnersPage() {
+  const bannerRes = await fetchServerDataSingle('/public/page-banners/winners', 300).catch(() => null);
+  const initialBannerData = bannerRes?.success ? { success: true, data: bannerRes.data } : undefined;
+
   return (
     <PageContainer>
       <BreadcrumbBanner
@@ -29,6 +32,7 @@ export default function WinnersPage() {
         fallbackTitle="Championship Winners"
         fallbackSubtitle="Explore the elite dogs that have demonstrated ultimate breed perfection and earned top honors."
         fallbackBreadcrumb="Winners"
+        initialBannerData={initialBannerData}
       />
 
       <PublicContainer className="pb-24 pt-12">

@@ -1,7 +1,7 @@
 import React from 'react';
 import PublicContainer from '@/components/layout/PublicContainer';
 import PageContainer from '@/components/layout/PageContainer';
-import { fetchServerData } from '@/lib/server-api';
+import { fetchServerData, fetchServerDataSingle } from '@/lib/server-api';
 import Link from 'next/link';
 import { getImageUrl } from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
@@ -92,7 +92,10 @@ async function CategoriesGrid() {
   );
 }
 
-export default function WinnerCategoriesPage() {
+export default async function WinnerCategoriesPage() {
+  const bannerRes = await fetchServerDataSingle('/public/page-banners/winners/categories', 60).catch(() => null);
+  const initialBannerData = bannerRes?.success ? { success: true, data: bannerRes.data } : undefined;
+
   return (
     <PageContainer>
       {/* Hero Banner Section */}
@@ -101,6 +104,7 @@ export default function WinnerCategoriesPage() {
         fallbackTitle="Winner Categories"
         fallbackSubtitle="Browse championship winners by award category, title, and achievement level from dog shows across India."
         fallbackBreadcrumb="Categories"
+        initialBannerData={initialBannerData}
       />
 
       {/* Grid Content */}

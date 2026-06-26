@@ -260,8 +260,8 @@ export default function ImageUploader({
       {/* Cropper Modal View */}
       {preview && isCropping && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-card w-[95vw] max-w-[1200px] rounded-2xl overflow-hidden shadow-2xl border border-border flex flex-col">
-            <div className="flex items-center justify-between p-5 border-b border-border bg-muted/30">
+          <div className="bg-card w-[95vw] max-w-[1200px] max-h-[95vh] rounded-2xl overflow-hidden shadow-2xl border border-border flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-border bg-muted/30 shrink-0">
               <div>
                 <h4 className="font-bold text-lg text-foreground">Crop Image</h4>
                 <p className="text-sm text-muted-foreground">Adjust the image to fit the required aspect ratio.</p>
@@ -278,7 +278,7 @@ export default function ImageUploader({
               </button>
             </div>
             
-            <div className="relative w-full h-[75vh] min-h-[500px] max-h-[800px] bg-black">
+            <div className="relative w-full flex-1 min-h-[300px] bg-black">
               <Cropper
                 image={preview}
                 crop={crop}
@@ -297,7 +297,7 @@ export default function ImageUploader({
               />
             </div>
             
-            <div className="p-5 border-t border-border bg-muted/10 space-y-5">
+            <div className="p-5 border-t border-border bg-muted/10 space-y-5 shrink-0">
               <div className="flex items-center space-x-4 max-w-md mx-auto">
                 <ZoomOut className="w-5 h-5 text-muted-foreground" />
                 <input

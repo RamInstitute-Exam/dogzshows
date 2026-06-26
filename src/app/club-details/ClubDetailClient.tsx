@@ -176,7 +176,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-3">
 
                 {club.clubType && (
-                  <span className="px-3 py-1 bg-foreground/20 text-foreground rounded-full text-xs font-bold uppercase tracking-wider border border-border/30 backdrop-blur-md">
+                  <span className="px-3 py-1 bg-white/10 text-white rounded-full text-xs font-bold uppercase tracking-wider border border-white/20 backdrop-blur-md">
                     {club.clubType}
                   </span>
                 )}
@@ -194,7 +194,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
 
               <h1 className="text-3xl md:text-5xl font-extrabold text-white font-outfit mb-4 normal-case leading-tight">{club.name}</h1>
 
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-sm font-medium text-gray-400 mb-5">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-sm font-medium text-white/80 mb-5">
                 {(club.city || club.state) && (
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-primary" />

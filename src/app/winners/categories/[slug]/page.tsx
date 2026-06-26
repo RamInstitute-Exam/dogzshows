@@ -32,7 +32,7 @@ async function GalleryWrapper({ slug }: { slug: string }) {
   const categories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
   let allWinners = Array.isArray(winnersRes?.data) ? winnersRes.data : [];
   
-  let currentCategory = null;
+  let currentCategory: any = null;
 
   if (slug !== 'all') {
     currentCategory = categories.find((c: any) => c.slug === slug || c.id === slug) || null;

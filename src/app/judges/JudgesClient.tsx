@@ -13,7 +13,7 @@ import { usePageBanner } from '@/hooks/useCMS';
 import { getImageUrl } from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
 
-function JudgesList() {
+function JudgesList({ initialBannerData }: { initialBannerData?: any }) {
   const searchParams = useSearchParams();
   const showFeaturedOnly = searchParams.get('featured') === 'true';
 
@@ -62,7 +62,7 @@ function JudgesList() {
     listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const { data: bannerData } = usePageBanner('judges');
+  const { data: bannerData } = usePageBanner('judges', initialBannerData);
   const customTitle = bannerData?.data?.title || (showFeaturedOnly ? "Featured Judges" : "Judges");
   const customSubtitle = bannerData?.data?.subtitle || "Meet the world-class professionals bringing decades of expertise to evaluate our champions.";
   const customImage = bannerData?.data?.bannerImage ? getImageUrl(bannerData.data.bannerImage) : '/images/judges_banner.png';
@@ -305,7 +305,7 @@ function JudgesList() {
   );
 }
 
-export default function JudgesClient() {
+export default function JudgesClient({ initialBannerData }: { initialBannerData?: any }) {
   return (
     <Suspense fallback={
       <div className="flex justify-center items-center min-h-[500px] bg-background">
@@ -315,7 +315,7 @@ export default function JudgesClient() {
         </div>
       </div>
     }>
-      <JudgesList />
+      <JudgesList initialBannerData={initialBannerData} />
     </Suspense>
   );
 }
