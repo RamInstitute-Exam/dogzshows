@@ -1008,11 +1008,6 @@ export default function EditEventClient() {
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Banners & Media Banners</h2>
                     
-                    <div>
-                      <label className="block text-sm font-bold text-muted-foreground mb-2">Hero Banner Image URL</label>
-                      <input type="text" name="bannerUrl" value={formData.bannerUrl} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="https://example.com/banner.jpg or /images/..." />
-                    </div>
-
                     <ImageUploader
                       currentImage={formData.bannerUrl}
                       onUploadSuccess={(url) => setFormData(prev => ({ 

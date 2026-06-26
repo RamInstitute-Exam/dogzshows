@@ -99,7 +99,7 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
     try {
       const queryParams = new URLSearchParams({
         page: String(page),
-        limit: '12',
+        limit: '15',
         sortBy: 'startDate',
         sortOrder: 'asc',
         isPublic: 'true'
