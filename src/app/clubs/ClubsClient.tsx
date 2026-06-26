@@ -153,23 +153,23 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
               ))}
             </div>
           ) : clubs.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1280px] mx-auto w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 max-w-[1280px] mx-auto w-full place-items-center">
               {clubs.map((club, idx) => (
                 <motion.div
                   key={club.id}
-                  className="h-full flex justify-center"
+                  className="h-full flex justify-center w-full max-w-[330px] sm:max-w-none"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.05 }}
                 >
                   <Link
                     href={`/clubs/${club.slug || club.id}`}
-                    className="group relative flex flex-col h-full bg-card border border-border rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-[6px] shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.18)] w-full"
+                    className="group relative flex flex-col h-full bg-card border border-border rounded-[16px] sm:rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-[4px] sm:hover:-translate-y-[6px] shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.15)] w-full"
                   >
                     {/* Top Logo Section */}
-                    <div className="relative w-full h-[180px] sm:h-[200px] bg-muted/30 border-b border-border flex items-center justify-center p-4 overflow-hidden">
+                    <div className="relative w-full h-[160px] sm:h-[180px] bg-muted/30 border-b border-border flex items-center justify-center p-3 sm:p-4 overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/10 z-0"></div>
-                      <div className="relative z-10 w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] shrink-0 drop-shadow-md transition-transform duration-500 group-hover:translate-y-[-2px]">
+                      <div className="relative z-10 w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] shrink-0 drop-shadow-sm transition-transform duration-500 group-hover:translate-y-[-2px]">
                         {club.logoThumbnailUrl || club.logoUrl ? (
                           <Image 
                             src={getImageUrl(club.logoThumbnailUrl || club.logoUrl)} 
@@ -180,42 +180,42 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
                           />
                         ) : (
                           <div className="w-full h-full rounded-full bg-accent/50 flex items-center justify-center">
-                            <Tent className="w-12 h-12 text-muted-foreground/50" />
+                            <Tent className="w-10 h-10 text-muted-foreground/50" />
                           </div>
                         )}
                       </div>
                     </div>
 
                     {/* Content Section */}
-                    <div className="flex-grow flex flex-col p-[20px] text-center">
+                    <div className="flex-grow flex flex-col p-4 sm:p-[20px] text-center">
                       <div className="mb-2">
                         {club.clubType && (
-                          <span className="inline-block px-3 py-1 text-[12px] uppercase font-bold tracking-wider bg-blue-500/10 text-blue-500 rounded-full mb-2">
+                          <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-[12px] uppercase font-bold tracking-wider bg-blue-500/10 text-blue-500 rounded-full mb-1.5 sm:mb-2">
                             {club.clubType}
                           </span>
                         )}
-                        <h3 className="text-[20px] font-bold text-foreground line-clamp-2 leading-tight">
+                        <h3 className="text-base sm:text-[20px] font-bold text-foreground line-clamp-2 leading-tight">
                           {club.name}
                         </h3>
                       </div>
                       
-                      <div className="flex flex-col items-center gap-1.5 text-muted-foreground mb-4 font-medium">
+                      <div className="flex flex-col items-center gap-1 sm:gap-1.5 text-muted-foreground mb-1 sm:mb-4 font-medium">
                         {(club.city || club.state) && (
-                          <div className="flex items-center gap-2">
-                            <MapPin className="w-3.5 h-3.5 text-foreground/50" />
-                            <span className="text-[15px] line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
+                          <div className="flex items-center gap-1.5 sm:gap-2">
+                            <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-foreground/50" />
+                            <span className="text-[13px] sm:text-[15px] line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
                           </div>
                         )}
                         {club.email && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm leading-none">📧</span>
-                            <span className="text-[14px] line-clamp-1">{club.email}</span>
+                          <div className="flex items-center gap-1.5 sm:gap-2">
+                            <span className="text-[13px] sm:text-sm leading-none">📧</span>
+                            <span className="text-[13px] sm:text-[14px] line-clamp-1">{club.email}</span>
                           </div>
                         )}
                         {club.phone && (
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-sm leading-none">📞</span>
-                            <span className="text-[14px] line-clamp-1">{club.phone}</span>
+                          <div className="flex items-center gap-1.5 sm:gap-2 mt-0 sm:mt-0.5">
+                            <span className="text-[13px] sm:text-sm leading-none">📞</span>
+                            <span className="text-[13px] sm:text-[14px] line-clamp-1">{club.phone}</span>
                           </div>
                         )}
                       </div>

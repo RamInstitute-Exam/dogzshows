@@ -359,7 +359,7 @@ export default function ImageLightbox({
 
             {/* Middle Image Area (flex-grow/flex-1, display flex, items-center, justify-center, centering the image) */}
             <div 
-              className="w-full flex-1 flex items-center justify-center min-h-0 relative my-auto px-12 touch-none select-none"
+              className="w-full flex-1 flex items-center justify-center min-h-0 relative my-auto px-12 sm:px-16 touch-none select-none"
               onClick={(e) => e.stopPropagation()}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
@@ -377,7 +377,7 @@ export default function ImageLightbox({
                     e.stopPropagation();
                     handleTap(e);
                   }}
-                  className={`max-w-full max-h-[75vh] object-contain select-none pointer-events-auto w-auto h-auto ${scale > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+                  className={`max-w-[92vw] max-h-[70vh] object-contain select-none pointer-events-auto w-auto h-auto ${scale > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
                   style={{
                     transform: `scale(${scale})`,
                     transformOrigin: 'center center',
@@ -390,20 +390,20 @@ export default function ImageLightbox({
               )}
             </div>
 
-            {/* Left Navigation Arrow: 48px x 48px, background rgba(0,0,0,.55), backdrop blur, over image */}
+            {/* Left Navigation Arrow: 44px x 44px, background rgba(0,0,0,.55), backdrop blur, over image */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handlePrev();
               }}
               style={{
-                position: 'absolute',
-                left: '12px',
+                position: 'fixed',
+                left: '16px',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 zIndex: 9999,
-                width: '48px',
-                height: '48px',
+                width: '44px',
+                height: '44px',
                 borderRadius: '50%',
                 background: 'rgba(0,0,0,.55)',
                 backdropFilter: 'blur(10px)',
@@ -419,20 +419,20 @@ export default function ImageLightbox({
               <ChevronLeft className="w-6 h-6 text-white" />
             </button>
 
-            {/* Right Navigation Arrow: 48px x 48px, background rgba(0,0,0,.55), backdrop blur, over image */}
+            {/* Right Navigation Arrow: 44px x 44px, background rgba(0,0,0,.55), backdrop blur, over image */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleNext();
               }}
               style={{
-                position: 'absolute',
-                right: '12px',
+                position: 'fixed',
+                right: '16px',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 zIndex: 9999,
-                width: '48px',
-                height: '48px',
+                width: '44px',
+                height: '44px',
                 borderRadius: '50%',
                 background: 'rgba(0,0,0,.55)',
                 backdropFilter: 'blur(10px)',
@@ -450,7 +450,7 @@ export default function ImageLightbox({
 
             {/* Bottom Controls Area (Stats, Download Button, Swipe helper) */}
             <div 
-              className="w-full max-w-md mx-auto flex flex-col items-center gap-3.5 pb-2 select-none z-[9999] bg-black/90 px-4 py-3 rounded-2xl"
+              className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[320px] flex flex-col items-center gap-3.5 select-none z-[9999] bg-black/90 px-4 py-3 rounded-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Statistics Row - Hidden on mobile */}
