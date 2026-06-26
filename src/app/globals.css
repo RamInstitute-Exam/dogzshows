@@ -1509,9 +1509,9 @@ main {
   }
 
   /* Buttons */
-  button,
-  .btn,
-  [role="button"] {
+  button:not([class*="swiper-"]),
+  .btn:not([class*="swiper-"]),
+  [role="button"]:not([class*="swiper-"]) {
     min-height: 44px;
     width: 100%;
     margin-bottom: 8px;
