@@ -12,6 +12,9 @@ export const revalidate = 60; // 1 minute
 export async function generateStaticParams() {
   const res = await fetchServerData('/public/winners/public?limit=1000', 300).catch(() => ({ success: false, data: [] }));
   const winners = res?.data || [];
+  if (winners.length === 0) {
+    return [{ id: '_' }];
+  }
   return winners
     .filter((w: any) => w && w.id)
     .map((w: any) => ({

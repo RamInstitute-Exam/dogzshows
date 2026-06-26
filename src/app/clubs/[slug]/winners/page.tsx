@@ -10,11 +10,9 @@ import WinnerCertificateCard from '@/components/winners/WinnerCertificateCard';
 
 export const revalidate = 60;
 
-export async function generateStaticParams() {
-  const res = await fetchServerData('/public/clubs/public?limit=100');
-  const clubs = res?.data || [];
-  return clubs.map((c: any) => ({ slug: c.slug || c.id }));
-}
+import { getClubSlugs } from '@/lib/staticParams';
+
+export { getClubSlugs as generateStaticParams };
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const res = await fetchServerDataSingle(`/public/clubs/slug/${params.slug}`);
