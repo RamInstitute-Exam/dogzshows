@@ -12,7 +12,7 @@ interface PageProps {
 // Required for static export (output: 'export')
 export async function generateStaticParams() {
   try {
-    const res = await fetchServerData('/public/winner-categories', 300).catch(() => null);
+    const res = await fetchServerData('/public/winner-categories/public?limit=100', 300).catch(() => null);
     const categories = (res as any)?.data || (res as any)?.items || [];
     if (Array.isArray(categories) && categories.length > 0) {
       return categories.map((cat: any) => ({ slug: cat.slug || cat.id }));

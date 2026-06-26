@@ -60,9 +60,9 @@ async function JudgesWrapper() {
 }
 
 async function WinnersWrapper() {
-  const winnersRes = await fetchServerData('/public/winners/public/featured', 300).catch(() => ({ success: false, data: [] }));
-  const winners = winnersRes?.data || [];
-  return <FeaturedWinnersSlider initialWinners={winners} />;
+  const clubsRes = await fetchServerData('/public/clubs/featured/winners', 300).catch(() => ({ success: false, data: [] }));
+  const clubs = clubsRes?.data || [];
+  return <FeaturedWinnersSlider initialClubs={clubs} />;
 }
 
 async function AboutWrapper() {

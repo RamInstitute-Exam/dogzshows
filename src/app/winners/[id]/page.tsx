@@ -10,7 +10,7 @@ import Link from 'next/link';
 export const revalidate = 60; // 1 minute
 
 export async function generateStaticParams() {
-  const res = await fetchServerData('/public/winners?limit=1000', 300).catch(() => ({ success: false, data: [] }));
+  const res = await fetchServerData('/public/winners/public?limit=1000', 300).catch(() => ({ success: false, data: [] }));
   const winners = res?.data || [];
   return winners
     .filter((w: any) => w && w.id)

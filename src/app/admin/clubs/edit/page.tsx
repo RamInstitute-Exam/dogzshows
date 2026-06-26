@@ -10,6 +10,7 @@ import api from '@/lib/api';
 import { toast } from 'sonner';
 import ImageUploader from '@/components/shared/ImageUploader';
 import { Suspense } from 'react';
+import ClubWinnerGallery from './ClubWinnerGallery';
 
 function EditClubFormContent() {
   const router = useRouter();
@@ -39,8 +40,12 @@ function EditClubFormContent() {
     isFeatured: false,
     displayOrder: 999,
     logoUrl: '',
-    logoThumbnailUrl: ''
+    logoThumbnailUrl: '',
+    eventName: '',
+    eventDate: ''
   });
+
+  const [activeTab, setActiveTab] = useState('general');
 
   useEffect(() => {
     async function loadClubDetails() {
@@ -68,7 +73,9 @@ function EditClubFormContent() {
             isFeatured: cd.isFeatured === true,
             displayOrder: cd.displayOrder ?? 999,
             logoUrl: cd.logoUrl || '',
-            logoThumbnailUrl: cd.logoThumbnailUrl || ''
+            logoThumbnailUrl: cd.logoThumbnailUrl || '',
+            eventName: cd.eventName || '',
+            eventDate: cd.eventDate ? cd.eventDate.split('T')[0] : ''
           });
         } else {
           toast.error('Failed to load club details');
@@ -157,6 +164,22 @@ function EditClubFormContent() {
         </AdminButton>
       </div>
 
+      <div className="flex space-x-4 border-b border-border">
+        <button
+          onClick={() => setActiveTab('general')}
+          className={`py-2 px-4 font-bold border-b-2 transition-all ${activeTab === 'general' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+        >
+          General Info
+        </button>
+        <button
+          onClick={() => setActiveTab('winners')}
+          className={`py-2 px-4 font-bold border-b-2 transition-all ${activeTab === 'winners' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+        >
+          Winner Gallery
+        </button>
+      </div>
+
+      {activeTab === 'general' ? (
       <form onSubmit={handleSubmit} className="space-y-6">
         
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -318,6 +341,17 @@ function EditClubFormContent() {
                     className="w-5 h-5 accent-blue-600 rounded cursor-pointer"
                   />
                 </div>
+
+                <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Featured Event Name</label>
+                    <input type="text" name="eventName" value={formData.eventName} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" placeholder="e.g. 5th & 6th All Breeds Championship Show" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Featured Event Date</label>
+                    <input type="date" name="eventDate" value={formData.eventDate} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -327,6 +361,11 @@ function EditClubFormContent() {
               <p>Changes saved here will be synchronized immediately to the database and update on the public website clubs listings.</p>
             </div>
           </form>
+      ) : (
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-xl">
+          <ClubWinnerGallery clubId={clubId} />
+        </div>
+      )}
     </div>
   );
 }
