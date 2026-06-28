@@ -112,6 +112,16 @@ export const getOriginalUrl = (path: string | undefined | null) => {
 
 export const getOptimizedUrl = (path: string | undefined | null, width: number = 800) => {
   const url = getImageUrl(path);
+  // Bypass optimization in development or for local development servers
+  if (
+    process.env.NODE_ENV === 'development' ||
+    url.includes('localhost') ||
+    url.includes('127.0.0.1') ||
+    url.includes('192.168.') ||
+    url.includes('0.0.0.0')
+  ) {
+    return url;
+  }
   if (url.startsWith('http') && !url.includes('wsrv.nl')) {
     return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&q=75&output=webp`;
   }

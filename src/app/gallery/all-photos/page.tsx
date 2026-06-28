@@ -106,12 +106,12 @@ export default function AllPhotosPage() {
                 {/* Card Info */}
                 <div className="p-6 flex-grow flex flex-col justify-between min-h-0">
                   <div className="space-y-1">
-                    <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug">
                       {album.title}
                     </h3>
 
                     {album.subtitle && album.subtitle.trim() !== '' && album.subtitle !== 'null' && album.subtitle !== 'undefined' && (
-                      <div className="text-[14px] font-medium text-primary leading-snug line-clamp-1 mt-1">
+                      <div className="text-[14px] font-medium text-primary leading-snug mt-1">
                         {album.subtitle}
                       </div>
                     )}

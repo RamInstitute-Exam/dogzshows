@@ -101,11 +101,11 @@ export default function OutdoorPhotosPage() {
                 {/* Card Info */}
                 <div className="p-6 flex-grow flex flex-col justify-between min-h-0">
                   <div className="space-y-1">
-                    <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 min-h-[3rem] md:min-h-[3.5rem]">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug min-h-[3rem] md:min-h-[3.5rem]">
                       {album.title}
                     </h3>
                     
-                    <div className="text-[14px] font-medium text-primary leading-snug line-clamp-1 min-h-[1.25rem] md:min-h-[1.5rem]">
+                    <div className="text-[14px] font-medium text-primary leading-snug min-h-[1.25rem] md:min-h-[1.5rem]">
                       {album.subtitle || <span className="invisible">No Subtitle</span>}
                     </div>
 

@@ -26,7 +26,7 @@ function ClubSlugContent() {
   }, [club, notFound]);
 
   useEffect(() => {
-    if (!slug) {
+    if (!slug || slug === 'undefined') {
       setLoading(false);
       setNotFound(true);
       return;

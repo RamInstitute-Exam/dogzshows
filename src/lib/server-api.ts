@@ -13,6 +13,12 @@ const getBaseUrl = () => {
 export async function fetchServerData(endpoint: string, revalidate: number = 60) {
   // Removed NEXT_PHASE check to allow Next.js to fetch data during static generation
 
+  // Defensive check against invalid dynamic params
+  if (endpoint.includes('/undefined') || endpoint.includes('/null')) {
+    console.warn(`[server-api] Blocked invalid fetch request to: ${endpoint}`);
+    return { success: false, data: [] };
+  }
+
   try {
     const url = `${getBaseUrl()}${endpoint}`;
     const res = await fetch(url, {
@@ -83,6 +89,12 @@ export async function getSponsors() {
 
 export async function fetchServerDataSingle(endpoint: string, revalidate: number = 60) {
   // Removed NEXT_PHASE check to allow Next.js to fetch data during static generation
+
+  // Defensive check against invalid dynamic params
+  if (endpoint.includes('/undefined') || endpoint.includes('/null')) {
+    console.warn(`[server-api] Blocked invalid fetch request to: ${endpoint}`);
+    return { success: false, data: null };
+  }
 
   try {
     const url = `${getBaseUrl()}${endpoint}`;

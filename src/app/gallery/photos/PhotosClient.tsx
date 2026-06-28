@@ -180,7 +180,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
 
                     {/* Info bar */}
                     <div className="p-5 w-full flex flex-col justify-between space-y-3">
-                      <h3 className="font-bold text-foreground group-hover:text-foreground transition-colors line-clamp-1 text-base leading-snug">
+                      <h3 className="font-bold text-foreground group-hover:text-foreground transition-colors text-base leading-snug">
                         {photo.title}
                       </h3>
                       <div className="flex items-center justify-between border-t border-border pt-3 text-xs text-muted-foreground font-semibold">

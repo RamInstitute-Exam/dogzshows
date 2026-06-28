@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { config } from '@/lib/config';
 import { getImageUrl } from '@/lib/api';
 import { usePageBanner } from '@/hooks/useCMS';
 import { SafeImage } from '@/components/shared/SafeImage';
@@ -29,54 +28,53 @@ export default function BreadcrumbBanner({
   slug,
   fallbackTitle,
   fallbackSubtitle,
-  fallbackImage = '/images/hero_banner.png',
+  fallbackImage,
   fallbackBreadcrumb,
   initialBannerData,
 }: BreadcrumbBannerProps) {
-  const { data: queryData } = usePageBanner(slug, initialBannerData);
+  const { data: queryData, isLoading } = usePageBanner(slug, initialBannerData);
 
-  const data: PageBannerData = queryData?.success && queryData.data
-    ? {
-        title: queryData.data.title || fallbackTitle,
-        subtitle: queryData.data.subtitle || fallbackSubtitle,
-        bannerImage: queryData.data.bannerImage || fallbackImage,
-        breadcrumbTitle:
-          queryData.data.breadcrumbTitle ||
-          queryData.data.title ||
-          fallbackBreadcrumb ||
-          fallbackTitle,
-      }
-    : {
-        title: fallbackTitle,
-        subtitle: fallbackSubtitle,
-        bannerImage: fallbackImage,
-        breadcrumbTitle: fallbackBreadcrumb || fallbackTitle,
-      };
+  const hasLiveBanner = queryData?.success && queryData.data?.bannerImage;
+  const liveBannerUrl = hasLiveBanner ? queryData.data.bannerImage : null;
+
+  const data: PageBannerData = {
+    title: queryData?.success && queryData.data?.title ? queryData.data.title : fallbackTitle,
+    subtitle: queryData?.success && queryData.data?.subtitle ? queryData.data.subtitle : fallbackSubtitle,
+    bannerImage: liveBannerUrl || '',
+    breadcrumbTitle:
+      queryData?.success && queryData.data?.breadcrumbTitle
+        ? queryData.data.breadcrumbTitle
+        : queryData?.success && queryData.data?.title
+        ? queryData.data.title
+        : fallbackBreadcrumb || fallbackTitle,
+  };
 
   return (
-    <section className="relative w-full h-[280px] sm:h-[320px] md:h-[380px] lg:h-[460px] xl:h-[520px] flex items-center overflow-hidden bg-background">
-      {/* Background Image with Zoom Animation */}
-      <motion.div
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 1.5, ease: 'easeOut' }}
-        className="absolute inset-0 w-full h-full"
-      >
-        <SafeImage
-          src={getImageUrl(data.bannerImage)}
-          fallbackSrc="/images/events_banner.png"
-          alt={data.title}
-          fill
-          priority
-          className="object-cover object-center"
-        />
-      </motion.div>
+    <section className="relative w-full h-[280px] sm:h-[320px] md:h-[380px] lg:h-[460px] xl:h-[520px] flex items-center overflow-hidden bg-zinc-950">
+      {/* Background Image with Zoom Animation — Only show dynamic live banner once loaded */}
+      {!isLoading && data.bannerImage && (
+        <motion.div
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          className="absolute inset-0 w-full h-full"
+        >
+          <SafeImage
+            src={getImageUrl(data.bannerImage)}
+            fallbackSrc=""
+            alt={data.title}
+            fill
+            priority
+            className="object-cover object-center"
+          />
+        </motion.div>
+      )}
 
       {/* Premium Gradient Overlay */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(90deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.28) 40%, rgba(0,0,0,0.18) 70%, rgba(0,0,0,0.08) 100%)',
+          background: 'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.15) 100%)',
         }}
       />
 

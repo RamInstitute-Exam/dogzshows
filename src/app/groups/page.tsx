@@ -1,12 +1,11 @@
-import React from 'react';
+﻿import React, { Suspense } from 'react';
 import GroupsClient from './GroupsClient';
-import { fetchServerDataSingle } from '@/lib/server-api';
+import Spinner from '@/components/common/loader/Spinner';
 
-export const revalidate = 60; // 1 minute
-
-export default async function GroupsPage() {
-  const bannerRes = await fetchServerDataSingle('/public/page-banners/groups', 60).catch(() => null);
-  const initialBannerData = bannerRes?.success ? { success: true, data: bannerRes.data } : undefined;
-
-  return <GroupsClient initialBannerData={initialBannerData} />;
+export default function GroupsPage() {
+  return (
+    <Suspense fallback={<Spinner className="min-h-screen" />}>
+      <GroupsClient />
+    </Suspense>
+  );
 }

@@ -28,10 +28,13 @@ export default function CategoryGalleryClient({ initialWinners, categories, curr
     
     initialWinners.forEach(winner => {
       // 1. Add main winner image
-      if (winner.winnerImage || winner.imageUrl) {
+      const mainImage = [winner.winnerImage, winner.imageUrl].find(
+        (img) => img && typeof img === 'string' && img.trim() !== '' && img.trim() !== 'null' && img.trim() !== 'undefined'
+      );
+      if (mainImage) {
         allImages.push({
           ...winner,
-          displayImage: winner.imageUrl || winner.winnerImage,
+          displayImage: mainImage,
           isMainImage: true,
         });
       }

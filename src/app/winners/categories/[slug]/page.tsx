@@ -1,87 +1,43 @@
-import React, { Suspense } from 'react';
-import PublicContainer from '@/components/layout/PublicContainer';
-import PageContainer from '@/components/layout/PageContainer';
+import React from 'react';
 import { fetchServerData } from '@/lib/server-api';
-import CategoryGalleryClient from './CategoryGalleryClient';
-import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
+import CategoryGalleryPageClient from './CategoryGalleryPageClient';
 
-export const revalidate = 60;
-
+// Static export: generateStaticParams provides placeholder and dynamic slugs.
 export async function generateStaticParams() {
   try {
-    const res = await fetchServerData('/public/winner-categories/public?limit=100');
-    const categories = Array.isArray(res?.data) ? res.data : [];
+    const res = await fetchServerData('/public/winner-categories/public?limit=100', 300).catch(() => null);
+    const categories = (res as any)?.data || (res as any)?.items || [];
     
-    return [
+    const params = [
       { slug: 'all' },
-      ...categories.map((cat: any) => ({
-        slug: cat.slug || cat.id
-      }))
+      { slug: 'placeholder' }
     ];
-  } catch (error) {
-    return [{ slug: 'all' }];
-  }
-}
-
-async function GalleryWrapper({ slug }: { slug: string }) {
-  const [categoriesRes, winnersRes] = await Promise.all([
-    fetchServerData('/public/winner-categories/public?limit=100', 60).catch(() => ({ success: false, data: [] })),
-    fetchServerData('/public/winners/public?limit=500', 60).catch(() => ({ success: false, data: [] }))
-  ]);
-
-  const categories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
-  let allWinners = Array.isArray(winnersRes?.data) ? winnersRes.data : [];
-  
-  let currentCategory: any = null;
-
-  if (slug !== 'all') {
-    currentCategory = categories.find((c: any) => c.slug === slug || c.id === slug) || null;
-    if (currentCategory) {
-      allWinners = allWinners.filter((w: any) => w.categoryId === currentCategory.id || w.category?.slug === slug || w.awardCategory === currentCategory.name);
-    } else {
-      // If category not found, return empty
-      allWinners = [];
+    
+    if (Array.isArray(categories) && categories.length > 0) {
+      categories.forEach((cat: any) => {
+        if (cat.slug) {
+          params.push({ slug: cat.slug });
+        }
+      });
     }
-  }
+    return params;
+  } catch (_) {}
 
-  return (
-    <CategoryGalleryClient 
-      initialWinners={allWinners} 
-      categories={categories}
-      currentCategory={currentCategory}
-    />
-  );
+  // Fallback if API is unreachable
+  return [
+    { slug: 'all' },
+    { slug: 'placeholder' },
+    { slug: 'best-in-show' },
+    { slug: 'reserve-best-in-show' },
+    { slug: 'best-puppy' },
+    { slug: 'best-junior' },
+    { slug: 'champion-winner' },
+    { slug: 'special-award' },
+    { slug: 'hall-of-fame' },
+    { slug: 'best-in-group' },
+  ];
 }
 
-export default async function CategoryGalleryPage(props: { params: Promise<{ slug: string }> }) {
-  const params = await props.params;
-  const { slug } = params;
-
-  // Let's try to get category name for the title
-  let catName = 'All Winners';
-  if (slug !== 'all') {
-    try {
-      const res = await fetchServerData('/public/winner-categories/public?limit=100', 60);
-      const categories = Array.isArray(res?.data) ? res.data : [];
-      const current = categories.find((c: any) => c.slug === slug || c.id === slug);
-      if (current) catName = current.name;
-    } catch(e) {}
-  }
-
-  return (
-    <PageContainer>
-      <BreadcrumbBanner
-        slug={`/winners/categories/${slug}`}
-        fallbackTitle={catName}
-        fallbackSubtitle={`Explore all ${catName} winners from dog shows across India.`}
-        fallbackBreadcrumb={catName}
-      />
-
-      <PublicContainer className="pb-16">
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted mt-8 rounded-2xl" />}>
-          <GalleryWrapper slug={slug} />
-        </Suspense>
-      </PublicContainer>
-    </PageContainer>
-  );
+export default function CategoryGalleryPage() {
+  return <CategoryGalleryPageClient />;
 }

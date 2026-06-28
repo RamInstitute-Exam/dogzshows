@@ -1,9 +1,6 @@
 import React from 'react';
-import PublicContainer from '@/components/layout/PublicContainer';
-import PageContainer from '@/components/layout/PageContainer';
 import { fetchServerData } from '@/lib/server-api';
 import CategoryWinnersClient from './CategoryWinnersClient';
-import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: Promise<{ slug: string }> | { slug: string };
@@ -42,20 +39,27 @@ export default async function CategoryDetailPage({ params }: PageProps) {
 
   const category = (catRes as any)?.data || (catRes as any)?.item || catRes;
 
-  if (!category || !category.id) {
-    notFound();
-  }
-
-  // Fetch initial option lists
   const [eventsRes, clubsRes, breedsRes] = await Promise.all([
     fetchServerData('/public/events?limit=1000', 300).catch(() => ({ success: false, data: [] })),
     fetchServerData('/public/clubs?limit=1000', 300).catch(() => ({ success: false, data: [] })),
     fetchServerData('/public/breeds?limit=1000', 300).catch(() => ({ success: false, data: [] }))
   ]);
 
-  const events = (eventsRes as any)?.data || (eventsRes as any)?.events || [];
-  const clubs = (clubsRes as any)?.data || (clubsRes as any)?.items || [];
-  const breeds = (breedsRes as any)?.data || (breedsRes as any)?.items || [];
+  const events = (eventsRes as any)?.data || [];
+  const clubs = (clubsRes as any)?.data || [];
+  const breeds = (breedsRes as any)?.data || [];
+
+  if (!category || !category.id) {
+    const fallbackCategory = { slug, name: slug.replace(/-/g, ' ').toUpperCase() };
+    return (
+      <CategoryWinnersClient 
+        category={fallbackCategory} 
+        initialEvents={events}
+        initialClubs={clubs}
+        initialBreeds={breeds}
+      />
+    );
+  }
 
   return (
     <CategoryWinnersClient 

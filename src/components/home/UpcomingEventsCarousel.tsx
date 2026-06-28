@@ -59,9 +59,34 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
 
   // Limit to latest 10
   events = events.slice(0, 10);
-  // If loading is complete and no events exist, hide the section completely
+
+  // Empty state — API returned zero records
   if (events.length === 0) {
-    return null;
+    return (
+      <section className="premium-section-spacing bg-background overflow-hidden">
+        <div className="premium-container flex flex-col space-y-3 md:space-y-6 lg:space-y-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-[11px] font-black tracking-widest uppercase text-muted-foreground mb-3 shadow-sm">
+                <Calendar className="w-3 h-3 text-foreground" /> Upcoming Shows
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight leading-[1.1] uppercase">
+                DISCOVER INDIA'S BIGGEST <br className="hidden sm:block" />CHAMPIONSHIP DOG SHOWS.
+              </h2>
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-20 h-20 rounded-full bg-accent/40 flex items-center justify-center mb-6">
+              <Calendar className="w-10 h-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-2">No Upcoming Shows</h3>
+            <p className="text-muted-foreground font-medium max-w-sm">
+              There are no upcoming championship shows scheduled at this time. Check back soon!
+            </p>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -111,7 +136,7 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
               const hasError = imgErrors[event.id];
               const imageSrc = hasError
                 ? '/images/events_banner.png'
-                : getImageUrl(event.cardImage || event.bannerUrl || '/images/events_banner.png');
+                : getImageUrl(event.bannerUrl || event.cardImage || '/images/events_banner.png');
 
               return (
                 <SwiperSlide key={event.id}>

@@ -38,6 +38,9 @@ function EditClubFormContent() {
     instagram: '',
     isActive: true,
     isFeatured: false,
+    showOnHomepage: false,
+    status: 'ACTIVE',
+    maxWinners: 10,
     displayOrder: 999,
     logoUrl: '',
     logoThumbnailUrl: '',
@@ -71,6 +74,9 @@ function EditClubFormContent() {
             instagram: cd.instagram || '',
             isActive: cd.isActive === true,
             isFeatured: cd.isFeatured === true,
+            showOnHomepage: cd.showOnHomepage === true,
+            status: cd.status || (cd.isActive === false ? 'INACTIVE' : 'ACTIVE'),
+            maxWinners: cd.maxWinners ?? 10,
             displayOrder: cd.displayOrder ?? 999,
             logoUrl: cd.logoUrl || '',
             logoThumbnailUrl: cd.logoThumbnailUrl || '',
@@ -103,14 +109,29 @@ function EditClubFormContent() {
       finalValue = (e.target as HTMLInputElement).checked;
     }
 
-    setFormData(prev => ({
-      ...prev,
-      [name]: finalValue
-    }));
+    if (name === 'status') {
+      const isAct = value === 'ACTIVE';
+      setFormData(prev => ({
+        ...prev,
+        status: value,
+        isActive: isAct
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: finalValue
+      }));
+    }
   };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
-    setFormData(prev => ({ ...prev, [name]: checked }));
+    setFormData(prev => {
+      const next = { ...prev, [name]: checked };
+      if (name === 'isActive') {
+        next.status = checked ? 'ACTIVE' : 'INACTIVE';
+      }
+      return next;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -339,6 +360,52 @@ function EditClubFormContent() {
                     checked={formData.isFeatured}
                     onChange={(e) => handleCheckboxChange('isFeatured', e.target.checked)}
                     className="w-5 h-5 accent-blue-600 rounded cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-accent/20 rounded-xl">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Show on Homepage</span>
+                    <span className="text-[10px] text-muted-foreground">Display club winners separately.</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="showOnHomepage"
+                    checked={formData.showOnHomepage}
+                    onChange={(e) => handleCheckboxChange('showOnHomepage', e.target.checked)}
+                    className="w-5 h-5 accent-blue-600 rounded cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-accent/20 rounded-xl">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Status</span>
+                    <span className="text-[10px] text-muted-foreground">Club status on the platform.</span>
+                  </div>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="px-3 py-1 bg-card border border-border rounded text-foreground text-sm font-bold cursor-pointer focus:border-blue-500 outline-none"
+                  >
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-accent/20 rounded-xl">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Max Winners to Display</span>
+                    <span className="text-[10px] text-muted-foreground">Maximum winners in homepage slider.</span>
+                  </div>
+                  <input
+                    type="number"
+                    name="maxWinners"
+                    value={formData.maxWinners}
+                    onChange={handleInputChange}
+                    className="w-20 px-2 py-1 bg-card border border-border rounded text-foreground text-sm font-bold text-center outline-none focus:border-blue-500"
+                    min={1}
+                    max={100}
                   />
                 </div>
 

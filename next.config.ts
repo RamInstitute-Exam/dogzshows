@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  trailingSlash: false,
+  trailingSlash: true,         // Required for Apache/Hostinger to find index.html
   images: {
     loader: 'custom',
     loaderFile: './src/lib/image-loader.ts',
@@ -12,9 +12,7 @@ const nextConfig: NextConfig = {
       { protocol: 'http', hostname: 'localhost' },
     ],
   },
-
-  // Safety net: allow up to 120s per static page (default is 60s)
-  staticPageGenerationTimeout: 120,
+  staticPageGenerationTimeout: 180,
 };
 
 export default nextConfig;

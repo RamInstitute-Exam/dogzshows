@@ -1,77 +1,88 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, MapPin, Trophy, Upload, CheckCircle, ChevronRight, FileText, IndianRupee, Clock, Share2, Bookmark, Users, Navigation } from 'lucide-react';
+import { Calendar, MapPin, Users, Upload, CheckCircle, ChevronRight, FileText, IndianRupee, Clock, Share2, Bookmark, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import OptimizedImage from '@/components/shared/OptimizedImage';
-
-// Mock Data
-const SHOWS = [
-  { 
-    id: 1, 
-    title: 'All India Championship Dog Show 2026', 
-    date: 'October 15-16, 2026', 
-    venue: 'Ooty Gymkhana Club',
-    location: 'Ooty, Tamil Nadu', 
-    status: 'open', 
-    fee: 1500,
-    deadline: 'Oct 01, 2026',
-    organizer: 'South India Kennel Club',
-    participants: 450,
-    description: 'Join us for the premier championship dog show in the beautiful hills of Ooty. Featuring international judges and premium facilities.',
-    image: '/images/events_banner.png'
-  },
-  { 
-    id: 2, 
-    title: 'National Working Dog Specialty', 
-    date: 'November 22, 2026', 
-    venue: 'Bangalore Palace Grounds',
-    location: 'Bangalore, Karnataka', 
-    status: 'open', 
-    fee: 2000,
-    deadline: 'Nov 10, 2026',
-    organizer: 'Working Dog Federation',
-    participants: 320,
-    description: 'A specialized showcase for working breeds. Watch incredible displays of obedience, agility, and breed standard conformation.',
-    image: '/images/about_banner.png'
-  },
-  { 
-    id: 3, 
-    title: 'Summer Classic Circuit 2026', 
-    date: 'August 10, 2026', 
-    venue: 'Balewadi Stadium',
-    location: 'Pune, Maharashtra', 
-    status: 'closed', 
-    winners: ['Apollo (Golden Retriever)', 'Zeus (Rottweiler)'],
-    fee: 1800,
-    deadline: 'Jul 25, 2026',
-    organizer: 'Pune Kennel Association',
-    participants: 512,
-    description: 'The biggest summer circuit in Western India. Three rings running simultaneously with over 40 breeds participating.',
-    image: '/images/gallery_banner.png'
-  },
-];
+import api from '@/lib/api';
+import { toTitleCase } from '@/lib/utils';
 
 export default function ShowEntries() {
   const [activeTab, setActiveTab] = useState<'open' | 'closed'>('open');
-  const [selectedShow, setSelectedShow] = useState<number | null>(null);
+  const [selectedShow, setSelectedShow] = useState<string | null>(null);
   const [formStep, setFormStep] = useState(1);
 
-  const upcomingShows = SHOWS.filter(s => s.status === 'open');
-  const pastShows = SHOWS.filter(s => s.status === 'closed');
-  
+  const [upcomingShows, setUpcomingShows] = useState<any[]>([]);
+  const [pastShows, setPastShows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchShows = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [upcomingRes, completedRes] = await Promise.all([
+          api.get('/public/events/upcoming?limit=20'),
+          api.get('/public/events/completed?limit=20'),
+        ]);
+        setUpcomingShows(upcomingRes?.success ? (upcomingRes.data || []) : []);
+        setPastShows(completedRes?.success ? (completedRes.data || []) : []);
+      } catch (err: any) {
+        console.error('[Entries] Failed to load shows:', err?.message || err);
+        setError('Failed to load shows from the server. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchShows();
+  }, []);
+
   const currentShows = activeTab === 'open' ? upcomingShows : pastShows;
+  const selectedShowData = currentShows.find((s) => s.id === selectedShow);
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <PublicContainer>
+          <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <Loader2 className="w-10 h-10 text-foreground animate-spin" />
+            <p className="text-muted-foreground font-medium">Loading shows...</p>
+          </div>
+        </PublicContainer>
+      </PageContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageContainer>
+        <PublicContainer>
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center">
+              <AlertTriangle className="w-8 h-8 text-red-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground">Failed to Load Shows</h2>
+            <p className="text-muted-foreground max-w-sm">{error}</p>
+            <Button onClick={() => window.location.reload()} className="mt-2">
+              Retry
+            </Button>
+          </div>
+        </PublicContainer>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
       <PublicContainer>
-        
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-[80px]">
-          <h1 className="text-muted-foregroundxl md:text-muted-foregroundxl font-outfit font-extrabold text-foreground mb-4">Dog Show Entries</h1>
+          <h1 className="text-4xl md:text-5xl font-outfit font-extrabold text-foreground mb-4">Dog Show Entries</h1>
           <p className="text-muted-foreground font-medium text-lg">Register your purebred companions for upcoming premium events, or browse the archives of our past covered shows.</p>
         </div>
 
@@ -96,7 +107,7 @@ export default function ShowEntries() {
         {/* Form View (When a show is selected for registration) */}
         <AnimatePresence mode="wait">
           {selectedShow && activeTab === 'open' ? (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -104,15 +115,17 @@ export default function ShowEntries() {
             >
               {/* Form Header */}
               <div className="bg-card p-8 text-foreground relative">
-                <button 
+                <button
                   onClick={() => setSelectedShow(null)}
                   className="absolute top-4 right-4 text-foreground/70 hover:text-foreground bg-card/10 px-3 py-1.5 rounded-full text-xs font-bold transition-colors"
                 >
                   Cancel Registration
                 </button>
                 <h2 className="text-2xl font-bold font-outfit mb-2">Registration Portal</h2>
-                <p className="text-muted-foreground text-sm">Fill out the details below to enter your dog into {upcomingShows.find(s => s.id === selectedShow)?.title}</p>
-                
+                <p className="text-muted-foreground text-sm">
+                  Fill out the details below to enter your dog into {toTitleCase(selectedShowData?.name || '')}
+                </p>
+
                 {/* Progress Bar */}
                 <div className="flex items-center gap-2 mt-8">
                   {[1, 2, 3, 4].map(step => (
@@ -161,15 +174,6 @@ export default function ShowEntries() {
                         <input type="text" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
                       </div>
                       <div className="col-span-2 sm:col-span-1">
-                        <label className="block text-sm font-bold text-foreground mb-2">Breed</label>
-                        <select className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-muted-foreground">
-                          <option>Select Breed...</option>
-                          <option>Golden Retriever</option>
-                          <option>Siberian Husky</option>
-                          <option>Rottweiler</option>
-                        </select>
-                      </div>
-                      <div className="col-span-2 sm:col-span-1">
                         <label className="block text-sm font-bold text-foreground mb-2">Date of Birth</label>
                         <input type="date" className="w-full bg-card border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-muted-foreground" />
                       </div>
@@ -207,19 +211,17 @@ export default function ShowEntries() {
                     </div>
                     <h3 className="text-2xl font-bold font-outfit text-foreground mb-2">Review & Payment</h3>
                     <p className="text-muted-foreground max-w-md mx-auto mb-8">Your registration is almost complete. Please proceed to payment to secure your entry.</p>
-                    
+
                     <div className="bg-card rounded-xl p-6 max-w-sm mx-auto mb-8 text-left border border-border">
                       <div className="flex justify-between mb-3 text-sm">
                         <span className="text-muted-foreground font-bold">Entry Fee</span>
-                        <span className="text-foreground font-bold">₹{upcomingShows.find(s => s.id === selectedShow)?.fee}</span>
+                        <span className="text-foreground font-bold">
+                          {selectedShowData?.entryFee ? `₹${selectedShowData.entryFee}` : 'Contact organizer'}
+                        </span>
                       </div>
                       <div className="flex justify-between mb-3 text-sm">
                         <span className="text-muted-foreground font-bold">Catalog Fee</span>
                         <span className="text-foreground font-bold">₹200</span>
-                      </div>
-                      <div className="flex justify-between pt-3 border-t border-border text-lg">
-                        <span className="text-foreground font-extrabold">Total</span>
-                        <span className="text-primary font-extrabold">₹{(upcomingShows.find(s => s.id === selectedShow)?.fee || 0) + 200}</span>
                       </div>
                     </div>
                   </motion.div>
@@ -233,137 +235,131 @@ export default function ShowEntries() {
                 ) : (
                   <div></div>
                 )}
-                
                 {formStep < 4 ? (
                   <Button className="bg-primary hover:bg-primary/95 text-primary-foreground" onClick={() => setFormStep(formStep + 1)}>
                     Next Step <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 ) : (
-                  <Button className="bg-green-600 hover:bg-green-700 text-white">
-                    Pay Securely
-                  </Button>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white">Pay Securely</Button>
                 )}
               </div>
             </motion.div>
           ) : (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="py-[80px]"
-            >
-              <div className={`
-                ${currentShows.length === 1 
-                  ? 'flex justify-center' // Center single item
-                  : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6' // Grid for multiple items
-                }
-              `}>
-                {currentShows.map((show, index) => (
-                  <motion.div 
-                    key={show.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
-                    className={`
-                      ${currentShows.length === 1 ? 'flex justify-center' : 'w-full h-full'}
-                    `}
-                  >
-                    <div 
-                      onClick={() => {
-                        if (show.status === 'open') {
-                          setSelectedShow(show.id);
-                        }
-                      }}
-                      className={`
-                        bg-card rounded-[20px] border border-border overflow-hidden flex flex-col group text-left w-full h-full
-                        ${show.status === 'open' ? 'cursor-pointer hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease' : ''}
-                      `}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-[80px]">
+              {currentShows.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="w-20 h-20 rounded-full bg-accent/40 flex items-center justify-center mb-6">
+                    <Calendar className="w-10 h-10 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">
+                    {activeTab === 'open' ? 'No Upcoming Shows' : 'No Past Shows'}
+                  </h3>
+                  <p className="text-muted-foreground font-medium max-w-sm">
+                    {activeTab === 'open'
+                      ? 'There are no upcoming shows open for registration at this time.'
+                      : 'No past show records are available yet.'}
+                  </p>
+                </div>
+              ) : (
+                <div className={`
+                  ${currentShows.length === 1
+                    ? 'flex justify-center'
+                    : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6'
+                  }
+                `}>
+                  {currentShows.map((show, index) => (
+                    <motion.div
+                      key={show.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.08, duration: 0.5 }}
+                      className={currentShows.length === 1 ? 'flex justify-center w-full max-w-md' : 'w-full h-full'}
                     >
-                      {/* Banner Image */}
-                      <div className="relative w-full aspect-[16/9] overflow-hidden bg-input">
-                        <OptimizedImage 
-                          src={show.image} 
-                          alt={show.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        {/* Status Badge */}
-                        <div className="absolute top-4 left-4">
-                          <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full shadow-sm backdrop-blur-md ${show.status === 'open' ? 'bg-green-500/90 text-foreground' : 'bg-accent/90 text-foreground'}`}>
-                            {show.status === 'open' ? 'Registration Open' : 'Archived'}
-                          </span>
-                        </div>
-                        {/* Action Icons */}
-                        <div className="absolute top-4 right-4 flex gap-2">
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); alert('Bookmarked!'); }} 
-                            className="w-8 h-8 rounded-full bg-card/90 backdrop-blur text-muted-foreground flex items-center justify-center hover:text-primary transition-colors shadow-sm"
-                          >
-                            <Bookmark className="w-4 h-4" />
-                          </button>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(window.location.href); alert('Link copied!'); }} 
-                            className="w-8 h-8 rounded-full bg-card/90 backdrop-blur text-muted-foreground flex items-center justify-center hover:text-primary transition-colors shadow-sm"
-                          >
-                            <Share2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-6 flex flex-col flex-grow">
-                        <h3 className="text-xl font-bold font-outfit text-foreground mb-4 line-clamp-2 leading-snug group-hover:text-primary transition-colors">{show.title}</h3>
-                        
-                        <div className="space-y-3 mb-6 text-sm font-medium text-muted-foreground">
-                          <div className="flex items-start gap-3">
-                            <Calendar className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                            <span>{show.date}</span>
-                          </div>
-                          <div className="flex items-start gap-3">
-                            <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                            <span>{show.venue}, {show.location}</span>
-                          </div>
-                          <div className="flex items-start gap-3">
-                            <Users className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                            <span>{show.organizer} • {show.participants} Participants</span>
+                      <div
+                        onClick={() => {
+                          if (activeTab === 'open') setSelectedShow(show.id);
+                        }}
+                        className={`
+                          bg-card rounded-[20px] border border-border overflow-hidden flex flex-col group text-left w-full h-full
+                          ${activeTab === 'open' ? 'cursor-pointer hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease' : ''}
+                        `}
+                      >
+                        {/* Banner Image */}
+                        <div className="relative w-full aspect-[16/9] overflow-hidden bg-input">
+                          <OptimizedImage
+                            src={show.cardImage || show.bannerUrl || show.featuredImage || '/images/events_banner.png'}
+                            alt={show.name}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                          {/* Status Badge */}
+                          <div className="absolute top-4 left-4">
+                            <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full shadow-sm backdrop-blur-md ${activeTab === 'open' ? 'bg-green-500/90 text-white' : 'bg-accent/90 text-foreground'}`}>
+                              {activeTab === 'open' ? 'Registration Open' : 'Archived'}
+                            </span>
                           </div>
                         </div>
 
-                        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-6">
-                          {show.description}
-                        </p>
+                        {/* Content */}
+                        <div className="p-6 flex flex-col flex-grow">
+                          <h3 className="text-xl font-bold font-outfit text-foreground mb-4 line-clamp-2 leading-snug group-hover:text-primary transition-colors normal-case">
+                            {show.name}
+                          </h3>
 
-                        {/* Footer Info */}
-                        <div className="mt-auto">
-                          <div className="flex items-center justify-between py-4 border-t border-border">
-                            <div className="flex flex-col">
-                              <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Entry Fee</span>
-                              <span className="text-foreground font-bold flex items-center"><IndianRupee className="w-3 h-3 mr-0.5" /> {show.fee}</span>
-                            </div>
-                            <div className="flex flex-col text-right">
-                              <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Deadline</span>
-                              <span className="text-foreground font-bold flex items-center justify-end"><Clock className="w-3 h-3 mr-1" /> {show.deadline}</span>
-                            </div>
-                          </div>
-
-                          {/* Winners Section for Past Shows */}
-                          {show.status === 'closed' && show.winners && (
-                            <div className="mb-4 pt-4 border-t border-border">
-                              <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider mb-2 block">Best in Show Winners</span>
-                              <div className="flex flex-wrap gap-2">
-                                {show.winners.map((winner, idx) => (
-                                  <span key={idx} className="bg-card text-foreground text-xs font-bold px-2 py-1 rounded border border-border">
-                                    {winner}
-                                  </span>
-                                ))}
+                          <div className="space-y-3 mb-6 text-sm font-medium text-muted-foreground">
+                            {show.startDate && (
+                              <div className="flex items-start gap-3">
+                                <Calendar className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                <span>{new Date(show.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                               </div>
-                            </div>
+                            )}
+                            {(show.venue || show.city) && (
+                              <div className="flex items-start gap-3">
+                                <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                <span>{[show.venue, show.city].filter(Boolean).join(', ')}</span>
+                              </div>
+                            )}
+                            {show.club?.name && (
+                              <div className="flex items-start gap-3">
+                                <Users className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                <span>{show.club.name}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {show.description && (
+                            <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-6">
+                              {show.description}
+                            </p>
                           )}
+
+                          {/* Footer Info */}
+                          <div className="mt-auto">
+                            <div className="flex items-center justify-between py-4 border-t border-border">
+                              {show.entryFee ? (
+                                <div className="flex flex-col">
+                                  <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Entry Fee</span>
+                                  <span className="text-foreground font-bold flex items-center">
+                                    <IndianRupee className="w-3 h-3 mr-0.5" /> {show.entryFee}
+                                  </span>
+                                </div>
+                              ) : <div />}
+                              {show.registrationWindowEnd && (
+                                <div className="flex flex-col text-right">
+                                  <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Deadline</span>
+                                  <span className="text-foreground font-bold flex items-center justify-end">
+                                    <Clock className="w-3 h-3 mr-1" />
+                                    {new Date(show.registrationWindowEnd).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

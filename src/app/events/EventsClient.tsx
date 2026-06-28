@@ -408,9 +408,11 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
                     <div className="absolute inset-0 bg-black/40" />
                     
                     <div className="flex justify-between items-start relative z-10 w-full">
-                      <span className={`inline-block text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
-                        {getStatusText(event.status)}
-                      </span>
+                      {event.status && !['PUBLISH', 'PUBLISHED', 'ACTIVE', 'DRAFT'].includes(event.status) && (
+                        <span className={`inline-block text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
+                          {getStatusText(event.status)}
+                        </span>
+                      )}
                     </div>
                   </div>
                   

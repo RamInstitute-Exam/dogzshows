@@ -9,8 +9,6 @@ import Link from 'next/link';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import { useJudges } from '@/hooks/useJudges';
-import { usePageBanner } from '@/hooks/useCMS';
-import { getImageUrl } from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
 
 function JudgesList({ initialBannerData }: { initialBannerData?: any }) {
@@ -62,65 +60,15 @@ function JudgesList({ initialBannerData }: { initialBannerData?: any }) {
     listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const { data: bannerData } = usePageBanner('judges', initialBannerData);
-  const customTitle = bannerData?.data?.title || (showFeaturedOnly ? "Featured Judges" : "Judges");
-  const customSubtitle = bannerData?.data?.subtitle || "Meet the world-class professionals bringing decades of expertise to evaluate our champions.";
-  const customImage = bannerData?.data?.bannerImage ? getImageUrl(bannerData.data.bannerImage) : '/images/judges_banner.png';
-
   return (
     <PageContainer>
-      <section className="relative w-full h-[300px] md:h-[380px] lg:h-[470px] xl:h-[520px] flex items-center overflow-hidden bg-background">
-        <motion.div
-          initial={{ scale: 1.05 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5, ease: 'easeOut' }}
-          className="absolute inset-0 w-full h-full"
-        >
-          <img
-            src={customImage}
-            alt="Judges Hero Banner"
-            fetchPriority="high"
-            className="w-full h-full object-cover object-center"
-            style={{ filter: 'brightness(1.08) contrast(1.05) saturate(1.08)' }}
-          />
-        </motion.div>
-
-        {/* Premium Cinematic Gradient Overlay */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(90deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.30) 25%, rgba(0,0,0,.18) 50%, rgba(0,0,0,.08) 75%, rgba(0,0,0,0) 100%)',
-          }}
-        />
-
-        <PublicContainer className="relative z-10 w-full py-10 flex flex-col justify-center h-full">
-          <motion.div
-            className="max-w-[620px]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 mb-4 font-medium text-sm md:text-base" style={{ textShadow: '0 4px 20px rgba(0,0,0,.35)' }}>
-              <Link href="/" className="text-[rgba(255,255,255,0.75)] hover:text-white transition-colors">
-                Home
-              </Link>
-              <ChevronRight className="w-4 h-4 text-[rgba(255,255,255,0.5)]" />
-              <span className="text-[#F5B400]">{bannerData?.data?.breadcrumbTitle || 'Judges'}</span>
-            </nav>
-
-            {/* Title */}
-            <h1 className="text-[32px] md:text-[42px] xl:text-[64px] font-[800] text-[#FFFFFF] leading-tight mb-4" style={{ textShadow: '0 4px 20px rgba(0,0,0,.35)' }}>
-              {customTitle}
-            </h1>
-
-            {/* Description */}
-            <p className="text-[18px] xl:text-[22px] text-[rgba(255,255,255,0.95)] leading-[1.8]" style={{ textShadow: '0 4px 20px rgba(0,0,0,.35)' }}>
-              {customSubtitle}
-            </p>
-          </motion.div>
-        </PublicContainer>
-      </section>
+      <BreadcrumbBanner
+        slug="judges"
+        fallbackTitle={showFeaturedOnly ? "Featured Judges" : "Judges"}
+        fallbackSubtitle="Meet the world-class professionals bringing decades of expertise to evaluate our champions."
+        fallbackBreadcrumb="Judges"
+        initialBannerData={initialBannerData}
+      />
 
       <PublicContainer className="py-12">
         <div ref={listRef} className="flex flex-col gap-8 scroll-mt-28">

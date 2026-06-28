@@ -1,12 +1,11 @@
-import React from 'react';
+﻿import React, { Suspense } from 'react';
 import JudgesClient from './JudgesClient';
-import { fetchServerDataSingle } from '@/lib/server-api';
+import Spinner from '@/components/common/loader/Spinner';
 
-export const revalidate = 60; // 1 minute
-
-export default async function JudgesPage() {
-  const bannerRes = await fetchServerDataSingle('/public/page-banners/judges', 60).catch(() => null);
-  const initialBannerData = bannerRes?.success ? { success: true, data: bannerRes.data } : undefined;
-
-  return <JudgesClient initialBannerData={initialBannerData} />;
+export default function JudgesPage() {
+  return (
+    <Suspense fallback={<Spinner className="min-h-screen" />}>
+      <JudgesClient />
+    </Suspense>
+  );
 }

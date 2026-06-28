@@ -1,0 +1,46 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# ─── Dynamic route shells ──────────────────────────────────────────────────
+# For each [param] route, serve the placeholder shell.
+# React's client router reads the real URL and useParams() returns the correct value.
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^clubs/([^/]+)/winners/?$ /clubs/placeholder/winners/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^clubs/category/([^/]+)/?$ /clubs/category/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^clubs/([^/]+)/?$ /clubs/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^winners/categories/([^/]+)/?$ /winners/categories/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^winners/category/([^/]+)/?$ /winners/category/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^winners/([^/]+)/?$ /winners/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^gallery/album/([^/]+)/?$ /gallery/album/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^gallery/shows/([^/]+)/?$ /gallery/shows/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^gallery/outdoor/([^/]+)/?$ /gallery/outdoor/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^gallery/([^/]+)/?$ /gallery/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^admin/events/edit/([^/]+)/?$ /admin/events/edit/placeholder/index.html [L,QSA]
+
+# ─── SPA fallback ─────────────────────────────────────────────────────────
+# Any path not matching a static file falls back to the root index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L,QSA]
