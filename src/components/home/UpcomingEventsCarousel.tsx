@@ -184,16 +184,16 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
                         </div>
 
                         {/* Bottom Overlay Badges */}
-                        <div className="absolute bottom-4 left-4 flex gap-3 flex-wrap items-center z-10">
+                        <div className="absolute bottom-3 left-3 flex gap-2 flex-wrap items-center z-10">
                           {/* Location Badge */}
-                          <div className="bg-black/40 backdrop-blur-md px-3.5 h-[34px] rounded-full text-white text-[13px] font-[600] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:bg-black/50 transition-all duration-300 cursor-default">
-                            <MapPin className="w-[14px] h-[14px] text-white/80" />
-                            <span className="truncate max-w-[140px]">{toTitleCase(event.venue) || 'TBA'}</span>
+                          <div className="bg-black/45 backdrop-blur-md px-2.5 h-[26px] rounded-full text-white text-[10px] font-[700] flex items-center justify-center gap-1 border border-white/20 shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:scale-[1.03] hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] hover:bg-black/55 transition-all duration-300 cursor-default">
+                            <MapPin className="w-3 h-3 text-white/90" />
+                            <span className="truncate max-w-[120px]">{toTitleCase(event.venue) || 'TBA'}</span>
                           </div>
 
                           {/* Championship Badge */}
-                          <div className="bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-3.5 h-[34px] rounded-full text-white text-[13px] font-[700] flex items-center justify-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(168,31,37,0.3)] hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(168,31,37,0.5)] transition-all duration-300 cursor-default uppercase">
-                            <Trophy className="w-[14px] h-[14px] text-white" />
+                          <div className="bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-2.5 h-[26px] rounded-full text-white text-[10px] font-[800] tracking-wider flex items-center justify-center gap-1 border border-white/20 shadow-[0_2px_8px_rgba(168,31,37,0.3)] hover:scale-[1.03] hover:shadow-[0_0_10px_rgba(168,31,37,0.5)] transition-all duration-300 cursor-default uppercase">
+                            <Trophy className="w-3 h-3 text-white" />
                             CHAMPIONSHIP
                           </div>
                         </div>

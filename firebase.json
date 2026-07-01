@@ -10,6 +10,10 @@
     "trailingSlash": true,
     "rewrites": [
       {
+        "source": "/media-gallery/e-magazines/**",
+        "destination": "/media-gallery/e-magazines/_.html"
+      },
+      {
         "source": "/gallery/album/**",
         "destination": "/gallery/album/_.html"
       },
@@ -28,6 +32,10 @@
       {
         "source": "/clubs/**",
         "destination": "/clubs/_.html"
+      },
+      {
+        "source": "/admin/e-magazines/edit/**",
+        "destination": "/admin/e-magazines/edit/placeholder.html"
       },
       {
         "source": "/admin/events/edit/**",

@@ -92,3 +92,10 @@ export async function getGalleryAlbumSlugs(): Promise<{ slug: string }[]> {
   if (albums.length === 0) return [{ slug: '_' }];
   return albums.filter((a) => a.slug).map((a) => ({ slug: a.slug }));
 }
+
+/** Fetch all magazine slugs for /media-gallery/e-magazines/[slug] */
+export async function getMagazineSlugs(): Promise<{ slug: string }[]> {
+  const mags = await safeFetch<{ slug: string }>(`${API_BASE}/public/magazines?limit=10000`);
+  if (mags.length === 0) return [{ slug: '_' }];
+  return mags.filter((m) => m.slug).map((m) => ({ slug: m.slug }));
+}

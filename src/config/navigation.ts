@@ -66,6 +66,9 @@ export const ADMIN_ROUTES = [
     { name: 'Video Categories', href: '/admin/media/videos/categories' },
     { name: 'Featured Videos', href: '/admin/media/videos/featured' },
   ]},
+  { name: 'Content Management', icon: LayoutTemplate, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
+    { name: 'E-Magazines', href: '/admin/e-magazines' }
+  ]},
   { name: 'CMS', icon: LayoutTemplate, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
     { name: 'Homepage Banner', href: '/admin/cms/homepage-banners' },
     { name: 'Page Banners', href: '/admin/cms/page-banners' },

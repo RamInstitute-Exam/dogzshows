@@ -383,6 +383,7 @@ export default function Navbar() {
             <Link href="/" aria-label="JuzDog Home">
               <Image
                 src="/Untitled-1.png"
+                unoptimized
                 alt="JuzDog"
                 width={145}
                 height={45}
@@ -497,6 +498,7 @@ export default function Navbar() {
                 <Link href="/" onClick={() => setIsMobileOpen(false)} className="logo flex items-center">
                   <Image
                     src="/Untitled-1.png"
+                    unoptimized
                     alt="JuzDog"
                     width={100}
                     height={30}

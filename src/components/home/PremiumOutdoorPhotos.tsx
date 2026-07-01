@@ -62,7 +62,7 @@ export default function PremiumOutdoorPhotos() {
     <section className="premium-section-spacing bg-background relative overflow-hidden border-t border-border/40">
       {/* Subtle background glow */}
       <div className="absolute -top-40 -right-40 w-[400px] h-[400px] bg-foreground/5 rounded-full blur-[120px] pointer-events-none" />
-      
+
       <div className="premium-container relative z-10">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
@@ -77,8 +77,8 @@ export default function PremiumOutdoorPhotos() {
               Explore professional photography and outdoor training and show action from across our active clubs and specialties.
             </p>
           </div>
-          <Link 
-            href="/gallery/outdoor-photos" 
+          <Link
+            href="/gallery/outdoor-photos"
             className="group flex items-center justify-center gap-2 px-6 py-3 bg-card border border-border/60 hover:border-border hover:text-foreground rounded-full text-sm font-bold text-foreground transition-all shadow-sm shrink-0 self-start sm:self-end uppercase"
           >
             VIEW ALL <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -88,28 +88,28 @@ export default function PremiumOutdoorPhotos() {
         {/* 4 Featured Albums Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {albums.map((album) => (
-            <Link 
+            <Link
               key={album.id}
               href={`/gallery/album?slug=${album.slug}`}
-              className="group flex flex-col bg-card border border-border/50 hover:border-border/30 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-md hover:shadow-2xl hover:shadow-black/20 w-full max-w-[380px] h-[500px] md:h-[600px] mx-auto"
+              className="group relative flex flex-col overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out cursor-pointer p-3 md:p-4 w-full max-w-[380px] h-[450px] md:h-[500px] mx-auto"
             >
               {/* Cover Image */}
-              <div className="relative w-full h-[240px] md:h-[320px] shrink-0 overflow-hidden bg-black">
+              <div className="relative w-full h-[180px] md:h-[220px] shrink-0 overflow-hidden bg-black rounded-[16px]">
                 <Image
                   src={getImageUrl(album.coverImage)}
                   alt={album.title}
                   fill
                   quality={100}
-                  className="gallery-image transition-transform duration-700 group-hover:scale-[1.05] object-cover object-center"
+                  className="gallery-image transition-transform duration-700 group-hover:scale-[1.05] object-cover object-center rounded-[16px]"
                 />
-                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md uppercase z-10">
+                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md uppercase z-10">
                   <ImageIcon className="w-3.5 h-3.5 text-muted-foreground" />
                   {album._count?.images || album.images?.length || 0} PHOTOS
                 </div>
               </div>
 
               {/* Card Info */}
-              <div className="p-6 flex-grow flex flex-col justify-between min-h-0">
+              <div className="px-1 pt-4 pb-1 flex-grow flex flex-col justify-between min-h-0">
                 <div className="space-y-1">
                   {album.eventName && (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
@@ -117,31 +117,45 @@ export default function PremiumOutdoorPhotos() {
                       {album.eventName}
                     </span>
                   )}
-                  <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 normal-case">
+                  <h3 className="text-lg md:text-xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2 normal-case">
                     {album.title}
                   </h3>
 
                   {album.subtitle && album.subtitle.trim() !== '' && album.subtitle !== 'null' && album.subtitle !== 'undefined' && (
-                    <div className="text-[14px] font-medium text-primary leading-snug line-clamp-1 mt-1">
+                    <div className="text-[13px] font-medium text-primary leading-snug line-clamp-1 mt-1">
                       {album.subtitle}
                     </div>
                   )}
-                  
-                  <div className="flex flex-col gap-1.5 text-xs text-muted-foreground font-medium pt-2 justify-end normal-case">
+
+                  <div className="flex flex-col gap-1.5 md:gap-2 pt-3 justify-end normal-case">
                     {album.location && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="shrink-0 text-sm">📍</span>
-                        <span className="truncate">{album.location}</span>
+                      <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
+                        <div className="w-7 h-7 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
+                          <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                        </div>
+                        <div className="overflow-hidden flex-1 text-left">
+                          <p className="text-[9px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0">Location</p>
+                          <p className="text-[12px] font-[700] leading-[1.3] text-foreground truncate uppercase">
+                            {album.location}
+                          </p>
+                        </div>
                       </div>
                     )}
-                    <div className="flex items-center gap-1.5">
-                      <span className="shrink-0 text-sm">📅</span>
-                      <span>{new Date(album.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <div className="flex items-center gap-2.5 bg-accent/30 p-2 rounded-[12px] border border-border/50">
+                      <div className="w-7 h-7 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
+                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                      </div>
+                      <div className="overflow-hidden flex-1 text-left">
+                        <p className="text-[9px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0">Date</p>
+                        <p className="text-[12px] font-[700] leading-[1.3] text-foreground truncate uppercase">
+                          {new Date(album.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="w-full pt-4 border-t border-border/40 shrink-0 mt-auto">
+                <div className="w-full pt-3 border-t border-border/40 shrink-0 mt-auto">
                   <div className="w-full py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 group-hover:bg-black dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-black text-center font-bold text-xs transition-all flex items-center justify-center gap-1.5 duration-300 uppercase">
                     VIEW ALBUM
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />

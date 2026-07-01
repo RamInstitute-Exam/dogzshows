@@ -50,7 +50,7 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <Image src="/Untitled-1.png" alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-30" priority />
+          <Image src="/Untitled-1.png" unoptimized alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-30" priority />
         </div>
       )}
       <Image

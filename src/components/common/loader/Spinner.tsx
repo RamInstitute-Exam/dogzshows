@@ -65,6 +65,7 @@ export const Spinner = ({ size = 'md', className = '', fullScreen = false }: Spi
         >
           <Image 
             src="/Untitled-1.png" 
+            unoptimized
             alt="JUZDOG Loading..." 
             width={width}
             height={height}
