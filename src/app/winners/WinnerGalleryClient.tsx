@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WinnerPosterGrid from '@/components/winners/WinnerPosterGrid';
 
+import api from '@/lib/api';
+
 interface WinnerGalleryClientProps {
   allWinners: any[];
   hallOfFameWinners: any[];
@@ -27,6 +29,10 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
   const [activeCategory, setActiveCategory] = useState(
     (searchParams.get('category') || 'ALL').toUpperCase()
   );
+  
+  const [winners, setWinners] = useState<any[]>(allWinners || []);
+  const [hofWinners, setHofWinners] = useState<any[]>(hallOfFameWinners || []);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const cat = searchParams.get('category');
@@ -35,8 +41,40 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    // If we already have initial props data, don't fetch dynamically
+    if ((allWinners && allWinners.length > 0) || (hallOfFameWinners && hallOfFameWinners.length > 0)) {
+      setWinners(allWinners);
+      setHofWinners(hallOfFameWinners);
+      setLoading(false);
+      return;
+    }
+
+    async function loadData() {
+      try {
+        const [allRes, hofRes] = await Promise.all([
+          api.get('/public/winners/public').catch(() => ({ success: false, data: [] })),
+          api.get('/public/winners/public/hall-of-fame').catch(() => ({ success: false, data: [] }))
+        ]);
+        
+        if (allRes?.success && Array.isArray(allRes.data)) {
+          setWinners(allRes.data);
+        }
+        if (hofRes?.success && Array.isArray(hofRes.data)) {
+          setHofWinners(hofRes.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch winners client-side:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, [allWinners, hallOfFameWinners]);
+
   // Combine and deduplicate all winners
-  const allCombined = [...allWinners, ...hallOfFameWinners];
+  const allCombined = [...winners, ...hofWinners];
   const uniqueWinnersMap = new Map();
   allCombined.forEach(w => {
     if (!uniqueWinnersMap.has(w.id)) {
@@ -56,7 +94,7 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
         
         // If "HALL OF FAME" is selected, also check if it came from the hallOfFameWinners list specifically
         if (activeCategory === 'HALL OF FAME') {
-          return categoryMatch || hallOfFameWinners.some(hof => hof.id === w.id);
+          return categoryMatch || hofWinners.some(hof => hof.id === w.id);
         }
 
         return categoryMatch;
@@ -89,7 +127,11 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
       </div>
 
       <div className="space-y-16">
-        {filteredWinners.length > 0 ? (
+        {loading ? (
+          <div className="h-96 w-full animate-pulse bg-muted rounded-2xl flex items-center justify-center">
+            <span className="text-muted-foreground font-medium">Loading winners...</span>
+          </div>
+        ) : filteredWinners.length > 0 ? (
           <WinnerPosterGrid winners={filteredWinners} />
         ) : (
           <div className="text-center py-20">
