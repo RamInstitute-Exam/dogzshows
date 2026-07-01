@@ -124,9 +124,9 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
             autoplay={false}
             loop={events.length > 5}
             breakpoints={{
-              320: { slidesPerView: 1, spaceBetween: 16 },
-              768: { slidesPerView: 2, spaceBetween: 20 },
-              1024: { slidesPerView: 4, spaceBetween: 24 },
+              320: { slidesPerView: 2, spaceBetween: 12 },
+              768: { slidesPerView: 3, spaceBetween: 16 },
+              1024: { slidesPerView: 4, spaceBetween: 20 },
               1440: { slidesPerView: 5, spaceBetween: 24 },
             }}
             className="events-swiper premium-carousel-track"
@@ -149,16 +149,16 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
                   >
                     <Link
                       href={`/events/detail?slug=${event.slug}`}
-                      className="group relative flex flex-col h-auto overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer p-3 md:p-4"
+                      className="group relative flex flex-col h-auto overflow-hidden bg-card rounded-[16px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer p-2 sm:p-3 md:p-4"
                     >
                       {/* 1. Banner Image */}
-                      <div className="h-[140px] sm:h-[180px] md:h-[200px] w-full relative overflow-hidden shrink-0 bg-accent rounded-[16px]">
+                      <div className="h-[90px] sm:h-[140px] md:h-[180px] lg:h-[200px] w-full relative overflow-hidden shrink-0 bg-accent rounded-[12px] sm:rounded-[16px]">
                         <Image
                           src={imageSrc}
                           alt={event.name}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out rounded-[16px]"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out rounded-[12px] sm:rounded-[16px]"
                           loading={i < 2 ? undefined : "lazy"}
                           priority={i < 2}
                           quality={80}
@@ -171,59 +171,59 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
 
                         {/* Floating Date Badge (Top Right) */}
-                        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md rounded-[12px] shadow-2xl flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[56px] border border-black/5 transform group-hover:-translate-y-1 transition-transform duration-500 z-10">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-[-4px]">
+                        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white/95 backdrop-blur-md rounded-[8px] sm:rounded-[12px] shadow-2xl flex flex-col items-center justify-center py-1 px-1.5 sm:py-1.5 sm:px-2.5 min-w-[44px] sm:min-w-[56px] border border-black/5 transform group-hover:-translate-y-1 transition-transform duration-500 z-10">
+                          <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-red-600 mb-[-2px] sm:mb-[-4px]">
                             {startDate.toLocaleDateString('en-US', { month: 'short' })}
                           </span>
-                          <span className="text-2xl font-black text-black leading-none mt-1">
+                          <span className="text-sm sm:text-2xl font-black text-black leading-none mt-0.5 sm:mt-1">
                             {startDate.getDate()}
                           </span>
-                          <span className="text-[9px] font-extrabold text-gray-500 mt-[2px]">
+                          <span className="text-[7px] sm:text-[9px] font-extrabold text-gray-500 mt-[1px] sm:mt-[2px]">
                             {startDate.getFullYear()}
                           </span>
                         </div>
 
                         {/* Bottom Overlay Badges */}
-                        <div className="absolute bottom-3 left-3 flex gap-2 flex-wrap items-center z-10">
+                        <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 flex gap-1 sm:gap-2 flex-wrap items-center z-10">
                           {/* Location Badge */}
-                          <div className="bg-black/45 backdrop-blur-md px-2.5 h-[26px] rounded-full text-white text-[10px] font-[700] flex items-center justify-center gap-1 border border-white/20 shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:scale-[1.03] hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] hover:bg-black/55 transition-all duration-300 cursor-default">
-                            <MapPin className="w-3 h-3 text-white/90" />
-                            <span className="truncate max-w-[120px]">{toTitleCase(event.venue) || 'TBA'}</span>
+                          <div className="bg-black/45 backdrop-blur-md px-1.5 py-0.5 sm:px-2.5 h-[20px] sm:h-[26px] rounded-full text-white text-[8px] sm:text-[10px] font-[700] flex items-center justify-center gap-1 border border-white/20 shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:scale-[1.03] hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] hover:bg-black/55 transition-all duration-300 cursor-default">
+                            <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/90" />
+                            <span className="truncate max-w-[70px] sm:max-w-[120px]">{toTitleCase(event.venue) || 'TBA'}</span>
                           </div>
 
                           {/* Championship Badge */}
-                          <div className="bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-2.5 h-[26px] rounded-full text-white text-[10px] font-[800] tracking-wider flex items-center justify-center gap-1 border border-white/20 shadow-[0_2px_8px_rgba(168,31,37,0.3)] hover:scale-[1.03] hover:shadow-[0_0_10px_rgba(168,31,37,0.5)] transition-all duration-300 cursor-default uppercase">
-                            <Trophy className="w-3 h-3 text-white" />
-                            CHAMPIONSHIP
+                          <div className="bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-1.5 py-0.5 sm:px-2.5 h-[20px] sm:h-[26px] rounded-full text-white text-[8px] sm:text-[10px] font-[800] tracking-wider flex items-center justify-center gap-1 border border-white/20 shadow-[0_2px_8px_rgba(168,31,37,0.3)] hover:scale-[1.03] hover:shadow-[0_0_10px_rgba(168,31,37,0.5)] transition-all duration-300 cursor-default uppercase">
+                            <Trophy className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
+                            CHAMP
                           </div>
                         </div>
                       </div>
 
                       {/* 2. Body Container */}
-                      <div className="flex flex-col gap-2 mt-3 flex-grow">
+                      <div className="flex flex-col gap-1 sm:gap-2 mt-2 flex-grow">
                         {/* Event Title */}
-                        <h3 className="text-base sm:text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mt-1 mb-1 md:mt-0 md:mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere] normal-case">
+                        <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-extrabold text-foreground leading-[1.2] line-clamp-2 mt-0.5 mb-0.5 md:mt-0 md:mb-3 group-hover:text-foreground transition-colors overflow-hidden break-words [overflow-wrap:anywhere] normal-case">
                           {formatTitle(event.name)}
                         </h3>
 
                         {/* Event Info Icons */}
-                        <div className="flex flex-col gap-1.5 md:gap-2 mt-auto">
-                          <div className="flex items-center gap-2.5 bg-accent/30 p-2.5 rounded-[12px] border border-border/50 my-1.5 md:my-0">
-                            <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
-                              <Users className="w-3.5 h-3.5 text-muted-foreground" />
+                        <div className="flex flex-col gap-1 sm:gap-2 mt-auto">
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 bg-accent/30 p-1.5 sm:p-2.5 rounded-[8px] sm:rounded-[12px] border border-border/50">
+                            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
+                              <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground" />
                             </div>
-                            <div className="overflow-hidden flex-1">
-                              <p className="text-[10px] md:text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0.5">Judging Panel</p>
-                              <p className="text-[13px] md:text-[14px] font-[700] leading-[1.3] text-foreground truncate uppercase">{event.judgesCount ? `${event.judgesCount} International Judges` : 'TBA'}</p>
+                            <div className="overflow-hidden flex-1 text-left">
+                              <p className="text-[8px] sm:text-[10px] md:text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0">Judging</p>
+                              <p className="text-[10px] sm:text-[13px] md:text-[14px] font-[700] leading-[1.3] text-foreground truncate uppercase">{event.judgesCount ? `${event.judgesCount} Judges` : 'TBA'}</p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2.5 bg-accent/30 p-2.5 rounded-[12px] border border-border/50 my-1.5 md:my-0">
-                            <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
-                              <Tent className="w-3.5 h-3.5 text-[#38BDF8]" />
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 bg-accent/30 p-1.5 sm:p-2.5 rounded-[8px] sm:rounded-[12px] border border-border/50">
+                            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 text-foreground shadow-sm">
+                              <Tent className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#38BDF8]" />
                             </div>
-                            <div className="overflow-hidden flex-1">
-                              <p className="text-[10px] md:text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0.5">Organizer</p>
-                              <p className="text-[13px] md:text-[14px] font-[700] leading-[1.35] text-foreground line-clamp-2 normal-case">{toTitleCase(event.club?.name) || 'KCI Affiliate'}</p>
+                            <div className="overflow-hidden flex-1 text-left">
+                              <p className="text-[8px] sm:text-[10px] md:text-[11px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0">Organizer</p>
+                              <p className="text-[10px] sm:text-[13px] md:text-[14px] font-[700] leading-[1.35] text-foreground line-clamp-2 normal-case">{toTitleCase(event.club?.name) || 'KCI Affiliate'}</p>
                             </div>
                           </div>
                         </div>

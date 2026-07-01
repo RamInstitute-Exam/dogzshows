@@ -46,12 +46,11 @@ function ClubWinnersRow({ club }: { club: any }) {
       <div className="relative px-1 home-featured-winners-slider">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={20}
-          slidesPerView={1}
+          spaceBetween={12}
+          slidesPerView={2}
           breakpoints={{
-            768: { slidesPerView: 2, spaceBetween: 24 },
-            1024: { slidesPerView: 3, spaceBetween: 28 },
-            1280: { slidesPerView: 4, spaceBetween: 32 }
+            768: { slidesPerView: 3, spaceBetween: 16 },
+            1024: { slidesPerView: 4, spaceBetween: 24 }
           }}
           navigation={{
             prevEl,

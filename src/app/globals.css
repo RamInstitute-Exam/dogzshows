@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -14,7 +15,8 @@
   --color-brand-muted: #94A3B8;
   --color-brand-white: #FFFFFF;
 
-  --font-sans: "Mulish", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Bebas Neue", sans-serif;
+  --font-body: "Manrope", sans-serif;
 
   --z-100: 100;
   --z-110: 110;
@@ -30,7 +32,7 @@
 
 @layer base {
   * {
-    font-family: 'Mulish', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: var(--font-body);
   }
 
   html,
@@ -62,29 +64,15 @@
     padding-top: var(--nav-height);
   }
 
-  h1 {
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: 1px;
     text-transform: uppercase;
+    line-height: 1.1;
   }
 
-  h2 {
-    font-weight: 800;
-    text-transform: uppercase;
-  }
-
-  h3 {
-    font-weight: 700;
-    /* No global uppercase — h3 is used for dynamic DB content (club names, cities, judges) */
-  }
-
-  h4,
-  h5,
-  h6 {
-    font-weight: 700;
-    /* No global uppercase — these may contain dynamic content */
-  }
+  /* Specific typography variables via CSS clamp will be handled in utilities */
 
   p {
     line-height: 1.8;
@@ -98,6 +86,7 @@ textarea,
 select,
 option {
   @apply bg-input border border-border text-foreground;
+  font-weight: 500;
 }
 
 select,
@@ -109,12 +98,18 @@ option {
 input::placeholder,
 textarea::placeholder {
   @apply text-muted-foreground;
+  font-weight: 400;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   @apply border-primary outline-none;
+}
+
+label, .form-label {
+  font-family: var(--font-body);
+  font-weight: 600;
 }
 
 /* Utilities */
@@ -133,8 +128,10 @@ select:focus {
     justify-content: center;
     height: 56px;
     border-radius: 16px;
-    font-weight: 600;
+    font-family: var(--font-body);
+    font-weight: 700;
     font-size: 15px;
+    letter-spacing: 0.3px;
     padding: 0 32px;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -185,6 +182,48 @@ select:focus {
 
   .small-label {
     @apply text-muted-foreground font-medium uppercase;
+    font-size: 13px;
+  }
+
+  /* --- New Typography Utilities --- */
+  .hero-title, .page-title, .club-name, .section-title, .modal-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 4rem); /* Responsive Desktop: 48px, Tablet: 40px, Mobile: 34px max */
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .card-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .winning-title {
+    font-family: var(--font-heading);
+    font-size: clamp(18px, 2.5vw, 24px); /* Mobile 18px, Tablet ~20px, Desktop 24px */
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-align: center;
+    margin-top: 20px;
+    color: var(--foreground);
+    line-height: 1.1;
+  }
+
+  .description-text {
+    font-family: var(--font-body);
+    font-size: 15px;
+  }
+
+  .metadata-text {
+    font-family: var(--font-body);
+    font-size: 12px;
   }
 
   .glass-panel {
@@ -342,8 +381,10 @@ summary {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  font-family: var(--font-body);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.3px;
   line-height: 1;
   white-space: nowrap;
   padding: 8px 0;
@@ -1017,7 +1058,7 @@ a[role="button"]:not([class*="text-"]) {
 
 /* Mobile drawer container (Follows Global Theme) */
 .mobile-drawer-container {
-  width: 320px !important;
+  width: min(320px, 85vw) !important;
   height: 100vh !important;
   background: var(--background) !important;
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.35) !important;
@@ -1862,8 +1903,8 @@ label,
 @media(max-width:768px) {
     .carousel-prev,
     .carousel-next {
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
     }
     .carousel-prev {
         left: 8px;

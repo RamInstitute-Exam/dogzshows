@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import type { Metadata } from "next";
-import { Mulish } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import QueryProvider from '@/components/providers/QueryProvider';
@@ -10,13 +9,6 @@ import { Toaster } from 'sonner';
 import { LoaderProvider } from '@/components/common/loader/LoaderProvider';
 import ScrollPreservationProvider from '@/components/providers/ScrollPreservationProvider';
 import PublicLayoutWrapper from '@/components/layout/PublicLayoutWrapper';
-
-const mulish = Mulish({ 
-  subsets: ["latin"], 
-  weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
-  variable: "--font-mulish",
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: "JUZDOG",
@@ -37,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("h-full", "antialiased", mulish.variable, "font-sans")} suppressHydrationWarning>
-      <body className="min-h-[100vh] flex flex-col bg-background font-sans text-foreground selection:bg-foreground selection:text-foreground">
+    <html lang="en" className={cn("h-full", "antialiased")} suppressHydrationWarning>
+      <body className="min-h-[100vh] flex flex-col bg-background text-foreground selection:bg-foreground selection:text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

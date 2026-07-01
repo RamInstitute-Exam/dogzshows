@@ -6,8 +6,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
   MapPin, Phone, Mail, Globe, Calendar, Users,
-  ChevronLeft, Award, Share2, Tent, Building2, ExternalLink
+  ChevronLeft, ChevronRight, Award, Share2, Tent, Building2, ExternalLink
 } from 'lucide-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
@@ -86,12 +91,18 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
     );
   }
 
+  const [galleryPrevEl, setGalleryPrevEl] = useState<HTMLButtonElement | null>(null);
+  const [galleryNextEl, setGalleryNextEl] = useState<HTMLButtonElement | null>(null);
+
   const getInitials = (name: string) => {
     return name ? name.substring(0, 2).toUpperCase() : 'KC';
   };
 
   const tabs = [
     { id: 'about', label: 'About' },
+    ...(club?.clubGalleries?.length > 0 ? [{ id: 'gallery', label: 'Gallery' }] : []),
+    ...(club?.events?.length > 0 || club?.clubEvents?.length > 0 ? [{ id: 'events', label: 'Events' }] : []),
+    ...(club?.clubCommittees?.length > 0 ? [{ id: 'committee', label: 'Committee' }] : []),
     { id: 'contact', label: 'Contact' },
   ];
 
@@ -277,13 +288,64 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-6">Gallery</h2>
                   {club.clubGalleries?.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-                      {club.clubGalleries.map((img: any) => (
-                        <div key={img.id} className="aspect-square rounded-xl overflow-hidden bg-accent border border-border group relative">
-                          <OptimizedImage src={getImageUrl(img.image)} alt={img.title || 'Gallery Image'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                          {img.title && <div className="absolute bottom-0 inset-x-0 bg-black/60 p-2 text-white text-xs font-bold backdrop-blur-sm">{img.title}</div>}
-                        </div>
-                      ))}
+                    <div className="relative px-1 home-featured-winners-slider">
+                      <Swiper
+                        modules={[Navigation, Pagination, Autoplay]}
+                        spaceBetween={12}
+                        slidesPerView={2}
+                        breakpoints={{
+                          768: { slidesPerView: 3, spaceBetween: 16 },
+                          1024: { slidesPerView: 4, spaceBetween: 24 }
+                        }}
+                        navigation={{
+                          prevEl: galleryPrevEl,
+                          nextEl: galleryNextEl,
+                        }}
+                        onBeforeInit={(swiper) => {
+                          // @ts-ignore
+                          swiper.params.navigation.prevEl = galleryPrevEl;
+                          // @ts-ignore
+                          swiper.params.navigation.nextEl = galleryNextEl;
+                        }}
+                        pagination={{ clickable: true, dynamicBullets: true }}
+                        className="w-full !pb-14"
+                        style={{ alignItems: 'stretch' } as React.CSSProperties}
+                      >
+                        {club.clubGalleries.map((img: any) => (
+                          <SwiperSlide key={img.id} className="!h-auto flex">
+                            <div className="w-full aspect-square rounded-xl overflow-hidden bg-accent border border-border group relative">
+                              <OptimizedImage
+                                src={getImageUrl(img.image)}
+                                alt={img.title || 'Gallery Image'}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                              {img.title && (
+                                <div className="absolute bottom-0 inset-x-0 bg-black/60 p-2 text-white text-xs font-bold backdrop-blur-sm truncate">
+                                  {img.title}
+                                </div>
+                              )}
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+
+                      {/* Custom Navigation */}
+                      <div className="flex md:absolute md:top-1/2 md:-translate-y-1/2 md:left-2 md:right-2 xl:-left-[50px] xl:-right-[50px] justify-center md:justify-between items-center gap-4 mt-6 md:mt-0 z-20 pointer-events-none">
+                        <button
+                          ref={(node) => setGalleryPrevEl(node)}
+                          className="pointer-events-auto shrink-0 flex items-center justify-center !w-[40px] !h-[40px] sm:!w-[48px] sm:!h-[48px] md:!w-[52px] md:!h-[52px] bg-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:scale-[1.08] active:scale-[0.96] transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-border/5"
+                          aria-label="Previous slide"
+                        >
+                          <ChevronLeft size={20} className="text-black" />
+                        </button>
+                        <button
+                          ref={(node) => setGalleryNextEl(node)}
+                          className="pointer-events-auto shrink-0 flex items-center justify-center !w-[40px] !h-[40px] sm:!w-[48px] sm:!h-[48px] md:!w-[52px] md:!h-[52px] bg-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:scale-[1.08] active:scale-[0.96] transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-border/5"
+                          aria-label="Next slide"
+                        >
+                          <ChevronRight size={20} className="text-black" />
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="p-8 text-center bg-card border border-border rounded-xl text-muted-foreground">

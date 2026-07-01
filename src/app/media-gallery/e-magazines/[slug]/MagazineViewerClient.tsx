@@ -7,8 +7,11 @@ import {
   Download, Printer, Share2, ChevronLeft, ChevronRight, X, Volume2, VolumeX, RefreshCw, AlertCircle, Eye, Settings
 } from 'lucide-react';
 import { Howl } from 'howler';
+import Image from 'next/image';
 import HTMLFlipBook from 'react-pageflip';
 import api, { getOriginalUrl } from '@/lib/api';
+
+const magazineCache: Record<string, Magazine> = {};
 
 interface PageData {
   pageNumber: number;
@@ -76,6 +79,88 @@ export default function MagazineViewerClientPage() {
   
   // Toolbar auto-hide state
   const [showToolbar, setShowToolbar] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 550, height: 780, wrapperWidth: 0, wrapperHeight: 0 });
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      
+      let mobileMode = false;
+      let targetWidth = 0;
+      let targetHeight = 0;
+      let wrapperW = 0;
+      
+      if (w < 768) {
+        // MOBILE: 100vw (max 420px), height auto (max calc(100vh - 80px))
+        mobileMode = true;
+        targetWidth = Math.min(w, 420);
+        targetHeight = targetWidth * 1.414;
+        const maxHeight = h - 80;
+        
+        if (targetHeight > maxHeight) {
+          targetHeight = maxHeight;
+          targetWidth = targetHeight / 1.414;
+        }
+        wrapperW = targetWidth;
+      } else if (w < 1024) {
+        // TABLET: 95vw, 85vh
+        const maxWrapperWidth = w * 0.95;
+        const maxHeight = h * 0.85;
+        
+        targetWidth = maxWrapperWidth / 2;
+        targetHeight = targetWidth * 1.414;
+        
+        // Switch to single page if half-width is too narrow
+        if (targetWidth < 300) {
+          mobileMode = true;
+          targetWidth = maxWrapperWidth;
+          targetHeight = targetWidth * 1.414;
+          if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = targetHeight / 1.414;
+          }
+          wrapperW = targetWidth;
+        } else {
+          mobileMode = false;
+          if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = targetHeight / 1.414;
+          }
+          wrapperW = targetWidth * 2;
+        }
+      } else {
+        // DESKTOP: 90vw, 90vh
+        mobileMode = false;
+        const maxWrapperWidth = w * 0.90;
+        const maxHeight = h * 0.90;
+        
+        targetWidth = maxWrapperWidth / 2;
+        targetHeight = targetWidth * 1.414;
+        
+        if (targetHeight > maxHeight) {
+          targetHeight = maxHeight;
+          targetWidth = targetHeight / 1.414;
+        }
+        wrapperW = targetWidth * 2;
+      }
+      
+      setIsMobile(mobileMode);
+      setDimensions({
+        width: Math.round(targetWidth),
+        height: Math.round(targetHeight),
+        wrapperWidth: Math.round(wrapperW),
+        wrapperHeight: Math.round(targetHeight)
+      });
+      setIsReady(true);
+    }
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // References
   const viewerRef = useRef<HTMLDivElement>(null);
@@ -112,8 +197,16 @@ export default function MagazineViewerClientPage() {
 
     const fetchMagazine = async () => {
       try {
+        if (magazineCache[slug]) {
+          setMagazine(magazineCache[slug]);
+          setIsMuted(!magazineCache[slug].enablePageSound);
+          setLoading(false);
+          return;
+        }
+
         const res = await api.get(`/public/magazines/${slug}`);
         if (res.success && res.data) {
+          magazineCache[slug] = res.data;
           setMagazine(res.data);
           setIsMuted(!res.data.enablePageSound);
           
@@ -201,14 +294,47 @@ export default function MagazineViewerClientPage() {
     );
   }
 
-  if (loading) {
+  if (loading || !isReady) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center space-y-6 text-white">
-        <RefreshCw className="w-12 h-12 animate-spin text-red-500" />
-        <div className="text-center">
-          <h2 className="text-xl font-bold font-outfit">Loading publication...</h2>
-          <p className="text-zinc-500 text-xs mt-1">Preparing high-resolution previews</p>
-        </div>
+      <div className="h-screen w-screen bg-zinc-950 flex flex-col justify-between overflow-hidden relative">
+        <header className="h-18 px-4 sm:px-6 bg-zinc-900 border-b border-white/5 flex items-center justify-between z-40">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/5 rounded-xl animate-pulse" />
+            <div className="space-y-2">
+              <div className="h-4 w-32 bg-white/5 rounded animate-pulse" />
+              <div className="h-2 w-24 bg-white/5 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {[1, 2, 3, 4, 5].map((i) => <div key={i} className="w-10 h-10 bg-white/5 rounded-xl animate-pulse hidden sm:block" />)}
+          </div>
+        </header>
+        
+        <main className="flex-1 flex items-center justify-center relative overflow-hidden px-2.5 sm:px-5 md:px-10 py-18">
+          <div className="flex items-center justify-center gap-4 md:gap-8 lg:gap-12 w-full h-full relative">
+            <div className="w-14 h-14 rounded-full bg-white/5 animate-pulse hidden md:block shrink-0" />
+            
+            <div 
+              className="relative shadow-2xl rounded-2xl bg-zinc-900 border border-white/5 animate-pulse flex items-center justify-center overflow-hidden"
+              style={{
+                width: dimensions.wrapperWidth || (isMobile ? dimensions.width : dimensions.width * 2) || 550,
+                height: dimensions.wrapperHeight || dimensions.height || 780,
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 translate-x-[-100%] animate-[shimmer_2s_infinite]" />
+            </div>
+            
+            <div className="w-14 h-14 rounded-full bg-white/5 animate-pulse hidden md:block shrink-0" />
+          </div>
+        </main>
+        
+        <footer className="h-20 bg-zinc-900 border-t border-white/5 flex items-center justify-center px-6 z-40">
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-8 bg-white/5 rounded-xl animate-pulse" />
+            <div className="w-32 h-4 bg-white/5 rounded animate-pulse" />
+            <div className="w-24 h-8 bg-white/5 rounded-xl animate-pulse" />
+          </div>
+        </footer>
       </div>
     );
   }
@@ -555,36 +681,42 @@ export default function MagazineViewerClientPage() {
             }}
           >
             {/* Book Frame with Soft Outer Shadow */}
-            <div className="relative shadow-[0_30px_70px_rgba(0,0,0,0.85)] rounded-2xl overflow-visible bg-zinc-900 border border-white/5">
+            <div 
+              className="relative shadow-[0_30px_70px_rgba(0,0,0,0.85)] rounded-2xl overflow-visible bg-zinc-900 border border-white/5 transition-all duration-300"
+              style={{
+                width: dimensions.wrapperWidth || dimensions.width,
+                height: dimensions.wrapperHeight || dimensions.height,
+              }}
+            >
               
-              {/* Dynamic Center Fold Gutter shadow overlay */}
+              {/* Premium Subtle Center Crease */}
               {!isCover && orientation === 'landscape' && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-9 h-full bg-gradient-to-r from-black/35 via-black/10 to-black/35 z-30 pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] h-full bg-gradient-to-r from-black/5 via-black/10 to-black/5 shadow-[0_0_3px_rgba(0,0,0,0.15)] z-30 pointer-events-none" />
               )}
 
               {/* StPageFlip (HTMLFlipBook) Container */}
-              {pages.length > 0 && (
+              {isReady && pages.length > 0 && (
                 <HTMLFlipBook
+                  key={isMobile ? 'mobile' : 'desktop'}
                   ref={bookRef}
-                  width={550}
-                  height={780}
+                  width={dimensions.width}
+                  height={dimensions.height}
                   size="stretch"
-                  minWidth={300}
-                  maxWidth={800}
-                  minHeight={420}
-                  maxHeight={1150}
-                  maxShadowOpacity={0.6}
+                  minWidth={200}
+                  maxWidth={1200}
+                  minHeight={300}
+                  maxHeight={1600}
+                  maxShadowOpacity={0.4}
                   showCover={true}
                   mobileScrollSupport={true}
                   useMouseEvents={true}
+                  usePortrait={isMobile}
                   onFlip={onFlip}
                   onChangeOrientation={onChangeOrientation}
-                  className="rounded-2xl overflow-hidden"
+                  className="rounded-2xl overflow-hidden animate-none"
                   style={{
-                    height: 'calc(100vh - 180px)',
-                    maxHeight: 'calc(100vh - 180px)',
-                    width: orientation === 'portrait' ? 'auto' : 'calc((100vh - 180px) * 1.414)',
-                    aspectRatio: orientation === 'portrait' ? '1/1.414' : '1.414',
+                    width: '100%',
+                    height: '100%',
                   }}
                 >
                   {pages.map((page, index) => {
@@ -594,21 +726,26 @@ export default function MagazineViewerClientPage() {
                     return (
                       <FlipPage key={page.pageNumber}>
                         {isNear ? (
-                          <img
-                            src={getOriginalUrl(page.imageUrl)}
-                            alt={`Page ${page.pageNumber}`}
-                            className="w-full h-full object-fill pointer-events-none select-none"
-                            loading="eager"
-                          />
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={getOriginalUrl(page.imageUrl)}
+                              alt={`Page ${page.pageNumber}`}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 45vw"
+                              className="object-fill pointer-events-none select-none"
+                              priority={page.pageNumber <= 4}
+                              loading={page.pageNumber <= 4 ? undefined : "lazy"}
+                              quality={85}
+                            />
+                          </div>
                         ) : (
-                          <div className="w-full h-full bg-zinc-900 flex flex-col items-center justify-center space-y-3">
-                            <RefreshCw className="w-7 h-7 animate-spin text-zinc-600" />
-                            <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-wider">Loading</span>
+                          <div className="w-full h-full bg-zinc-900 border-x border-white/5 flex flex-col items-center justify-center">
+                            <div className="text-[10px] text-zinc-700 font-bold uppercase tracking-wider animate-pulse">Page {page.pageNumber}</div>
                           </div>
                         )}
 
-                        {/* Page edges and thickness layer */}
-                        <div className={`absolute top-0 w-1.5 h-full bg-black/10 z-20 pointer-events-none ${
+                        {/* Subtle Outer Page Edge / Thickness */}
+                        <div className={`absolute top-0 w-[1px] h-full bg-black/5 z-20 pointer-events-none ${
                           index % 2 === 0 ? 'right-0' : 'left-0'
                         }`} />
                       </FlipPage>
