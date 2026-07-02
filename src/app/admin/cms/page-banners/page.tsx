@@ -174,7 +174,7 @@ export default function PageBannersCMS() {
                   banners.map((banner) => (
                     <tr key={banner.id} className="hover:bg-input transition-colors">
                       <td className="p-4 font-mono text-sm text-[#38BDF8]">
-                        /{banner.pageSlug}
+                        {banner.pageSlug.startsWith('/') ? banner.pageSlug : `/${banner.pageSlug}`}
                       </td>
                       <td className="p-4">
                         <OptimizedImage src={banner.bannerImage} alt={banner.title} className="w-32 h-16 object-cover rounded-md border border-border" />
@@ -219,7 +219,7 @@ export default function PageBannersCMS() {
                       <input 
                         type="text" 
                         value={currentBanner?.pageSlug || ''} 
-                        onChange={e => setCurrentBanner({...currentBanner, pageSlug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')})}
+                        onChange={e => setCurrentBanner({...currentBanner, pageSlug: e.target.value.toLowerCase().replace(/[^a-z0-9-\/]/g, '')})}
                         className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground font-mono text-sm"
                         placeholder="events"
                         required

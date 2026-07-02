@@ -56,7 +56,7 @@ export default function PublicMagazinesPage() {
     <div className="min-h-screen bg-background">
       {/* Page Header */}
       <BreadcrumbBanner
-        slug="/media-gallery/e-magazines"
+        slug="/e-magazines"
         fallbackTitle="E-Magazines"
         fallbackSubtitle="Browse and read our premium published dog show magazines in an interactive page-flipping experience."
         fallbackImage="/images/banners/media-banner.webp"
@@ -82,26 +82,29 @@ export default function PublicMagazinesPage() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                   {magazines.map((mag) => (
-                    <div
+                    <Link
+                      href={`/e-magazines/${mag.slug}`}
                       key={mag.id}
                       className="bg-card rounded-[2rem] border border-border overflow-hidden group hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 flex flex-col justify-between h-full max-w-[340px] mx-auto w-full"
                     >
                       {/* Cover Preview */}
-                      <div className="relative aspect-[3/4] w-full overflow-hidden bg-black/5 flex items-center justify-center">
-                        {mag.coverUrl ? (
-                          <Image
-                            src={getThumbnailUrl(mag.coverUrl)}
-                            alt={mag.title}
-                            fill
-                            sizes="(max-width: 640px) 100vw, 25vw"
-                            className="object-cover transition-transform duration-700 group-hover:scale-105 select-none pointer-events-none"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-accent text-muted-foreground">
-                            <BookOpen className="w-16 h-16 opacity-35" />
-                          </div>
-                        )}
-                        <span className="absolute bottom-4 right-4 bg-black/75 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-md">
+                      <div className="relative aspect-[3/4] w-full overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5 border-b border-border">
+                        <div className="relative w-full h-full flex items-center justify-center z-10 transition-transform duration-700 group-hover:scale-105 drop-shadow-md">
+                          {mag.coverUrl ? (
+                            <Image
+                              src={getThumbnailUrl(mag.coverUrl)}
+                              alt={mag.title}
+                              fill
+                              sizes="(max-width: 640px) 100vw, 25vw"
+                              className="object-contain select-none pointer-events-none"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-accent text-muted-foreground rounded-lg">
+                              <BookOpen className="w-16 h-16 opacity-35" />
+                            </div>
+                          )}
+                        </div>
+                        <span className="absolute bottom-3 right-3 z-20 bg-black/80 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-md">
                           <FileText className="w-3.5 h-3.5" />
                           {mag.totalPages} Pages
                         </span>
@@ -132,15 +135,13 @@ export default function PublicMagazinesPage() {
 
                         {/* Read Button */}
                         <div className="pt-4 border-t border-border">
-                          <Link href={`/media-gallery/e-magazines/${mag.slug}`} className="block">
-                            <Button className="w-full bg-primary hover:bg-primary/95 text-primary-foreground font-bold py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 group/btn">
-                              Read Magazine
-                              <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                            </Button>
-                          </Link>
+                          <div className="w-full bg-primary hover:bg-primary/95 text-primary-foreground font-bold py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 group/btn">
+                            Read Magazine
+                            <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}

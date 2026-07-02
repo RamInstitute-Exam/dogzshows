@@ -1,15 +1,16 @@
-import React from 'react';
-import PhotosClient from '../photos/PhotosClient';
-import { getAllPhotos } from '@/lib/server-api';
+import React, { Suspense } from 'react';
+import WinnerGalleryClient from '@/app/winners/WinnerGalleryClient';
+import PageContainer from '@/components/layout/PageContainer';
+import PublicContainer from '@/components/layout/PublicContainer';
 
-
-export default async function ShowPhotosPage() {
-  const { data } = await getAllPhotos();
-  
-  // Filter by show-photos category slug
-  const filteredPhotos = (data || []).filter((p: any) => 
-    p.category?.slug === 'show-photos'
+export default function ShowPhotosPage() {
+  return (
+    <PageContainer>
+      <PublicContainer className="pb-24 pt-8 md:pt-12">
+        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted mt-12 rounded-2xl" />}>
+          <WinnerGalleryClient allWinners={[]} hallOfFameWinners={[]} />
+        </Suspense>
+      </PublicContainer>
+    </PageContainer>
   );
-  
-  return <PhotosClient initialPhotos={filteredPhotos} />;
 }

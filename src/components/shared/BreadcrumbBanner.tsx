@@ -50,7 +50,7 @@ export default function BreadcrumbBanner({
   };
 
   return (
-    <section className="relative w-full h-[280px] sm:h-[320px] md:h-[380px] lg:h-[460px] xl:h-[520px] flex items-center overflow-hidden bg-zinc-950">
+    <section className="relative w-full h-[160px] sm:h-[200px] md:h-[380px] lg:h-[460px] xl:h-[520px] flex items-center overflow-hidden bg-zinc-950">
       {/* Background Image with Zoom Animation — Only show dynamic live banner once loaded */}
       {!isLoading && data.bannerImage && (
         <motion.div
@@ -70,44 +70,8 @@ export default function BreadcrumbBanner({
         </motion.div>
       )}
 
-      {/* Premium Gradient Overlay */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.15) 100%)',
-        }}
-      />
-
-      {/* Content Container */}
-      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 xl:px-12 py-6 sm:py-15 md:py-20 flex flex-col justify-center h-full">
-        <motion.div
-          className="max-w-[600px]"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 mb-4 sm:mb-6 font-mulish text-[13px] xl:text-[15px] drop-shadow-md">
-            <Link href="/" className="text-zinc-300 hover:text-white transition-colors">
-              Home
-            </Link>
-            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30" />
-            <span className="text-primary font-medium">{data.breadcrumbTitle}</span>
-          </nav>
-
-          {/* Title */}
-          <h1 className="text-[30px] md:text-[40px] lg:text-[52px] xl:text-[60px] font-[800] text-white leading-[1.1] mb-2 sm:mb-4 tracking-tight drop-shadow-md">
-            {data.title}
-          </h1>
-
-          {/* Description */}
-          {data.subtitle && (
-            <p className="text-[16px] xl:text-[22px] text-zinc-100 leading-[1.8] drop-shadow-md">
-              {data.subtitle}
-            </p>
-          )}
-        </motion.div>
-      </div>
+      {/* Subtle Premium Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-black/10 to-transparent" />
     </section>
   );
 }

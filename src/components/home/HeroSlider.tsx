@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Image as ImageIcon, X, ZoomIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination, Keyboard } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination, Keyboard, Parallax } from 'swiper/modules';
 import { getImageUrl } from '@/lib/api';
 import Spinner from '@/components/common/loader/Spinner';
 
@@ -46,6 +46,7 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
   return (
     <div
       className={`relative w-full h-full hero-slide bg-[#0a0a0a] ${onClick ? 'cursor-zoom-in' : ''}`}
+      data-swiper-parallax="-30"
       onClick={onClick}
     >
       {loading && (
@@ -71,8 +72,8 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
           onFail();
         }}
         style={{
-          objectFit: "cover",
-          objectPosition: "top center",
+          objectFit: "contain",
+          objectPosition: "center center",
           display: "block"
         }}
       />
@@ -128,9 +129,10 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             swiperRef.current = swiper;
           }}
           onInit={() => setTimeout(() => setIsInitialized(true), 50)}
-          modules={[Autoplay, Navigation, Pagination, Keyboard]}
+          modules={[Autoplay, Navigation, Pagination, Keyboard, Parallax]}
+          parallax={true}
           loop={true}
-          speed={1000}
+          speed={1200}
           grabCursor={true}
           observer={true}
           observeParents={true}
@@ -287,9 +289,9 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
         .hero-slide-inner {
           width: 100%;
           height: 100%;
-          transition: all 1s cubic-bezier(0.25, 1, 0.5, 1) !important;
-          transform: scale(0.92) !important;
-          opacity: 0.45 !important;
+          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s ease-out, filter 1.2s ease-out !important;
+          transform: scale(0.98) !important;
+          opacity: 0.4 !important;
           filter: blur(4px) !important;
           border-radius: 32px;
           overflow: hidden;
@@ -300,7 +302,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           transform: scale(1) translateZ(0) !important;
           opacity: 1 !important;
           filter: none !important;
-          box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+          box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6);
           z-index: 10;
         }
 
@@ -330,14 +332,14 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           transform: translateZ(0);
         }
 
-        /* Cinematic Zoom Animation */
+        /* Cinematic Zoom Animation (Ken Burns) */
         .cinematic-zoom {
-          transform: scale(1.15);
-          transition: transform 8s ease-out;
+          transform: scale(1);
+          transition: transform 10s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .hero-slide-wrapper.swiper-slide-active .cinematic-zoom {
-          transform: scale(1);
+          transform: scale(1.02);
         }
 
         /* Arrows styling */
@@ -447,6 +449,14 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           }
           .hero-nav-btn-prev { left: 16px; }
           .hero-nav-btn-next { right: 16px; }
+          
+          .cinematic-zoom {
+            transform: scale(1) !important;
+            transition: none !important;
+          }
+          .hero-slide-wrapper.swiper-slide-active .cinematic-zoom {
+            transform: scale(1) !important;
+          }
         }
       `}</style>
     </section>

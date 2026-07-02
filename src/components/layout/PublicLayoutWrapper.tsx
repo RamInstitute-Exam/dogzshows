@@ -12,13 +12,16 @@ export default function PublicLayoutWrapper({
 }) {
   const pathname = usePathname();
 
-  // Exclude Navbar and Footer on admin, dashboard, and auth pages
+  const normalizedPath = pathname?.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+
+  // Exclude Navbar and Footer on admin, dashboard, auth pages, and E-Magazine Viewer (but NOT the /e-magazines listing)
   const isExcluded = 
-    pathname?.startsWith('/admin') || 
-    pathname?.startsWith('/dashboard') || 
-    pathname?.startsWith('/login') || 
-    pathname?.startsWith('/register') || 
-    pathname?.startsWith('/signup');
+    normalizedPath?.startsWith('/admin') || 
+    normalizedPath?.startsWith('/dashboard') || 
+    normalizedPath?.startsWith('/login') || 
+    normalizedPath?.startsWith('/register') || 
+    normalizedPath?.startsWith('/signup') ||
+    (normalizedPath?.startsWith('/e-magazines/') && normalizedPath !== '/e-magazines');
 
   if (isExcluded) {
     return <>{children}</>;
@@ -27,7 +30,7 @@ export default function PublicLayoutWrapper({
   return (
     <>
       <Navbar />
-      <main className="flex-grow flex flex-col relative z-0">
+      <main className="flex-grow flex flex-col relative z-0 pt-[var(--nav-height)]">
         {children}
       </main>
       <Footer />

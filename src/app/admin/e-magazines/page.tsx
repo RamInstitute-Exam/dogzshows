@@ -266,7 +266,7 @@ export default function AdminMagazinesPage() {
                       <div className="flex justify-end items-center gap-2">
                         {mag.status === 'PUBLISHED' && (
                           <Link
-                            href={`/media-gallery/e-magazines/${mag.slug}`}
+                            href={`/e-magazines/${mag.slug}`}
                             target="_blank"
                             title="Read Viewer"
                           >

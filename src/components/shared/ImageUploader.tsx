@@ -96,10 +96,33 @@ export default function ImageUploader({
   });
 
   const getCroppedImg = async (imageSrc: string, pixelCrop: any, fileName: string): Promise<File> => {
+    let finalSrc = imageSrc;
+    
+    // Attempt to fetch the image as a blob to completely bypass canvas CORS taint issues
+    if (imageSrc.startsWith('http')) {
+      try {
+        const cacheBuster = imageSrc.includes('?') ? '&cb=' : '?cb=';
+        const response = await fetch(imageSrc + cacheBuster + Date.now(), { 
+          mode: 'cors',
+          cache: 'no-cache'
+        });
+        if (!response.ok) throw new Error('Network response was not ok');
+        const blob = await response.blob();
+        finalSrc = URL.createObjectURL(blob);
+      } catch (err) {
+        console.warn("Blob fetch failed, falling back to direct load:", err);
+        finalSrc = imageSrc + (imageSrc.includes('?') ? '&cb=' : '?cb=') + Date.now();
+      }
+    }
+
     const image = new Image();
     image.crossOrigin = "anonymous";
-    image.src = imageSrc;
-    await new Promise(resolve => { image.onload = resolve; });
+    image.src = finalSrc;
+    
+    await new Promise((resolve, reject) => { 
+      image.onload = resolve; 
+      image.onerror = () => reject(new Error('Failed to load image for cropping. Your storage bucket may be missing CORS configuration.'));
+    });
 
     const canvas = document.createElement('canvas');
     canvas.width = highResolution ? pixelCrop.width : 600;
@@ -142,12 +165,13 @@ export default function ImageUploader({
   };
 
   const handleApplyCrop = async () => {
-    if (!croppedAreaPixels || !file || !preview) return;
+    if (!croppedAreaPixels || !preview) return;
     
     setIsUploading(true);
     setError(null);
     try {
-      const croppedFile = await getCroppedImg(preview, croppedAreaPixels, file.name);
+      const fileName = file?.name || "cropped-image.jpg";
+      const croppedFile = await getCroppedImg(preview, croppedAreaPixels, fileName);
       
       if (!highResolution && croppedFile.size > 500 * 1024) {
         // further compress if larger than 500kb
@@ -400,6 +424,20 @@ export default function ImageUploader({
           <div className="absolute inset-0 bg-black/60 rounded-[24px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center space-y-3">
             {!isUploading && (
               <div className="flex flex-col space-y-3">
+                {enableCropping && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsCropping(true);
+                    }}
+                    className="bg-blue-500/80 hover:bg-blue-500 backdrop-blur-sm text-white px-3 py-1.5 rounded-full transition flex items-center text-xs font-bold"
+                    title="Crop Image"
+                  >
+                    <CropIcon className="w-4 h-4 mr-1.5" /> Crop / Edit
+                  </button>
+                )}
                 <div {...getRootProps()} className="cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 py-1.5 rounded-full transition flex items-center text-xs font-bold" title="Replace Image">
                    <input {...getInputProps()} />
                    <UploadCloud className="w-4 h-4 mr-1.5" /> Change Photo

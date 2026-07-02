@@ -122,7 +122,7 @@ export default function PhotosClient({ initialPhotos }: PhotosClientProps) {
         {filtered.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground bg-card rounded-[2rem] border border-border border-dashed">
             <Camera className="w-16 h-16 mx-auto mb-4 opacity-30" />
-            <p className="text-xl font-semibold">No Outdoor Photos Available</p>
+            <p className="text-xl font-semibold">No Photos Found</p>
             <p className="text-sm text-muted-foreground mt-2">Please check back later or modify your search.</p>
           </div>
         ) : (

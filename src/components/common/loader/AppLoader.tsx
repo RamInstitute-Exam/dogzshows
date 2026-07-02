@@ -13,8 +13,8 @@ export const AppLoader = ({ isLoading, isExiting }: { isLoading: boolean; isExit
           animate={{ opacity: isExiting ? 0 : 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          // Sleek dark premium gradient to prevent white flash
-          className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-zinc-950 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-black select-none"
+          // Clean solid background without radial gradient box effect
+          className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-zinc-950 select-none"
         >
           <Spinner size="lg" className="bg-transparent" fullScreen />
         </motion.div>

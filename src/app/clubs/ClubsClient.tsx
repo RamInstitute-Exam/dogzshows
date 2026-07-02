@@ -164,12 +164,11 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
                 >
                   <Link
                     href={`/clubs/${club.slug || club.id}`}
-                    className="group relative flex flex-col h-full bg-card border border-border rounded-[16px] sm:rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-[4px] sm:hover:-translate-y-[6px] shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.15)] w-full"
+                    className="group relative flex flex-col w-full h-[360px] sm:h-[400px] md:h-[440px] lg:h-[480px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
                   >
                     {/* Top Logo Section */}
-                    <div className="relative w-full h-[160px] sm:h-[180px] bg-muted/30 border-b border-border flex items-center justify-center p-3 sm:p-4 overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/10 z-0"></div>
-                      <div className="relative z-10 w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] shrink-0 drop-shadow-sm transition-transform duration-500 group-hover:translate-y-[-2px]">
+                    <div className="w-full h-[60%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
+                      <div className="relative z-10 w-full h-full flex items-center justify-center shrink-0 drop-shadow-sm transition-transform duration-500 group-hover:scale-105">
                         {club.logoThumbnailUrl || club.logoUrl ? (
                           <Image 
                             src={getImageUrl(club.logoThumbnailUrl || club.logoUrl)} 
@@ -179,47 +178,46 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
                             loading="lazy"
                           />
                         ) : (
-                          <div className="w-full h-full rounded-full bg-accent/50 flex items-center justify-center">
-                            <Tent className="w-10 h-10 text-muted-foreground/50" />
+                          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-accent/50 flex items-center justify-center">
+                            <Tent className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground/50" />
                           </div>
                         )}
                       </div>
                     </div>
 
                     {/* Content Section */}
-                    <div className="flex-grow flex flex-col p-4 sm:p-[20px] text-center">
-                      <div className="mb-2">
+                    <div className="flex flex-col flex-1 p-4 sm:p-5 text-center justify-start items-center bg-card">
+                      <div className="mb-2 w-full">
                         {club.clubType && (
-                          <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-[12px] uppercase font-bold tracking-wider bg-blue-500/10 text-blue-500 rounded-full mb-1.5 sm:mb-2">
+                          <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-[12px] uppercase font-bold tracking-wider bg-blue-500/10 text-blue-500 rounded-full mb-2 sm:mb-3 shrink-0">
                             {club.clubType}
                           </span>
                         )}
-                        <h3 className="text-base sm:text-[20px] font-bold text-foreground line-clamp-2 leading-tight">
+                        <h3 className="text-sm sm:text-base md:text-lg font-black text-foreground leading-[1.2] mb-3 group-hover:text-foreground transition-colors break-words w-full shrink-0">
                           {club.name}
                         </h3>
                       </div>
                       
-                      <div className="flex flex-col items-center gap-1 sm:gap-1.5 text-muted-foreground mb-1 sm:mb-4 font-medium">
+                      <div className="flex flex-col items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground shrink-0 w-full mt-3">
                         {(club.city || club.state) && (
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-foreground/50" />
-                            <span className="text-[13px] sm:text-[15px] line-clamp-1">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
+                          <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+                            <MapPin className="w-3.5 h-3.5 text-red-500" />
+                            <span className="truncate max-w-[200px] text-left">{club.city ? `${club.city}, ` : ''}{club.state || 'India'}</span>
                           </div>
                         )}
                         {club.email && (
-                          <div className="flex items-center gap-1.5 sm:gap-2">
+                          <div className="flex items-center justify-center gap-1.5 sm:gap-2">
                             <span className="text-[13px] sm:text-sm leading-none">📧</span>
-                            <span className="text-[13px] sm:text-[14px] line-clamp-1">{club.email}</span>
+                            <span className="truncate max-w-[200px] text-left">{club.email}</span>
                           </div>
                         )}
                         {club.phone && (
-                          <div className="flex items-center gap-1.5 sm:gap-2 mt-0 sm:mt-0.5">
+                          <div className="flex items-center justify-center gap-1.5 sm:gap-2">
                             <span className="text-[13px] sm:text-sm leading-none">📞</span>
-                            <span className="text-[13px] sm:text-[14px] line-clamp-1">{club.phone}</span>
+                            <span className="truncate max-w-[200px] text-left">{club.phone}</span>
                           </div>
                         )}
                       </div>
-
                     </div>
                   </Link>
                 </motion.div>

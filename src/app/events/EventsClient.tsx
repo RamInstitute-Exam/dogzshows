@@ -397,48 +397,49 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
               >
                 <Link
                   href={`/events/detail?slug=${event.slug}`}
-                  className="bg-card rounded-[24px] overflow-hidden border border-border hover:border-primary/30 hover:-translate-y-[6px] hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease flex flex-col group relative text-foreground h-full cursor-pointer block"
+                  className="group relative flex flex-col w-full h-[460px] sm:h-[500px] md:h-[560px] lg:h-[600px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
                 >
-                  <div className="h-[220px] bg-accent relative overflow-hidden flex flex-col justify-between p-5 w-full">
-                    <OptimizedImage 
-                      src={event.bannerUrl || '/images/events_banner.png'} 
-                      alt={event.name} 
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    />
-                    <div className="absolute inset-0 bg-black/40" />
-                    
-                    <div className="flex justify-between items-start relative z-10 w-full">
+                  {/* 1. Banner Image */}
+                  <div className="w-full h-[60%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <OptimizedImage 
+                        src={event.bannerUrl || '/images/events_banner.png'} 
+                        alt={event.name} 
+                        className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out" 
+                      />
+                    </div>
+                    <div className="absolute top-4 left-4 z-20">
                       {event.status && !['PUBLISH', 'PUBLISHED', 'ACTIVE', 'DRAFT'].includes(event.status) && (
-                        <span className={`inline-block text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
+                        <span className={`inline-block text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
                           {getStatusText(event.status)}
                         </span>
                       )}
                     </div>
                   </div>
-                  
-                  <div className="p-6 flex flex-col flex-1 relative w-full">
-                    {/* Date Badge */}
-                    <div className="absolute -top-10 right-6 bg-card rounded-xl shadow-lg border border-border p-2.5 text-center min-w-[75px] z-10">
-                      <span className="block text-primary font-black text-xl leading-none">{new Date(event.startDate).getDate()}</span>
-                      <span className="block text-muted-foreground font-black text-xs uppercase mt-0.5">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</span>
+
+                  {/* 2. Body Container */}
+                  <div className="flex flex-col flex-1 p-4 sm:p-5 text-center justify-start items-center bg-card">
+                    {/* Event Title */}
+                    <h3 className="text-sm sm:text-base md:text-lg font-black text-foreground leading-[1.2] mb-3 normal-case group-hover:text-foreground transition-colors break-words w-full shrink-0">
+                      {formatTitle(event.name)}
+                    </h3>
+
+                    {/* Location Badge */}
+                    <div className="flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground mb-2 shrink-0">
+                      <MapPin className="w-3.5 h-3.5 text-red-500" />
+                      <span className="truncate max-w-[200px]">{event.city ? `${toTitleCase(event.city)}, ${toTitleCase(event.state) || ''}` : toTitleCase(event.venue) || 'TBA'}</span>
                     </div>
 
-                    <div className="space-y-4 flex-1 pr-6">
-                      <div>
-                        <h3 className="text-xl font-black text-foreground leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">{formatTitle(event.name)}</h3>
-                        <p className="text-sm font-semibold text-muted-foreground">{toTitleCase(event.club?.name) || 'TBA'}</p>
-                      </div>
+                    {/* Championship Badge */}
+                    <div className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-2.5 py-0.5 rounded-full text-white text-[9px] sm:text-[10px] font-black tracking-wider uppercase shadow-sm mb-3 shrink-0">
+                      <Trophy className="w-3 h-3 text-white" />
+                      {toTitleCase(event.type) || 'CHAMPIONSHIP'}
+                    </div>
 
-                      <div className="grid grid-cols-1 gap-y-2 text-sm text-muted-foreground font-semibold">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-primary shrink-0" /> 
-                          <span className="truncate">{event.city ? `${toTitleCase(event.city)}, ${toTitleCase(event.state) || ''}` : toTitleCase(event.venue) || 'TBA'}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Trophy className="w-4 h-4 text-primary shrink-0" /> 
-                          <span className="truncate">{toTitleCase(event.type) || 'Championship Show'}</span>
-                        </div>
-                      </div>
+                    {/* Date Badge */}
+                    <div className="flex items-center justify-center gap-1.5 text-xs sm:text-sm font-bold text-foreground mt-auto bg-accent/30 px-3 py-1.5 rounded-[8px] sm:rounded-[12px] border border-border/50">
+                      <Calendar className="w-4 h-4 text-primary" />
+                      <span>{new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase()}</span>
                     </div>
                   </div>
                 </Link>

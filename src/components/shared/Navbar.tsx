@@ -444,12 +444,6 @@ export default function Navbar() {
                 >
                   DASHBOARD
                 </Link>
-                <div
-                  className="navbar-avatar !hidden lg:!flex"
-                  title={user?.firstName}
-                >
-                  {user?.firstName?.[0]?.toUpperCase() ?? 'U'}
-                </div>
               </>
             )}
 

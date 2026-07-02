@@ -8,6 +8,7 @@ import api, { getImageUrl } from '@/lib/api';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import OptimizedImage from '@/components/shared/OptimizedImage';
+import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 
 export default function AllPhotosPage() {
   const [albums, setAlbums] = useState<any[]>([]);
@@ -32,34 +33,9 @@ export default function AllPhotosPage() {
   return (
     <PageContainer>
       {/* Premium Header */}
-      <div className="w-full bg-background dark:bg-[#050505] py-16 md:py-24 border-b border-border/40 relative overflow-hidden">
-        {/* Background Image & Gradient Overlays */}
-        <div className="absolute inset-0 z-0">
-          <OptimizedImage
-            src="https://images.unsplash.com/photo-1444212477490-ca407925329e?q=80&w=2000&auto=format&fit=crop"
-            alt="All Photos Dog Show"
-            className="w-full h-full object-cover"
-          />
-          {/* Light Mode Gradient */}
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.92)_0%,rgba(255,255,255,0.78)_40%,rgba(255,255,255,0.4)_70%,rgba(255,255,255,0.15)_100%)] dark:hidden" />
-          {/* Dark Mode Gradient */}
-          <div className="absolute inset-0 hidden dark:block bg-[linear-gradient(90deg,rgba(0,0,0,0.85)_0%,rgba(0,0,0,0.7)_40%,rgba(0,0,0,0.4)_70%,rgba(0,0,0,0.15)_100%)]" />
-        </div>
-
-        <PublicContainer className="relative z-10">
-          <div className="space-y-4 text-left">
-            <span className="text-[#6B7280] dark:text-[#E5E7EB] font-semibold text-sm uppercase tracking-[3px] opacity-100 block">
-              Media Gallery
-            </span>
-            <h1 className="text-[36px] md:text-[48px] lg:text-[60px] xl:text-[72px] font-extrabold text-[#111827] dark:text-[#FFFFFF] tracking-tight leading-tight drop-shadow-sm dark:drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] opacity-100">
-              All Photos
-            </h1>
-            <p className="text-[#4B5563] dark:text-[#CBD5E1] text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px] max-w-[700px] leading-[1.8] opacity-100">
-              Explore professional dog photography albums from shows, competitions, and specialties across India.
-            </p>
-          </div>
-        </PublicContainer>
-      </div>
+      <BreadcrumbBanner
+        slug="/gallery/all-photos"
+        fallbackImage="https://images.unsplash.com/photo-1444212477490-ca407925329e?q=80&w=2000&auto=format&fit=crop" fallbackTitle={''} />
 
       <PublicContainer className="py-16">
         {loading ? (

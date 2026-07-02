@@ -90,48 +90,46 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
             {clubs.map((club) => (
               <SwiperSlide key={club.id} className="!h-auto flex animate-none">
                 <Link href={`/clubs/${club.slug || club.id}`} className="w-full h-full flex">
-                  <motion.div
-                    whileHover={{ y: -6 }}
-                    className="group relative flex flex-col h-full w-full bg-card border border-border rounded-[16px] sm:rounded-[20px] overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] hover:border-blue-500/30"
-                  >
-                    {/* Top Logo Section */}
-                    <div className="relative w-full aspect-[4/3] bg-muted/30 border-b border-border flex items-center justify-center p-4 sm:p-6 overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/10 z-0"></div>
-                      <div className="relative z-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 shrink-0 drop-shadow-xl transition-transform duration-500 group-hover:scale-105">
-                        {club.logoUrl ? (
-                          <img 
-                            src={club.logoUrl} 
-                            alt={club.name} 
-                            className="w-full h-full object-contain"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="w-full h-full rounded-full bg-accent/50 flex items-center justify-center">
-                            <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground/50" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="flex-grow flex flex-col p-4 sm:p-6 text-center justify-between">
-                      <div className="mb-2">
-                        <h3 className="text-base sm:text-lg md:text-xl font-black text-foreground line-clamp-2 leading-tight">
-                          {club.name}
-                        </h3>
-                      </div>
-                      
-                      <div className="flex flex-col items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-4 font-medium">
-                        {(club.city || club.state) && (
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground/50" />
-                            <span className="line-clamp-1 text-left">{[club.city, club.state].filter(Boolean).join(', ') || 'India'}</span>
-                          </div>
-                        )}
+                    <motion.div
+                      whileHover={{ y: -6 }}
+                      className="group relative flex flex-col w-full h-[360px] sm:h-[400px] md:h-[440px] lg:h-[480px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
+                    >
+                      {/* Top Logo Section */}
+                      <div className="w-full h-[60%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
+                        <div className="relative z-10 w-full h-full flex items-center justify-center shrink-0 drop-shadow-sm transition-transform duration-500 group-hover:scale-105">
+                          {club.logoUrl ? (
+                            <img 
+                              src={club.logoUrl} 
+                              alt={club.name} 
+                              className="w-full h-full object-contain"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-accent/50 flex items-center justify-center">
+                              <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground/50" />
+                            </div>
+                          )}
+                        </div>
                       </div>
 
-                    </div>
-                  </motion.div>
+                      {/* Content Section */}
+                      <div className="flex flex-col flex-1 p-4 sm:p-5 text-center justify-start items-center bg-card">
+                        <div className="mb-2 w-full">
+                          <h3 className="text-sm sm:text-base md:text-lg font-black text-foreground leading-[1.2] mb-3 group-hover:text-foreground transition-colors break-words w-full shrink-0">
+                            {club.name}
+                          </h3>
+                        </div>
+                        
+                        <div className="flex flex-col items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground shrink-0 w-full mt-3">
+                          {(club.city || club.state) && (
+                            <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+                              <MapPin className="w-3.5 h-3.5 text-red-500" />
+                              <span className="truncate max-w-[200px] text-left">{[club.city, club.state].filter(Boolean).join(', ')}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
                 </Link>
               </SwiperSlide>
             ))}

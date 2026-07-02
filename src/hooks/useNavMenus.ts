@@ -90,9 +90,9 @@ export const FALLBACK_MENUS: NavMenuItem[] = [
         children: [],
       },
       {
-        id: 'fallback-e-magazines',
-        name: 'E-Magazines',
-        url: '/media-gallery/e-magazines',
+        id: 'fallback-show-photos',
+        name: 'Show Photos',
+        url: '/gallery/show-photos',
         position: 'NAVBAR',
         displayOrder: 3,
         visibility: true,
@@ -105,7 +105,20 @@ export const FALLBACK_MENUS: NavMenuItem[] = [
       },
     ],
   },
-
+  {
+    id: 'fallback-e-magazines',
+    name: 'E-Magazines',
+    url: '/e-magazines',
+    position: 'NAVBAR',
+    displayOrder: 3,
+    visibility: true,
+    openNewTab: false,
+    parentId: null,
+    onlyLoggedUser: false,
+    onlyGuest: false,
+    onlyAdmin: false,
+    children: [],
+  },
   {
     id: 'fallback-calendar',
     name: 'Show Calendar',
@@ -390,9 +403,9 @@ export function useNavMenus(role?: string) {
             children: [],
           },
           {
-            id: 'fallback-e-magazines',
-            name: 'E-Magazines',
-            url: '/media-gallery/e-magazines',
+            id: 'fallback-show-photos',
+            name: 'Show Photos',
+            url: '/gallery/show-photos',
             position: 'NAVBAR',
             displayOrder: 3,
             visibility: true,
@@ -402,7 +415,7 @@ export function useNavMenus(role?: string) {
             onlyGuest: false,
             onlyAdmin: false,
             children: [],
-          }
+          },
         ]
       };
     }

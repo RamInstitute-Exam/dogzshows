@@ -48,7 +48,7 @@ const FlipPage = React.forwardRef<HTMLDivElement, { children: React.ReactNode; c
     return (
       <div 
         ref={ref} 
-        className={`bg-zinc-900 shadow-2xl relative select-none w-full h-full overflow-hidden ${className || ''}`}
+        className={`bg-[#fdfdfc] shadow-xl relative select-none w-full h-full overflow-hidden ${className || ''}`}
       >
         {children}
       </div>
@@ -80,86 +80,75 @@ export default function MagazineViewerClientPage() {
   // Toolbar auto-hide state
   const [showToolbar, setShowToolbar] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 550, height: 780, wrapperWidth: 0, wrapperHeight: 0 });
+  const [dimensions, setDimensions] = useState({ width: 500, height: 707, wrapperWidth: 1000, wrapperHeight: 707 });
+  const [bookScale, setBookScale] = useState(1);
+  const [isDesktop, setIsDesktop] = useState(true);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    let resizeTimer: NodeJS.Timeout;
     function handleResize() {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      
-      let mobileMode = false;
-      let targetWidth = 0;
-      let targetHeight = 0;
-      let wrapperW = 0;
-      
-      if (w < 768) {
-        // MOBILE: 100vw (max 420px), height auto (max calc(100vh - 80px))
-        mobileMode = true;
-        targetWidth = Math.min(w, 420);
-        targetHeight = targetWidth * 1.414;
-        const maxHeight = h - 80;
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
         
-        if (targetHeight > maxHeight) {
-          targetHeight = maxHeight;
-          targetWidth = targetHeight / 1.414;
-        }
-        wrapperW = targetWidth;
-      } else if (w < 1024) {
-        // TABLET: 95vw, 85vh
-        const maxWrapperWidth = w * 0.95;
-        const maxHeight = h * 0.85;
+        const PAGE_WIDTH = 500;
+        const PAGE_HEIGHT = 707;
         
-        targetWidth = maxWrapperWidth / 2;
-        targetHeight = targetWidth * 1.414;
+        let mobileMode = false;
+        let bookWidth = PAGE_WIDTH;
         
-        // Switch to single page if half-width is too narrow
-        if (targetWidth < 300) {
+        if (w < 768) {
+          // MOBILE: Single page always
           mobileMode = true;
-          targetWidth = maxWrapperWidth;
-          targetHeight = targetWidth * 1.414;
-          if (targetHeight > maxHeight) {
-            targetHeight = maxHeight;
-            targetWidth = targetHeight / 1.414;
+          bookWidth = PAGE_WIDTH;
+        } else if (w < 1024) {
+          // TABLET: If portrait orientation, single page. If landscape, double page.
+          if (w < h) {
+            mobileMode = true;
+            bookWidth = PAGE_WIDTH;
+          } else {
+            mobileMode = false;
+            bookWidth = PAGE_WIDTH * 2;
           }
-          wrapperW = targetWidth;
         } else {
+          // DESKTOP: Double page always
           mobileMode = false;
-          if (targetHeight > maxHeight) {
-            targetHeight = maxHeight;
-            targetWidth = targetHeight / 1.414;
-          }
-          wrapperW = targetWidth * 2;
+          bookWidth = PAGE_WIDTH * 2;
         }
-      } else {
-        // DESKTOP: 90vw, 90vh
-        mobileMode = false;
-        const maxWrapperWidth = w * 0.90;
-        const maxHeight = h * 0.90;
         
-        targetWidth = maxWrapperWidth / 2;
-        targetHeight = targetWidth * 1.414;
+        const availableW = w * 0.95; // 95% of screen width to allow slight padding
+        const availableH = h - 160;  // Subtract Header (72px) + Footer (80px)
         
-        if (targetHeight > maxHeight) {
-          targetHeight = maxHeight;
-          targetWidth = targetHeight / 1.414;
-        }
-        wrapperW = targetWidth * 2;
-      }
-      
-      setIsMobile(mobileMode);
-      setDimensions({
-        width: Math.round(targetWidth),
-        height: Math.round(targetHeight),
-        wrapperWidth: Math.round(wrapperW),
-        wrapperHeight: Math.round(targetHeight)
-      });
-      setIsReady(true);
+        // Calculate the scale needed to fit the book inside the available space exactly
+        const scale = Math.min(
+          availableW / bookWidth,
+          availableH / PAGE_HEIGHT
+        );
+        
+        setIsMobile(mobileMode);
+        setIsDesktop(w >= 1024);
+        setBookScale(scale);
+        setDimensions({
+          width: PAGE_WIDTH,
+          height: PAGE_HEIGHT,
+          wrapperWidth: bookWidth,
+          wrapperHeight: PAGE_HEIGHT
+        });
+        setIsReady(true);
+      }, 100);
     }
     
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+      if (resizeTimer) clearTimeout(resizeTimer);
+    };
   }, []);
 
   // References
@@ -346,7 +335,7 @@ export default function MagazineViewerClientPage() {
         <h2 className="text-2xl font-bold font-outfit">Failed to open book</h2>
         <p className="text-zinc-400 max-w-md text-sm">{error || 'Magazine metadata is unavailable.'}</p>
         <button
-          onClick={() => router.push('/media-gallery/e-magazines')}
+          onClick={() => router.push('/e-magazines')}
           className="mt-4 px-6 py-2.5 bg-red-500 hover:bg-red-600 rounded-xl font-bold text-sm transition-all"
         >
           Return to gallery
@@ -408,10 +397,14 @@ export default function MagazineViewerClientPage() {
   const onFlip = (e: { data: number }) => {
     const newPage = e.data + 1;
     setCurrentPage(newPage);
-    
-    // Play page turn sound
-    if (magazine.enablePageSound && !isMuted) {
-      turnSound.play();
+  };
+
+  const onChangeState = (e: { data: string }) => {
+    // Play page turn sound the moment they start dragging or flipping
+    if ((e.data === 'user_fold' || e.data === 'flipping') && magazine?.enablePageSound && !isMuted) {
+      if (!turnSound.playing()) {
+         turnSound.play();
+      }
     }
   };
 
@@ -422,7 +415,7 @@ export default function MagazineViewerClientPage() {
   return (
     <div
       ref={viewerRef}
-      className="h-screen w-screen bg-zinc-950 text-white flex flex-col justify-between overflow-hidden select-none font-sans relative"
+      className="h-screen w-screen max-w-[100vw] bg-zinc-950 text-white flex flex-col justify-between overflow-hidden select-none font-sans relative"
       onWheel={(e) => {
         if (zoom > 1 || e.ctrlKey) {
           if (e.deltaY < 0) handleZoomIn();
@@ -430,176 +423,11 @@ export default function MagazineViewerClientPage() {
         }
       }}
       onDoubleClick={() => {
-        if (magazine.enableZoom) {
+        if (magazine?.enableZoom) {
           setZoom((z) => (z > 1 ? 1 : 1.75));
         }
       }}
     >
-      {/* ── AUTO-HIDING TOP TOOLBAR ── */}
-      <header 
-        className={`h-18 px-4 sm:px-6 bg-zinc-900/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between z-40 select-none transition-transform duration-500 fixed top-0 left-0 w-full ${
-          showToolbar ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      >
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.push('/media-gallery/e-magazines')}
-            className="p-2.5 hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="font-extrabold text-sm sm:text-base leading-tight font-outfit">{magazine.title}</h1>
-            <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-0.5">
-              {magazine.edition || 'Regular Edition'} {magazine.month && `• ${magazine.month}`} {magazine.year}
-            </p>
-          </div>
-        </div>
-
-        {/* Action Controls */}
-        <div className="flex items-center gap-1 sm:gap-2">
-          {/* Zoom controls */}
-          {magazine.enableZoom && (
-            <div className="hidden sm:flex items-center bg-white/5 p-1 rounded-xl border border-white/5 mr-1.5">
-              <button onClick={handleZoomOut} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors cursor-pointer">
-                <ZoomOut className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => setZoom(1)} 
-                className="text-[10px] font-extrabold px-2.5 hover:underline"
-              >
-                {Math.round(zoom * 100)}%
-              </button>
-              <button onClick={handleZoomIn} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors cursor-pointer">
-                <ZoomIn className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-
-          {/* Sound Control Toggle */}
-          {magazine.enablePageSound && (
-            <div className="relative">
-              <button
-                onClick={() => setIsMuted(!isMuted)}
-                className="p-2.5 hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
-                title={isMuted ? 'Unmute turns' : 'Mute turns'}
-              >
-                {isMuted ? <VolumeX className="w-5 h-5 text-red-400" /> : <Volume2 className="w-5 h-5 text-emerald-400" />}
-              </button>
-            </div>
-          )}
-
-          {/* Settings Control Toggle */}
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className={`p-2.5 rounded-xl transition-all cursor-pointer ${showSettings ? 'bg-white/10 text-white' : 'hover:bg-white/10'}`}
-            title="Settings"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
-
-          {/* Search Toggle */}
-          {magazine.enableSearch && (
-            <button
-              onClick={() => {
-                setShowSearch(!showSearch);
-                if (!showSearch) setZoom(1);
-              }}
-              className={`p-2.5 rounded-xl transition-all cursor-pointer ${showSearch ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-white/10'}`}
-              title="Search Book"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-          )}
-
-          {/* Fullscreen */}
-          {magazine.enableFullscreen && (
-            <button
-              onClick={handleFullscreenToggle}
-              className="p-2.5 hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
-              title="Fullscreen Mode"
-            >
-              {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
-            </button>
-          )}
-
-          {/* Print Layout */}
-          {magazine.enablePrint && (
-            <button
-              onClick={handlePrint}
-              className="p-2.5 hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
-              title="Print Pages"
-            >
-              <Printer className="w-5 h-5" />
-            </button>
-          )}
-
-          {/* Share */}
-          {magazine.enableShare && (
-            <button
-              onClick={handleShare}
-              className="p-2.5 hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
-              title="Copy link"
-            >
-              <Share2 className="w-5 h-5" />
-            </button>
-          )}
-
-          {/* Download S3 PDF */}
-          {magazine.enableDownload && (
-            <a href={magazine.pdfUrl} download target="_blank" rel="noreferrer">
-              <button
-                className="p-2.5 hover:bg-white/10 rounded-xl text-primary transition-colors cursor-pointer"
-                title="Download PDF"
-              >
-                <Download className="w-5 h-5" />
-              </button>
-            </a>
-          )}
-        </div>
-      </header>
-
-      {/* ── SETTINGS AND VOLUME DROPDOWN PANEL ── */}
-      {showSettings && (
-        <div className="absolute top-20 right-6 bg-zinc-900 border border-white/5 rounded-2xl p-5 w-64 z-50 shadow-2xl space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-white/5">
-            <span className="font-bold text-xs uppercase tracking-wider text-zinc-400">Settings</span>
-            <button onClick={() => setShowSettings(false)} className="p-1 hover:bg-white/5 rounded-lg">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          
-          {/* Volume control */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-zinc-300">Page Turn Sound</span>
-              <span className="text-zinc-500 font-bold">{Math.round(soundVolume * 100)}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={soundVolume}
-              onChange={(e) => setSoundVolume(parseFloat(e.target.value))}
-              className="w-full accent-primary bg-zinc-700 h-1 rounded-lg outline-none cursor-pointer"
-            />
-          </div>
-
-          {/* Sizing Details */}
-          <div className="pt-2 text-[10px] text-zinc-500 space-y-1">
-            <div className="flex justify-between">
-              <span>Resolution:</span>
-              <span className="font-bold text-zinc-400">1200px (WebP)</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Reading Mode:</span>
-              <span className="font-bold text-zinc-400 capitalize">{orientation}</span>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* ── CENTRAL INTERACTIVE CANVAS ── */}
       <main className="flex-1 flex items-center justify-center relative overflow-hidden bg-zinc-950 px-2.5 sm:px-5 md:px-10 py-18">
         
@@ -658,7 +486,7 @@ export default function MagazineViewerClientPage() {
         )}
 
         {/* ── ROW LAYOUT: ARROW ◀ | BOOK | ARROW ▶ ── */}
-        <div className="flex items-center justify-center gap-4 md:gap-8 lg:gap-12 w-full h-full max-w-full relative">
+        <div className="flex items-center justify-center gap-0 md:gap-8 lg:gap-12 w-full h-full max-w-[100vw] relative overflow-hidden">
           
           {/* Glass Left Navigation Arrow */}
           <button
@@ -674,15 +502,15 @@ export default function MagazineViewerClientPage() {
 
           {/* Zoom Wrapper */}
           <div
-            className="flex items-center justify-center overflow-visible relative transition-transform duration-200"
+            className="flex items-center justify-center overflow-visible relative transition-transform duration-200 mx-auto"
             style={{
-              transform: `scale(${zoom})`,
+              transform: `scale(${zoom * bookScale})`,
               transformOrigin: 'center center',
             }}
           >
             {/* Book Frame with Soft Outer Shadow */}
             <div 
-              className="relative shadow-[0_30px_70px_rgba(0,0,0,0.85)] rounded-2xl overflow-visible bg-zinc-900 border border-white/5 transition-all duration-300"
+              className={`relative bg-zinc-900 transition-all duration-300 ${isDesktop ? 'shadow-[0_30px_70px_rgba(0,0,0,0.85)]' : ''}`}
               style={{
                 width: dimensions.wrapperWidth || dimensions.width,
                 height: dimensions.wrapperHeight || dimensions.height,
@@ -690,8 +518,8 @@ export default function MagazineViewerClientPage() {
             >
               
               {/* Premium Subtle Center Crease */}
-              {!isCover && orientation === 'landscape' && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] h-full bg-gradient-to-r from-black/5 via-black/10 to-black/5 shadow-[0_0_3px_rgba(0,0,0,0.15)] z-30 pointer-events-none" />
+              {isDesktop && !isMobile && !isCover && orientation === 'landscape' && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[30px] h-full bg-[linear-gradient(90deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.15)_30%,rgba(0,0,0,0.4)_50%,rgba(0,0,0,0.15)_70%,rgba(0,0,0,0)_100%)] z-30 pointer-events-none mix-blend-multiply" />
               )}
 
               {/* StPageFlip (HTMLFlipBook) Container */}
@@ -701,22 +529,28 @@ export default function MagazineViewerClientPage() {
                   ref={bookRef}
                   width={dimensions.width}
                   height={dimensions.height}
-                  size="stretch"
-                  minWidth={200}
-                  maxWidth={1200}
-                  minHeight={300}
-                  maxHeight={1600}
-                  maxShadowOpacity={0.4}
+                  size="fixed"
+                  minWidth={dimensions.width}
+                  maxWidth={dimensions.width}
+                  minHeight={dimensions.height}
+                  maxHeight={dimensions.height}
+                  maxShadowOpacity={0.65}
                   showCover={true}
                   mobileScrollSupport={true}
                   useMouseEvents={true}
                   usePortrait={isMobile}
+                  drawShadow={isDesktop}
+                  flippingTime={850}
+                  swipeDistance={25}
+                  showPageCorners={true}
                   onFlip={onFlip}
+                  onChangeState={onChangeState}
                   onChangeOrientation={onChangeOrientation}
-                  className="rounded-2xl overflow-hidden animate-none"
+                  className="rounded-[4px] overflow-hidden animate-none bg-[#fdfdfc]"
                   style={{
                     width: '100%',
                     height: '100%',
+                    boxShadow: isDesktop ? 'inset 0 0 10px rgba(0,0,0,0.1)' : 'none'
                   }}
                 >
                   {pages.map((page, index) => {
@@ -732,10 +566,10 @@ export default function MagazineViewerClientPage() {
                               alt={`Page ${page.pageNumber}`}
                               fill
                               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 45vw"
-                              className="object-fill pointer-events-none select-none"
+                              className="object-contain pointer-events-none select-none bg-[#fdfdfc]"
                               priority={page.pageNumber <= 4}
                               loading={page.pageNumber <= 4 ? undefined : "lazy"}
-                              quality={85}
+                              quality={95}
                             />
                           </div>
                         ) : (
@@ -745,9 +579,11 @@ export default function MagazineViewerClientPage() {
                         )}
 
                         {/* Subtle Outer Page Edge / Thickness */}
-                        <div className={`absolute top-0 w-[1px] h-full bg-black/5 z-20 pointer-events-none ${
-                          index % 2 === 0 ? 'right-0' : 'left-0'
-                        }`} />
+                        {isDesktop && (
+                          <div className={`absolute top-0 w-[1px] h-full bg-black/5 z-20 pointer-events-none ${
+                            index % 2 === 0 ? 'right-0' : 'left-0'
+                          }`} />
+                        )}
                       </FlipPage>
                     );
                   })}
@@ -771,7 +607,7 @@ export default function MagazineViewerClientPage() {
       </main>
 
       {/* ── BOTTOM PROGRESS BAR & NAVIGATION ── */}
-      <footer className="h-20 bg-zinc-900/60 backdrop-blur-xl border-t border-white/5 flex flex-col justify-center items-center px-6 z-40 select-none">
+      <footer className="h-20 bg-zinc-900/60 backdrop-blur-xl border-t border-white/5 flex flex-col justify-center items-center px-4 sm:px-6 z-40 select-none w-full">
         <div className="flex items-center gap-6">
           <button
             onClick={handlePrev}

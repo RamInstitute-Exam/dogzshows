@@ -15,15 +15,10 @@ function ClubWinnersRow({ club }: { club: any }) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
   
-  const rawWinners = club.winners || [];
-  const winners = [...rawWinners].sort((a: any, b: any) => {
-    const getNumber = (winner: any) => {
-      const text = (winner.eventName || winner.event?.name || winner.awardTitle || '').toLowerCase();
-      const match = text.match(/(\d+)(st|nd|rd|th)/);
-      return match ? parseInt(match[1], 10) : 999;
-    };
-    return getNumber(a) - getNumber(b);
-  });
+  // DO NOT sort client-side. The backend returns winners ordered by:
+  // 1. event.displayOrder ASC  (groups 5th Show before 6th Show)
+  // 2. winner.displayOrder ASC (orders winners within each event)
+  const winners = club.winners || [];
 
   // Gracefully handle empty clubs by hiding them from the homepage
   if (winners.length === 0) return null;
@@ -47,8 +42,9 @@ function ClubWinnersRow({ club }: { club: any }) {
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           spaceBetween={12}
-          slidesPerView={2}
+          slidesPerView={1.2}
           breakpoints={{
+            640: { slidesPerView: 2.2, spaceBetween: 16 },
             768: { slidesPerView: 3, spaceBetween: 16 },
             1024: { slidesPerView: 4, spaceBetween: 24 }
           }}

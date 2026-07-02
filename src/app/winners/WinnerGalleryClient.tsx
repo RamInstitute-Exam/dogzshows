@@ -33,6 +33,7 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
   const [winners, setWinners] = useState<any[]>(allWinners || []);
   const [hofWinners, setHofWinners] = useState<any[]>(hallOfFameWinners || []);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {
     const cat = searchParams.get('category');
@@ -40,6 +41,10 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
       setActiveCategory(cat.toUpperCase());
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [activeCategory]);
 
   useEffect(() => {
     // If we already have initial props data, don't fetch dynamically
@@ -53,8 +58,8 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
     async function loadData() {
       try {
         const [allRes, hofRes] = await Promise.all([
-          api.get('/public/winners/public').catch(() => ({ success: false, data: [] })),
-          api.get('/public/winners/public/hall-of-fame').catch(() => ({ success: false, data: [] }))
+          api.get('/public/winners/public?limit=1000').catch(() => ({ success: false, data: [] })),
+          api.get('/public/winners/public/hall-of-fame?limit=1000').catch(() => ({ success: false, data: [] }))
         ]);
         
         if (allRes?.success && Array.isArray(allRes.data)) {
@@ -84,9 +89,9 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
   const allUniqueWinners = Array.from(uniqueWinnersMap.values());
 
   // Filter logic
-  let filteredWinners = activeCategory === 'ALL' 
-    ? allUniqueWinners 
-    : allUniqueWinners.filter(w => {
+  let filteredWinners = allUniqueWinners.filter(w => {
+        if (activeCategory === 'ALL') return true;
+
         // Ensure we check against possible fields case-insensitively
         const categoryMatch = w.awardCategory?.toUpperCase() === activeCategory || 
                               w.category?.name?.toUpperCase() === activeCategory || 
@@ -100,30 +105,32 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
         return categoryMatch;
       });
 
-  // Sort by createdAt DESC
-  filteredWinners = filteredWinners.sort((a, b) => {
-    const dateA = new Date(a.createdAt || 0).getTime();
-    const dateB = new Date(b.createdAt || 0).getTime();
-    return dateB - dateA;
-  });
+  // DO NOT sort client-side. The backend returns winners ordered by:
+  // 1. event.displayOrder ASC  (groups 5th Show before 6th Show)
+  // 2. winner.displayOrder ASC (orders winners within each event)
 
   return (
     <div className="space-y-8">
-      {/* FILTER CHIPS */}
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
-        {FILTER_CHIPS.map(chip => (
-          <button 
-            key={chip}
-            onClick={() => setActiveCategory(chip)}
-            className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
-              activeCategory === chip 
-                ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20 scale-105'
-                : 'bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50'
-            }`}
-          >
-            {chip}
-          </button>
-        ))}
+      {/* PREMIUM STICKY FILTER BAR */}
+      <div className="sticky top-[60px] md:top-[80px] z-40 w-full bg-background/95 backdrop-blur-md py-4 md:py-6 border-b border-border/40 -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="flex overflow-x-auto hide-scrollbar gap-2 md:gap-3 snap-x snap-mandatory md:snap-none md:flex-wrap md:justify-center w-full max-w-[100vw] scroll-smooth">
+          {FILTER_CHIPS.map(chip => (
+            <button 
+              key={chip}
+              onClick={(e) => {
+                setActiveCategory(chip);
+                e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+              }}
+              className={`w-auto flex-none inline-flex items-center justify-center h-[40px] md:h-[48px] px-5 md:px-6 rounded-full text-[13px] md:text-[14px] font-bold transition-all duration-300 ease-out whitespace-nowrap shrink-0 snap-center border ${
+                activeCategory === chip 
+                  ? 'bg-amber-500 text-black border-amber-500 shadow-[0_4px_12px_rgba(245,158,11,0.25)]'
+                  : 'bg-[#121212] md:bg-card text-gray-400 border-border/30 hover:border-border/80 hover:bg-white/5 hover:text-gray-200'
+              }`}
+            >
+              <span className="max-w-[200px] truncate">{chip}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="space-y-16">
@@ -132,7 +139,19 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
             <span className="text-muted-foreground font-medium">Loading winners...</span>
           </div>
         ) : filteredWinners.length > 0 ? (
-          <WinnerPosterGrid winners={filteredWinners} />
+          <>
+            <WinnerPosterGrid winners={filteredWinners.slice(0, visibleCount)} />
+            {visibleCount < filteredWinners.length && (
+              <div className="flex justify-center pt-8 pb-12">
+                <button 
+                  onClick={() => setVisibleCount(prev => prev + 12)}
+                  className="px-8 py-3 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl shadow-lg transition-colors"
+                >
+                  Load More Winners
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-20">
             <h3 className="text-2xl font-bold text-muted-foreground">No winners found for this category.</h3>
