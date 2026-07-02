@@ -15,7 +15,7 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
   const imageUrl = [winner.featuredImage, winner.winnerImage, winner.imageUrl].find(
     (img) => img && typeof img === 'string' && img.trim() !== '' && img.trim() !== 'null' && img.trim() !== 'undefined'
   );
-  const eventTitle = winner.eventName || winner.event?.name || winner.awardTitle || 'Championship Show';
+  const eventTitle = winner.awardTitle || winner.eventName || winner.event?.name || 'Championship Show';
   const awardTitle = winner.winningTitle || winner.awardCategory || 'Winner';
 
   // Get Year safely
