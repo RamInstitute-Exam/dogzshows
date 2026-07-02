@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Image as ImageIcon, X, ZoomIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination, Keyboard, Parallax } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination, Keyboard } from 'swiper/modules';
 import { getImageUrl } from '@/lib/api';
 import Spinner from '@/components/common/loader/Spinner';
 
@@ -46,7 +46,6 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
   return (
     <div
       className={`relative w-full h-full hero-slide bg-[#0a0a0a] ${onClick ? 'cursor-zoom-in' : ''}`}
-      data-swiper-parallax="-30"
       onClick={onClick}
     >
       {loading && (
@@ -54,29 +53,31 @@ function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src
           <Image src="/Untitled-1.png" unoptimized alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-30" priority />
         </div>
       )}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className="hero-image-render cinematic-zoom"
-        priority={true}
-        quality={100}
-        sizes="100vw"
-        onLoad={(e) => {
-          setLoading(false);
-          if (onLoadSuccess) onLoadSuccess();
-        }}
-        onError={() => {
-          setError(true);
-          setLoading(false);
-          onFail();
-        }}
-        style={{
-          objectFit: "contain",
-          objectPosition: "center center",
-          display: "block"
-        }}
-      />
+      <div className="hero-slide-image-container">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="hero-image-render"
+          priority={true}
+          quality={100}
+          sizes="100vw"
+          onLoad={(e) => {
+            setLoading(false);
+            if (onLoadSuccess) onLoadSuccess();
+          }}
+          onError={() => {
+            setError(true);
+            setLoading(false);
+            onFail();
+          }}
+          style={{
+            objectFit: "contain",
+            objectPosition: "center center",
+            display: "block"
+          }}
+        />
+      </div>
     </div>
   );
 }
@@ -129,16 +130,15 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             swiperRef.current = swiper;
           }}
           onInit={() => setTimeout(() => setIsInitialized(true), 50)}
-          modules={[Autoplay, Navigation, Pagination, Keyboard, Parallax]}
-          parallax={true}
+          modules={[Autoplay, Navigation, Pagination, Keyboard]}
           loop={true}
-          speed={1200}
+          speed={1300}
           grabCursor={true}
           observer={true}
           observeParents={true}
           watchOverflow={true}
           autoplay={{
-            delay: 4000,
+            delay: 5500,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
@@ -286,22 +286,27 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           justify-content: center;
         }
 
+        .hero-swiper :global(.swiper-wrapper) {
+          transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+        }
+
         .hero-slide-inner {
           width: 100%;
           height: 100%;
-          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s ease-out, filter 1.2s ease-out !important;
-          transform: scale(0.98) !important;
-          opacity: 0.4 !important;
+          transition: transform 1.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.3s cubic-bezier(0.22, 1, 0.36, 1), filter 1.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+          transform: scale(0.98) translate3d(0, 0, 0) !important;
+          opacity: 0.35 !important;
           filter: blur(4px) !important;
           border-radius: 32px;
           overflow: hidden;
           background: #0a0a0a;
+          will-change: transform, opacity, filter;
         }
 
         .hero-slide-wrapper.swiper-slide-active .hero-slide-inner {
-          transform: scale(1) translateZ(0) !important;
+          transform: scale(1) translate3d(0, 0, 0) !important;
           opacity: 1 !important;
-          filter: none !important;
+          filter: blur(0px) !important;
           box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6);
           z-index: 10;
         }
@@ -320,26 +325,35 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           inset: 0;
           width: 100%;
           height: 100%;
+          overflow: hidden;
+        }
+
+        .hero-slide-image-container {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          transition: transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+          transform: translate3d(-20%, 0, 0) scale(1);
+          will-change: transform;
+        }
+
+        .hero-slide-wrapper.swiper-slide-active .hero-slide-image-container {
+          transform: translate3d(0, 0, 0) scale(1.02);
+        }
+
+        .hero-slide-wrapper.swiper-slide-active ~ .hero-slide-wrapper .hero-slide-image-container {
+          transform: translate3d(20%, 0, 0) scale(1);
         }
 
         .hero-slide img.hero-image-render {
           width: 100% !important;
           height: 100% !important;
-          object-fit: cover !important;
-          object-position: top center !important;
+          object-fit: contain !important;
+          object-position: center center !important;
           image-rendering: auto;
           backface-visibility: hidden;
           transform: translateZ(0);
-        }
-
-        /* Cinematic Zoom Animation (Ken Burns) */
-        .cinematic-zoom {
-          transform: scale(1);
-          transition: transform 10s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .hero-slide-wrapper.swiper-slide-active .cinematic-zoom {
-          transform: scale(1.02);
         }
 
         /* Arrows styling */
@@ -417,6 +431,15 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             width: 90% !important;
             height: 500px !important;
           }
+          .hero-slide-image-container {
+            transform: translate3d(-10%, 0, 0) scale(1);
+          }
+          .hero-slide-wrapper.swiper-slide-active .hero-slide-image-container {
+            transform: translate3d(0, 0, 0) scale(1.015);
+          }
+          .hero-slide-wrapper.swiper-slide-active ~ .hero-slide-wrapper .hero-slide-image-container {
+            transform: translate3d(10%, 0, 0) scale(1);
+          }
           .hero-nav-btn {
             width: 56px !important;
             height: 56px !important;
@@ -442,6 +465,17 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             transform: scale(1) !important;
             opacity: 1 !important;
             filter: blur(0px) !important;
+            transition: opacity 1.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+          }
+          .hero-slide-image-container {
+            transform: translate3d(0, 0, 0) scale(1) !important;
+            transition: none !important;
+          }
+          .hero-slide-wrapper.swiper-slide-active .hero-slide-image-container {
+            transform: translate3d(0, 0, 0) scale(1) !important;
+          }
+          .hero-slide-wrapper.swiper-slide-active ~ .hero-slide-wrapper .hero-slide-image-container {
+            transform: translate3d(0, 0, 0) scale(1) !important;
           }
           .hero-nav-btn {
             width: 48px !important;
@@ -449,14 +483,6 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           }
           .hero-nav-btn-prev { left: 16px; }
           .hero-nav-btn-next { right: 16px; }
-          
-          .cinematic-zoom {
-            transform: scale(1) !important;
-            transition: none !important;
-          }
-          .hero-slide-wrapper.swiper-slide-active .cinematic-zoom {
-            transform: scale(1) !important;
-          }
         }
       `}</style>
     </section>
