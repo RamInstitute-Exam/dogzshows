@@ -16,7 +16,7 @@ export default function EventHero({ event }: { event: any }) {
   const entryFee = event?.entryFee != null ? `₹${event.entryFee}` : '-';
 
   return (
-    <div className="relative w-full min-h-[320px] md:min-h-[620px] overflow-hidden flex items-center">
+    <div className="relative w-full min-h-[320px] md:min-h-[480px] overflow-hidden flex items-start pt-4 md:pt-8">
       
       {/* ── Background Image (always present) ── */}
       <div className="absolute inset-0 z-0">
@@ -80,7 +80,7 @@ export default function EventHero({ event }: { event: any }) {
       `}</style>
 
       {/* ── Content ── */}
-      <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 py-8 md:py-28">
+      <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 pt-2 pb-8 md:pt-4 md:pb-12">
 
         {/* Left: Text Content */}
         <motion.div

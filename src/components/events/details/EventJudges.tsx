@@ -102,6 +102,13 @@ export default function EventJudges({ judges }: { judges: any[] }) {
                 Chief Judge
               </div>
             )}
+            
+            {/* Guest Judge badge */}
+            {judge?.isCustom && (
+              <div className="mt-3 inline-block px-3 py-1 bg-accent text-foreground font-bold text-xs rounded-full border border-border">
+                Guest Judge
+              </div>
+            )}
           </motion.div>
         ))}
       </div>

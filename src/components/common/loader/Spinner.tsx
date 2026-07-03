@@ -32,8 +32,7 @@ export const Spinner = ({ size = 'md', className = '', fullScreen = false }: Spi
           <img 
             src="/Untitled-1.png" 
             alt="JUZDOG Loading..." 
-            className="w-full h-auto object-contain bg-transparent mix-blend-screen"
-            style={{ maxWidth: '100%' }}
+            className="w-full h-auto object-contain bg-transparent block"
           />
         </motion.div>
       </motion.div>

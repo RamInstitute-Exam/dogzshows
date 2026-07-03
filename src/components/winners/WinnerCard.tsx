@@ -15,8 +15,9 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
   const imageUrl = [winner.featuredImage, winner.winnerImage, winner.imageUrl].find(
     (img) => img && typeof img === 'string' && img.trim() !== '' && img.trim() !== 'null' && img.trim() !== 'undefined'
   );
+  const getValid = (str: any) => typeof str === 'string' && str.trim().length > 0 ? str.trim() : null;
   const eventTitle = winner.awardTitle || winner.eventName || winner.event?.name || 'Championship Show';
-  const awardTitle = winner.winningTitle || winner.awardCategory || 'Winner';
+  const awardTitle = getValid(winner.winningTitle) || getValid(winner.awardCategory) || getValid(winner.awardTitle);
 
   // Get Year safely
   let year = '';
@@ -30,25 +31,27 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
   }
 
   return (
-    <div className="w-full h-[520px] md:h-[820px] rounded-[16px] sm:rounded-[26px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1 select-none border border-black/5">
-      {/* 1. Header (Event Title) */}
-      <div className="px-2 py-2 sm:px-[18px] sm:py-[18px] flex items-center justify-center shrink-0 h-[60px] md:h-[90px] border-b border-black/5 overflow-hidden">
-        <h3 className="text-xs sm:text-base md:text-[20px] font-[700] text-black leading-tight text-center line-clamp-2 max-w-full">
-          {eventTitle}
-        </h3>
-      </div>
+    <div className="w-full h-full min-h-[400px] rounded-[16px] sm:rounded-[26px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1 select-none border border-black/5">
+      {/* 1. Header (Event Title on top) */}
+      {eventTitle && (
+        <div className="px-2 py-3 sm:px-[18px] sm:py-[18px] flex items-center justify-center shrink-0 min-h-[60px] md:min-h-[80px] border-b border-black/5">
+          <h3 className="text-[16px] md:text-[18px] font-bold text-black text-center uppercase tracking-wider max-w-full" style={{ fontFamily: 'var(--font-heading)' }}>
+            {eventTitle}
+          </h3>
+        </div>
+      )}
 
       {/* 2. Image Section */}
       <div
-        className="w-full h-[240px] sm:h-[280px] md:h-[400px] lg:h-[460px] relative bg-transparent rounded-none overflow-hidden shrink-0 block"
+        className="w-full aspect-[4/3] relative bg-transparent rounded-none overflow-hidden shrink-0 block"
       >
         {imageUrl ? (
           <img
             src={getImageUrl(imageUrl)}
             alt={dogName || 'Winner'}
             loading="lazy"
-            className="w-full h-full block transition-transform duration-300"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', transform: 'scale(1.15)' }}
+            className="w-full h-full block transition-transform duration-300 object-cover"
+            style={{ width: '100%', height: '100%', objectPosition: 'center center', backgroundColor: '#fcfcfc' }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
@@ -61,23 +64,20 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
       </div>
 
       {/* 3. Content Section */}
-      <div className="flex flex-col justify-center items-center text-center px-[12px] md:px-[20px] py-[12px] md:py-[20px] w-full flex-1 bg-white overflow-hidden gap-2 md:gap-4">
-        {/* Award Title */}
-        <div className="w-full flex items-center justify-center shrink-0">
-          <span
-            className="text-[13px] md:text-[18px] font-[700] text-black uppercase text-center w-full whitespace-normal break-words line-clamp-2"
-            style={{
-              lineHeight: '1.25',
-              fontFamily: 'var(--font-heading)'
-            }}
-          >
-            {awardTitle}
-          </span>
-        </div>
+      <div className="flex flex-col justify-start items-center text-center px-[12px] md:px-[20px] py-[16px] md:py-[24px] w-full flex-1 bg-white overflow-hidden gap-3 md:gap-4">
+        
+        {/* Winning Title moved to below image */}
+        {awardTitle && (
+          <div className="w-full flex items-start justify-center shrink-0 mb-1">
+            <h3 className="winning-title text-[15px] md:text-[17px] font-bold text-black uppercase text-center w-full whitespace-normal break-words">
+              {awardTitle}
+            </h3>
+          </div>
+        )}
 
         {/* Dog Name */}
         <div className="w-full flex items-start justify-center shrink-0">
-          <h4 className="text-[13px] md:text-[18px] font-[700] text-black uppercase text-center w-full whitespace-normal break-words line-clamp-2 md:line-clamp-none" style={{ lineHeight: '1.3' }}>
+          <h4 className="text-[14px] md:text-[15px] font-[600] text-black uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.3', fontFamily: 'var(--font-heading)' }}>
             DOG NAME : {dogName || '-'}
           </h4>
         </div>
@@ -85,7 +85,7 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
         {/* Owner Name */}
         {winner.ownerName?.trim() && (
           <div className="w-full flex items-start justify-center shrink-0">
-            <p className="text-[11px] md:text-[15px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words line-clamp-1 md:line-clamp-2" style={{ lineHeight: '1.45' }}>
+            <p className="text-[11px] md:text-[15px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.45' }}>
               OWNER : {winner.ownerName.trim()}
             </p>
           </div>
@@ -94,7 +94,7 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
         {/* Breeder Name */}
         {winner.breederName?.trim() && (
           <div className="w-full flex items-start justify-center shrink-0">
-            <p className="text-[11px] md:text-[15px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words line-clamp-1 md:line-clamp-2" style={{ lineHeight: '1.45' }}>
+            <p className="text-[11px] md:text-[15px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.45' }}>
               BREEDER : {winner.breederName.trim()}
             </p>
           </div>

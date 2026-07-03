@@ -14,14 +14,12 @@ export default function PublicLayoutWrapper({
 
   const normalizedPath = pathname?.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
 
-  // Exclude Navbar and Footer on admin, dashboard, auth pages, and E-Magazine Viewer (but NOT the /e-magazines listing)
   const isExcluded = 
     normalizedPath?.startsWith('/admin') || 
     normalizedPath?.startsWith('/dashboard') || 
     normalizedPath?.startsWith('/login') || 
     normalizedPath?.startsWith('/register') || 
-    normalizedPath?.startsWith('/signup') ||
-    (normalizedPath?.startsWith('/e-magazines/') && normalizedPath !== '/e-magazines');
+    normalizedPath?.startsWith('/signup');
 
   if (isExcluded) {
     return <>{children}</>;

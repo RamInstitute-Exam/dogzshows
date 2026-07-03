@@ -440,7 +440,7 @@ export default function Navbar() {
               <>
                 <Link
                   href={user?.roles?.[0] === 'SUPER_ADMIN' || user?.roles?.[0] === 'ADMIN' ? '/admin' : '/dashboard'}
-                  className="navbar-btn-premium navbar-btn-dashboard hidden sm:flex"
+                  className="navbar-btn-premium navbar-btn-dashboard flex items-center justify-center scale-90 sm:scale-100 origin-right"
                 >
                   DASHBOARD
                 </Link>

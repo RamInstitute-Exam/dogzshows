@@ -365,7 +365,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                         {club.events.map((evt: any) => (
                           <Link
                             key={evt.id}
-                            href={`/shows/${evt.slug || evt.id}`}
+                            href={`/events/detail?slug=${evt.slug || evt.id}`}
                             className="bg-card rounded-2xl border border-border overflow-hidden group block hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
                           >
                             {evt.bannerUrl ? (

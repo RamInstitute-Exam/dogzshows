@@ -64,7 +64,12 @@
     padding-top: var(--nav-height);
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
     font-weight: 400;
     letter-spacing: 1px;
@@ -107,7 +112,8 @@ select:focus {
   @apply border-primary outline-none;
 }
 
-label, .form-label {
+label,
+.form-label {
   font-family: var(--font-body);
   font-weight: 600;
 }
@@ -186,9 +192,14 @@ label, .form-label {
   }
 
   /* --- New Typography Utilities --- */
-  .hero-title, .page-title, .club-name, .section-title, .modal-title {
+  .hero-title,
+  .page-title,
+  .club-name,
+  .section-title,
+  .modal-title {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 4rem); /* Responsive Desktop: 48px, Tablet: 40px, Mobile: 34px max */
+    font-size: clamp(2rem, 4vw, 4rem);
+    /* Responsive Desktop: 48px, Tablet: 40px, Mobile: 34px max */
     font-weight: 400;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -206,13 +217,13 @@ label, .form-label {
 
   .winning-title {
     font-family: var(--font-heading);
-    font-size: clamp(18px, 2.5vw, 24px); /* Mobile 18px, Tablet ~20px, Desktop 24px */
+    font-size: clamp(14px, 2vw, 18px);
+    /* Mobile 14px, Tablet ~16px, Desktop 18px */
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     text-align: center;
     margin-top: 20px;
-    color: var(--foreground);
     line-height: 1.1;
   }
 
@@ -927,9 +938,8 @@ a[role="button"]:not([class*="text-"]) {
   color: var(--background);
 }
 
-/* Explicit fix: any element using bg-background or bg-white should display foreground-colored text */
-.bg-background,
-.bg-white {
+/* Explicit fix: any element using bg-background should display foreground-colored text */
+.bg-background {
   color: var(--foreground);
 }
 
@@ -1850,66 +1860,73 @@ label,
 }
 
 .carousel-wrapper {
-    position: relative;
+  position: relative;
 }
 
 .carousel-prev,
 .carousel-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0,0,0,.15);
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--foreground);
-    transition: all 0.3s ease;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  transition: all 0.3s ease;
 }
 
-.carousel-prev:hover, .carousel-next:hover {
-    background: var(--accent);
-    color: var(--primary);
+.carousel-prev:hover,
+.carousel-next:hover {
+  background: var(--accent);
+  color: var(--primary);
 }
 
 .carousel-prev {
-    left: -28px;
+  left: -28px;
 }
 
 .carousel-next {
-    right: -28px;
+  right: -28px;
 }
 
 @media(max-width:1024px) {
-    .carousel-prev,
-    .carousel-next {
-        width: 48px;
-        height: 48px;
-    }
-    .carousel-prev {
-        left: -16px;
-    }
-    .carousel-next {
-        right: -16px;
-    }
+
+  .carousel-prev,
+  .carousel-next {
+    width: 48px;
+    height: 48px;
+  }
+
+  .carousel-prev {
+    left: -16px;
+  }
+
+  .carousel-next {
+    right: -16px;
+  }
 }
 
 @media(max-width:768px) {
-    .carousel-prev,
-    .carousel-next {
-        width: 40px;
-        height: 40px;
-    }
-    .carousel-prev {
-        left: 8px;
-    }
-    .carousel-next {
-        right: 8px;
-    }
+
+  .carousel-prev,
+  .carousel-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel-prev {
+    left: 8px;
+  }
+
+  .carousel-next {
+    right: 8px;
+  }
 }

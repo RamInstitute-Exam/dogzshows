@@ -12,6 +12,7 @@ import api from '@/lib/api';
 import EventHero from '@/components/events/details/EventHero';
 import EventJudges from '@/components/events/details/EventJudges';
 import OrganizingCommittee from '@/components/events/details/OrganizingCommittee';
+import JudgingPanel from '@/components/events/details/JudgingPanel';
 
 export default function EventDetailClient() {
   const searchParams = useSearchParams();
@@ -146,7 +147,7 @@ export default function EventDetailClient() {
   return (
     <PageContainer>
       {/* Breadcrumb */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-3 md:pt-10 md:pb-6 breadcrumb-container">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-0 md:pt-6 md:pb-2 breadcrumb-container">
         <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground flex-wrap">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="w-4 h-4 shrink-0" />
@@ -162,12 +163,12 @@ export default function EventDetailClient() {
       {/* Section 2: Judges & Organizing Committee */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col gap-12">
-          {event?.judges && event.judges.length > 0 && (
-            <EventJudges judges={event.judges} />
-          )}
-
           {event?.secretaries && event.secretaries.length > 0 && (
             <OrganizingCommittee secretaries={event.secretaries} />
+          )}
+
+          {event?.judgingPanel && event.judgingPanel.length > 0 && (
+            <EventJudges judges={event.judgingPanel} />
           )}
         </div>
       </div>

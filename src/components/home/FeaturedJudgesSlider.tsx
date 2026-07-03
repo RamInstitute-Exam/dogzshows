@@ -50,7 +50,6 @@ export default function FeaturedJudgesSlider({ judges }: FeaturedJudgesSliderPro
                   ) : (
                     <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center text-[#64748b] group-hover:scale-[1.05] transition-transform duration-300">
                       <User className="w-10 h-10 mb-1 opacity-70" />
-                      <span className="text-[9px] font-[700] uppercase tracking-wider text-center px-2 leading-tight">Photo<br/>Coming<br/>Soon</span>
                     </div>
                   )}
                 </div>

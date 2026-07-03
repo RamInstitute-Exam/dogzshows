@@ -1,20 +1,23 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, ArrowLeft, Loader2, ImagePlus, CalendarDays, Settings, Info, MapPin, Trash2, Star, Plus, ChevronUp, ChevronDown, Move, ShieldAlert, Check } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, ImagePlus, CalendarDays, Settings, Info, MapPin, Trash2, Star, Plus, ChevronUp, ChevronDown, Move, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
 import ImageUploader from '@/components/shared/ImageUploader';
-
-export default function CreateEventForm() {
+export default function EditEventClient() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id') as string;
   const router = useRouter();
+  
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [clubs, setClubs] = useState<any[]>([]);
   const [availableJudges, setAvailableJudges] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState('basic');
@@ -68,50 +71,163 @@ export default function CreateEventForm() {
   const [selectedJudges, setSelectedJudges] = useState<any[]>([]); // Array of { judgeId, name, isChiefJudge, displayOrder, remarks }
 
   // State for secretaries:
-  const [secretaries, setSecretaries] = useState<any[]>([
-    {
-      name: '',
-      designation: 'Hony. Secretary',
-      mobile: '',
-      alternateMobile: '',
-      phone: '',
-      email: '',
-      alternateEmail: '',
-      address: '',
-      addressLine2: '',
-      city: '',
-      state: '',
-      pincode: '',
-      country: 'India',
-      website: ''
-    }
-  ]);
+  const [secretaries, setSecretaries] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchClubs();
-    fetchJudges();
-  }, []);
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
 
-  const fetchClubs = async () => {
+  const fetchData = async () => {
+    setFetchLoading(true);
     try {
-      const res = await api.get('/public/clubs?limit=1000');
-      if (res.success) {
-        setClubs(res.data || []);
+      const [clubsRes, judgesRes, eventRes] = await Promise.all([
+        api.get('/public/clubs?limit=1000'),
+        api.get('/public/judges?limit=1000'),
+        api.get(`/shows/${id}`)
+      ]);
+      
+      if (clubsRes?.success) {
+        setClubs(clubsRes.data || []);
+      }
+
+      if (judgesRes?.success) {
+        setAvailableJudges(judgesRes.data || []);
+      }
+      
+      if (eventRes?.success && eventRes.data) {
+        const ev = eventRes.data;
+        
+        const formatDateInput = (isoStr: string | null | undefined) => {
+          if (!isoStr) return '';
+          return new Date(isoStr).toISOString().split('T')[0];
+        };
+
+        const formatDateTimeLocalInput = (isoStr: string | null | undefined) => {
+          if (!isoStr) return '';
+          const d = new Date(isoStr);
+          const tzOffset = d.getTimezoneOffset() * 60000;
+          const localISOTime = new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
+          return localISOTime;
+        };
+
+        const splitAddress = (addressStr: string | null) => {
+          if (!addressStr) return { address: '', addressLine2: '' };
+          const parts = addressStr.split('\n');
+          return {
+            address: parts[0] || '',
+            addressLine2: parts.slice(1).join('\n') || ''
+          };
+        };
+
+        setFormData({
+          name: ev.name || '',
+          slug: ev.slug || '',
+          type: ev.type || 'CHAMPIONSHIP',
+          clubId: ev.clubId || '',
+          venue: ev.venue || '',
+          address: ev.address || '',
+          city: ev.city || '',
+          state: ev.state || '',
+          country: ev.country || 'India',
+          latitude: ev.latitude !== null ? String(ev.latitude) : '',
+          longitude: ev.longitude !== null ? String(ev.longitude) : '',
+          startDate: formatDateInput(ev.startDate),
+          endDate: formatDateInput(ev.endDate),
+          startTime: ev.startTime || '09:00',
+          endTime: ev.endTime || '18:00',
+          registrationWindowStart: formatDateTimeLocalInput(ev.registrationWindowStart),
+          registrationWindowEnd: formatDateTimeLocalInput(ev.registrationWindowEnd),
+          capacity: ev.capacity || 100,
+          entryFee: ev.entryFee || 1500,
+          rules: ev.rules || '',
+          description: ev.description || '',
+          bannerUrl: ev.bannerUrl || '',
+          status: ev.status || 'DRAFT',
+          isFeatured: ev.isFeatured || false
+        });
+
+        // Map Judges
+        if (ev.masterJudges && ev.masterJudges.length > 0) {
+          setSelectedJudges(
+            ev.masterJudges.map((j: any) => ({
+              judgeId: j.judgeId,
+              name: j.name,
+              isChiefJudge: !!j.isChiefJudge,
+              displayOrder: j.displayOrder || 1,
+              remarks: j.remarks || ''
+            }))
+          );
+        } else {
+          setSelectedJudges([]);
+        }
+
+        // Map Secretaries
+        if (ev.secretaries && ev.secretaries.length > 0) {
+          setSelectedSecretariesState(ev.secretaries, splitAddress);
+        } else {
+          setSecretaries([
+            {
+              name: '',
+              designation: 'Hony. Secretary',
+              mobile: '',
+              alternateMobile: '',
+              phone: '',
+              email: '',
+              alternateEmail: '',
+              address: '',
+              addressLine2: '',
+              city: '',
+              state: '',
+              pincode: '',
+              country: 'India',
+              website: ''
+            }
+          ]);
+        }
+
+        if (ev.customJudges && ev.customJudges.length > 0) {
+          setCustomJudges(ev.customJudges.map((cj: any) => ({
+            judge_name: cj.name
+          })));
+        } else {
+          setCustomJudges([]);
+        }
+      } else {
+        toast.error('Event details not found');
+        router.push('/admin/events');
       }
     } catch (error) {
-      console.error('Failed to fetch clubs');
+      console.error('Failed to fetch edit data:', error);
+      toast.error('Failed to load show details');
+    } finally {
+      setFetchLoading(false);
     }
   };
 
-  const fetchJudges = async () => {
-    try {
-      const res = await api.get('/public/judges?limit=1000');
-      if (res.success) {
-        setAvailableJudges(res.data || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch judges');
-    }
+  const setSelectedSecretariesState = (secretariesList: any[], splitAddressFn: any) => {
+    setSecretaries(
+      secretariesList.map((s: any) => {
+        const addrInfo = splitAddressFn(s.address);
+        return {
+          name: s.name || '',
+          designation: s.designation || 'Secretary',
+          mobile: s.mobile || '',
+          alternateMobile: s.alternateMobile || '',
+          phone: s.phone || '',
+          email: s.email || '',
+          alternateEmail: s.alternateEmail || '',
+          address: addrInfo.address,
+          addressLine2: addrInfo.addressLine2,
+          city: s.city || '',
+          state: s.state || '',
+          pincode: s.pincode || '',
+          country: s.country || 'India',
+          website: s.website || ''
+        };
+      })
+    );
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -121,17 +237,10 @@ export default function CreateEventForm() {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
     } else {
-      setFormData(prev => {
-        const nextState = {
-          ...prev,
-          [name]: type === 'number' ? Number(value) : value
-        };
-        // Auto-generate slug from name if slug was not manually edited yet
-        if (name === 'name' && !prev.slug) {
-          nextState.slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        }
-        return nextState;
-      });
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'number' ? Number(value) : value
+      }));
     }
   };
 
@@ -350,16 +459,16 @@ export default function CreateEventForm() {
         secretaries: formattedSecretaries
       };
 
-      const res = await api.post('/shows', payload);
+      const res = await api.put(`/shows/${id}`, payload);
       if (res.success) {
-        toast.success('Dog show published successfully!');
+        toast.success('Dog show updated successfully!');
         router.push('/admin/events');
       } else {
-        toast.error(res.message || 'Failed to publish event');
+        toast.error(res.message || 'Failed to update event');
       }
     } catch (error: any) {
       console.error('Submit error:', error);
-      toast.error(error.message || 'An error occurred during submission');
+      toast.error(error.message || 'An error occurred during update');
     } finally {
       setLoading(false);
     }
@@ -373,6 +482,14 @@ export default function CreateEventForm() {
     { id: 'media', label: 'Banners & Media', icon: ImagePlus }
   ];
 
+  if (fetchLoading) {
+    return (
+      <div className="w-full flex justify-center items-center py-24">
+        <Loader2 className="w-12 h-12 animate-spin text-foreground" />
+      </div>
+    );
+  }
+
   // Filtering judges
   const filteredJudges = availableJudges.filter(judge =>
     judge.name.toLowerCase().includes(searchJudgeQuery.toLowerCase())
@@ -381,7 +498,6 @@ export default function CreateEventForm() {
   return (
     <div className="w-full max-w-[1800px] mx-auto px-4 md:px-6 py-6 space-y-6">
           
-          {/* Top Sticky Bar */}
           <div className="flex justify-between items-center bg-card p-6 rounded-2xl border border-border shadow-xl sticky top-4 z-50">
             <div className="flex items-center gap-4">
               <Link href="/admin/events">
@@ -390,7 +506,7 @@ export default function CreateEventForm() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Create New Show Event</h1>
+                <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Edit Show Event</h1>
                 <p className="text-muted-foreground text-sm mt-1">Configure event rules, ticketing, and scheduling.</p>
               </div>
             </div>
@@ -402,7 +518,7 @@ export default function CreateEventForm() {
                 <option value="COMPLETED">Completed</option>
               </select>
               <AdminButton onClick={handleSubmit} loading={loading} variant="primary" leftIcon={loading ? undefined : <Save className="w-4 h-4" />}>
-                Publish Event
+                Save Changes
               </AdminButton>
             </div>
           </div>
@@ -445,7 +561,7 @@ export default function CreateEventForm() {
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-bold text-muted-foreground mb-2">Slug URL (auto-generated)</label>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">Slug URL</label>
                         <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 50th-all-india-championship" />
                       </div>
                     </div>

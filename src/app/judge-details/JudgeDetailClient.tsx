@@ -67,7 +67,6 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
               ) : (
                 <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center text-[#64748b]">
                   <User className="w-16 h-16 mb-2 opacity-70" />
-                  <span className="text-sm font-[700] uppercase tracking-wider text-center px-2 leading-tight">Photo<br/>Coming<br/>Soon</span>
                 </div>
               )}
               {judge.isFeatured && (

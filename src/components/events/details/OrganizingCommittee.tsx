@@ -48,13 +48,15 @@ export default function OrganizingCommittee({ secretaries }: { secretaries: any[
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <Mail className="w-4 h-4 text-foreground shrink-0 mt-0.5" />
-                  <div className="space-y-1 text-foreground break-all">
-                    <p>{sec.email}</p>
-                    {sec.alternateEmail && <p className="text-xs text-muted-foreground font-medium">Alt Email: {sec.alternateEmail}</p>}
+                {(sec.email || sec.alternateEmail) && (
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-4 h-4 text-foreground shrink-0 mt-0.5" />
+                    <div className="space-y-1 text-foreground break-all">
+                      {sec.email && <p>{sec.email}</p>}
+                      {sec.alternateEmail && <p className="text-xs text-muted-foreground font-medium">Alt Email: {sec.alternateEmail}</p>}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {sec.address && (
                   <div className="flex items-start gap-3">

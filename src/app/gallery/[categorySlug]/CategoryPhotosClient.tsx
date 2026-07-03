@@ -65,7 +65,7 @@ export default function CategoryPhotosClient({ params }: { params: Promise<{ cat
         {/* Background Image & Gradient Overlays */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <OptimizedImage
-            src="https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=2000&auto=format&fit=crop"
+            src="/images/gallery_banner.png"
             alt={categoryName}
             className="w-full h-full object-cover"
           />
