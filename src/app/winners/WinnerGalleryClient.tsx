@@ -111,8 +111,8 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
 
   return (
     <div className="space-y-8">
-      {/* PREMIUM STICKY FILTER BAR */}
-      <div className="sticky top-[60px] md:top-[80px] z-40 w-full bg-background/95 backdrop-blur-md py-3 md:py-6 border-b border-border/40 -mx-4 px-0 md:mx-0 md:px-0">
+      {/* PREMIUM STICKY FILTER BAR - Hidden as requested */}
+      {/* <div className="sticky top-[60px] md:top-[80px] z-40 w-full bg-background/95 backdrop-blur-md py-3 md:py-6 border-b border-border/40 -mx-4 px-0 md:mx-0 md:px-0">
         <div className="flex overflow-x-auto hide-scrollbar gap-2 md:gap-3 flex-nowrap md:flex-wrap md:justify-center w-full max-w-[100vw] scroll-smooth px-4 md:px-0">
           {FILTER_CHIPS.map(chip => (
             <button
@@ -130,7 +130,7 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div className="space-y-6">
         {loading ? (
@@ -144,7 +144,7 @@ export default function WinnerGalleryClient({ allWinners, hallOfFameWinners }: W
               <div className="flex justify-center pt-8 pb-12">
                 <button
                   onClick={() => setVisibleCount(prev => prev + 12)}
-                  className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-xl shadow-lg transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-10 py-3.5 rounded-full font-bold text-[15px] tracking-wider uppercase border-2 border-foreground bg-foreground text-background hover:bg-transparent hover:text-foreground transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   Load More Winners
                 </button>

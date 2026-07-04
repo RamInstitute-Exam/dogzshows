@@ -1,260 +1,213 @@
 'use client';
 
-import { Calendar, MapPin, Share2, Download, Timer, Trophy, Users, Award } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { Calendar, MapPin, Timer, Trophy, Users, Award } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
 import { toTitleCase, formatTitle } from '@/lib/utils';
+import { getImageUrl } from '@/lib/api';
+
+// ── Priority image resolver ──────────────────────────────────────────────────
+function resolveHeroImage(event: any): string {
+  const candidates = [
+    event?.bannerUrl,
+    event?.featuredImage,
+    event?.ogImage,
+    event?.cardImage,
+    event?.mobileBanner,
+    event?.club?.bannerUrl,
+    event?.club?.logoUrl,
+  ];
+
+  for (const raw of candidates) {
+    if (raw && typeof raw === 'string' && raw.trim()) {
+      return getImageUrl(raw);
+    }
+  }
+
+  // High-quality default championship background
+  return '/images/events_banner.png';
+}
 
 export default function EventHero({ event }: { event: any }) {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  // Parallax: image moves up slightly as user scrolls down
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+
+  const heroImageSrc = resolveHeroImage(event);
+
   const formattedDate = event?.date
     ?? (event?.startDate
-      ? new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      ? new Date(event.startDate).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
       : 'TBA');
 
   const venue = toTitleCase(event?.venue ?? event?.location ?? event?.city) || 'TBA';
   const closingDate = event?.closingDate ?? event?.registrationWindowEnd ?? '-';
-  const entryFee = event?.entryFee != null ? `₹${event.entryFee}` : '-';
+  const entryFee = event?.entryFee != null ? `₹${Number(event.entryFee).toLocaleString('en-IN')}` : '-';
 
   return (
-    <div className="relative w-full min-h-[320px] md:min-h-[480px] overflow-hidden flex items-start pt-4 md:pt-8">
-      
-      {/* ── Background Image (always present) ── */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={event?.bannerUrl || '/images/events_banner.png'}
-          alt={event?.name ?? 'Event Banner'}
-          className="w-full h-full object-cover object-top"
-          loading="eager"
-        />
-        {/* 
-          Adaptive overlay:
-          Light mode → white gradient left→right so dark text is readable
-          Dark  mode → dark gradient left→right so white text is readable
-        */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(90deg, var(--hero-overlay-start) 0%, var(--hero-overlay-mid) 40%, var(--hero-overlay-end) 100%)',
-          }}
-        />
-      </div>
-
-      {/* ── CSS variables injected per theme ── */}
-      <style>{`
-        :root {
-          --hero-overlay-start: rgba(255,255,255,0.95);
-          --hero-overlay-mid:   rgba(255,255,255,0.75);
-          --hero-overlay-end:   rgba(255,255,255,0.30);
-          --hero-title:         #111827;
-          --hero-desc:          #374151;
-          --hero-meta:          #4B5563;
-          --hero-label:         #6B7280;
-          --hero-border:        rgba(0,0,0,0.10);
-          --hero-card-bg:       rgba(255,255,255,0.90);
-          --hero-card-border:   rgba(0,0,0,0.08);
-          --hero-card-text:     #111827;
-          --hero-card-muted:    #4B5563;
-          --hero-badge-border:  rgba(0,0,0,0.12);
-          --hero-btn-sec-text:  #111827;
-          --hero-btn-sec-border:rgba(0,0,0,0.25);
-          --hero-btn-sec-hover: rgba(0,0,0,0.07);
-        }
-        .dark {
-          --hero-overlay-start: rgba(0,0,0,0.85);
-          --hero-overlay-mid:   rgba(0,0,0,0.60);
-          --hero-overlay-end:   rgba(0,0,0,0.25);
-          --hero-title:         #FFFFFF;
-          --hero-desc:          rgba(255,255,255,0.85);
-          --hero-meta:          rgba(255,255,255,0.75);
-          --hero-label:         rgba(255,255,255,0.55);
-          --hero-border:        rgba(255,255,255,0.12);
-          --hero-card-bg:       rgba(18,18,18,0.80);
-          --hero-card-border:   rgba(255,255,255,0.12);
-          --hero-card-text:     #FFFFFF;
-          --hero-card-muted:    rgba(255,255,255,0.65);
-          --hero-badge-border:  rgba(255,255,255,0.20);
-          --hero-btn-sec-text:  #FFFFFF;
-          --hero-btn-sec-border:rgba(255,255,255,0.30);
-          --hero-btn-sec-hover: rgba(255,255,255,0.10);
-        }
-      `}</style>
-
-      {/* ── Content ── */}
-      <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 pt-2 pb-8 md:pt-4 md:pb-12">
-
-        {/* Left: Text Content */}
+    <div
+      ref={heroRef}
+      className="relative w-full overflow-hidden"
+      style={{ height: 'clamp(300px, 52vw, 600px)' }}
+    >
+      {/* ── BACKGROUND IMAGE with Ken Burns + Parallax ── */}
+      <motion.div
+        className="absolute inset-0 z-0"
+        style={{ y: imgY }}
+      >
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex-1 max-w-2xl"
+          className="w-full h-full"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.06 }}
+          transition={{ duration: 12, ease: 'linear', repeat: Infinity, repeatType: 'mirror' }}
         >
-          {/* Badges */}
-          <div className="flex gap-3 mb-6 flex-wrap">
-            {/* Status badge — always orange bg, white text → visible on any bg */}
-            <span className="px-4 py-1.5 bg-foreground text-white font-bold text-xs uppercase tracking-widest rounded-full shadow-md">
-              {event?.status ?? 'Open'}
-            </span>
-            {/* Type badge — adaptive border + text */}
-            <span
-              className="px-4 py-1.5 backdrop-blur-sm font-bold text-xs uppercase tracking-widest rounded-full"
+          <Image
+            src={heroImageSrc}
+            alt={event?.name ?? 'Event Banner'}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+            style={{ willChange: 'transform' }}
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* ── GRADIENT OVERLAY — bottom-up for text readability ── */}
+      <div
+        className="absolute inset-0 z-10"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.52) 45%, rgba(0,0,0,0.82) 100%)',
+        }}
+      />
+
+      {/* ── CONTENT ── */}
+      <div className="absolute inset-0 z-20 flex items-end">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12 flex flex-col md:flex-row items-end md:items-end justify-between gap-6 md:gap-8">
+
+          {/* LEFT — Event Info */}
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="flex-1 max-w-2xl"
+          >
+            {/* Badges */}
+            <div className="flex gap-2 mb-4 flex-wrap">
+              <span className="px-3.5 py-1 bg-white text-black font-bold text-[11px] uppercase tracking-[1.5px] rounded-full shadow-lg">
+                {event?.status ?? 'Open'}
+              </span>
+              {event?.type && (
+                <span className="px-3.5 py-1 bg-white/15 text-white backdrop-blur-sm font-semibold text-[11px] uppercase tracking-[1.5px] rounded-full border border-white/25">
+                  {event.type}
+                </span>
+              )}
+            </div>
+
+            {/* Title */}
+            <h1
+              className="font-extrabold tracking-tight text-white mb-3 leading-[1.05]"
               style={{
-                border: '1px solid var(--hero-badge-border)',
-                color: 'var(--hero-meta)',
-                background: 'var(--hero-card-bg)',
+                fontSize: 'clamp(1.6rem, 4vw, 3.2rem)',
+                textShadow: '0 4px 24px rgba(0,0,0,0.6)',
+                fontWeight: 800,
               }}
             >
-              {event?.type ?? 'Show'}
-            </span>
-          </div>
+              {formatTitle(event?.name) || 'Event Details'}
+            </h1>
 
-          {/* Title */}
-          <h1
-            className="text-3xl md:text-4xl lg:text-[52px] font-extrabold tracking-tight mb-4 leading-tight normal-case"
-            style={{
-              color: 'var(--hero-title)',
-              textShadow: '0 2px 10px rgba(0,0,0,0.15)',
-              fontWeight: 800,
-              lineHeight: 1.1,
-            }}
-          >
-            {formatTitle(event?.name) || 'Event Details'}
-          </h1>
+            {/* Description */}
+            <p
+              className="text-base font-medium mb-6 leading-relaxed max-w-lg"
+              style={{
+                color: 'rgba(255,255,255,0.82)',
+                textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+              }}
+            >
+              Register your dogs in India's most prestigious
+              {event?.type ? ` ${toTitleCase(event.type)}` : ''} championship, hosted by{' '}
+              <strong className="text-white font-bold">
+                {toTitleCase(event?.club?.name) || 'KCI Official'}
+              </strong>.
+            </p>
 
-          {/* Description */}
-          <p
-            className="text-lg font-medium mb-8 leading-relaxed max-w-xl"
-            style={{ color: 'var(--hero-desc)' }}
-          >
-            Register your dogs in India's most prestigious{event?.type ? ` ${toTitleCase(event.type)}` : ''} championship,
-            hosted by{' '}
-            <strong style={{ color: 'var(--hero-title)' }}>
-              {toTitleCase(event?.club?.name) || 'KCI Official'}
-            </strong>.
-          </p>
-
-          {/* Date & Venue */}
-          <div className="flex flex-wrap gap-6 font-medium mb-8">
-            {/* Date */}
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: 'var(--hero-border)', border: '1px solid var(--hero-badge-border)' }}
-              >
-                <Calendar className="w-5 h-5" style={{ color: 'var(--hero-meta)' }} />
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--hero-label)' }}>
-                  Date
-                </p>
-                <p className="font-bold" style={{ color: 'var(--hero-meta)' }}>{formattedDate}</p>
-              </div>
-            </div>
-            {/* Venue */}
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: 'var(--hero-border)', border: '1px solid var(--hero-badge-border)' }}
-              >
-                <MapPin className="w-5 h-5" style={{ color: 'var(--hero-meta)' }} />
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--hero-label)' }}>
-                  Venue
-                </p>
-                <p className="font-bold" style={{ color: 'var(--hero-meta)' }}>{venue}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons - Temporarily hidden */}
-          {false && (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-              {/* Primary CTA: theme-aware – dark bg + white text in dark mode, dark bg + white text in light mode */}
-              <button
-                className="w-full sm:w-auto h-[52px] px-8 font-bold text-base rounded-[14px] transition-all duration-300 hover:scale-[1.02] hover:opacity-90"
-                style={{
-                  background: 'var(--hero-card-text)',
-                  color: 'var(--hero-overlay-start)',
-                  boxShadow: '0 0 28px rgba(0,0,0,0.25)',
-                }}
-              >
-                Register Now
-              </button>
-              {/* Secondary: adaptive */}
-              <button
-                className="w-full sm:w-auto h-[52px] px-6 font-bold text-base rounded-[14px] flex items-center justify-center gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
-                style={{
-                  color: 'var(--hero-btn-sec-text)',
-                  border: '1.5px solid var(--hero-btn-sec-border)',
-                  background: 'transparent',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hero-btn-sec-hover)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-              >
-                <Download className="w-4 h-4" /> Schedule
-              </button>
-              <button
-                className="w-full sm:w-auto h-[52px] px-6 font-bold text-base rounded-[14px] flex items-center justify-center gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
-                style={{
-                  color: 'var(--hero-btn-sec-text)',
-                  border: '1.5px solid var(--hero-btn-sec-border)',
-                  background: 'transparent',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hero-btn-sec-hover)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-              >
-                <Share2 className="w-4 h-4" /> Share
-              </button>
-            </div>
-          )}
-        </motion.div>
-
-        {/* Right: Snapshot Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="hidden lg:block w-[360px] rounded-[28px] p-8 shadow-2xl relative overflow-hidden shrink-0"
-          style={{
-            background: 'var(--hero-card-bg)',
-            border: '1px solid var(--hero-card-border)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-          }}
-        >
-          {/* Decorative icon */}
-          <div className="absolute -right-8 -top-8 opacity-[0.06]">
-            <Trophy className="w-44 h-44" style={{ color: 'var(--hero-card-text)' }} />
-          </div>
-
-          <h3 className="font-extrabold text-xl mb-6" style={{ color: 'var(--hero-card-text)' }}>
-            Event Snapshot
-          </h3>
-
-          <div className="space-y-5 relative z-10">
-            {/* Row helper */}
-            {([
-              { icon: Timer,  label: 'Registration Ends', value: closingDate,                   size: 'text-sm' },
-              { icon: Users,  label: 'Slots Left',        value: event?.availableSlots ?? '-',  size: 'text-sm' },
-              { icon: Award,  label: 'Prize Pool',        value: event?.prizePool ?? '-',       size: 'text-lg text-foreground' },
-              { icon: Trophy, label: 'Entry Fee',         value: entryFee,                       size: 'text-2xl font-extrabold' },
-            ] as const).map(({ icon: Icon, label, value, size }, idx, arr) => (
-              <div
-                key={label}
-                className={`flex justify-between items-center ${idx < arr.length - 1 ? 'pb-4' : ''}`}
-                style={idx < arr.length - 1 ? { borderBottom: '1px solid var(--hero-card-border)' } : {}}
-              >
-                <div className="flex items-center gap-3 text-sm font-medium" style={{ color: 'var(--hero-card-muted)' }}>
-                  <Icon className="w-4 h-4 text-foreground shrink-0" /> {label}
-                </div>
-                <span className={`font-bold ${size}`} style={{ color: size.includes('#FFFFFF') ? '#FFFFFF' : 'var(--hero-card-text)' }}>
-                  {value as string}
+            {/* Date & Venue chips */}
+            <div className="flex flex-wrap gap-3">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2">
+                <Calendar className="w-4 h-4 text-white/70 shrink-0" />
+                <span className="text-[13px] font-semibold text-white/90 uppercase tracking-wider">
+                  {formattedDate}
                 </span>
               </div>
-            ))}
-          </div>
-        </motion.div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2">
+                <MapPin className="w-4 h-4 text-white/70 shrink-0" />
+                <span className="text-[13px] font-semibold text-white/90 uppercase tracking-wider">
+                  {venue}
+                </span>
+              </div>
+            </div>
+          </motion.div>
 
+          {/* RIGHT — Event Snapshot Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="hidden lg:block w-[340px] rounded-[24px] p-7 shadow-2xl relative overflow-hidden shrink-0"
+            style={{
+              background: 'rgba(10,10,10,0.72)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+            }}
+          >
+            {/* Subtle decorative glow */}
+            <div className="absolute -right-6 -top-6 opacity-[0.07] pointer-events-none">
+              <Trophy className="w-36 h-36 text-white" />
+            </div>
+
+            <h3 className="font-extrabold text-[15px] uppercase tracking-[2px] text-white mb-5">
+              Event Snapshot
+            </h3>
+
+            <div className="space-y-4 relative z-10">
+              {([
+                { icon: Timer, label: 'Registration Ends', value: closingDate, highlight: false },
+                { icon: Users, label: 'Slots Left', value: event?.availableSlots ?? '-', highlight: false },
+                { icon: Award, label: 'Prize Pool', value: event?.prizePool ?? '-', highlight: false },
+                { icon: Trophy, label: 'Entry Fee', value: entryFee, highlight: true },
+              ] as { icon: React.ElementType; label: string; value: string; highlight: boolean }[]).map(({ icon: Icon, label, value, highlight }, idx, arr) => (
+                <div
+                  key={label}
+                  className={`flex justify-between items-center ${idx < arr.length - 1 ? 'pb-4' : ''}`}
+                  style={idx < arr.length - 1 ? { borderBottom: '1px solid rgba(255,255,255,0.10)' } : {}}
+                >
+                  <div className="flex items-center gap-2.5 text-[13px] font-medium text-white/55">
+                    <Icon className="w-4 h-4 text-white/40 shrink-0" />
+                    {label}
+                  </div>
+                  <span
+                    className={`font-bold ${highlight ? 'text-xl text-white' : 'text-sm text-white/80'}`}
+                  >
+                    {value as string}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+        </div>
       </div>
     </div>
   );

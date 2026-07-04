@@ -72,14 +72,45 @@ function SlidingPhotoSectionCarousel({
 }) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Limit display to the latest 15 photos
   const slicedImages = (section.images || []).slice(0, 15);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!swiperInstance || !swiperInstance.autoplay) return;
+    if (inView) {
+      swiperInstance.autoplay.start();
+    } else {
+      swiperInstance.autoplay.stop();
+    }
+  }, [inView, swiperInstance]);
+
   if (slicedImages.length === 0) return null;
 
   return (
-    <section key={section.id} className="premium-section-spacing overflow-hidden relative border-b border-border/40 last:border-b-0">
+    <section ref={containerRef} key={section.id} className="premium-section-spacing overflow-hidden relative border-b border-border/40 last:border-b-0">
       <div className="premium-container relative z-10">
         
         {/* Header */}
@@ -116,6 +147,9 @@ function SlidingPhotoSectionCarousel({
               // @ts-ignore
               swiper.params.navigation.nextEl = nextEl;
             }}
+            onSwiper={(swiper) => {
+              setSwiperInstance(swiper);
+            }}
             autoplay={{
               delay: 4500,
               disableOnInteraction: false,
@@ -127,7 +161,7 @@ function SlidingPhotoSectionCarousel({
               640: { slidesPerView: 2, spaceBetween: 20 },
               1024: { slidesPerView: 4, spaceBetween: 24 },
             }}
-            className="!pb-12 photos-swiper premium-carousel-track !h-auto min-h-0"
+            className="!pb-4 sm:!pb-12 photos-swiper premium-carousel-track !h-auto min-h-0"
           >
             {slicedImages.map((img: any, idx: number) => (
               <SwiperSlide key={img.id || idx} className="!h-auto flex">

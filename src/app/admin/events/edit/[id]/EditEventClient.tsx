@@ -212,10 +212,17 @@ export default function EditEventClient() {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: type === 'number' ? Number(value) : value
-      }));
+      setFormData(prev => {
+        const nextState = {
+          ...prev,
+          [name]: type === 'number' ? Number(value) : value
+        };
+        // Auto-generate slug from name continuously since it's hidden
+        if (name === 'name') {
+          nextState.slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        }
+        return nextState;
+      });
     }
   };
 
@@ -528,16 +535,14 @@ export default function EditEventClient() {
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">General Details</h2>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Event Title *</label>
                         <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="E.g., 50th All India Championship Dog Show" />
                       </div>
                       
-                      <div>
-                        <label className="block text-sm font-bold text-muted-foreground mb-2">Slug URL</label>
-                        <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="e.g. 50th-all-india-championship" />
-                      </div>
+                      {/* Slug URL is hidden but auto-generated from title */}
+                      <input type="hidden" name="slug" value={formData.slug} />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

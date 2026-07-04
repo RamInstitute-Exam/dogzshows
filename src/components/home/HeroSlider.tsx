@@ -1,17 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination, Keyboard } from 'swiper/modules';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform, Variants } from 'framer-motion';
 import { getImageUrl } from '@/lib/api';
-import Spinner from '@/components/common/loader/Spinner';
-
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import OptimizedImage from '@/components/shared/OptimizedImage';
+import Link from 'next/link';
 
 export interface HeroBannerData {
   id: string;
@@ -28,526 +22,528 @@ interface HeroSliderProps {
   banners: HeroBannerData[];
 }
 
-function SlideImage({ src, alt, onFail, isFirst, onClick, onLoadSuccess }: { src: string; alt: string; onFail: () => void, isFirst?: boolean, onClick?: () => void, onLoadSuccess?: () => void }) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+// Helper function to render a premium dark shimmer SVG placeholder
+const shimmer = (w: number, h: number) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#111" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#111" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#111" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.2s" repeatCount="indefinite"  />
+</svg>`;
 
-  // Safety fallback: if the image takes too long or onLoad fails to trigger from browser cache
+const toBase64 = (str: string) =>
+  typeof window === 'undefined'
+    ? Buffer.from(str).toString('base64')
+    : window.btoa(str);
+
+// ── Single slide ──────────────────────────────────────────────────────────────
+function BannerSlide({
+  banner,
+  isActive,
+  isPriority,
+  direction,
+}: {
+  banner: HeroBannerData;
+  isActive: boolean;
+  isPriority: boolean;
+  direction: number;
+}) {
+  const imgSrc = getImageUrl(banner.imageUrl);
+  const href   = banner.redirectUrl?.trim();
+  
+  // Smart Image Rendering state
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+  const [isPortrait, setIsPortrait] = useState<boolean>(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // Parallax bindings: Background moves 30%, Card moves 10%
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 1000], [0, 300]);
+  const imageY = useTransform(scrollY, [0, 1000], [0, 100]);
+
+  const handleImageLoad = (e: any) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    if (naturalWidth && naturalHeight) {
+      setAspectRatio(naturalWidth / naturalHeight);
+      setIsPortrait(naturalWidth < naturalHeight);
+    }
+  };
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth) {
+      setAspectRatio(img.naturalWidth / img.naturalHeight);
+      setIsPortrait(img.naturalWidth < img.naturalHeight);
+    }
+  }, [banner.imageUrl]);
 
-  if (error) return null; // Don't render broken images, let parent slide handle empty space
+  // Exit and Enter variants for cinematic OTT transitions
+  const slideVariants: Variants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? 120 : -120,
+      opacity: 0,
+      filter: 'blur(15px)',
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      filter: 'blur(0px)',
+      transition: {
+        x: { type: 'spring' as const, stiffness: 300, damping: 30 },
+        opacity: { duration: 0.6 },
+        filter: { duration: 0.6 },
+      },
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? -120 : 120,
+      opacity: 0,
+      filter: 'blur(15px)',
+      transition: {
+        x: { duration: 0.5, ease: 'easeInOut' },
+        opacity: { duration: 0.4 },
+        filter: { duration: 0.4 },
+      },
+    }),
+  };
 
   return (
-    <div
-      className={`relative w-full h-full hero-slide bg-[#0a0a0a] overflow-hidden ${onClick ? 'cursor-zoom-in' : ''}`}
-      onClick={onClick}
+    <motion.div
+      className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black"
+      variants={slideVariants}
+      custom={direction}
+      initial="enter"
+      animate="center"
+      exit="exit"
     >
-      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden pointer-events-none">
+      {/* Layer 1: Blurred cinematic background */}
+      <motion.div 
+        className="absolute inset-0 w-full h-full overflow-hidden select-none pointer-events-none"
+        style={{ y: bgY }}
+      >
         <Image
-          src={src}
-          alt="blur background"
+          src={imgSrc}
+          alt=""
           fill
-          className="object-cover blur-[50px] opacity-60 scale-[1.2]"
+          priority={isPriority}
           quality={30}
-          priority={isFirst}
-        />
-      </div>
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <Image src="/Untitled-1.png" unoptimized alt="Loading" width={100} height={100} className="w-[100px] h-auto animate-pulse opacity-30" priority />
-        </div>
-      )}
-      
-      {/* ── CINEMATIC OVERLAYS ── */}
-      <div className="absolute inset-0 z-20 pointer-events-none bg-gradient-to-b from-black/10 via-transparent to-transparent opacity-80" />
-      <div className="absolute inset-0 z-20 pointer-events-none luxury-light-sweep" />
-      <div className="hero-slide-image-container relative z-10 w-full h-full">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="hero-image-render"
-          priority={isFirst}
-          quality={100}
           sizes="100vw"
-          onLoad={(e) => {
-            setLoading(false);
-            if (onLoadSuccess) onLoadSuccess();
-          }}
-          onError={() => {
-            setError(true);
-            setLoading(false);
-            onFail();
-          }}
-          style={{
-            display: "block"
-          }}
+          className="object-cover scale-[1.3] filter blur-[40px] brightness-[45%] opacity-80"
         />
+      </motion.div>
+
+      {/* Layer 2: Dark cinematic gradient overlay */}
+      <div 
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{
+          background: 'linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.75) 100%)'
+        }}
+      />
+
+      {/* Layer 3: Actual clear image centered above */}
+      <div className="absolute inset-0 z-20 flex items-center justify-center p-4 sm:p-8 md:p-12 overflow-hidden w-full h-full">
+        {/* Subtle floating animation */}
+        <motion.div
+          animate={{
+            y: [0, -8, 0],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{ y: imageY }}
+          className="flex items-center justify-center w-full h-full relative"
+        >
+          {/* Card element - sizes dynamically via aspect ratio & CSS rules */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.25, 1, 0.5, 1] }}
+            className={`jd-banner-card ${isPortrait ? 'portrait' : 'landscape'}`}
+            style={{ 
+              ['--aspect-ratio' as any]: aspectRatio ? `${aspectRatio}` : '1.6'
+            }}
+          >
+            {href ? (
+              <Link
+                href={href}
+                target={banner.openNewTab ? '_blank' : '_self'}
+                rel="noopener noreferrer"
+                className="absolute inset-0 block w-full h-full overflow-hidden"
+              >
+                {/* Ken Burns zooming container */}
+                <motion.div
+                  className="w-full h-full relative"
+                  animate={{
+                    scale: [1, 1.05],
+                  }}
+                  transition={{
+                    duration: 8,
+                    ease: 'linear',
+                  }}
+                >
+                  <Image
+                    ref={imgRef}
+                    src={imgSrc}
+                    alt={banner.title || 'JuzDog Championship Banner'}
+                    fill
+                    priority={isPriority}
+                    quality={100}
+                    onLoad={handleImageLoad}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 85vw"
+                    className="object-cover object-center"
+                    placeholder="blur"
+                    blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
+                  />
+                </motion.div>
+              </Link>
+            ) : (
+              <div className="absolute inset-0 w-full h-full overflow-hidden">
+                {/* Ken Burns zooming container */}
+                <motion.div
+                  className="w-full h-full relative"
+                  animate={{
+                    scale: [1, 1.05],
+                  }}
+                  transition={{
+                    duration: 8,
+                    ease: 'linear',
+                  }}
+                >
+                  <Image
+                    ref={imgRef}
+                    src={imgSrc}
+                    alt={banner.title || 'JuzDog Championship Banner'}
+                    fill
+                    priority={isPriority}
+                    quality={100}
+                    onLoad={handleImageLoad}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 85vw"
+                    className="object-cover object-center"
+                    placeholder="blur"
+                    blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
+                  />
+                </motion.div>
+              </div>
+            )}
+
+            {/* Overlays removed to show full banner image details */}
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
+// ── Main slider ───────────────────────────────────────────────────────────────
 export default function HeroSlider({ banners }: HeroSliderProps) {
-  const [isMounted, setIsMounted] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const swiperRef = useRef<any>(null);
+  const [isMounted,  setIsMounted]  = useState(false);
+  const [current,    setCurrent]    = useState(0);
+  const [paused,     setPaused]     = useState(false);
+  const [direction,  setDirection]  = useState(1);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const validBanners = banners?.filter(b => b?.imageUrl?.trim()) || [];
+  const total        = validBanners.length;
+
+  useEffect(() => { setIsMounted(true); }, []);
+
+  const goTo = useCallback((idx: number, dir = 1) => {
+    setDirection(dir);
+    setCurrent(((idx % total) + total) % total);
+  }, [total]);
+
+  const next = useCallback(() => goTo(current + 1,  1), [current, goTo]);
+  const prev = useCallback(() => goTo(current - 1, -1), [current, goTo]);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (total <= 1 || paused) return;
+    timerRef.current = setTimeout(next, 6000);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [current, paused, next, total]);
 
-  // Filter out banners with missing URLs before they even reach the slider
-  const validBanners = banners?.filter(b => b && b.imageUrl && b.imageUrl.trim() !== '') || [];
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft')  prev();
+    };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [next, prev]);
 
-  if (!validBanners || validBanners.length === 0) {
-    return (
-      <section className="premium-section-spacing">
-        <div className="hero-carousel-container premium-container premium-carousel-wrapper flex items-center justify-center bg-muted/10 border border-border">
-          <div className="text-center space-y-4">
-            <div className="w-20 h-20 mx-auto bg-muted rounded-full flex items-center justify-center">
-              <ImageIcon className="w-10 h-10 text-muted-foreground opacity-50" />
-            </div>
-            <h2 className="text-xl font-bold text-muted-foreground">No homepage banners available.</h2>
-          </div>
-        </div>
-      </section>
-    );
+  if (!validBanners.length || !isMounted) {
+    return <div className="jd-hero-skeleton" />;
   }
-
-  if (!isMounted) {
-    return (
-      <section className="premium-section-spacing">
-        <div className="hero-carousel-container premium-container premium-carousel-wrapper flex items-center justify-center">
-          <OptimizedImage src="/Untitled-1.png" alt="Loading" className="w-[120px] h-auto animate-pulse" fetchPriority="high" style={{ width: '120px', height: 'auto' }} />
-        </div>
-      </section>
-    );
-  }
-
-  const showNav = validBanners.length > 1;
 
   return (
-    <section className="hero-section w-full relative">
-      <div className={`hero-carousel-container transition-opacity duration-700 ${isInitialized ? 'opacity-100' : 'opacity-0'}`}>
-        <Swiper
-          onSwiper={(swiper) => {
-            swiperRef.current = swiper;
-          }}
-          onInit={() => setTimeout(() => setIsInitialized(true), 50)}
-          modules={[Autoplay, Navigation, Pagination, Keyboard]}
-          loop={true}
-          speed={1200}
-          observer={true}
-          observeParents={true}
-          watchOverflow={true}
-          watchSlidesProgress={true}
-          autoHeight={true}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
-          keyboard={{ enabled: true }}
-          navigation={false}
-          pagination={showNav ? {
-            clickable: true,
-            el: '.hero-dots',
-            bulletClass: 'hero-dot',
-            bulletActiveClass: 'hero-dot-active',
-          } : false}
-          slidesPerView={'auto'}
-          centeredSlides={true}
-          spaceBetween={24}
-          breakpoints={{
-            768: { spaceBetween: 32 },
-            1024: { spaceBetween: 40 },
-          }}
-          className="hero-swiper premium-carousel-track"
-        >
-          {validBanners.map((slide, index) => {
-            const hasRedirect = !!(slide.redirectUrl && slide.redirectUrl.trim());
-            const innerContent = (
-              <SlideImage
-                src={getImageUrl(slide.imageUrl)}
-                alt={slide.title || 'JuzDog Championship'}
-                isFirst={index === 0}
-                onFail={() => {
-                  if (swiperRef.current) {
-                    swiperRef.current.slideNext();
-                  }
-                }}
-                onLoadSuccess={() => {
-                  // Removed dynamic height update to preserve center alignment
-                }}
-                onClick={undefined}
-              />
-            );
-
-            return (
-              <SwiperSlide key={slide.id || index} className="hero-slide-wrapper">
-                <div className="hero-slide-inner">
-                  {hasRedirect ? (
-                    <a
-                      href={slide.redirectUrl!}
-                      target={slide.openNewTab ? "_blank" : "_self"}
-                      rel={slide.openNewTab ? "noopener noreferrer" : ""}
-                      className="block w-full h-full cursor-pointer"
-                    >
-                      {innerContent}
-                    </a>
-                  ) : (
-                    innerContent
-                  )}
-                </div>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
-
-        {showNav && (
-          <>
-            <button
-              onClick={() => swiperRef.current?.slidePrev()}
-              className="hero-nav-btn hero-nav-btn-prev"
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="w-6 h-6 md:w-7 md:h-7 xl:w-[28px] xl:h-[28px]" />
-            </button>
-            <button
-              onClick={() => swiperRef.current?.slideNext()}
-              className="hero-nav-btn hero-nav-btn-next"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="w-6 h-6 md:w-7 md:h-7 xl:w-[28px] xl:h-[28px]" />
-            </button>
-
-            {/* Pagination Dots */}
-            <div className="hero-dots mt-4 md:mt-0" />
-          </>
-        )}
-      </div>
-
-      <style jsx global>{`
-        .hero-section {
-          padding-top: 0;
-          padding-bottom: 24px;
-          margin-top: 0;
+    <>
+      <style>{`
+        /* Immersive layout container dimensions */
+        .jd-hero {
+          position:   relative;
+          width:      calc(100vw - 24px);
+          overflow:   hidden;
+          background: #000;
+          height:     auto;
+          aspect-ratio: 1.6;
+          margin: 12px auto 0 auto;
+          border-radius: 20px;
+        }
+        
+        @media (min-width: 768px) {
+          .jd-hero {
+            height: 70vh;
+            aspect-ratio: auto;
+            width: 100%;
+            margin: 0;
+            border-radius: 0;
+          }
+        }
+        
+        @media (min-width: 1024px) {
+          .jd-hero {
+            height: 90vh;
+            aspect-ratio: auto;
+            width: 100%;
+            margin: 0;
+            border-radius: 0;
+          }
         }
 
-        @keyframes floatBanner {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-3px); }
-          100% { transform: translateY(0px); }
-        }
-
-        .hero-carousel-container {
-          position: relative !important;
-          width: 100%;
-          max-width: 1900px;
-          height: 650px;
-          margin: 0 auto !important;
-          background: transparent;
-          overflow: visible !important;
-          padding: 0 !important;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          animation: floatBanner 8s ease-in-out infinite;
-        }
-
-        .hero-swiper {
-          width: 100%;
-          height: 100%;
-          padding: 0 !important;
-          margin: 0 !important;
-          overflow: visible !important;
-        }
-
-        .hero-slide-wrapper {
-          width: 75% !important;
-          height: 650px !important;
-          flex-shrink: 0;
+        /* Aspect ratio adaptive clear image card */
+        .jd-banner-card {
+          --aspect-ratio: 1.6; /* default fallback */
           position: relative;
-          margin: 0 auto;
-          display: flex;
+          border-radius: 20px;
+          box-shadow: 0 20px 60px rgba(0,0,0,.35);
+          overflow: hidden;
+          background: #0a0a0a;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          width: 100%;
+          height: 100%;
+        }
+
+        @media (min-width: 768px) {
+          .jd-banner-card {
+            border-radius: 28px;
+            box-shadow: 0 40px 120px rgba(0,0,0,.55);
+            /* max-height = 88% of 70vh */
+            --max-w: 88vw;
+            --max-h: 61.6vh;
+            width: min(var(--max-w), var(--max-h) * var(--aspect-ratio));
+            height: min(var(--max-h), var(--max-w) / var(--aspect-ratio));
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .jd-banner-card {
+            border-radius: 28px;
+            /* max-height = 90% of 90vh */
+            --max-w: 90vw;
+            --max-h: 81vh;
+            width: min(var(--max-w), var(--max-h) * var(--aspect-ratio));
+            height: min(var(--max-h), var(--max-w) / var(--aspect-ratio));
+          }
+        }
+
+        /* Remove padding around clear card on mobile */
+        .jd-hero div.z-20 {
+          padding: 0 !important;
+        }
+
+        @media (min-width: 768px) {
+          .jd-hero div.z-20 {
+            padding: 16px !important;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .jd-hero div.z-20 {
+            padding: 48px !important;
+          }
+        }
+
+        /* Glass call to action button */
+        .premium-glass-button {
+          display: inline-flex;
           align-items: center;
           justify-content: center;
+          padding: 12px 28px;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border-radius: 999px;
+          font-size: 13px;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+          cursor: pointer;
+          text-decoration: none;
         }
 
-        .hero-swiper :global(.swiper-wrapper) {
-          transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1) !important;
+        .premium-glass-button:hover {
+          background: rgba(255, 255, 255, 0.22);
+          border-color: rgba(255, 255, 255, 0.4);
+          box-shadow: 0 0 24px rgba(255, 255, 255, 0.3);
+          transform: translateY(-2px) scale(1.04);
         }
 
-        .hero-slide-inner {
-          width: 100%;
-          height: 100%;
-          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1), clip-path 1.2s cubic-bezier(0.19, 1, 0.22, 1) !important;
-          transform: scale(1.05) translate3d(-10%, 0, 0) !important;
-          opacity: 0.9 !important;
-          border-radius: 32px;
-          overflow: hidden;
-          background: transparent;
-          will-change: transform, opacity, clip-path;
+        .premium-glass-button:active {
+          transform: translateY(0) scale(1);
         }
 
-        .hero-slide-wrapper.swiper-slide-active .hero-slide-inner {
-          transform: scale(1) translate3d(0, 0, 0) !important;
-          opacity: 1 !important;
-          clip-path: inset(0 0 0 0 round 32px);
-          box-shadow: 0 40px 100px -20px rgba(0,0,0,0.5);
-          z-index: 10;
-        }
-
-        .hero-slide-wrapper.swiper-slide-next .hero-slide-inner {
-          transform: scale(1.08) translate3d(100%, 0, 0) !important;
-          clip-path: inset(0 0 0 100% round 32px);
-          opacity: 1 !important;
-        }
-
-        .hero-slide {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          border-radius: 32px;
-        }
-
-        .hero-slide-image-container {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-          transform: scale(1);
-          will-change: transform;
-          border-radius: 32px;
-          overflow: hidden;
-        }
-
-        /* Ken Burns Effect */
-        @keyframes kenBurns {
-          0% { transform: scale(1) translate(0, 0); }
-          100% { transform: scale(1.06) translate(-2px, -2px); }
-        }
-
-        /* Animated Light Sweep */
-        @keyframes lightSweep {
-          0% { transform: translateX(-150%) skewX(-15deg); opacity: 0; }
-          10% { opacity: 0.15; }
-          20% { transform: translateX(200%) skewX(-15deg); opacity: 0; }
-          100% { transform: translateX(200%) skewX(-15deg); opacity: 0; }
-        }
-
-        .luxury-light-sweep {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 150px;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-          animation: lightSweep 10s ease-in-out infinite;
-          will-change: transform, opacity;
-        }
-
-        .hero-slide-wrapper.swiper-slide-active .hero-slide-image-container {
-          animation: kenBurns 6s linear forwards;
-        }
-
-        .hero-slide img.hero-image-render {
-          width: 100% !important;
-          height: 100% !important;
-          object-fit: cover !important;
-          object-position: center center !important;
-          image-rendering: auto;
-          backface-visibility: hidden;
-          transform: translateZ(0);
-          border-radius: 32px !important;
-        }
-
-        /* Arrows styling */
-        .hero-nav-btn {
+        /* circular glass arrows with 20px blur */
+        .jd-hero-arrow {
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          z-index: 20;
-          width: 72px !important;
-          height: 72px !important;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.05);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255,255,255,0.1);
+          z-index: 30;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: white;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-          transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-          pointer-events: auto;
-          cursor: pointer;
-        }
-
-        .hero-nav-btn:hover {
-          transform: translateY(-50%) scale(1.08);
-          background: rgba(255,255,255,0.15);
-          border: 1px solid rgba(255,255,255,0.25);
-          box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-        }
-        
-        .hero-nav-btn svg {
-          transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        
-        .hero-nav-btn-prev:hover svg {
-          transform: rotate(-10deg) translateX(-2px);
-        }
-        .hero-nav-btn-next:hover svg {
-          transform: rotate(10deg) translateX(2px);
-        }
-
-        .hero-nav-btn:active {
-          transform: translateY(-50%) scale(0.98);
-        }
-
-        .hero-nav-btn-prev {
-          left: 40px;
-        }
-
-        .hero-nav-btn-next {
-          right: 40px;
-        }
-
-        .hero-carousel-container .hero-dots {
-          position: absolute !important;
-          bottom: 24px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-          z-index: 15 !important;
-          display: flex !important;
-          align-items: center !important;
-          gap: 8px !important;
-        }
-
-        .hero-dot {
-          display: block;
-          width: 8px;
-          height: 8px;
+          width: 56px;
+          height: 56px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.4);
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          color: #fff;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        .hero-dot-active {
-          background: #FFFFFF;
-          width: 24px;
+        .jd-hero-arrow:hover {
+          background: rgba(255, 255, 255, 0.18);
+          border-color: rgba(255, 255, 255, 0.35);
+          transform: translateY(-50%) scale(1.1);
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+        }
+
+        .jd-hero-arrow-prev { left: 28px; }
+        .jd-hero-arrow-next { right: 28px; }
+
+        @media (max-width: 768px) {
+          .jd-hero-arrow,
+          .jd-hero-dots-container {
+            display: none !important;
+          }
+        }
+
+        /* Netflix Style dots */
+        .jd-hero-dots-container {
+          position: absolute;
+          bottom: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 30;
+          display: flex;
+          gap: 10px;
+        }
+
+        .jd-hero-dot {
+          height: 8px;
           border-radius: 999px;
+          background: #ffffff;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+          margin: 0;
+          transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
         }
 
-        /* Responsive Breakpoints */
-        @media (max-width: 1024px) {
-          .hero-carousel-container {
-            height: auto !important;
-          }
-          .hero-slide-wrapper {
-            width: 100% !important;
-            height: auto !important;
-          }
-          .hero-slide-inner {
-            border-radius: 0;
-            transform: scale(1) !important;
-            opacity: 1 !important;
-            filter: blur(0px) !important;
-            height: auto !important;
-          }
-          .hero-slide-image-container {
-            transform: translate3d(0, 0, 0) scale(1) !important;
-            transition: none !important;
-            position: relative;
-            height: auto !important;
-          }
-          .hero-slide {
-            position: relative;
-            height: auto;
-          }
-          .hero-slide-wrapper.swiper-slide-active .hero-slide-image-container {
-            transform: translate3d(0, 0, 0) scale(1) !important;
-          }
-          .hero-slide-wrapper.swiper-slide-active ~ .hero-slide-wrapper .hero-slide-image-container {
-            transform: translate3d(0, 0, 0) scale(1) !important;
-          }
-          .hero-slide img.hero-image-render {
-            position: relative !important;
-            height: auto !important;
-            width: 100% !important;
-            object-fit: contain !important;
-            object-position: center center !important;
-          }
-          .hero-nav-btn {
-            width: 56px !important;
-            height: 56px !important;
-          }
-          .hero-nav-btn-prev { left: 16px; }
-          .hero-nav-btn-next { right: 16px; }
+        .jd-hero-skeleton {
+          height: 60vh;
+          background: #000;
         }
-
-        @media (max-width: 767px) {
-          .hero-carousel-container {
-            height: auto !important;
-          }
-          .hero-swiper {
-            padding: 0 !important;
-            height: auto !important;
-          }
-          .hero-slide-wrapper {
-            width: 100% !important;
-            height: auto !important;
-          }
-          .hero-slide-inner {
-            border-radius: 0;
-            transform: scale(1) !important;
-            opacity: 1 !important;
-            filter: blur(0px) !important;
-            transition: opacity 1.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
-            height: auto !important;
-          }
-          .hero-slide-image-container {
-            transform: translate3d(0, 0, 0) scale(1) !important;
-            transition: none !important;
-            position: relative;
-            height: auto !important;
-          }
-          .hero-slide {
-            position: relative;
-            height: auto;
-          }
-          .hero-slide-wrapper.swiper-slide-active .hero-slide-image-container {
-            transform: translate3d(0, 0, 0) scale(1) !important;
-          }
-          .hero-slide-wrapper.swiper-slide-active ~ .hero-slide-wrapper .hero-slide-image-container {
-            transform: translate3d(0, 0, 0) scale(1) !important;
-          }
-          .hero-slide img.hero-image-render {
-            position: relative !important;
-            height: auto !important;
-            width: 100% !important;
-            object-fit: contain !important;
-            object-position: center top !important;
-          }
-          .hero-nav-btn {
-            width: 48px !important;
-            height: 48px !important;
-          }
-          .hero-nav-btn-prev { left: 12px; }
-          .hero-nav-btn-next { right: 12px; }
-        }
+        @media (min-width: 768px) { .jd-hero-skeleton { height: 70vh; } }
+        @media (min-width: 1024px) { .jd-hero-skeleton { height: 90vh; } }
       `}</style>
-    </section>
+
+      <section
+        className="jd-hero"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onTouchStart={(e) => {
+          touchStartX.current = e.targetTouches[0].clientX;
+        }}
+        onTouchMove={(e) => {
+          touchEndX.current = e.targetTouches[0].clientX;
+        }}
+        onTouchEnd={() => {
+          const diff = touchStartX.current - touchEndX.current;
+          if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+              next();
+            } else {
+              prev();
+            }
+          }
+        }}
+      >
+        <AnimatePresence initial={false} custom={direction} mode="popLayout">
+          <BannerSlide
+            key={current}
+            banner={validBanners[current]}
+            isActive={true}
+            isPriority={true}
+            direction={direction}
+          />
+        </AnimatePresence>
+
+        {/* Circular glass arrows */}
+        {total > 1 && (
+          <>
+            <button 
+              className="jd-hero-arrow jd-hero-arrow-prev" 
+              onClick={prev} 
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button 
+              className="jd-hero-arrow jd-hero-arrow-next" 
+              onClick={next} 
+              aria-label="Next slide"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </>
+        )}
+
+        {/* Netflix style dot pagination */}
+        {total > 1 && (
+          <div className="jd-hero-dots-container">
+            {validBanners.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => goTo(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className="jd-hero-dot"
+                style={{
+                  width: idx === current ? 34 : 10,
+                  opacity: idx === current ? 1 : 0.4,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Cinematic bottom gradient removed to prevent darkening details */}
+      </section>
+    </>
   );
 }

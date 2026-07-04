@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { motion } from 'framer-motion';
 import { MapPin, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -29,8 +29,39 @@ interface ClubData {
 export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClubs?: any[] }) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const rawClubs = initialClubs || [];
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!swiperInstance || !swiperInstance.autoplay) return;
+    if (inView) {
+      swiperInstance.autoplay.start();
+    } else {
+      swiperInstance.autoplay.stop();
+    }
+  }, [inView, swiperInstance]);
   const clubs: ClubData[] = Array.from(
     new Map(
       rawClubs.map((club: any) => [
@@ -43,7 +74,7 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
   if (!clubs.length) return null;
 
   return (
-    <section className="featured-clubs-section w-full pt-16 pb-20 bg-background relative overflow-hidden">
+    <section ref={containerRef} className="featured-clubs-section w-full pt-16 pb-20 bg-background relative overflow-hidden">
       <div className="w-full max-w-[1440px] mx-auto px-[12px] sm:px-[16px] md:px-[24px]">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 gap-6">
           <div className="max-w-3xl">
@@ -72,6 +103,9 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
               swiper.params.navigation.prevEl = prevEl;
               // @ts-ignore
               swiper.params.navigation.nextEl = nextEl;
+            }}
+            onSwiper={(swiper) => {
+              setSwiperInstance(swiper);
             }}
             autoplay={{
               delay: 4000,

@@ -149,10 +149,10 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
                   >
                     <Link
                       href={`/events/detail?slug=${event.slug}`}
-                      className="group relative flex flex-col w-full h-[460px] sm:h-[500px] md:h-[560px] lg:h-[600px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
+                      className="group relative flex flex-col w-full h-[500px] sm:h-[540px] md:h-[600px] lg:h-[640px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
                     >
                       {/* 1. Banner Image */}
-                      <div className="w-full h-[60%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
+                      <div className="w-full h-[50%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
                         <div className="relative w-full h-full flex items-center justify-center">
                           <Image
                             src={imageSrc}
@@ -172,26 +172,31 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
 
                       {/* 2. Body Container */}
                       <div className="flex flex-col flex-1 p-4 sm:p-5 text-center justify-start items-center bg-card">
+                        {/* Club Name Highlight */}
+                        <div className="text-[10px] sm:text-xs font-black text-primary uppercase tracking-widest mb-2 shrink-0 bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                          {event.club?.name || 'KENNEL CLUB'}
+                        </div>
+
                         {/* Event Title */}
-                        <h3 className="text-sm sm:text-base md:text-lg font-black text-foreground leading-[1.2] mb-3 normal-case group-hover:text-foreground transition-colors break-words w-full shrink-0">
+                        <h3 className="text-sm sm:text-base font-black text-foreground leading-[1.2] mb-3 normal-case group-hover:text-foreground transition-colors break-words w-full shrink-0 line-clamp-4">
                           {formatTitle(event.name)}
                         </h3>
 
                         {/* Location Badge */}
-                        <div className="flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground mb-2 shrink-0">
-                          <MapPin className="w-3.5 h-3.5 text-red-500" />
+                        <div className="flex items-center justify-center gap-1.5 text-sm sm:text-base font-medium text-muted-foreground mb-2 shrink-0">
+                          <MapPin className="w-4 h-4 text-red-500" />
                           <span className="truncate max-w-[200px]">{toTitleCase(event.venue) || 'TBA'}</span>
                         </div>
 
                         {/* Championship Badge */}
-                        <div className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-2.5 py-0.5 rounded-full text-white text-[9px] sm:text-[10px] font-black tracking-wider uppercase shadow-sm mb-3 shrink-0">
-                          <Trophy className="w-3 h-3 text-white" />
+                        <div className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-2.5 py-0.5 rounded-full text-white text-[10px] sm:text-xs font-black tracking-wider uppercase shadow-sm mb-3 shrink-0">
+                          <Trophy className="w-3.5 h-3.5 text-white" />
                           CHAMPIONSHIP
                         </div>
 
                         {/* Date Badge */}
-                        <div className="flex items-center justify-center gap-1.5 text-xs sm:text-sm font-bold text-foreground mt-auto bg-accent/30 px-3 py-1.5 rounded-[8px] sm:rounded-[12px] border border-border/50">
-                          <Calendar className="w-4 h-4 text-primary" />
+                        <div className="flex items-center justify-center gap-1.5 text-sm sm:text-base font-bold text-foreground mt-auto bg-accent/30 px-4 py-2 rounded-[8px] sm:rounded-[12px] border border-border/50">
+                          <Calendar className="w-5 h-5 text-primary" />
                           <span>{startDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase()}</span>
                         </div>
                       </div>

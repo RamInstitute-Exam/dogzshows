@@ -67,7 +67,7 @@ export default function EventJudges({ judges }: { judges: any[] }) {
           >
             {/* Avatar */}
             <div
-              className="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300 bg-muted"
+              className="w-44 h-44 mx-auto rounded-[20px] overflow-hidden mb-5 border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300 bg-muted"
             >
               <JudgeAvatar judge={judge} />
             </div>

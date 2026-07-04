@@ -60,9 +60,6 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  main {
-    padding-top: var(--nav-height);
-  }
 
   h1,
   h2,
@@ -1928,5 +1925,145 @@ label,
 
   .carousel-next {
     right: 8px;
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   MOBILE RESPONSIVE & VERTICAL RHYTHM OVERRIDES
+   Targeting max-width: 768px for clean mobile layouts
+   ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* 1. Mobile Banner Layout & Spacing */
+  .jd-hero {
+    height: auto !important;
+    aspect-ratio: 1.6 !important;
+    width: calc(100vw - 24px) !important;
+    margin: 12px auto 0 auto !important;
+    border-radius: 20px !important;
+  }
+
+  .jd-hero-skeleton {
+    height: auto !important;
+    aspect-ratio: 1.6 !important;
+    width: calc(100vw - 24px) !important;
+    margin: 12px auto 0 auto !important;
+    border-radius: 20px !important;
+  }
+
+  .jd-hero .jd-banner-card {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 20px !important;
+    --max-w: 100% !important;
+    --max-h: 100% !important;
+  }
+
+  /* Remove inner padding around the card on mobile */
+  .jd-hero div.z-20 {
+    padding: 0 !important;
+  }
+
+  /* Hide navigation arrows and dots container on mobile */
+  .jd-hero-arrow,
+  .jd-hero-dots-container {
+    display: none !important;
+  }
+
+  /* 2. Compact Vertical Spacing & rhythm between sections */
+  .premium-section-spacing,
+  section.py-16,
+  section.py-20,
+  section.py-24,
+  div.py-16,
+  .featured-clubs-section {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+
+  /* Harmonize section headers and margin gaps */
+  .mb-12, .mb-16, .mb-10 {
+    margin-bottom: 1.25rem !important; /* 20px */
+  }
+  .mb-8, .mb-6 {
+    margin-bottom: 0.875rem !important; /* 14px */
+  }
+  .mt-12, .mt-16, .mt-10 {
+    margin-top: 1.25rem !important; /* 20px */
+  }
+
+  /* 3. Fully Responsive Typography Clamps for Public pages */
+  main.flex-grow h1,
+  main.flex-grow h2,
+  main.flex-grow .hero-title,
+  main.flex-grow .page-title,
+  main.flex-grow .section-title {
+    font-size: clamp(1.35rem, 5.5vw, 1.85rem) !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+  }
+
+  main.flex-grow h3,
+  main.flex-grow .club-name {
+    font-size: clamp(1.15rem, 4.5vw, 1.45rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  main.flex-grow h4 {
+    font-size: clamp(1rem, 4vw, 1.2rem) !important;
+    line-height: 1.3 !important;
+  }
+
+  main.flex-grow p,
+  main.flex-grow .text-lg,
+  main.flex-grow .text-xl,
+  main.flex-grow .text-muted-foreground {
+    font-size: clamp(0.8rem, 3.5vw, 0.95rem) !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Specific overrides for Tailwind text size classes on mobile headings */
+  main.flex-grow h1.text-3xl,
+  main.flex-grow h1.text-4xl,
+  main.flex-grow h1.text-5xl,
+  main.flex-grow h1.text-6xl,
+  main.flex-grow h2.text-3xl,
+  main.flex-grow h2.text-4xl,
+  main.flex-grow h2.text-5xl,
+  main.flex-grow h2.text-6xl,
+  main.flex-grow .text-3xl,
+  main.flex-grow .text-4xl,
+  main.flex-grow .text-5xl,
+  main.flex-grow .text-6xl {
+    font-size: clamp(1.35rem, 5.5vw, 1.85rem) !important;
+  }
+
+  main.flex-grow h3.text-2xl,
+  main.flex-grow h3.text-xl,
+  main.flex-grow .text-2xl,
+  main.flex-grow .text-xl {
+    font-size: clamp(1.15rem, 4.5vw, 1.45rem) !important;
+  }
+
+  /* Prevent card headers and card texts from inheriting large clamped sizes */
+  .jd-card-header-title {
+    font-size: clamp(10px, 3vw, 12px) !important;
+    line-height: 1.25 !important;
+  }
+  .jd-card-winning-title,
+  .winning-title {
+    font-size: clamp(10px, 2.8vw, 11px) !important;
+    line-height: 1.25 !important;
+  }
+  .jd-card-dog-name {
+    font-size: clamp(9px, 2.5vw, 10px) !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Ensure text aligning and margins are consistent */
+  main.flex-grow .space-y-12 > :not([hidden]) ~ :not([hidden]),
+  main.flex-grow .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0 !important;
+    margin-top: 1.25rem !important;
   }
 }

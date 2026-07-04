@@ -12,10 +12,10 @@ import OptimizedImage from '@/components/shared/OptimizedImage';
 export default function JudgeManagement() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   const page = parseInt(searchParams.get('page') || '1', 10);
   const limit = parseInt(searchParams.get('limit') || '10', 10);
   const search = searchParams.get('search') || '';
@@ -74,10 +74,10 @@ export default function JudgeManagement() {
         setData(fetchedItems);
         setTotalPages(fetchedTotalPages);
         setTotalCount(fetchedTotal);
-        
+
         // Reset manual edits on reload
         setUnsavedOrders({});
-        
+
         setSelectedIds(prev => {
           const newSet = new Set<string>();
           const fetchedIds = new Set(fetchedItems.map((j: any) => j.id));
@@ -109,7 +109,7 @@ export default function JudgeManagement() {
           newSet.delete(judge.id);
           return newSet;
         });
-        
+
         const res = await api.delete(`/judges/${judge.id}`);
         if (res.success) {
           toast.success('Judge deleted permanently');
@@ -191,8 +191,8 @@ export default function JudgeManagement() {
 
   const handleExport = () => {
     try {
-      const dataToExport = selectedIds.size > 0 
-        ? data.filter(j => selectedIds.has(j.id)) 
+      const dataToExport = selectedIds.size > 0
+        ? data.filter(j => selectedIds.has(j.id))
         : data;
 
       if (dataToExport.length === 0) {
@@ -399,9 +399,9 @@ export default function JudgeManagement() {
             {/* Search Input */}
             <div className="relative w-full sm:w-auto sm:min-w-[300px] flex-grow sm:flex-grow-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input 
-                type="text" 
-                placeholder="Search Judges..." 
+              <input
+                type="text"
+                placeholder="Search Judges..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-9 pr-4 h-10 bg-background border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
@@ -422,8 +422,8 @@ export default function JudgeManagement() {
 
             {/* Action Buttons */}
             {hasUnsavedChanges && (
-              <Button 
-                onClick={handleSaveBulkOrders} 
+              <Button
+                onClick={handleSaveBulkOrders}
                 className="bg-green-600 hover:bg-green-700 text-white font-bold h-10 px-4 gap-2 flex items-center justify-center animate-pulse"
               >
                 <Save className="w-4 h-4" /> Save Sequence
@@ -433,7 +433,7 @@ export default function JudgeManagement() {
             <Button variant="outline" onClick={handleExport} className="h-10 border-border text-foreground hover:bg-accent whitespace-nowrap">
               <Download className="w-4 h-4 mr-2" /> Export
             </Button>
-            
+
             <Button variant="outline" onClick={fetchJudges} className="w-12 h-10 border-border text-foreground hover:bg-accent flex items-center justify-center p-0">
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
@@ -452,8 +452,8 @@ export default function JudgeManagement() {
             <thead>
               <tr className="bg-card border-b border-border">
                 <th className="py-4 px-6 text-xs font-bold text-muted-foreground uppercase tracking-wider w-[40px]">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     className="w-4 h-4 rounded border-border bg-background checked:bg-blue-600 cursor-pointer disabled:opacity-50"
                     checked={data.length > 0 && data.every(j => selectedIds.has(j.id))}
                     onChange={handleSelectAll}
@@ -513,8 +513,8 @@ export default function JudgeManagement() {
                     >
                       {/* Checkbox Column */}
                       <td className="py-4 px-6">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           className="w-4 h-4 rounded border-border bg-background checked:bg-blue-600 cursor-pointer"
                           checked={isChecked}
                           onChange={() => handleSelect(j.id)}
@@ -570,11 +570,10 @@ export default function JudgeManagement() {
                             min="1"
                             value={displayVal}
                             onChange={(e) => handleOrderInputChange(j.id, e.target.value)}
-                            className={`w-full px-2 py-1.5 text-center text-sm font-extrabold bg-background border rounded-lg focus:outline-none focus:ring-1 transition-all ${
-                              isEdited 
-                                ? 'border-amber-500 ring-1 ring-amber-500/50 bg-amber-500/5 text-amber-600 dark:text-amber-400' 
+                            className={`w-full px-2 py-1.5 text-center text-sm font-extrabold bg-background border rounded-lg focus:outline-none focus:ring-1 transition-all ${isEdited
+                                ? 'border-amber-500 ring-1 ring-amber-500/50 bg-amber-500/5 text-amber-600 dark:text-amber-400'
                                 : 'border-border focus:border-blue-500 focus:ring-blue-500 text-foreground'
-                            }`}
+                              }`}
                           />
                           {isEdited && (
                             <span className="absolute -top-2.5 -right-2.5 px-1 py-0.5 bg-amber-500 text-white rounded text-[8px] font-black uppercase tracking-wider shadow">
@@ -587,47 +586,47 @@ export default function JudgeManagement() {
                       {/* Actions Column */}
                       <td className="py-4 px-6 text-right">
                         <div className="flex items-center justify-end gap-1.5">
-                          <Button 
-                            title="View Details" 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => { setSelectedJudge(j); setIsViewModalOpen(true); }} 
+                          <Button
+                            title="View Details"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => { setSelectedJudge(j); setIsViewModalOpen(true); }}
                             className="text-blue-500 hover:text-blue-400 hover:bg-blue-500/10 h-8 px-2 rounded-lg"
                           >
                             <Eye className="w-4 h-4" />
                           </Button>
-                          <Button 
-                            title="Edit Profile" 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => router.push(`/admin/judges/edit?id=${j.id}`)} 
+                          <Button
+                            title="Edit Profile"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => router.push(`/admin/judges/edit?id=${j.id}`)}
                             className="text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 h-8 px-2 rounded-lg"
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button 
-                            title="Delete Judge" 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => handleDelete(j)} 
+                          <Button
+                            title="Delete Judge"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(j)}
                             className="text-red-500 hover:text-red-400 hover:bg-red-500/10 h-8 px-2 rounded-lg"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
                           {j.status === 'ACTIVE' ? (
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => handleToggleStatus(j, 'SUSPENDED')} 
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleToggleStatus(j, 'SUSPENDED')}
                               className="text-foreground hover:bg-foreground/10 hover:text-foreground border-border/20 h-8 px-2 rounded-lg text-xs"
                             >
                               Suspend
                             </Button>
                           ) : (
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => handleToggleStatus(j, 'ACTIVE')} 
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleToggleStatus(j, 'ACTIVE')}
                               className="text-green-500 hover:bg-green-500/10 hover:text-green-400 border-green-500/20 h-8 px-2 rounded-lg text-xs"
                             >
                               Activate

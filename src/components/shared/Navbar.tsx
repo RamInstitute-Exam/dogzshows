@@ -389,6 +389,7 @@ export default function Navbar() {
                 height={45}
                 priority
                 className="header-logo-img"
+                style={{ height: 'auto' }}
               />
             </Link>
           </div>

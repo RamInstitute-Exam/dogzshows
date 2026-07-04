@@ -31,11 +31,11 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
   }
 
   return (
-    <div className="w-full h-full min-h-[400px] rounded-[16px] sm:rounded-[26px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1 select-none border border-black/5">
+    <div className="w-full h-full rounded-[16px] sm:rounded-[26px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1 select-none border border-black/5">
       {/* 1. Header (Event Title on top) */}
       {eventTitle && (
-        <div className="px-2 py-3 sm:px-[18px] sm:py-[18px] flex items-center justify-center shrink-0 min-h-[60px] md:min-h-[80px] border-b border-black/5">
-          <h3 className="text-[16px] md:text-[18px] font-bold text-black text-center uppercase tracking-wider max-w-full" style={{ fontFamily: 'var(--font-heading)' }}>
+        <div className="px-2 py-2 sm:px-4 sm:py-3 flex items-center justify-center shrink-0 min-h-[48px] md:min-h-[64px] border-b border-black/5">
+          <h3 className="jd-card-header-title text-[14px] md:text-[16px] font-bold text-black text-center uppercase tracking-wider max-w-full" style={{ fontFamily: 'var(--font-heading)' }}>
             {eventTitle}
           </h3>
         </div>
@@ -64,40 +64,31 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
       </div>
 
       {/* 3. Content Section */}
-      <div className="flex flex-col justify-start items-center text-center px-[12px] md:px-[20px] py-[16px] md:py-[24px] w-full flex-1 bg-white overflow-hidden gap-3 md:gap-4">
-        
-        {/* Winning Title moved to below image */}
+      <div className="flex flex-col justify-start items-center text-center px-[10px] md:px-[16px] py-[8px] sm:py-[12px] md:py-[18px] w-full flex-1 bg-white overflow-hidden gap-1.5 md:gap-2">
+        {/* Winning Title */}
         {awardTitle && (
-          <div className="w-full flex items-start justify-center shrink-0 mb-1">
-            <h3 className="winning-title text-[15px] md:text-[17px] font-bold text-black uppercase text-center w-full whitespace-normal break-words">
-              {awardTitle}
-            </h3>
-          </div>
+          <h3 className="winning-title jd-card-winning-title text-[13px] md:text-[15px] font-bold text-black uppercase text-center w-full whitespace-normal break-words">
+            {awardTitle}
+          </h3>
         )}
 
         {/* Dog Name */}
-        <div className="w-full flex items-start justify-center shrink-0">
-          <h4 className="text-[14px] md:text-[15px] font-[600] text-black uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.3', fontFamily: 'var(--font-heading)' }}>
-            DOG NAME : {dogName || '-'}
-          </h4>
-        </div>
+        <h4 className="jd-card-dog-name text-[12px] md:text-[14px] font-[600] text-black uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25', fontFamily: 'var(--font-heading)' }}>
+          DOG NAME : {dogName || '-'}
+        </h4>
 
         {/* Owner Name */}
         {winner.ownerName?.trim() && (
-          <div className="w-full flex items-start justify-center shrink-0">
-            <p className="text-[11px] md:text-[15px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.45' }}>
-              OWNER : {winner.ownerName.trim()}
-            </p>
-          </div>
+          <p className="text-[10px] md:text-[12px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25' }}>
+            OWNER : {winner.ownerName.trim()}
+          </p>
         )}
 
         {/* Breeder Name */}
         {winner.breederName?.trim() && (
-          <div className="w-full flex items-start justify-center shrink-0">
-            <p className="text-[11px] md:text-[15px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.45' }}>
-              BREEDER : {winner.breederName.trim()}
-            </p>
-          </div>
+          <p className="text-[10px] md:text-[12px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25' }}>
+            BREEDER : {winner.breederName.trim()}
+          </p>
         )}
       </div>
     </div>

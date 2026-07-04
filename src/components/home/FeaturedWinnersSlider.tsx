@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -14,24 +14,55 @@ import WinnerCard from '../winners/WinnerCard';
 function ClubWinnersRow({ club }: { club: any }) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   // DO NOT sort client-side. The backend returns winners ordered by:
   // 1. event.displayOrder ASC  (groups 5th Show before 6th Show)
   // 2. winner.displayOrder ASC (orders winners within each event)
   const winners = club.winners || [];
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!swiperInstance || !swiperInstance.autoplay) return;
+    if (inView) {
+      swiperInstance.autoplay.start();
+    } else {
+      swiperInstance.autoplay.stop();
+    }
+  }, [inView, swiperInstance]);
+
   // Gracefully handle empty clubs by hiding them from the homepage
   if (winners.length === 0) return null;
 
   return (
-    <div className="relative py-8 border-b border-border/60 last:border-0 space-y-6">
+    <div ref={containerRef} className="relative py-8 border-b border-border/60 last:border-0 space-y-6">
       {/* Club Header Section */}
       <div className="space-y-1">
         <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tight uppercase">
           {club.name}
         </h3>
         {club.eventName && (
-          <p className="text-amber-500 font-bold text-sm md:text-lg">
+          <p className="text-rose-500 font-bold text-sm md:text-lg">
             {club.eventName}
           </p>
         )}
@@ -58,9 +89,12 @@ function ClubWinnersRow({ club }: { club: any }) {
             // @ts-ignore
             swiper.params.navigation.nextEl = nextEl;
           }}
+          onSwiper={(swiper) => {
+            setSwiperInstance(swiper);
+          }}
           pagination={{ clickable: true, dynamicBullets: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
-          className="w-full !pb-14 home-slider-nav"
+          className="w-full !pb-4 sm:!pb-14 home-slider-nav"
           style={{ alignItems: 'stretch' } as React.CSSProperties}
         >
           {winners.map((winner: any, wIdx: number) => (
@@ -93,7 +127,7 @@ function ClubWinnersRow({ club }: { club: any }) {
       <div className="flex justify-end pt-2">
         <Link 
           href={`/clubs/${club.slug}/winners`} 
-          className="group inline-flex items-center gap-2 text-amber-500 hover:text-amber-400 font-black tracking-wider uppercase text-sm transition-colors"
+          className="group inline-flex items-center gap-2 text-rose-500 hover:text-rose-400 font-black tracking-wider uppercase text-sm transition-colors"
         >
           View All Winners <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
         </Link>
@@ -114,12 +148,12 @@ export default function FeaturedWinnersSlider({ initialClubs = [] }: FeaturedWin
       <PublicContainer>
         <div className="flex flex-col md:flex-row items-end justify-between mb-12">
           <div>
-            <div className="flex items-center gap-2 text-amber-500 font-bold tracking-widest uppercase text-sm mb-3">
+            <div className="flex items-center gap-2 text-rose-500 font-bold tracking-widest uppercase text-sm mb-3">
               <Trophy className="w-5 h-5" />
               <span>Champions</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight">
-              🏆 Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-300">Winners</span>
+              🏆 Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-purple-600">Winners</span>
             </h2>
             <p className="text-muted-foreground mt-4 max-w-2xl text-lg font-medium">
               Celebrate the top dogs that stole the show at recent club events.

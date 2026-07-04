@@ -12,7 +12,7 @@ import PublicLayoutWrapper from '@/components/layout/PublicLayoutWrapper';
 
 export const metadata: Metadata = {
   title: "JUZDOG",
-  description: "A world-class platform to discover, adopt, and manage dog profiles, integrated with AI tools, social community, and professional pet services.",
+  description: "JUZDOG is a premium canine photography brand that covers dog shows across India. We specialize in professional photography, 4K live coverage, podium photography, outdoor photoshoots, and capturing memorable moments with exceptional quality and creativity.",
   keywords: ['dog show', 'KCI', 'kennel club', 'FCI', 'dog competitions'],
   icons: {
     icon: "/favicon.ico",

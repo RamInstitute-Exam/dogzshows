@@ -91,7 +91,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Dog className="w-5 h-5 text-foreground" />
               </div>
             ) : (
-              <Link href="/dashboard" className="flex items-center h-full">
+              <Link href="/" className="flex items-center h-full">
                 <OptimizedImage src="/Untitled-1.png" alt="JuzDog Logo" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
               </Link>
             )}

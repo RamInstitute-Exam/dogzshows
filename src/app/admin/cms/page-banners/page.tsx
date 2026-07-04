@@ -55,6 +55,12 @@ export default function PageBannersCMS() {
       return;
     }
 
+    // Normalize slug to always have a leading slash
+    const normalizedSlug = currentBanner.pageSlug.startsWith('/')
+      ? currentBanner.pageSlug
+      : `/${currentBanner.pageSlug}`;
+    const bannerPayload = { ...currentBanner, pageSlug: normalizedSlug };
+
     try {
       const isEdit = !!currentBanner.id;
       const url = isEdit 
@@ -62,7 +68,7 @@ export default function PageBannersCMS() {
         : `${config.apiUrl}/page-banners`;
       
       const payload = {
-        ...currentBanner,
+        ...bannerPayload,
         displayOrder: currentBanner.displayOrder || 0,
       };
 
@@ -81,13 +87,27 @@ export default function PageBannersCMS() {
         setIsModalOpen(false);
         fetchBanners();
       } else {
-        toast.error(data.message || 'Failed to save banner');
+        // If duplicate slug on create, find and switch to edit mode
+        if (!isEdit && data.message?.includes('already exists')) {
+          const existingBanner = banners.find(
+            b => b.pageSlug === normalizedSlug || b.pageSlug === currentBanner.pageSlug
+          );
+          if (existingBanner) {
+            toast.info(`Banner for "${normalizedSlug}" already exists. Switched to edit mode.`);
+            setCurrentBanner(existingBanner);
+          } else {
+            toast.error(data.message || 'A banner with this slug already exists.');
+          }
+        } else {
+          toast.error(data.message || 'Failed to save banner');
+        }
       }
     } catch (error) {
       console.error('Error saving banner:', error);
       toast.error('An error occurred while saving');
     }
   };
+
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

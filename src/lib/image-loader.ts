@@ -7,7 +7,7 @@ export default function customImageLoader({ src, width, quality }: { src: string
     src.includes('192.168.') ||
     src.includes('0.0.0.0')
   ) {
-    return src;
+    return `${src}${src.includes('?') ? '&' : '?'}w=${width}`;
   }
 
   // If it's already a wsrv.nl URL, return as is

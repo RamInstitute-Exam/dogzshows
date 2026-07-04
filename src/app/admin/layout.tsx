@@ -28,6 +28,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
+  // Auto-collapse sidebar on tablet, expand on desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1280) {
+        setIsSidebarCollapsed(true);
+      } else {
+        setIsSidebarCollapsed(false);
+      }
+      if (window.innerWidth >= 1024) {
+        setIsMobileDrawerOpen(false);
+      }
+    };
+    // Set initial state
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -84,7 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
           
           <div className="flex items-center">
-            <Link href="/admin" className="flex items-center h-full">
+            <Link href="/" className="flex items-center h-full">
               <OptimizedImage src="/Untitled-1.png" alt="JuzDog Admin" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
             </Link>
           </div>
@@ -176,7 +194,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           </div>
 
-          {/* Removed Logout from Sidebar footer */}
+          {/* Desktop Sidebar Footer - Settings */}
+          <div className="px-4 py-4 border-t border-border">
+            <Link
+              href="/admin/settings"
+              className={`flex items-center ${
+                isSidebarCollapsed ? 'justify-center px-0' : 'px-4'
+              } py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                pathname === '/admin/settings'
+                  ? 'bg-red-500/10 text-red-500'
+                  : 'hover:bg-card hover:text-foreground'
+              }`}
+              title="Settings"
+            >
+              <Settings className={`w-5 h-5 ${isSidebarCollapsed ? '' : 'mr-3'} ${
+                pathname === '/admin/settings' ? 'text-red-500' : 'text-muted-foreground'
+              }`} />
+              {!isSidebarCollapsed && <span>System Settings</span>}
+            </Link>
+          </div>
         </motion.aside>
 
         {/* Mobile Sidebar Drawer */}
