@@ -9,7 +9,7 @@ import Link from 'next/link';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
-import api from '@/lib/api';
+import api, { getImageUrl } from '@/lib/api';
 import OptimizedImage from '@/components/shared/OptimizedImage';
 import { toTitleCase, formatTitle } from '@/lib/utils';
 
@@ -99,7 +99,7 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
     try {
       const queryParams = new URLSearchParams({
         page: String(page),
-        limit: '15',
+        limit: '12',
         sortBy: 'startDate',
         sortOrder: 'asc',
         isPublic: 'true'
@@ -377,79 +377,96 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-              <div key={i} className="bg-card rounded-[24px] overflow-hidden shadow-sm border border-border h-[450px] animate-pulse" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-card rounded-[24px] overflow-hidden shadow-sm border border-border h-[320px] animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {events.length === 0 ? (
               <div className="col-span-full text-center text-muted-foreground py-24 font-bold text-lg">
                 No dog shows match the selected filters.
               </div>
-            ) : events.map((event, i) => (
-              <motion.div 
-                key={event.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <Link
-                  href={`/events/detail?slug=${event.slug}`}
-                  className="group relative flex flex-col w-full h-[500px] sm:h-[540px] md:h-[600px] lg:h-[640px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
+            ) : events.map((event, i) => {
+              const showDate = new Date(event.startDate).toLocaleDateString('en-US', {
+                month: 'short',
+                day: '2-digit',
+                year: 'numeric'
+              });
+
+              return (
+                <motion.div 
+                  key={event.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="h-full"
                 >
-                  {/* 1. Banner Image */}
-                  <div className="w-full h-[50%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
-                    <div className="relative w-full h-full flex items-center justify-center">
+                  <Link
+                    href={`/events/detail/${event.slug}`}
+                    className="group relative flex flex-col w-full h-[320px] bg-card/60 backdrop-blur-md rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
+                  >
+                    {/* 1. Banner Image */}
+                    <div className="w-full h-[180px] shrink-0 relative overflow-hidden bg-muted">
                       <OptimizedImage 
                         src={event.bannerUrl || '/images/events_banner.png'} 
                         alt={event.name} 
-                        className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out" 
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
+                      <div className="absolute top-4 left-4 z-20">
+                        {event.status && !['PUBLISH', 'PUBLISHED', 'ACTIVE', 'DRAFT'].includes(event.status) && (
+                          <span className={`inline-block text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
+                            {getStatusText(event.status)}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div className="absolute top-4 left-4 z-20">
-                      {event.status && !['PUBLISH', 'PUBLISHED', 'ACTIVE', 'DRAFT'].includes(event.status) && (
-                        <span className={`inline-block text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
-                          {getStatusText(event.status)}
+
+                    {/* 2. Club Logo (overlapping absolute) */}
+                    <div className="absolute top-[148px] left-6 w-16 h-16 rounded-full border-4 border-card bg-white shadow-lg overflow-hidden flex items-center justify-center z-10 shrink-0">
+                      {event.club?.logoUrl ? (
+                        <img 
+                          src={getImageUrl(event.club.logoUrl)} 
+                          alt={event.club.name || 'Club Logo'} 
+                          className="w-full h-full object-contain p-1"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                          }}
+                        />
+                      ) : (
+                        <span className="text-lg font-black text-primary">
+                          {(event.club?.name || 'KC').split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
                         </span>
                       )}
                     </div>
-                  </div>
 
-                  {/* 2. Body Container */}
-                  <div className="flex flex-col flex-1 p-4 sm:p-5 text-center justify-start items-center bg-card">
-                    {/* Club Name Highlight */}
-                    <div className="text-[10px] sm:text-xs font-black text-primary uppercase tracking-widest mb-2 shrink-0 bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
-                      {event.club?.name || 'KENNEL CLUB'}
+                    {/* 3. Body Container */}
+                    <div className="flex flex-col flex-1 pt-10 px-6 pb-6 bg-card text-left justify-between items-start">
+                      {/* Club Name (Highlighted Badge) */}
+                      <div className="w-full">
+                        <span className="inline-block text-[11px] font-black text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full uppercase tracking-wider truncate max-w-full">
+                          {event.club?.name || 'KENNEL CLUB'}
+                        </span>
+                      </div>
+
+                      {/* Date Badge */}
+                      <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                        <Calendar className="w-4 h-4 text-primary shrink-0" />
+                        <span className="uppercase tracking-wide">{showDate}</span>
+                      </div>
+
+                      {/* View Event Button / Link */}
+                      <div className="w-full pt-4 border-t border-border/40 flex items-center justify-between text-xs font-black uppercase tracking-widest text-primary group-hover:text-primary/80 transition-colors mt-auto">
+                        <span>View Event</span>
+                        <ArrowRight className="w-4.5 h-4.5 transform group-hover:translate-x-1.5 transition-transform duration-300" />
+                      </div>
                     </div>
-
-                    {/* Event Title */}
-                    <h3 className="text-sm sm:text-base font-black text-foreground leading-[1.2] mb-3 normal-case group-hover:text-foreground transition-colors break-words w-full shrink-0 line-clamp-4">
-                      {formatTitle(event.name)}
-                    </h3>
-
-                    {/* Location Badge */}
-                    <div className="flex items-center justify-center gap-1.5 text-sm sm:text-base font-medium text-muted-foreground mb-2 shrink-0">
-                      <MapPin className="w-4 h-4 text-red-500" />
-                      <span className="truncate max-w-[200px]">{event.city ? `${toTitleCase(event.city)}, ${toTitleCase(event.state) || ''}` : toTitleCase(event.venue) || 'TBA'}</span>
-                    </div>
-
-                    {/* Championship Badge */}
-                    <div className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#A81F25] to-[#6F2B91] px-2.5 py-0.5 rounded-full text-white text-[10px] sm:text-xs font-black tracking-wider uppercase shadow-sm mb-3 shrink-0">
-                      <Trophy className="w-3.5 h-3.5 text-white" />
-                      {toTitleCase(event.type) || 'CHAMPIONSHIP'}
-                    </div>
-
-                    {/* Date Badge */}
-                    <div className="flex items-center justify-center gap-1.5 text-sm sm:text-base font-bold text-foreground mt-auto bg-accent/30 px-4 py-2 rounded-[8px] sm:rounded-[12px] border border-border/50">
-                      <Calendar className="w-5 h-5 text-primary" />
-                      <span>{new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase()}</span>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         )}
 

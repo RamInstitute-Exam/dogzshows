@@ -90,6 +90,13 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
             BREEDER : {winner.breederName.trim()}
           </p>
         )}
+
+        {/* Handler Name */}
+        {winner.handlerName?.trim() && (
+          <p className="text-[10px] md:text-[12px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25' }}>
+            HANDLER : {winner.handlerName.trim()}
+          </p>
+        )}
       </div>
     </div>
   );

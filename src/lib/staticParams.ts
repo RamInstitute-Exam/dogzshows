@@ -99,3 +99,34 @@ export async function getMagazineSlugs(): Promise<{ slug: string }[]> {
   if (mags.length === 0) return [{ slug: '_' }];
   return mags.filter((m) => m.slug).map((m) => ({ slug: m.slug }));
 }
+
+/** Fetch all unique event IDs for /gallery/show-photos/[eventId] */
+export async function getShowPhotoEventIds(): Promise<{ eventId: string }[]> {
+  function slugify(text: string) {
+    return text.toString().toLowerCase().trim()
+      .replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-');
+  }
+  try {
+    const [allRes, hofRes] = await Promise.all([
+      safeFetch<any>(`${API_BASE}/public/winners/public?limit=10000`),
+      safeFetch<any>(`${API_BASE}/public/winners/public/hall-of-fame?limit=10000`),
+    ]);
+    const all = [...allRes, ...hofRes];
+    const ids = new Set<string>();
+    all.forEach((w) => {
+      const id = w.event?.id || w.eventId || slugify(w.eventName || w.event?.name || '');
+      if (id) ids.add(String(id));
+    });
+    if (ids.size === 0) return [{ eventId: '_' }];
+    return Array.from(ids).map((id) => ({ eventId: id }));
+  } catch {
+    return [{ eventId: '_' }];
+  }
+}
+
+/** Fetch all event slugs for /events/detail/[slug] */
+export async function getEventSlugs(): Promise<{ slug: string }[]> {
+  const shows = await safeFetch<{ slug: string }>(`${API_BASE}/public/shows?limit=10000`);
+  if (shows.length === 0) return [{ slug: '_' }];
+  return shows.filter((s) => s.slug).map((s) => ({ slug: s.slug }));
+}

@@ -17,7 +17,7 @@ function ClubWinnersRow({ club }: { club: any }) {
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
   const [inView, setInView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // DO NOT sort client-side. The backend returns winners ordered by:
   // 1. event.displayOrder ASC  (groups 5th Show before 6th Show)
   // 2. winner.displayOrder ASC (orders winners within each event)
@@ -123,10 +123,10 @@ function ClubWinnersRow({ club }: { club: any }) {
         </div>
       </div>
 
-      {/* View All Winners Link */}
-      <div className="flex justify-end pt-2">
-        <Link 
-          href={`/clubs/${club.slug}/winners`} 
+      {/* /* View All Winners Link */}
+      <div className="hidden flex justify-end pt-2">
+        <Link
+          href={`/clubs/${club.slug}/winners`}
           className="group inline-flex items-center gap-2 text-rose-500 hover:text-rose-400 font-black tracking-wider uppercase text-sm transition-colors"
         >
           View All Winners <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

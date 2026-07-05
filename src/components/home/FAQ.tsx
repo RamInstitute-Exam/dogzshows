@@ -12,8 +12,8 @@ const FAQS = [
 ];
 
 export default function FAQ() {
+  return null;
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-
   return (
     <section className="w-full overflow-hidden pb-8 md:pb-12 lg:pb-16 bg-background pt-0">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

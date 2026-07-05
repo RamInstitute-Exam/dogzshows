@@ -37,7 +37,7 @@ function LandscapeWinnerCard({ winner }: { winner: any }) {
       {/* Content Section */}
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          <span className="text-xs font-bold text-amber-500 uppercase tracking-wider block mb-1">
+          <span className="text-xs font-bold text-foreground uppercase tracking-wider block mb-1">
             {winnerCategory}
           </span>
           <h4 className="text-lg font-black text-foreground">
@@ -49,6 +49,16 @@ function LandscapeWinnerCard({ winner }: { winner: any }) {
           {winner.ownerName && (
             <p className="text-xs text-muted-foreground mt-1">
               Owner: <span className="text-foreground font-semibold">{winner.ownerName}</span>
+            </p>
+          )}
+          {winner.breederName && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Breeder: <span className="text-foreground font-semibold">{winner.breederName}</span>
+            </p>
+          )}
+          {winner.handlerName && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Handler: <span className="text-foreground font-semibold">{winner.handlerName}</span>
             </p>
           )}
         </div>

@@ -131,7 +131,7 @@ export default function ClosedEntriesClient({ initialBannerData }: { initialBann
                   </div>
                   
                   <div className="pt-4 border-t border-border flex gap-3 mt-auto">
-                    <Link href={`/events/detail?slug=${event.slug}`} className="w-full">
+                    <Link href={`/events/detail/${event.slug}`} className="w-full">
                       <Button variant="outline" className="w-full rounded-xl h-12 font-bold text-muted-foreground border-border hover:bg-card flex items-center justify-center gap-1.5">
                         View Show Results & Details <ChevronRight className="w-4 h-4" />
                       </Button>

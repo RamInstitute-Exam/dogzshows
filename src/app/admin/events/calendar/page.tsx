@@ -609,7 +609,7 @@ export default function CalendarPage() {
                 >
                   <Trash2 className="w-4 h-4 mr-2" /> Delete
                 </Button>
-                <Link href={`/events/detail?slug=${selectedEvent.slug}`} target="_blank" className="flex-1">
+                <Link href={`/events/detail/${selectedEvent.slug}`} target="_blank" className="flex-1">
                   <Button className="w-full bg-[#111827] text-white hover:bg-black dark:bg-white dark:text-[#111827] dark:hover:bg-[#F3F4F6] font-bold h-12 rounded-xl">
                     <ExternalLink className="w-4 h-4 mr-2" /> Website
                   </Button>

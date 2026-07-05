@@ -67,7 +67,7 @@ export default function PremiumFooter() {
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
-                <span>hello@juzdog.com</span>
+                <span>hello@juzdog.co</span>
               </li>
             </ul>
           </div>

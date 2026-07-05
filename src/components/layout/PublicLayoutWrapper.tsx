@@ -14,12 +14,15 @@ export default function PublicLayoutWrapper({
 
   const normalizedPath = pathname?.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
 
+  const isMagazineViewer = normalizedPath?.startsWith('/e-magazines/') && normalizedPath.length > '/e-magazines/'.length;
+
   const isExcluded = 
     normalizedPath?.startsWith('/admin') || 
     normalizedPath?.startsWith('/dashboard') || 
     normalizedPath?.startsWith('/login') || 
     normalizedPath?.startsWith('/register') || 
-    normalizedPath?.startsWith('/signup');
+    normalizedPath?.startsWith('/signup') ||
+    isMagazineViewer;
 
   if (isExcluded) {
     return <>{children}</>;

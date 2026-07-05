@@ -72,7 +72,7 @@ export default function ContactClient({ initialBannerData }: { initialBannerData
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">Phone</p>
-                    <p className="font-medium text-lg">+91 98765 43210</p>
+                    <p className="font-medium text-lg">+91 99438 99418</p>
                   </div>
                 </div>
 
@@ -82,7 +82,7 @@ export default function ContactClient({ initialBannerData }: { initialBannerData
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">Email</p>
-                    <p className="font-medium text-lg">hello@juztdogmedia.com</p>
+                    <p className="font-medium text-lg">info@juzdog.co</p>
                   </div>
                 </div>
 
@@ -93,8 +93,7 @@ export default function ContactClient({ initialBannerData }: { initialBannerData
                   <div>
                     <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider mb-1">Office</p>
                     <p className="font-medium text-lg leading-relaxed">
-                      123 Photography Lane, Studio District<br />
-                      Bangalore, Karnataka 560001
+                      COIMBATORE, TAMIL NADU
                     </p>
                   </div>
                 </div>
@@ -111,26 +110,18 @@ export default function ContactClient({ initialBannerData }: { initialBannerData
               </div>
 
               <div className="mt-10 pt-8 border-t border-border">
-                <button className="w-full bg-[#25D366] hover:bg-[#1DA851] text-foreground font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
+                <a href="https://wa.me/919943899418" target="_blank" rel="noopener noreferrer" className="w-full bg-[#25D366] hover:bg-[#1DA851] text-foreground font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
                   <MessageCircle className="w-5 h-5" /> Chat on WhatsApp
-                </button>
+                </a>
               </div>
             </div>
 
-            {/* Google Map Mock */}
-            <div className="w-full h-64 bg-gray-200 rounded-[2.5rem] overflow-hidden border border-border relative group">
-              <OptimizedImage src="/images/hero_banner.png" alt="Map View" className="w-full h-full object-cover opacity-60" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-card px-4 py-2 rounded-lg premium-shadow text-brand-dark font-bold text-sm flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-foreground" /> View on Google Maps
-                </div>
-              </div>
-            </div>
+
           </div>
 
           {/* Contact Form */}
           <div className="bg-card p-10 rounded-[2.5rem] premium-shadow border border-border">
-            <h2 className="text-muted-foregroundxl font-bold font-outfit text-brand-dark mb-2">Send a Message</h2>
+            <h2 className="text-3xl font-bold font-outfit text-foreground mb-2">Send a Message</h2>
             <p className="text-muted-foreground font-medium mb-8">Fill out the form below and we'll get back to you within 24 hours.</p>
 
             {status === 'success' ? (
@@ -187,9 +178,9 @@ export default function ContactClient({ initialBannerData }: { initialBannerData
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-4xl mx-auto">
+        <div className="hidden max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-muted-foregroundxl font-extrabold font-outfit text-brand-dark mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-extrabold font-outfit text-foreground mb-4">Frequently Asked Questions</h2>
           </div>
 
           <div className="space-y-4">
@@ -200,7 +191,7 @@ export default function ContactClient({ initialBannerData }: { initialBannerData
             ].map((faq, i) => (
               <div key={i} className="bg-card border border-border rounded-2xl p-6 premium-shadow">
                 <div className="flex justify-between items-center cursor-pointer">
-                  <h3 className="font-bold text-brand-dark text-lg">{faq.q}</h3>
+                  <h3 className="font-bold text-foreground text-lg uppercase tracking-wider">{faq.q}</h3>
                   <ChevronDown className="w-5 h-5 text-foreground" />
                 </div>
                 <div className="mt-4 text-muted-foreground font-medium leading-relaxed">

@@ -164,7 +164,7 @@ export default function EventHero({ event }: { event: any }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden lg:block w-[340px] rounded-[24px] p-7 shadow-2xl relative overflow-hidden shrink-0"
+            className="hidden w-[340px] rounded-[24px] p-7 shadow-2xl relative overflow-hidden shrink-0"
             style={{
               background: 'rgba(10,10,10,0.72)',
               border: '1px solid rgba(255,255,255,0.14)',

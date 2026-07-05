@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { formatTitle } from '@/lib/utils';
+import { SearchableSelect } from '@/components/ui/SearchableSelect';
 
 interface EventStats {
   totalEvents: number;
@@ -410,31 +411,27 @@ export default function BespokeEventManagement() {
               {/* Host Club */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-muted-foreground uppercase">Host Kennel Club</label>
-                <select 
+                <SearchableSelect 
+                  options={clubs.map(c => ({ id: c.id, label: c.name }))}
                   value={clubFilter}
-                  onChange={(e) => { setClubFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
-                >
-                  <option value="">All Clubs</option>
-                  {clubs.map(c => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
+                  onChange={(val) => { setClubFilter(String(val)); setPage(1); }}
+                  placeholder="All Clubs"
+                  searchPlaceholder="Search clubs..."
+                  className="w-full text-sm"
+                />
               </div>
 
               {/* Judge */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-muted-foreground uppercase">Assigned Judge</label>
-                <select 
+                <SearchableSelect 
+                  options={judges.map(j => ({ id: j.id, label: j.name }))}
                   value={judgeFilter}
-                  onChange={(e) => { setJudgeFilter(e.target.value); setPage(1); }}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm outline-none focus:border-border"
-                >
-                  <option value="">All Judges</option>
-                  {judges.map(j => (
-                    <option key={j.id} value={j.id}>{j.name}</option>
-                  ))}
-                </select>
+                  onChange={(val) => { setJudgeFilter(String(val)); setPage(1); }}
+                  placeholder="All Judges"
+                  searchPlaceholder="Search judges..."
+                  className="w-full text-sm"
+                />
               </div>
 
               {/* Event Type */}

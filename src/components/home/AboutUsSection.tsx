@@ -127,7 +127,7 @@ export default function AboutUsSection({ initialData }: { initialData?: any }) {
               className="flex flex-wrap gap-4 pt-4"
             >
               <Link 
-                href={data.primaryBtnLink || '/gallery'} 
+                href={data.primaryBtnLink || '/gallery/all-photos/'} 
                 className="btn-primary-luxury group gap-2 px-8"
               >
                 <Camera className="w-5 h-5" />

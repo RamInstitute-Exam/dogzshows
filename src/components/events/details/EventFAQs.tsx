@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 
 export default function EventFAQs({ faqs }: { faqs: any[] }) {
+  return null;
   // Guard: hide section if no FAQs
   if (!faqs || faqs.length === 0) return null;
 

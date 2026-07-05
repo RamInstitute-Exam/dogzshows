@@ -11,14 +11,14 @@ export default function Footer() {
   const footerData = data?.success ? data.data?.footer : null;
 
   // Fallbacks
-  const quickLinks = footerData?.quickLinks || [
+  const quickLinks = (footerData?.quickLinks || [
     { label: 'Home', url: '/' },
     { label: 'Events', url: '/events' },
     { label: 'Judges', url: '/judges' },
     { label: 'Gallery', url: '/gallery' },
     { label: 'Winners', url: '/winners' },
     { label: 'About', url: '/about' },
-  ];
+  ]).filter((l: any) => l.label?.toLowerCase() !== 'about');
 
   const services = footerData?.services || [
     { label: 'Dog Registration', url: '/dashboard/dogs/add' },
@@ -34,12 +34,12 @@ export default function Footer() {
     { label: 'Privacy Policy', url: '/privacy' },
   ];
 
-  const socialLinks = footerData?.socialLinks || [
+  const socialLinks = (footerData?.socialLinks || [
     { name: 'Facebook', url: 'https://facebook.com' },
     { name: 'Instagram', url: 'https://instagram.com' },
     { name: 'Twitter', url: 'https://twitter.com' },
     { name: 'YouTube', url: 'https://youtube.com' },
-  ];
+  ]).filter((l: any) => l.name?.toLowerCase() !== 'twitter');
 
   const contact = footerData?.contactDetails || {};
 
@@ -62,9 +62,9 @@ export default function Footer() {
                 className="footer-logo-img"
               />
             </Link>
-            <p className="text-muted-foreground text-sm max-w-xs leading-relaxed mt-5">
+            {/* <p className="text-muted-foreground text-sm max-w-xs leading-relaxed mt-5">
               India&apos;s modern dog show &amp; breed registration platform.
-            </p>
+            </p> */}
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-3 w-full lg:w-auto">
@@ -87,7 +87,7 @@ export default function Footer() {
         </div>
 
         {/* MAIN GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 items-start w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 items-start w-full">
 
           {/* SECTION 1: QUICK LINKS */}
           <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
@@ -104,7 +104,7 @@ export default function Footer() {
           </div>
 
           {/* SECTION 3: SUPPORT */}
-          <div className="bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+          <div className="hidden bg-card dark:bg-[#0A0A0A] border border-border rounded-[24px] p-[32px] flex-col items-start w-full min-h-[280px] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
             <h4 className="text-foreground text-[20px] font-bold mb-6 tracking-[1px] text-left w-full">SUPPORT</h4>
             <ul className="grid grid-cols-2 gap-y-5 gap-x-8 w-full items-start">
               {supportLinks.map((link: any) => (
@@ -127,13 +127,25 @@ export default function Footer() {
               </li>
               <li className="flex flex-row items-start justify-start gap-3">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-muted-foreground text-sm font-medium text-left">{contact?.email || 'info@juzdog.com'}</span>
+                <span className="text-muted-foreground text-sm font-medium text-left">{contact?.email || 'info@juzdog.co'}</span>
               </li>
               <li className="flex flex-row items-start justify-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
                 <span className="text-muted-foreground text-sm font-medium text-left leading-relaxed uppercase">{(contact?.address || 'Coimbatore, Tamil Nadu')?.toUpperCase()}</span>
               </li>
             </ul>
+            <h4 className="text-foreground text-[16px] font-bold mt-8 mb-4 tracking-[1px] text-left w-full uppercase">SOCIAL MEDIA</h4>
+            <div className="flex gap-4 items-center">
+              <a href="https://www.facebook.com/share/1GLkRXtdvZ/" target="_blank" rel="noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
+              </a>
+              <a href="https://www.instagram.com/juz_dog?igsh=b25seHlnZGlpdnNo" target="_blank" rel="noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
+              </a>
+              <a href="https://www.youtube.com/@Juzdog" target="_blank" rel="noreferrer" aria-label="YouTube" className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z" /><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg>
+              </a>
+            </div>
           </div>
 
         </div>
@@ -142,19 +154,9 @@ export default function Footer() {
         <div className="w-full border-t border-border mt-[60px] mb-[20px]" />
 
         {/* BOTTOM COPYRIGHT */}
-        <div className="w-full bg-transparent flex flex-col md:flex-row justify-between items-center gap-4 pt-[10px]">
-          <p className="text-muted-foreground text-sm font-medium">
-            {footerData?.copyrightText || '© 2026 JuzDog'}
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-6 text-sm font-medium">
-            <Link href={footerData?.privacyUrl || "#"} className="text-muted-foreground hover:text-primary transition-colors duration-250 uppercase">PRIVACY POLICY</Link>
-            <Link href={footerData?.termsUrl || "#"} className="text-muted-foreground hover:text-primary transition-colors duration-250 uppercase">TERMS</Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors duration-250 uppercase">SUPPORT</Link>
-          </div>
-
-          <p className="text-muted-foreground text-sm font-medium">
-            {footerData?.description || 'Made with ❤️ in India'}
+        <div className="w-full bg-transparent flex justify-center items-center pt-[10px]">
+          <p className="text-muted-foreground text-sm font-medium text-center">
+            {footerData?.copyrightText || '© 2026 JuzDog. All Rights Reserved.'}
           </p>
         </div>
 

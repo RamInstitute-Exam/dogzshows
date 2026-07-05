@@ -140,7 +140,7 @@ export default function UpcomingEntriesClient({ initialBannerData }: { initialBa
                   </div>
                   
                   <div className="pt-4 border-t border-border flex gap-3 mt-auto">
-                    <Link href={`/events/detail?slug=${event.slug}`} className="flex-grow">
+                    <Link href={`/events/detail/${event.slug}`} className="flex-grow">
                       <Button variant="outline" className="w-full rounded-xl h-12 font-bold text-muted-foreground border-border hover:bg-card">
                         Details
                       </Button>

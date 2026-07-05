@@ -2,7 +2,7 @@
 
 import { useAboutCMS } from '@/hooks/useCMS';
 import { motion } from 'framer-motion';
-import { Shield, Globe, Users, Trophy } from 'lucide-react';
+import { Camera, Video, Film, Star } from 'lucide-react';
 import BreadcrumbBanner from '@/components/shared/BreadcrumbBanner';
 import PageContainer from '@/components/layout/PageContainer';
 import { config } from '@/lib/config';
@@ -18,7 +18,7 @@ export default function AboutClient({ initialBannerData }: { initialBannerData?:
       <BreadcrumbBanner
         slug="about"
         fallbackTitle={aboutData?.title || "About JuzDog"}
-        fallbackSubtitle={aboutData?.content || "JuzDog is the premier enterprise platform for dog event management, bringing transparency, efficiency, and prestige to championships worldwide."}
+        fallbackSubtitle={aboutData?.content || "JuzDog provides premium event coverage, professional canine photography, and cinematic videography, capturing the true spirit of dog shows."}
         fallbackImage={aboutData?.image || "/images/about_banner.png"}
         initialBannerData={initialBannerData}
       />
@@ -27,10 +27,10 @@ export default function AboutClient({ initialBannerData }: { initialBannerData?:
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
-            { icon: Shield, title: 'KCI Verified Integrity', desc: 'Our advanced OCR technology ensures that every dog registered is verified against official Kennel Club of India certificates.' },
-            { icon: Globe, title: 'Global Standards', desc: 'We operate under strict FCI guidelines, ensuring our event brackets, judging criteria, and awards meet international standards.' },
-            { icon: Users, title: 'Community Driven', desc: 'We provide a seamless experience for owners, breeders, and judges to connect, compete, and celebrate their passion.' },
-            { icon: Trophy, title: 'Prestigious Recognition', desc: 'Our platform permanently records achievements, generating secure digital certificates and public champion profiles.' }
+            { icon: Camera, title: 'Dog Show Event Coverage', desc: 'Comprehensive professional photography and videography services designed to capture every moment of dog show events.' },
+            { icon: Star, title: 'Canine Photoshoots', desc: 'Premium studio and outdoor photoshoots tailored to highlight the unique characteristics and beauty of your dogs.' },
+            { icon: Film, title: 'Event Highlights & Reels', desc: 'Cinematic stories and engaging highlight reels perfectly crafted for social media and lasting memories.' },
+            { icon: Video, title: 'Champion Spotlights', desc: 'Dedicated focus on winners, kennels, and handlers, showcasing their prestige and achievements with high-quality media.' }
           ].map((item, i) => (
             <motion.div 
               key={i}

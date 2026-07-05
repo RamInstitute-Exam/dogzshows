@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
-  ArrowLeft, ChevronLeft, ChevronRight, RefreshCw, AlertCircle,
+  ArrowLeft, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, RefreshCw, AlertCircle,
   ZoomIn, ZoomOut, Maximize2, Minimize2, Bookmark, BookOpen,
   Volume2, VolumeX, Grid, HelpCircle
 } from 'lucide-react';
@@ -68,10 +68,12 @@ const preloadImages = async (urls: string[]) => {
 // ── Realistic Hardcover Book Page Model ───────────────────────────────────────────
 const FlipPage = React.forwardRef<
   HTMLDivElement,
-  { children: React.ReactNode; index: number; className?: string }
->(({ children, index, className }, ref) => {
-  const isLeft = index % 2 === 0;
-  const isRight = index % 2 === 1;
+  { children: React.ReactNode; index: number; isFrontCover?: boolean; isBackCover?: boolean; className?: string }
+>(({ children, index, isFrontCover, isBackCover, className }, ref) => {
+  // Normally even indexes are left pages, odd are right.
+  // BUT the front cover is displayed on the right, and the back cover on the left.
+  const isLeft = isBackCover ? true : isFrontCover ? false : index % 2 === 0;
+  const isRight = isFrontCover ? true : isBackCover ? false : index % 2 === 1;
 
   return (
     <div
@@ -88,34 +90,16 @@ const FlipPage = React.forwardRef<
       }}
     >
       {/* Premium Luxury Paper Texture Overlay */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none z-30 opacity-[0.035]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0%200%20200%20200'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter%20id='noiseFilter'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      {/* Gold edge lighting/sheen */}
-      <div 
-        className="absolute inset-y-0 w-[2.5px] z-30 pointer-events-none"
-        style={{
-          left: isLeft ? '0' : 'auto',
-          right: isRight ? '0' : 'auto',
-          background: 'linear-gradient(to bottom, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.85) 50%, rgba(212, 175, 55, 0.2))',
-        }}
-      />
 
-      {/* Spine crease shadow */}
-      <div 
-        className="absolute inset-y-0 w-[45px] z-30 pointer-events-none mix-blend-multiply"
-        style={{
-          left: isLeft ? 'auto' : '0',
-          right: isLeft ? '0' : 'auto',
-          background: isLeft
-            ? 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.06) 40%, rgba(0,0,0,0.35) 100%)'
-            : 'linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.06) 40%, rgba(0,0,0,0.35) 100%)',
-        }}
-      />
+
+
 
       {children}
     </div>
@@ -136,11 +120,11 @@ export default function MagazineViewerClientPage() {
   const [isPlayingIntro, setIsPlayingIntro] = useState(false);
   const [isIntroOpened, setIsIntroOpened] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [introScope, animate] = useAnimate();
 
   // Viewer Controls & States
-  const [currentPage, setCurrentPage] = useState(3);
+  const [currentPage, setCurrentPage] = useState(2);
   const [isMuted, setIsMuted] = useState(false);
   const [soundVolume] = useState(0.5);
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('landscape');
@@ -250,7 +234,7 @@ export default function MagazineViewerClientPage() {
         const w = window.innerWidth;
         const h = window.innerHeight;
 
-        const PAGE_WIDTH  = 500;
+        const PAGE_WIDTH = 500;
         const PAGE_HEIGHT = 707;
         const SPREAD_WIDTH = PAGE_WIDTH * 2;
 
@@ -282,9 +266,9 @@ export default function MagazineViewerClientPage() {
 
         setBookScale(scale);
         setDimensions({
-          width:         PAGE_WIDTH,
-          height:        PAGE_HEIGHT,
-          wrapperWidth:  SPREAD_WIDTH,
+          width: PAGE_WIDTH,
+          height: PAGE_HEIGHT,
+          wrapperWidth: SPREAD_WIDTH,
           wrapperHeight: PAGE_HEIGHT,
         });
         setIsReady(true);
@@ -319,7 +303,7 @@ export default function MagazineViewerClientPage() {
           if (cached.pages && cached.pages.length > 0) {
             const preloadUrls = cached.pages.slice(0, 4).map((p) => getOriginalUrl(p.imageUrl));
             await preloadImages(preloadUrls);
-            
+
             const introPlayed = sessionStorage.getItem(`mag_intro_played_${slug}`);
             if (introPlayed) {
               setIsPlayingIntro(false);
@@ -336,13 +320,13 @@ export default function MagazineViewerClientPage() {
           const savedPage = localStorage.getItem(`mag_progress_${cached.id}`);
           if (savedPage) {
             const parsedPage = parseInt(savedPage);
-            if (parsedPage >= 3 && parsedPage <= cached.totalPages) {
+            if (parsedPage >= 1 && parsedPage <= cached.totalPages) {
               setCurrentPage(parsedPage);
             } else {
-              setCurrentPage(3);
+              setCurrentPage(2);
             }
           } else {
-            setCurrentPage(3);
+            setCurrentPage(2);
           }
 
           setLoading(false);
@@ -358,7 +342,7 @@ export default function MagazineViewerClientPage() {
           if (res.data.pages && res.data.pages.length > 0) {
             const preloadUrls = res.data.pages.slice(0, 4).map((p: any) => getOriginalUrl(p.imageUrl));
             await preloadImages(preloadUrls);
-            
+
             const introPlayed = sessionStorage.getItem(`mag_intro_played_${slug}`);
             if (introPlayed) {
               setIsPlayingIntro(false);
@@ -375,13 +359,13 @@ export default function MagazineViewerClientPage() {
           const savedPage = localStorage.getItem(`mag_progress_${res.data.id}`);
           if (savedPage) {
             const parsedPage = parseInt(savedPage);
-            if (parsedPage >= 3 && parsedPage <= res.data.totalPages) {
+            if (parsedPage >= 1 && parsedPage <= res.data.totalPages) {
               setCurrentPage(parsedPage);
             } else {
-              setCurrentPage(3);
+              setCurrentPage(2);
             }
           } else {
-            setCurrentPage(3);
+            setCurrentPage(2);
           }
         } else {
           setError('Magazine not found.');
@@ -434,11 +418,11 @@ export default function MagazineViewerClientPage() {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
-    
+
     // Normalize coordinates
     const tiltX = (y / (rect.height / 2)) * -10; // Max tilt 10deg
     const tiltY = (x / (rect.width / 2)) * 10;
-    
+
     setTilt({ x: tiltX, y: tiltY });
   };
 
@@ -451,35 +435,16 @@ export default function MagazineViewerClientPage() {
     if (isOpening || !isIntroOpened) return;
     setIsOpening(true);
     setIsPlayingIntro(true);
+    setIsExiting(false);
 
     try {
-      // Soft hinge sound
       if (magazine?.enablePageSound && !isMuted) {
         turnSound.play();
       }
 
-      // Parallel animations to close wrapper back to single cover view
-      await Promise.all([
-        animate('.intro-cover', 
-          { rotateY: 0 }, 
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        ),
-        animate('.intro-book-wrapper', 
-          { x: -250, scale: 0.85, opacity: 1 }, 
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        ),
-        animate('.intro-left-page',
-          { opacity: 0 },
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        ),
-        animate('.intro-right-page',
-          { opacity: 0 },
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        )
-      ]);
-
-      // Fade in open badge
-      animate('.click-to-open-badge', { opacity: 1, scale: 1 }, { duration: 0.3 });
+      // Play close transition declaratively
+      setIsOpening(false);
+      await new Promise(r => setTimeout(r, 1600));
 
       setIsIntroOpened(false);
       setIsOpening(false);
@@ -496,40 +461,16 @@ export default function MagazineViewerClientPage() {
     setIsOpening(true);
 
     try {
-      // Soft hinge sound
       if (magazine?.enablePageSound && !isMuted) {
         turnSound.play();
       }
 
-      // Parallel animations: rotate cover & pan book layout to center spine, and fade in inside pages
-      await Promise.all([
-        animate('.intro-cover', 
-          { rotateY: -180 }, 
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        ),
-        animate('.intro-book-wrapper', 
-          { x: [-250, 0], scale: [0.85, 1] }, 
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        ),
-        animate('.intro-left-page',
-          { opacity: [0, 1] },
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        ),
-        animate('.intro-right-page',
-          { opacity: [0, 1] },
-          { duration: 1.6, ease: [0.25, 1, 0.5, 1] }
-        ),
-        animate('.click-to-open-badge',
-          { opacity: 0, scale: 0.8 },
-          { duration: 0.3 }
-        )
-      ]);
+      // Wait for the 3D swing cover & center pan animation to finish
+      await new Promise(r => setTimeout(r, 1600));
 
-      // Ease in book wrapper zoom, fade out overlay
-      await animate('.intro-book-wrapper',
-        { scale: 1.15, opacity: 0 },
-        { duration: 0.5, ease: 'easeOut' }
-      );
+      // Zoom out & fade out overlay
+      setIsExiting(true);
+      await new Promise(r => setTimeout(r, 550));
 
       sessionStorage.setItem(`mag_intro_played_${slug}`, 'true');
       setIsIntroOpened(true);
@@ -537,43 +478,12 @@ export default function MagazineViewerClientPage() {
 
       // Instantly position pageFlip ref to page spread
       if (bookRef.current) {
-        bookRef.current.pageFlip().turnToPage(currentPage - 3);
+        bookRef.current.pageFlip().turnToPage(currentPage === 1 ? 0 : currentPage - 1);
       }
     } catch (e) {
       setIsPlayingIntro(false);
     }
   };
-
-  // Pre-reveal cover animation sequence on mount to drop closed book cover into view
-  useEffect(() => {
-    if (!isPlayingIntro || !introScope.current) return;
-
-    let isCancelled = false;
-
-    const playIntroSequence = async () => {
-      try {
-        await new Promise(r => setTimeout(r, 100));
-        if (isCancelled) return;
-
-        // Phase A: Drop & Rotate smoothly from the top in 3D (Hardcover drop)
-        await animate('.intro-book-wrapper',
-          { 
-            y: ['-100vh', '0vh'], 
-            scale: [0.6, 0.85], 
-            rotateZ: [-15, 0], 
-            opacity: [0, 1] 
-          },
-          { duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }
-        );
-      } catch (e) {
-        // Safe fail
-      }
-    };
-
-    playIntroSequence();
-
-    return () => { isCancelled = true; };
-  }, [isPlayingIntro, animate, introScope]);
 
   // Keyboard navigation shortcuts
   useEffect(() => {
@@ -648,7 +558,7 @@ export default function MagazineViewerClientPage() {
   };
 
   const handlePrev = () => {
-    if (currentPage <= 3) {
+    if (currentPage <= 1) {
       handleCloseBook();
     } else if (bookRef.current) {
       bookRef.current.pageFlip().flipPrev();
@@ -657,8 +567,8 @@ export default function MagazineViewerClientPage() {
 
   const onFlip = (e: { data: number }) => {
     // pageFlip provides left-side page index of the current spread
-    // Index 0 in pages.slice(2) represents Page 3
-    const nextLeftPage = e.data + 3;
+    // Index 0 represents Page 1 (Cover)
+    const nextLeftPage = e.data === 0 ? 1 : e.data + 1;
     setCurrentPage(nextLeftPage);
     handleResetZoom();
   };
@@ -707,11 +617,11 @@ export default function MagazineViewerClientPage() {
     if (!isDragging || zoomScale === 1) return;
     const nextX = e.clientX - dragStart.current.x;
     const nextY = e.clientY - dragStart.current.y;
-    
+
     // Bounds check to avoid infinite panning
     const maxPanX = (dimensions.wrapperWidth * (zoomScale - 1)) / 2;
     const maxPanY = (dimensions.wrapperHeight * (zoomScale - 1)) / 2;
-    
+
     setPanOffset({
       x: Math.max(-maxPanX, Math.min(maxPanX, nextX)),
       y: Math.max(-maxPanY, Math.min(maxPanY, nextY)),
@@ -757,10 +667,10 @@ export default function MagazineViewerClientPage() {
       const touch = e.touches[0];
       const nextX = touch.clientX - dragStart.current.x;
       const nextY = touch.clientY - dragStart.current.y;
-      
+
       const maxPanX = (dimensions.wrapperWidth * (zoomScale - 1)) / 2;
       const maxPanY = (dimensions.wrapperHeight * (zoomScale - 1)) / 2;
-      
+
       setPanOffset({
         x: Math.max(-maxPanX, Math.min(maxPanX, nextX)),
         y: Math.max(-maxPanY, Math.min(maxPanY, nextY)),
@@ -796,16 +706,14 @@ export default function MagazineViewerClientPage() {
 
   // Jump to specific page spread
   const jumpToPage = (pageNumber: number) => {
-    if (pageNumber <= 2) {
-      handleCloseBook();
-    } else {
-      if (isPlayingIntro) {
-        setIsPlayingIntro(false);
-      }
-      if (bookRef.current) {
-        const targetIndex = pageNumber % 2 === 1 ? pageNumber - 3 : pageNumber - 4;
-        bookRef.current.pageFlip().turnToPage(targetIndex);
-      }
+    if (pageNumber < 1) return;
+    if (isPlayingIntro) {
+      setIsPlayingIntro(false);
+      setIsIntroOpened(true);
+    }
+    if (bookRef.current) {
+      const targetIndex = pageNumber === 1 ? 0 : (pageNumber % 2 === 1 ? pageNumber - 2 : pageNumber - 1);
+      bookRef.current.pageFlip().turnToPage(targetIndex);
     }
   };
 
@@ -830,18 +738,18 @@ export default function MagazineViewerClientPage() {
     if (maxThickness <= 0) return null;
 
     return (
-      <div 
+      <div
         className={`absolute top-0 bottom-0 w-[8px] bg-zinc-950/80 pointer-events-none z-15 flex flex-col justify-between`}
         style={{
           [side]: '-8px',
-          boxShadow: side === 'left' 
+          boxShadow: side === 'left'
             ? 'inset 1px 0 0 rgba(255,255,255,0.05), -2px 0 5px rgba(0,0,0,0.5)'
             : 'inset -1px 0 0 rgba(255,255,255,0.05), 2px 0 5px rgba(0,0,0,0.5)',
         }}
       >
         {Array.from({ length: maxThickness }).map((_, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className="absolute top-0 bottom-0 bg-[#faf9f6] border-zinc-300/30"
             style={{
               [side]: `${i * 1.2}px`,
@@ -855,6 +763,36 @@ export default function MagazineViewerClientPage() {
       </div>
     );
   };
+
+  // Calculate dynamic shifts to center the single cover pages
+  let autoShiftX = 0;
+  let autoShiftY = 0;
+  if (!isOpening) {
+    if (currentPage === 1) {
+      const shift = (dimensions.width / 4) * zoomScale;
+      if (isMobile) {
+        autoShiftY = -shift;
+      } else {
+        autoShiftX = -shift;
+      }
+    } else if (currentPage >= totalPages) {
+      const shift = (dimensions.width / 4) * zoomScale;
+      if (isMobile) {
+        autoShiftY = shift;
+      } else {
+        autoShiftX = shift;
+      }
+    }
+  }
+
+  // Intro animation helpers
+  const startScale = isMobile ? bookScale * 1.08 : 0.85;
+  const endScale = isMobile ? bookScale : 1;
+  const initialScale = isMobile ? bookScale * 0.75 : 0.6;
+  const startX = isMobile ? 0 : -(dimensions.wrapperWidth / 4) * 0.85;
+  const endX = 0;
+  const startY = isMobile ? -(dimensions.wrapperWidth / 4) * startScale : 0;
+  const endY = 0;
 
   return (
     <div
@@ -930,7 +868,7 @@ export default function MagazineViewerClientPage() {
         )}
 
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-black to-zinc-950/80 z-10" />
-        
+
         {/* Cinematic Spotlight */}
         <div className="absolute inset-x-0 top-0 h-[50%] bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06)_0%,transparent_75%)] z-15" />
 
@@ -976,50 +914,13 @@ export default function MagazineViewerClientPage() {
               </div>
             </div>
 
-            {/* Top Toolbar Actions */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => toggleBookmark(currentPage)}
-                className={`w-10 h-10 rounded-xl glass-btn flex items-center justify-center cursor-pointer transition-colors ${
-                  bookmarks.includes(currentPage) ? 'text-red-500 fill-red-500 bg-white/10' : 'text-white'
-                }`}
-                title="Bookmark Current Page"
-              >
-                <Bookmark className="w-5 h-5" />
-              </button>
-              
-              <button
-                onClick={() => setShowBookmarksPanel(!showBookmarksPanel)}
-                className={`w-10 h-10 rounded-xl glass-btn flex items-center justify-center cursor-pointer ${
-                  showBookmarksPanel ? 'bg-white/10 text-white' : 'text-zinc-400'
-                }`}
-                title="Saved Bookmarks"
-              >
-                <BookOpen className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={() => setIsMuted(!isMuted)}
-                className="w-10 h-10 rounded-xl glass-btn flex items-center justify-center text-white cursor-pointer"
-                title={isMuted ? 'Unmute Sound' : 'Mute Sound'}
-              >
-                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-              </button>
-
-              <button
-                onClick={toggleFullscreen}
-                className="w-10 h-10 rounded-xl glass-btn flex items-center justify-center text-white cursor-pointer"
-                title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-              >
-                {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
-              </button>
-            </div>
+            {/* Top Toolbar Actions (Removed as requested) */}
           </motion.header>
         )}
       </AnimatePresence>
 
       {/* ── MAIN DIGITAL READING INTERACTIVE WORKSPACE ── */}
-      <main 
+      <main
         className="flex-1 flex items-center justify-center relative overflow-hidden px-4 py-8 z-20 cursor-grab active:cursor-grabbing"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -1027,15 +928,19 @@ export default function MagazineViewerClientPage() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex items-center justify-center gap-6 md:gap-10 lg:gap-14 w-full h-full max-w-[100vw] relative">
-          
+        <div className="absolute inset-0 flex items-center justify-center gap-6 md:gap-10 lg:gap-14 w-full max-w-[100vw]">
+
           {/* Floating Left Control */}
           <button
             onClick={handlePrev}
-            className="absolute left-6 z-30 w-14 h-14 rounded-full border border-white/10 bg-black/60 backdrop-blur-xl flex items-center justify-center text-white shadow-2xl active:scale-95 transition-all select-none hidden md:flex shrink-0 hover:scale-105 hover:bg-white/10 cursor-pointer"
+            className={`absolute z-30 w-12 h-12 rounded-full flex items-center justify-center text-white active:scale-90 transition-all select-none shrink-0 cursor-pointer ${
+              isMobile
+                ? 'top-20 left-1/2 -translate-x-1/2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
+                : 'left-6 hidden md:flex md:border border-white/10 md:bg-black/60 md:backdrop-blur-xl md:shadow-2xl md:hover:scale-105 hover:bg-white/10'
+            }`}
             title="Previous Page"
           >
-            <ChevronLeft className="w-7 h-7" />
+            {isMobile ? <ChevronUp className="w-7 h-7" /> : <ChevronLeft className="w-7 h-7" />}
           </button>
 
           {/* Book Perspective Zoom Scale Frame */}
@@ -1043,8 +948,8 @@ export default function MagazineViewerClientPage() {
             animate={{
               scale: bookScale * zoomScale,
               rotate: isMobile ? 90 : 0,
-              x: panOffset.x,
-              y: panOffset.y,
+              x: panOffset.x + autoShiftX,
+              y: panOffset.y + autoShiftY,
             }}
             transition={isDragging ? { duration: 0 } : { duration: 0.35, ease: 'easeOut' }}
             className="flex items-center justify-center overflow-visible relative"
@@ -1052,9 +957,8 @@ export default function MagazineViewerClientPage() {
           >
             {/* Real Book Hardcover wrapper container */}
             <div
-              className={`relative bg-zinc-950 transition-shadow duration-500 rounded-[12px] ${
-                isDesktop ? 'shadow-[0_45px_110px_rgba(0,0,0,0.85)] border border-white/5' : ''
-              }`}
+              className={`relative bg-zinc-950 transition-shadow duration-500 rounded-[12px] ${isDesktop ? 'shadow-[0_45px_110px_rgba(0,0,0,0.85)] border border-white/5' : ''
+                }`}
               style={{
                 width: dimensions.wrapperWidth,
                 height: dimensions.wrapperHeight,
@@ -1074,7 +978,7 @@ export default function MagazineViewerClientPage() {
 
               {/* Bookmark Ribbon on Pages */}
               {bookmarks.includes(currentPage) && (
-                <div 
+                <div
                   onClick={() => toggleBookmark(currentPage)}
                   className="absolute top-0 left-8 w-[24px] h-[48px] bg-red-600 cursor-pointer z-35 flex items-center justify-center shadow-md animate-in slide-in-from-top-4 duration-300"
                   style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%)' }}
@@ -1084,7 +988,7 @@ export default function MagazineViewerClientPage() {
                 </div>
               )}
               {bookmarks.includes(currentPage + 1) && !isMobile && currentPage + 1 <= totalPages && (
-                <div 
+                <div
                   onClick={() => toggleBookmark(currentPage + 1)}
                   className="absolute top-0 right-8 w-[24px] h-[48px] bg-red-600 cursor-pointer z-35 flex items-center justify-center shadow-md animate-in slide-in-from-top-4 duration-300"
                   style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%)' }}
@@ -1107,8 +1011,8 @@ export default function MagazineViewerClientPage() {
                   minHeight={dimensions.height}
                   maxHeight={dimensions.height}
                   maxShadowOpacity={0.65}
-                  showCover={false}
-                  startPage={currentPage - 3}
+                  showCover={true}
+                  startPage={currentPage === 1 ? 0 : currentPage - 1}
                   mobileScrollSupport={false}
                   useMouseEvents={!isMobile && zoomScale === 1}
                   usePortrait={false}
@@ -1119,17 +1023,22 @@ export default function MagazineViewerClientPage() {
                   onFlip={onFlip}
                   onChangeState={onChangeState}
                   onChangeOrientation={onChangeOrientation}
-                  className="rounded-[12px] overflow-hidden bg-[#faf9f6]"
+                  className="rounded-[12px] overflow-hidden bg-transparent"
                   style={{
                     width: '100%',
                     height: '100%',
                   }}
                 >
-                  {pages.slice(2).map((page, index) => {
-                    const isNear = Math.abs(index + 3 - currentPage) <= 4;
+                  {pages.map((page, index) => {
+                    const isNear = Math.abs(index + 1 - currentPage) <= 4;
 
                     return (
-                      <FlipPage key={page.pageNumber} index={index}>
+                      <FlipPage 
+                        key={`${page.pageNumber}-${index}`} 
+                        index={index}
+                        isFrontCover={index === 0}
+                        isBackCover={index === pages.length - 1}
+                      >
                         {isNear ? (
                           <div className="relative w-full h-full bg-[#faf9f6] flex items-center justify-center">
                             <Image
@@ -1141,12 +1050,7 @@ export default function MagazineViewerClientPage() {
                               priority={index < 2}
                               quality={90}
                             />
-                            {/* Subtle inner page shading on outer edge */}
-                            <div className={`absolute top-0 bottom-0 w-2 pointer-events-none z-15 ${
-                              index % 2 === 0
-                                ? 'left-0 bg-gradient-to-r from-black/5 to-transparent'
-                                : 'right-0 bg-gradient-to-l from-black/5 to-transparent'
-                            }`} />
+
                           </div>
                         ) : (
                           <div className="w-full h-full bg-zinc-900 flex flex-col items-center justify-center">
@@ -1165,12 +1069,16 @@ export default function MagazineViewerClientPage() {
           <button
             onClick={handleNext}
             disabled={currentPage >= totalPages - 1}
-            className={`absolute right-6 z-30 w-14 h-14 rounded-full border border-white/10 bg-black/60 backdrop-blur-xl flex items-center justify-center text-white shadow-2xl active:scale-95 transition-all select-none hidden md:flex shrink-0 ${
-              currentPage >= totalPages - 1 ? 'opacity-0 pointer-events-none' : 'hover:scale-105 hover:bg-white/10 cursor-pointer'
+            className={`absolute z-30 w-12 h-12 rounded-full flex items-center justify-center text-white active:scale-90 transition-all select-none shrink-0 ${
+              isMobile
+                ? 'bottom-6 left-1/2 -translate-x-1/2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
+                : 'right-6 hidden md:flex md:border border-white/10 md:bg-black/60 md:backdrop-blur-xl md:shadow-2xl'
+            } ${
+              currentPage >= totalPages - 1 ? 'opacity-0 pointer-events-none' : 'md:hover:scale-105 cursor-pointer'
             }`}
             title="Next Page"
           >
-            <ChevronRight className="w-7 h-7" />
+            {isMobile ? <ChevronDown className="w-7 h-7" /> : <ChevronRight className="w-7 h-7" />}
           </button>
         </div>
       </main>
@@ -1179,7 +1087,7 @@ export default function MagazineViewerClientPage() {
       <AnimatePresence>
         {showBookmarksPanel && (
           <>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -1240,12 +1148,12 @@ export default function MagazineViewerClientPage() {
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 25 }}
-            className="flex flex-col gap-4 border-t border-white/5 z-40 bg-zinc-950/45 backdrop-blur-xl absolute bottom-0 left-0 right-0 p-4"
+            className="hidden md:flex flex-col gap-4 border-t border-white/5 z-40 bg-zinc-950/45 backdrop-blur-xl absolute bottom-0 left-0 right-0 p-4"
           >
             {/* Slider & Thumbnails strip toggle bar */}
             <div className="flex items-center justify-between gap-4 max-w-[1440px] mx-auto w-full">
-              
-               {/* Pagination controls */}
+
+              {/* Pagination controls */}
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={handlePrev}
@@ -1254,7 +1162,7 @@ export default function MagazineViewerClientPage() {
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[11px] font-extrabold uppercase tracking-widest text-zinc-300 tabular-nums">
-                  Page {currentPage} - {Math.min(currentPage + 1, totalPages)}
+                  {currentPage === 1 ? 'Page 1' : `Page ${currentPage} - ${Math.min(currentPage + 1, totalPages)}`}
                 </div>
                 <button
                   onClick={handleNext}
@@ -1293,9 +1201,8 @@ export default function MagazineViewerClientPage() {
               {/* Bottom right: Toggle Thumbnail Strip */}
               <button
                 onClick={() => setShowThumbnails(!showThumbnails)}
-                className={`px-4 h-9 rounded-lg glass-btn flex items-center gap-2 text-xs font-bold transition-all cursor-pointer ${
-                  showThumbnails ? 'bg-white/10 text-white border-white/20' : 'text-zinc-400'
-                }`}
+                className={`px-4 h-9 rounded-lg glass-btn flex items-center gap-2 text-xs font-bold transition-all cursor-pointer ${showThumbnails ? 'bg-white/10 text-white border-white/20' : 'text-zinc-400'
+                  }`}
               >
                 <Grid className="w-4 h-4" />
                 <span className="hidden sm:inline">Pages Strip</span>
@@ -1315,16 +1222,15 @@ export default function MagazineViewerClientPage() {
                     {pages.map((p, idx) => {
                       const isSelected = isPlayingIntro
                         ? idx === 0
-                        : (idx + 1 === currentPage || idx + 1 === currentPage + 1);
+                        : (currentPage === 1 ? idx === 0 : (idx + 1 === currentPage || idx + 1 === currentPage + 1));
                       return (
                         <button
                           key={p.pageNumber}
                           onClick={() => jumpToPage(p.pageNumber)}
-                          className={`relative aspect-[3/4] h-20 rounded-md border overflow-hidden shrink-0 transition-all cursor-pointer ${
-                            isSelected 
-                              ? 'border-red-500 scale-[1.04] ring-2 ring-red-500/20 shadow-md' 
+                          className={`relative aspect-[3/4] h-20 rounded-md border overflow-hidden shrink-0 transition-all cursor-pointer ${isSelected
+                              ? 'border-red-500 scale-[1.04] ring-2 ring-red-500/20 shadow-md'
                               : 'border-white/10 opacity-60 hover:opacity-100 hover:scale-[1.02]'
-                          }`}
+                            }`}
                         >
                           <Image
                             src={p.thumbnailUrl || p.imageUrl ? getOriginalUrl(p.thumbnailUrl || p.imageUrl) : ''}
@@ -1351,34 +1257,18 @@ export default function MagazineViewerClientPage() {
       <AnimatePresence>
         {isPlayingIntro && (
           <motion.div
-            ref={introScope}
             initial={{ backgroundColor: 'rgba(0,0,0,0)' }}
             animate={{ backgroundColor: 'rgba(5,5,5,1)' }}
             exit={{ backgroundColor: 'rgba(0,0,0,0)' }}
             transition={{ duration: 0.55 }}
+            onClick={handleOpenBook}
             className="absolute inset-0 z-[100] flex items-center justify-center overflow-hidden"
             style={{
               perspective: '2500px',
               pointerEvents: 'auto'
             }}
           >
-            {/* Elegant Top Right Skip Button */}
-            {!isOpening && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsPlayingIntro(false);
-                  setTimeout(() => {
-                    if (bookRef.current) {
-                      bookRef.current.pageFlip().turnToPage(currentPage - 3);
-                    }
-                  }, 150);
-                }}
-                className="absolute top-6 right-6 z-[110] px-4 py-2 rounded-lg glass-btn text-xs font-extrabold uppercase tracking-widest cursor-pointer text-white/70"
-              >
-                Skip Intro
-              </button>
-            )}
+            {/* Elegant Top Right Skip Button (Removed as requested) */}
             {/* Ambient glow spotlight behind the 3D book cover */}
             <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,transparent_60%)] z-5" />
 
@@ -1402,18 +1292,37 @@ export default function MagazineViewerClientPage() {
 
             {/* 3D Book Layout container */}
             <motion.div
-              className="intro-book-wrapper relative cursor-pointer"
+              className="intro-book-wrapper relative cursor-pointer shrink-0"
               onMouseMove={handleMouseMoveTilt}
               onMouseLeave={handleMouseLeaveTilt}
               onClick={handleOpenBook}
+              initial={{
+                y: '-100vh',
+                x: startX,
+                rotateZ: isMobile ? 90 : -15,
+                scale: initialScale,
+                opacity: 0,
+              }}
+              animate={isExiting ? {
+                scale: isMobile ? bookScale * 1.15 : 1.15,
+                opacity: 0,
+              } : {
+                y: isOpening ? endY : startY,
+                x: isOpening ? endX : startX,
+                rotateZ: isMobile ? 90 : 0,
+                scale: isOpening ? endScale : startScale,
+                opacity: 1,
+              }}
+              transition={{
+                duration: isOpening ? 1.6 : 1.2,
+                ease: isOpening ? [0.25, 1, 0.5, 1] : [0.34, 1.56, 0.64, 1]
+              }}
               style={{
-                width:  dimensions.wrapperWidth,
+                width: dimensions.wrapperWidth,
                 height: dimensions.height,
                 transformStyle: 'preserve-3d',
-                x: -250, // Shifted left to center the cover page (which is on the right of the spine)
-                scale: 0.85,
-                opacity: 0,
-                transform: isOpening ? undefined : `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                transformOrigin: '50% 50%',
+                transform: (!isMobile && !isOpening) ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` : undefined,
               }}
             >
               {/* Pulsing overlay instructions centered on closed cover page */}
@@ -1431,11 +1340,12 @@ export default function MagazineViewerClientPage() {
               />
 
               {/* Inside Left Page (Page 3) */}
-              <div
+              <motion.div
                 className="intro-left-page absolute top-0 bottom-0 left-0 w-1/2 bg-[#faf9f6] border border-black/5 rounded-l-md overflow-hidden"
+                animate={{ opacity: isOpening ? 1 : 0 }}
+                transition={{ duration: 1.6, ease: [0.25, 1, 0.5, 1] }}
                 style={{
                   transform: 'translateZ(-2px)',
-                  opacity: 0, // Starts completely hidden to hide the left side of the spread initially
                 }}
               >
                 {pages[2] && (
@@ -1453,18 +1363,19 @@ export default function MagazineViewerClientPage() {
                 <div className="absolute inset-0 opacity-[0.035] pointer-events-none z-10"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0%200%20200%20200'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter%20id='noiseFilter'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
                 />
-                
+
                 {/* Visual stacked pages details */}
                 <div className="absolute top-[3px] bottom-[3px] left-[3px] w-[3px] bg-zinc-300/30 border-r border-black/10 opacity-70" />
                 <div className="absolute top-[6px] bottom-[6px] left-[6px] w-[3px] bg-zinc-300/20 border-r border-black/10 opacity-40" />
-              </div>
+              </motion.div>
 
               {/* Inside Right Page (Page 4) */}
-              <div
+              <motion.div
                 className="intro-right-page absolute top-0 bottom-0 right-0 w-1/2 bg-[#faf9f6] border border-black/5 rounded-r-md overflow-hidden"
+                animate={{ opacity: isOpening ? 1 : 0 }}
+                transition={{ duration: 1.6, ease: [0.25, 1, 0.5, 1] }}
                 style={{
                   transform: 'translateZ(-3px)',
-                  opacity: 0, // Starts completely hidden to hide the right side of the spread initially
                 }}
               >
                 {pages[3] && (
@@ -1482,15 +1393,17 @@ export default function MagazineViewerClientPage() {
                 <div className="absolute inset-0 opacity-[0.035] pointer-events-none z-10"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0%200%20200%20200'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter%20id='noiseFilter'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
                 />
-                
+
                 {/* Visual stacked pages details */}
                 <div className="absolute top-[3px] bottom-[3px] right-[3px] w-[3px] bg-zinc-300/30 border-l border-black/10 opacity-70" />
                 <div className="absolute top-[6px] bottom-[6px] right-[6px] w-[3px] bg-zinc-300/20 border-l border-black/10 opacity-40" />
-              </div>
+              </motion.div>
 
               {/* 3D Swing Cover (Page 1 cover on right, pivots on left hinge/spine center) */}
               <motion.div
                 className="intro-cover absolute top-0 bottom-0 right-0 w-1/2"
+                animate={{ rotateY: isOpening ? -180 : 0 }}
+                transition={{ duration: 1.6, ease: [0.25, 1, 0.5, 1] }}
                 style={{
                   transformOrigin: 'left center',
                   transformStyle: 'preserve-3d',
@@ -1551,15 +1464,7 @@ export default function MagazineViewerClientPage() {
               </motion.div>
             </motion.div>
 
-            {/* Tap-to-skip hint */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.55 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-              className="absolute bottom-8 left-0 right-0 text-center text-white text-xs font-semibold tracking-widest uppercase pointer-events-none"
-            >
-              Click anywhere to skip intro
-            </motion.p>
+            {/* Tap-to-skip hint (Removed as requested) */}
           </motion.div>
         )}
       </AnimatePresence>

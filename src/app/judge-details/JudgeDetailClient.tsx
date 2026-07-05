@@ -194,13 +194,7 @@ export default function JudgeDetailClient({ judge }: JudgeDetailClientProps) {
                   )}
                 </ul>
 
-                {judge.source && (
-                  <div className="mt-5 pt-4 border-t border-border">
-                    <p className="text-[11px] text-muted-foreground italic leading-relaxed">
-                      Source - {judge.source}
-                    </p>
-                  </div>
-                )}
+                {/* Source hidden */}
               </div>
             </div>
           </div>

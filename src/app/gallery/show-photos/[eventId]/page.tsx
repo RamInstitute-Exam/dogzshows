@@ -3,6 +3,9 @@ import PageContainer from '@/components/layout/PageContainer';
 import PublicContainer from '@/components/layout/PublicContainer';
 import EventGalleryClient from './EventGalleryClient';
 import { Loader2 } from 'lucide-react';
+import { getShowPhotoEventIds } from '@/lib/staticParams';
+
+export { getShowPhotoEventIds as generateStaticParams };
 
 export default function EventGalleryPage() {
   return (

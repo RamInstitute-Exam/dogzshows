@@ -25,7 +25,7 @@ interface ClubDetailClientProps {
 
 export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDetailClientProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('about');
+  const [activeTab, setActiveTab] = useState('contact');
 
   if (!club) {
     return (
@@ -99,11 +99,10 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
   };
 
   const tabs = [
-    { id: 'about', label: 'About' },
+    { id: 'contact', label: 'Contact' },
     ...(club?.clubGalleries?.length > 0 ? [{ id: 'gallery', label: 'Gallery' }] : []),
     ...(club?.events?.length > 0 || club?.clubEvents?.length > 0 ? [{ id: 'events', label: 'Events' }] : []),
     ...(club?.clubCommittees?.length > 0 ? [{ id: 'committee', label: 'Committee' }] : []),
-    { id: 'contact', label: 'Contact' },
   ];
 
   const getSecretaries = () => {
@@ -365,7 +364,7 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
                         {club.events.map((evt: any) => (
                           <Link
                             key={evt.id}
-                            href={`/events/detail?slug=${evt.slug || evt.id}`}
+                            href={`/events/detail/${evt.slug || evt.id}`}
                             className="bg-card rounded-2xl border border-border overflow-hidden group block hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
                           >
                             {evt.bannerUrl ? (

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
-import { Plus, Edit, Trash2, LayoutTemplate, UploadCloud } from 'lucide-react';
+import { Plus, Edit, Trash2, LayoutTemplate, UploadCloud, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { config } from '@/lib/config';
 import api from '@/services/api';
@@ -28,17 +28,28 @@ export default function PageBannersCMS() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentBanner, setCurrentBanner] = useState<Partial<PageBanner> | null>(null);
   const [uploading, setUploading] = useState(false);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const limit = 10;
 
   useEffect(() => {
-    fetchBanners();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchBanners();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [currentPage, searchQuery]);
 
   const fetchBanners = async () => {
+    setLoading(true);
     try {
-      const res = await api.get(`/page-banners`);
+      const res = await api.get(`/page-banners?page=${currentPage}&limit=${limit}&search=${encodeURIComponent(searchQuery)}`);
       const data = res;
       if (data.success) {
         setBanners(data.data);
+        setTotalPages(data.totalPages || 1);
       }
     } catch (error) {
       console.error('Error fetching page banners:', error);
@@ -160,18 +171,30 @@ export default function PageBannersCMS() {
               </h1>
               <p className="text-muted-foreground">Manage header banners for internal directory pages.</p>
             </div>
-            <Button 
-              onClick={() => { 
-                setCurrentBanner({ 
-                  isActive: true, 
-                  displayOrder: banners.length 
-                }); 
-                setIsModalOpen(true); 
-              }}
-              className="admin-btn admin-btn-primary admin-btn-md"
-            >
-              <Plus className="w-4 h-4 mr-2" /> Add New Banner
-            </Button>
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input 
+                  type="text"
+                  placeholder="Search banners..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 w-64 text-foreground"
+                />
+              </div>
+              <Button 
+                onClick={() => { 
+                  setCurrentBanner({ 
+                    isActive: true, 
+                    displayOrder: banners.length 
+                  }); 
+                  setIsModalOpen(true); 
+                }}
+                className="admin-btn admin-btn-primary admin-btn-md"
+              >
+                <Plus className="w-4 h-4 mr-2" /> Add New Banner
+              </Button>
+            </div>
           </div>
 
           <div className="bg-card rounded-xl border border-border overflow-hidden">
@@ -221,6 +244,33 @@ export default function PageBannersCMS() {
                 )}
               </tbody>
             </table>
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between p-4 border-t border-border bg-card">
+                <span className="text-sm text-muted-foreground">
+                  Page <span className="font-bold text-foreground">{currentPage}</span> of <span className="font-bold text-foreground">{totalPages}</span>
+                </span>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           {isModalOpen && (

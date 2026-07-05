@@ -96,7 +96,7 @@ export default function SystemSettings() {
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Support Email</label>
-                      <input type="email" className="w-full mt-1 p-3 rounded-lg bg-background border border-border text-foreground focus:border-blue-500 outline-none" defaultValue="support@juzdog.com" />
+                      <input type="email" className="w-full mt-1 p-3 rounded-lg bg-background border border-border text-foreground focus:border-blue-500 outline-none" defaultValue="support@juzdog.co" />
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Maintenance Mode</label>

@@ -11,9 +11,21 @@ import ScrollPreservationProvider from '@/components/providers/ScrollPreservatio
 import PublicLayoutWrapper from '@/components/layout/PublicLayoutWrapper';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://juzdog.co'),
   title: "JUZDOG",
   description: "JUZDOG is a premium canine photography brand that covers dog shows across India. We specialize in professional photography, 4K live coverage, podium photography, outdoor photoshoots, and capturing memorable moments with exceptional quality and creativity.",
   keywords: ['dog show', 'KCI', 'kennel club', 'FCI', 'dog competitions'],
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'JUZDOG',
+    description: 'Premium canine photography and dog show management platform across India.',
+    url: 'https://juzdog.co',
+    siteName: 'JUZDOG',
+    locale: 'en_IN',
+    type: 'website',
+  },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

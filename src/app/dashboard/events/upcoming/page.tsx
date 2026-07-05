@@ -111,7 +111,7 @@ export default function UpcomingEvents() {
                   </div>
                 </div>
 
-                <Link href={`/events/detail?id=${event.id}`}>
+                <Link href={`/events/detail/${event.slug || event.id}`}>
                   <Button className="w-full bg-card text-foreground hover:bg-foreground hover:text-foreground transition-all font-bold">
                     View Details <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>

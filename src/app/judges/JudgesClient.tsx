@@ -200,11 +200,7 @@ function JudgesList({ initialBannerData }: { initialBannerData?: any }) {
 
                       {/* Footer Section (Always at bottom) */}
                       <div className="w-full flex items-center justify-center pt-2">
-                        {judge.source && (
-                          <p className="text-[10px] text-muted-foreground/70 italic truncate w-full text-center" title={judge.source}>
-                            Source - {judge.source}
-                          </p>
-                        )}
+                        {/* Source hidden */}
                       </div>
                     </Link>
                   </motion.div>

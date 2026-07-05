@@ -1,22 +1,40 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronRight, ArrowLeft, SearchX, AlertTriangle } from 'lucide-react';
 import { formatTitle } from '@/lib/utils';
 import PageContainer from '@/components/layout/PageContainer';
-import api from '@/lib/api';
+import api, { getImageUrl } from '@/lib/api';
 
 // Components
 import EventHero from '@/components/events/details/EventHero';
 import EventJudges from '@/components/events/details/EventJudges';
 import OrganizingCommittee from '@/components/events/details/OrganizingCommittee';
-import JudgingPanel from '@/components/events/details/JudgingPanel';
+import AboutEvent from '@/components/events/details/AboutEvent';
+import BreedCategories from '@/components/events/details/BreedCategories';
+import EventGallery from '@/components/events/details/EventGallery';
+import EventSidebar from '@/components/events/details/EventSidebar';
+import EventSponsors from '@/components/events/details/EventSponsors';
+import EventTimeline from '@/components/events/details/EventTimeline';
+import EventVenue from '@/components/events/details/EventVenue';
 
-export default function EventDetailClient() {
+export default function EventDetailClient({ params }: { params?: Promise<{ slug: string }> }) {
   const searchParams = useSearchParams();
-  const slug = (searchParams.get('slug') || searchParams.get('id') || '').trim();
+
+  // Resolve slug from path parameter Promise, falling back to query search parameters
+  let resolvedSlug = '';
+  if (params) {
+    try {
+      const resolvedParams = use(params);
+      resolvedSlug = resolvedParams.slug || '';
+    } catch (e) {
+      console.error('[EventDetail] Failed to resolve params Promise:', e);
+    }
+  }
+
+  const slug = (resolvedSlug || searchParams.get('slug') || searchParams.get('id') || '').trim();
 
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -157,19 +175,58 @@ export default function EventDetailClient() {
         </div>
       </div>
 
-      {/* Section 1: Hero Banner */}
+      {/* Hero Banner */}
       <EventHero event={event} />
 
-      {/* Section 2: Judges & Organizing Committee */}
+      {/* Detail Layout Content */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col gap-12">
-          {event?.secretaries && event.secretaries.length > 0 && (
+        <div className="max-w-4xl mx-auto space-y-8">
+          
+          {/* Club Logo, Name & Title Header */}
+          <div className="bg-card rounded-[20px] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-border flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            {event.club?.logoUrl && (
+              <div className="w-24 h-24 rounded-2xl bg-white border border-border p-3 flex items-center justify-center shrink-0 shadow-sm">
+                <img 
+                  src={getImageUrl(event.club.logoUrl)} 
+                  alt={event.club.name || 'Club Logo'} 
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                  }}
+                />
+              </div>
+            )}
+            <div className="text-center sm:text-left flex-1 space-y-2">
+              <span className="text-xs font-black text-primary tracking-[2px] uppercase">
+                {event.club?.name || 'Kennel Club Event'}
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight">
+                {formatTitle(event.name)}
+              </h1>
+              <p className="text-muted-foreground font-semibold text-sm flex items-center justify-center sm:justify-start gap-1">
+                <span>📅</span> {new Date(event.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                {event.endDate && event.endDate !== event.startDate && (
+                  <> - {new Date(event.endDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</>
+                )}
+              </p>
+              {event.city && (
+                <p className="text-muted-foreground font-medium text-sm">
+                  📍 {event.city}, {event.state || ''} {event.country ? `, ${event.country}` : ', India'}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Judges */}
+          {event.judgingPanel && event.judgingPanel.length > 0 && (
+            <EventJudges judges={event.judgingPanel} />
+          )}
+
+          {/* Organizing Committee */}
+          {event.secretaries && event.secretaries.length > 0 && (
             <OrganizingCommittee secretaries={event.secretaries} />
           )}
 
-          {event?.judgingPanel && event.judgingPanel.length > 0 && (
-            <EventJudges judges={event.judgingPanel} />
-          )}
         </div>
       </div>
     </PageContainer>

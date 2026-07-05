@@ -22,6 +22,22 @@ export default function EditEventClient() {
   const [availableJudges, setAvailableJudges] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState('basic');
   const [searchJudgeQuery, setSearchJudgeQuery] = useState('');
+  
+  const [clubSearchQuery, setClubSearchQuery] = useState('');
+  const [isClubDropdownOpen, setIsClubDropdownOpen] = useState(false);
+  const clubDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (clubDropdownRef.current && !clubDropdownRef.current.contains(event.target as Node)) {
+        setIsClubDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -546,12 +562,59 @@ export default function EditEventClient() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
+                      <div ref={clubDropdownRef} className="relative">
                         <label className="block text-sm font-bold text-muted-foreground mb-2">Host Club / Organization *</label>
-                        <select name="clubId" value={formData.clubId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none appearance-none">
-                          <option value="">Select Club...</option>
-                          {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                        </select>
+                        <div 
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground flex justify-between items-center cursor-pointer focus-within:border-border"
+                          onClick={() => setIsClubDropdownOpen(!isClubDropdownOpen)}
+                        >
+                          <span className={formData.clubId ? 'text-foreground' : 'text-muted-foreground'}>
+                            {formData.clubId ? clubs.find(c => c.id === formData.clubId)?.name : 'Select Club...'}
+                          </span>
+                          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isClubDropdownOpen ? 'rotate-180' : ''}`} />
+                        </div>
+                        
+                        <AnimatePresence>
+                          {isClubDropdownOpen && (
+                            <motion.div 
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              className="absolute z-50 w-full mt-2 bg-card border border-border rounded-lg shadow-xl overflow-hidden"
+                            >
+                              <div className="p-2 border-b border-border">
+                                <input 
+                                  type="text" 
+                                  placeholder="Search clubs..." 
+                                  className="w-full px-3 py-2 bg-accent/50 border border-border rounded-md text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
+                                  value={clubSearchQuery}
+                                  onChange={(e) => setClubSearchQuery(e.target.value)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                              </div>
+                              <div className="max-h-60 overflow-y-auto p-1">
+                                {clubs.filter(c => c.name.toLowerCase().includes(clubSearchQuery.toLowerCase())).length === 0 ? (
+                                  <div className="px-4 py-3 text-sm text-muted-foreground text-center">No clubs found.</div>
+                                ) : (
+                                  clubs.filter(c => c.name.toLowerCase().includes(clubSearchQuery.toLowerCase())).map(c => (
+                                    <div 
+                                      key={c.id} 
+                                      className={`px-4 py-2.5 text-sm cursor-pointer rounded-md mb-1 flex items-center justify-between transition-colors ${formData.clubId === c.id ? 'bg-primary/20 text-primary font-bold' : 'text-foreground hover:bg-accent hover:text-foreground'}`}
+                                      onClick={() => {
+                                        setFormData(prev => ({ ...prev, clubId: c.id }));
+                                        setIsClubDropdownOpen(false);
+                                        setClubSearchQuery('');
+                                      }}
+                                    >
+                                      {c.name}
+                                      {formData.clubId === c.id && <Check className="w-4 h-4" />}
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
                       
                       <div>

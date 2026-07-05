@@ -148,7 +148,7 @@ export default function UpcomingEventsCarousel({ initialEvents = [] }: { initial
                     className="w-full flex"
                   >
                     <Link
-                      href={`/events/detail?slug=${event.slug}`}
+                      href={`/events/detail/${event.slug}`}
                       className="group relative flex flex-col w-full h-[500px] sm:h-[540px] md:h-[600px] lg:h-[640px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
                     >
                       {/* 1. Banner Image */}

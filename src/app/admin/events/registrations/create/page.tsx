@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, ArrowLeft, Loader2, Ticket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SearchableSelect } from '@/components/ui/SearchableSelect';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { config } from '@/lib/config';
@@ -99,26 +100,35 @@ export default function ManualRegistrationForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Select Event *</label>
-                <select required name="eventId" value={formData.eventId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none appearance-none">
-                  <option value="">Choose an Event...</option>
-                  {events.map(ev => <option key={ev.id} value={ev.id}>{ev.name}</option>)}
-                </select>
+                <SearchableSelect
+                  options={events.map(ev => ({ id: ev.id, label: ev.name }))}
+                  value={formData.eventId}
+                  onChange={(val) => setFormData(prev => ({ ...prev, eventId: String(val) }))}
+                  placeholder="Choose an Event..."
+                  searchPlaceholder="Search events..."
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Select Owner *</label>
-                <select required name="userId" value={formData.userId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none appearance-none">
-                  <option value="">Choose User...</option>
-                  {users.map(u => <option key={u.id} value={u.id}>{u.firstName} {u.lastName} ({u.email})</option>)}
-                </select>
+                <SearchableSelect
+                  options={users.map(u => ({ id: u.id, label: `${u.firstName} ${u.lastName} (${u.email})` }))}
+                  value={formData.userId}
+                  onChange={(val) => setFormData(prev => ({ ...prev, userId: String(val) }))}
+                  placeholder="Choose User..."
+                  searchPlaceholder="Search users..."
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Select Dog *</label>
-                <select required name="dogId" value={formData.dogId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none appearance-none">
-                  <option value="">Choose Dog...</option>
-                  {dogs.map(d => <option key={d.id} value={d.id}>{d.name} (KCI: {d.kciNumber})</option>)}
-                </select>
+                <SearchableSelect
+                  options={dogs.map(d => ({ id: d.id, label: `${d.name} (KCI: ${d.kciNumber})` }))}
+                  value={formData.dogId}
+                  onChange={(val) => setFormData(prev => ({ ...prev, dogId: String(val) }))}
+                  placeholder="Choose Dog..."
+                  searchPlaceholder="Search dogs..."
+                />
               </div>
 
               <div>
