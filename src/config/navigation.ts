@@ -90,6 +90,7 @@ export const ADMIN_ROUTES = [
     { name: 'SEO', href: '/admin/settings/seo' },
     { name: 'Social Links', href: '/admin/settings/social' },
     { name: 'Theme', href: '/admin/settings/theme' },
+    { name: 'Payment Gateway', href: '/admin/settings/payment-gateway' },
   ]},
   { name: 'Notifications', icon: Bell, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
     { name: 'Push Notifications', href: '/admin/notifications/push' },

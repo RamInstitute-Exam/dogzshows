@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Upload, ChevronRight, ChevronLeft, CheckCircle2, Dog, Image as ImageIcon, FileText } from 'lucide-react';
+import { Upload, ChevronRight, ChevronLeft, CheckCircle2, Dog, Image as ImageIcon, FileText, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { useGlobalLoading } from '@/hooks/useGlobalLoading';
 import Link from 'next/link';
@@ -14,6 +14,10 @@ export default function CreateDogWizard() {
   const { showLoader, hideLoader } = useGlobalLoading();
   const [step, setStep] = useState(1);
   const [breeds, setBreeds] = useState<{ id: string; name: string; }[]>([]);
+  const [fciGroups, setFciGroups] = useState<{ id: string; name: string; groupNumber: number; }[]>([]);
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
+  const [breedSearchQuery, setBreedSearchQuery] = useState('');
+  const [isBreedDropdownOpen, setIsBreedDropdownOpen] = useState(false);
   
   // Massive state holding all steps
   const [formData, setFormData] = useState({
@@ -39,14 +43,35 @@ export default function CreateDogWizard() {
 
   const [ocrConfidence, setOcrConfidence] = useState<number | null>(null);
 
+  // Fetch FCI Groups on Mount
   useEffect(() => {
-    fetch(`${config.apiUrl}/breeds`)
+    const token = localStorage.getItem('token');
+    fetch(`${config.apiUrl}/fci-groups?all=true`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) setFciGroups(data.data || []);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch Breeds dynamically when selectedGroupId changes
+  useEffect(() => {
+    if (!selectedGroupId) {
+      setBreeds([]);
+      return;
+    }
+    const token = localStorage.getItem('token');
+    fetch(`${config.apiUrl}/breeds?fciGroupId=${selectedGroupId}&all=true`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => {
         if(data.success) setBreeds(data.data || []);
       })
       .catch(() => {});
-  }, []);
+  }, [selectedGroupId]);
 
   const nextStep = () => {
     if (step < 7) setStep(step + 1);
@@ -94,13 +119,85 @@ export default function CreateDogWizard() {
     }
   };
 
-  const mockFileUpload = (field: string) => {
-    // Mocking file upload for Step 5 Gallery
-    toast.success('File uploaded successfully (Mocked)');
-    setFormData(prev => ({
-      ...prev,
-      [field]: 'https://via.placeholder.com/150'
-    }));
+  const handlePhotosUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    showLoader();
+    try {
+      const uploadedUrls: string[] = [];
+      const token = localStorage.getItem('token');
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const bodyFormData = new FormData();
+        bodyFormData.append('file', file);
+
+        const res = await fetch(`${config.apiUrl}/uploads`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: bodyFormData
+        });
+
+        const result = await res.json();
+        if (result.success && result.url) {
+          uploadedUrls.push(result.url);
+        } else {
+          toast.error(`Failed to upload ${file.name}`);
+        }
+      }
+
+      if (uploadedUrls.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          photos: [...prev.photos, ...uploadedUrls]
+        }));
+        toast.success(`Successfully uploaded ${uploadedUrls.length} photos.`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Image upload failed');
+    } finally {
+      hideLoader();
+    }
+  };
+
+  const handleCertUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    showLoader();
+    try {
+      const token = localStorage.getItem('token');
+      const bodyFormData = new FormData();
+      bodyFormData.append('file', file);
+
+      const res = await fetch(`${config.apiUrl}/uploads`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: bodyFormData
+      });
+
+      const result = await res.json();
+      if (result.success && result.url) {
+        setFormData(prev => ({
+          ...prev,
+          certificateFrontUrl: result.url
+        }));
+        toast.success('Certificate uploaded successfully.');
+      } else {
+        toast.error('Failed to upload certificate');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Certificate upload failed');
+    } finally {
+      hideLoader();
+    }
   };
 
   const handleSubmit = async () => {
@@ -195,19 +292,67 @@ export default function CreateDogWizard() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-bold text-muted-foreground mb-1">Dog Name</label>
                     <input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground" placeholder="Registered Name"/>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-muted-foreground mb-1">Breed</label>
-                    <select value={formData.breedId} onChange={e => setFormData({...formData, breedId: e.target.value})} className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground">
-                      <option value="">Select Breed</option>
-                      {breeds.map(b => (
-                        <option key={b.id} value={b.id}>{b.name}</option>
+                    <label className="block text-sm font-bold text-muted-foreground mb-1">FCI Group</label>
+                    <select value={selectedGroupId} onChange={e => {
+                      setSelectedGroupId(e.target.value);
+                      setFormData({...formData, breedId: ''});
+                    }} className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground">
+                      <option value="">Select FCI Group</option>
+                      {fciGroups.map(g => (
+                        <option key={g.id} value={g.id}>Group {g.groupNumber} - {g.name}</option>
                       ))}
                     </select>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-sm font-bold text-muted-foreground mb-1">Breed</label>
+                    <button 
+                      type="button"
+                      onClick={() => setIsBreedDropdownOpen(!isBreedDropdownOpen)}
+                      className="w-full bg-card border border-border rounded-lg px-4 py-3 text-left text-foreground flex justify-between items-center h-[52px]"
+                      disabled={!selectedGroupId}
+                    >
+                      <span className="truncate">{formData.breedId ? breeds.find(b => b.id === formData.breedId)?.name : (selectedGroupId ? 'Select Breed' : 'Select FCI Group First')}</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </button>
+
+                    {isBreedDropdownOpen && (
+                      <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-xl max-h-60 overflow-y-auto p-2 space-y-2">
+                        <input 
+                          type="text" 
+                          placeholder="Search breed..." 
+                          value={breedSearchQuery}
+                          onChange={e => setBreedSearchQuery(e.target.value)}
+                          className="w-full bg-input border border-border rounded-md px-3 py-2 text-sm text-foreground outline-none focus:border-foreground"
+                          autoFocus
+                        />
+                        <div className="space-y-1">
+                          {breeds.filter(b => b.name.toLowerCase().includes(breedSearchQuery.toLowerCase())).length > 0 ? (
+                            breeds.filter(b => b.name.toLowerCase().includes(breedSearchQuery.toLowerCase())).map(b => (
+                              <button
+                                key={b.id}
+                                type="button"
+                                onClick={() => {
+                                  setFormData({ ...formData, breedId: b.id });
+                                  setIsBreedDropdownOpen(false);
+                                  setBreedSearchQuery('');
+                                }}
+                                className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-foreground/10 transition-colors ${formData.breedId === b.id ? 'bg-foreground/10 text-foreground font-bold' : 'text-foreground'}`}
+                              >
+                                {b.name}
+                              </button>
+                            ))
+                          ) : (
+                            <p className="text-xs text-muted-foreground text-center py-2">No breeds found</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-muted-foreground mb-1">KCI Number</label>
@@ -343,21 +488,110 @@ export default function CreateDogWizard() {
               <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                 <h3 className="text-xl font-bold text-foreground border-b border-border pb-2 mb-4">Gallery & Documents</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-input transition-colors">
+                  <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-input transition-colors relative">
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept="image/*" 
+                      className="hidden" 
+                      id="dog-photos-input" 
+                      onChange={handlePhotosUpload} 
+                    />
                     <ImageIcon className="w-10 h-10 text-muted-foreground mb-4" />
                     <p className="font-bold text-foreground mb-1">Dog Photos</p>
-                    <p className="text-xs text-muted-foreground mb-4">Upload primary display pictures</p>
-                    <Button variant="outline" size="sm" onClick={() => mockFileUpload('photos')} className="border-border text-foreground hover:bg-foreground hover:text-white">Upload Photos</Button>
-                    {formData.photos.length > 0 && <span className="mt-2 text-xs text-green-500 font-bold"><CheckCircle2 className="inline w-3 h-3"/> Uploaded</span>}
+                    <p className="text-xs text-muted-foreground mb-4">Upload primary display pictures (Multiple)</p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => document.getElementById('dog-photos-input')?.click()} 
+                      className="border-border text-foreground hover:bg-foreground hover:text-white"
+                    >
+                      Upload Photos
+                    </Button>
+                    {formData.photos.length > 0 && (
+                      <span className="mt-2 text-xs text-green-500 font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5"/> {formData.photos.length} Uploaded
+                      </span>
+                    )}
                   </div>
-                  <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-input transition-colors">
+                  <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-input transition-colors relative">
+                    <input 
+                      type="file" 
+                      accept="image/*,application/pdf" 
+                      className="hidden" 
+                      id="kci-cert-input" 
+                      onChange={handleCertUpload} 
+                    />
                     <FileText className="w-10 h-10 text-muted-foreground mb-4" />
                     <p className="font-bold text-foreground mb-1">KCI Certificate (Front)</p>
-                    <p className="text-xs text-muted-foreground mb-4">Upload original certificate</p>
-                    <Button variant="outline" size="sm" onClick={() => mockFileUpload('certificateFrontUrl')} className="border-border text-foreground hover:bg-foreground hover:text-white">Upload Certificate</Button>
-                    {formData.certificateFrontUrl && <span className="mt-2 text-xs text-green-500 font-bold"><CheckCircle2 className="inline w-3 h-3"/> Uploaded</span>}
+                    <p className="text-xs text-muted-foreground mb-4">Upload original certificate (Single)</p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => document.getElementById('kci-cert-input')?.click()} 
+                      className="border-border text-foreground hover:bg-foreground hover:text-white"
+                    >
+                      Upload Certificate
+                    </Button>
+                    {formData.certificateFrontUrl && (
+                      <span className="mt-2 text-xs text-green-500 font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5"/> Uploaded
+                      </span>
+                    )}
                   </div>
                 </div>
+
+                {/* Previews / Listing */}
+                {formData.photos.length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="text-sm font-bold text-foreground mb-3">Uploaded Photos ({formData.photos.length})</h4>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                      {formData.photos.map((photo, index) => (
+                        <div key={index} className="relative group aspect-square rounded-xl overflow-hidden border border-border bg-muted">
+                          <img src={photo} alt={`Dog ${index + 1}`} className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFormData(prev => ({
+                                ...prev,
+                                photos: prev.photos.filter((_, i) => i !== index)
+                              }));
+                            }}
+                            className="absolute top-1.5 right-1.5 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {formData.certificateFrontUrl && (
+                  <div className="mt-6 border-t border-border/50 pt-4">
+                    <h4 className="text-sm font-bold text-foreground mb-3">Uploaded Certificate</h4>
+                    <div className="flex items-center justify-between p-3 bg-muted/30 border border-border rounded-xl">
+                      <div className="flex items-center gap-3 truncate">
+                        <FileText className="w-5 h-5 text-muted-foreground shrink-0" />
+                        <span className="text-xs text-foreground font-semibold truncate max-w-[250px]">{formData.certificateFrontUrl.split('/').pop()}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            certificateFrontUrl: ''
+                          }));
+                        }}
+                        className="p-1.5 text-red-500 hover:text-red-600 rounded-lg hover:bg-red-500/10 transition-colors text-xs font-bold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 

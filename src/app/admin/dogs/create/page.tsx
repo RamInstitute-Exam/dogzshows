@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, ArrowLeft, Loader2, ImagePlus, Dog, FileText, HeartPulse, UserCircle, QrCode, Globe } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, ImagePlus, Dog, FileText, HeartPulse, UserCircle, QrCode, Globe, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
@@ -14,6 +14,12 @@ export default function AddDogForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
+
+  const [fciGroups, setFciGroups] = useState<{ id: string; name: string; groupNumber: number; }[]>([]);
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
+  const [breeds, setBreeds] = useState<{ id: string; name: string; }[]>([]);
+  const [breedSearchQuery, setBreedSearchQuery] = useState('');
+  const [isBreedDropdownOpen, setIsBreedDropdownOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '', kciNumber: '', microchipNumber: '', breedId: '', gender: 'MALE', 
@@ -29,6 +35,36 @@ export default function AddDogForm() {
     // SEO
     slug: '', metaTitle: '', metaDescription: ''
   });
+
+  // Fetch FCI Groups on Mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetch(`${config.apiUrl}/fci-groups?all=true`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) setFciGroups(data.data || []);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch Breeds dynamically when selectedGroupId changes
+  useEffect(() => {
+    if (!selectedGroupId) {
+      setBreeds([]);
+      return;
+    }
+    const token = localStorage.getItem('token');
+    fetch(`${config.apiUrl}/breeds?fciGroupId=${selectedGroupId}&all=true`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) setBreeds(data.data || []);
+      })
+      .catch(() => {});
+  }, [selectedGroupId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -60,7 +96,7 @@ export default function AddDogForm() {
         bloodline: { sire: formData.sireName, dam: formData.damName, line: formData.bloodline }
       };
 
-      const res = await api.get(`/dogs`);
+      const res = await api.post(`/dogs`, payload);
       
       const data = res;
       if (data.success) {
@@ -138,8 +174,61 @@ export default function AddDogForm() {
                         <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">Breed UUID *</label>
-                        <input required type="text" name="breedId" value={formData.breedId} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" placeholder="Enter Breed ID..." />
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">FCI Group *</label>
+                        <select required value={selectedGroupId} onChange={e => {
+                          setSelectedGroupId(e.target.value);
+                          setFormData(prev => ({ ...prev, breedId: '' }));
+                        }} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none">
+                          <option value="">Select FCI Group</option>
+                          {fciGroups.map(g => (
+                            <option key={g.id} value={g.id}>Group {g.groupNumber} - {g.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="relative">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">Breed *</label>
+                        <button 
+                          type="button"
+                          onClick={() => setIsBreedDropdownOpen(!isBreedDropdownOpen)}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none text-left flex justify-between items-center h-[50px]"
+                          disabled={!selectedGroupId}
+                        >
+                          <span className="truncate">{formData.breedId ? breeds.find(b => b.id === formData.breedId)?.name : (selectedGroupId ? 'Select Breed' : 'Select FCI Group First')}</span>
+                          <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                        </button>
+
+                        {isBreedDropdownOpen && (
+                          <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-xl max-h-60 overflow-y-auto p-2 space-y-2">
+                            <input 
+                              type="text" 
+                              placeholder="Search breed..." 
+                              value={breedSearchQuery}
+                              onChange={e => setBreedSearchQuery(e.target.value)}
+                              className="w-full bg-input border border-border rounded-md px-3 py-2 text-sm text-foreground outline-none focus:border-foreground"
+                              autoFocus
+                            />
+                            <div className="space-y-1">
+                              {breeds.filter(b => b.name.toLowerCase().includes(breedSearchQuery.toLowerCase())).length > 0 ? (
+                                breeds.filter(b => b.name.toLowerCase().includes(breedSearchQuery.toLowerCase())).map(b => (
+                                  <button
+                                    key={b.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setFormData(prev => ({ ...prev, breedId: b.id }));
+                                      setIsBreedDropdownOpen(false);
+                                      setBreedSearchQuery('');
+                                    }}
+                                    className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-foreground/10 transition-colors ${formData.breedId === b.id ? 'bg-foreground/10 text-foreground font-bold' : 'text-foreground'}`}
+                                  >
+                                    {b.name}
+                                  </button>
+                                ))
+                              ) : (
+                                <p className="text-xs text-muted-foreground text-center py-2">No breeds found</p>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-muted-foreground mb-2">KCI Number</label>

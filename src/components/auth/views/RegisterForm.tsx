@@ -160,13 +160,16 @@ export default function RegisterForm() {
         </div>
 
         <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-10">
-            <div className="bg-foreground p-2 rounded-xl shadow-sm">
-              <Dog className="h-6 w-6 text-white" />
-            </div>
-            <span className="font-outfit font-extrabold text-2xl tracking-tight text-foreground">
-              Juz<span className="text-foreground">dog</span>
-            </span>
+          <div className="mb-10">
+            <OptimizedImage
+              src="/Untitled-1.png"
+              alt="JuzDog"
+              width={145}
+              height={45}
+              priority
+              className="object-contain"
+              style={{ height: 'auto' }}
+            />
           </div>
 
           <h1 className="text-[32px] font-extrabold leading-[1.1] mb-8">
@@ -180,22 +183,6 @@ export default function RegisterForm() {
               </li>
             ))}
           </ul>
-        </div>
-        
-        <div className="relative z-10 bg-card/10 backdrop-blur-md rounded-[16px] p-5 border border-border mt-auto">
-          <div className="flex gap-1 text-yellow-400 mb-3">
-            {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-[14px] h-[14px] fill-current" />)}
-          </div>
-          <p className="text-[13px] italic text-gray-200 mb-4 leading-relaxed">
-            "The OCR certificate upload saved me hours of manual work. This is the platform the dog show community has been waiting for."
-          </p>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center font-bold text-xs text-white">VS</div>
-            <div>
-              <p className="text-[13px] font-bold">Vikram Singh</p>
-              <p className="text-[11px] text-muted-foreground">Verified Breeder</p>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -238,48 +225,75 @@ export default function RegisterForm() {
                 
                 <div className="grid grid-cols-1 gap-4">
                   {/* Row 1 */}
-                  <div className="grid grid-cols-1 md:grid-cols-[80px_1fr_1fr] gap-4">
-                    <select name="title" value={formData.title} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-3 text-[14px] font-medium outline-none focus:ring-2 focus:ring-foreground/20">
-                      <option value="Mr">Mr</option>
-                      <option value="Mrs">Mrs</option>
-                      <option value="Ms">Ms</option>
-                      <option value="Dr">Dr</option>
-                    </select>
-                    <Input required name="firstName" value={formData.firstName} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border text-[14px] px-4" placeholder="First Name *" />
-                    <Input required name="lastName" value={formData.lastName} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border text-[14px] px-4" placeholder="Last Name *" />
+                  <div className="grid grid-cols-1 md:grid-cols-[100px_1fr_1fr] gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Title</label>
+                      <select name="title" value={formData.title} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-3 text-[14px] font-medium outline-none focus:ring-2 focus:ring-foreground/20">
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Dr">Dr</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">First Name *</label>
+                      <Input required name="firstName" value={formData.firstName} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border text-[14px] px-4" placeholder="First Name" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Last Name *</label>
+                      <Input required name="lastName" value={formData.lastName} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border text-[14px] px-4" placeholder="Last Name" />
+                    </div>
                   </div>
 
                   {/* Row 2 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input required type="date" name="dob" value={formData.dob} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border text-[14px] px-4" />
-                    <select name="gender" value={formData.gender} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] font-medium outline-none focus:ring-2 focus:ring-foreground/20">
-                      <option value="MALE">Male</option>
-                      <option value="FEMALE">Female</option>
-                      <option value="OTHER">Other</option>
-                    </select>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Date of Birth *</label>
+                      <Input required type="date" name="dob" value={formData.dob} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border text-[14px] px-4" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Gender *</label>
+                      <select name="gender" value={formData.gender} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] font-medium outline-none focus:ring-2 focus:ring-foreground/20">
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="OTHER">Other</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* Row 3 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input required name="email" value={formData.email} onChange={handleChange} type="email" className="pl-[38px] h-[52px] rounded-[12px] bg-card border-border text-[14px]" placeholder="Email Address *" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Email Address *</label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input required name="email" value={formData.email} onChange={handleChange} type="email" className="pl-[38px] h-[52px] rounded-[12px] bg-card border-border text-[14px]" placeholder="Email Address" />
+                      </div>
                     </div>
-                    <div className="relative flex">
-                      <div className="flex items-center justify-center px-3 bg-input border border-border border-r-0 rounded-l-[12px] text-[14px] font-bold text-muted-foreground">+91</div>
-                      <Input required name="phone" value={formData.phone} onChange={handleChange} type="tel" maxLength={10} className="rounded-l-none rounded-r-[12px] bg-card border-border h-[52px] text-[14px] w-full" placeholder="Mobile Number *" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Mobile Number *</label>
+                      <div className="relative flex">
+                        <div className="flex items-center justify-center px-3 bg-input border border-border border-r-0 rounded-l-[12px] text-[14px] font-bold text-muted-foreground">+91</div>
+                        <Input required name="phone" value={formData.phone} onChange={handleChange} type="tel" maxLength={10} className="rounded-l-none rounded-r-[12px] bg-card border-border h-[52px] text-[14px] w-full" placeholder="Mobile Number" />
+                      </div>
                     </div>
                   </div>
 
                   {/* Row 4 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input required name="password" value={formData.password} onChange={handleChange} type="password" className="pl-[38px] h-[52px] rounded-[12px] bg-card border-border text-[14px]" placeholder="Password *" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Password *</label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input required name="password" value={formData.password} onChange={handleChange} type="password" className="pl-[38px] h-[52px] rounded-[12px] bg-card border-border text-[14px]" placeholder="Password" />
+                      </div>
                     </div>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input required name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} type="password" className="pl-[38px] h-[52px] rounded-[12px] bg-card border-border text-[14px]" placeholder="Confirm Password *" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Confirm Password *</label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input required name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} type="password" className="pl-[38px] h-[52px] rounded-[12px] bg-card border-border text-[14px]" placeholder="Confirm Password" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -328,18 +342,45 @@ export default function RegisterForm() {
                 
                 <div className="grid grid-cols-1 gap-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input name="doorNo" value={formData.doorNo} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Door / Flat No" />
-                    <Input name="buildingName" value={formData.buildingName} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Building Name" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Door / Flat No</label>
+                      <Input name="doorNo" value={formData.doorNo} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Door / Flat No" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Building Name</label>
+                      <Input name="buildingName" value={formData.buildingName} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Building Name" />
+                    </div>
                   </div>
-                  <Input name="street" value={formData.street} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Street / Area" />
-                  <Input required name="address1" value={formData.address1} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Address Line 1 *" />
-                  <Input name="address2" value={formData.address2} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Address Line 2" />
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Street / Area</label>
+                    <Input name="street" value={formData.street} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Street / Area" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Address Line 1 *</label>
+                    <Input required name="address1" value={formData.address1} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Address Line 1" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Address Line 2</label>
+                    <Input name="address2" value={formData.address2} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Address Line 2" />
+                  </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input required name="city" value={formData.city} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="City *" />
-                    <Input required name="state" value={formData.state} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="State *" />
-                    <Input required name="pincode" value={formData.pincode} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Pincode *" />
-                    <Input required name="country" value={formData.country} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Country *" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">City *</label>
+                      <Input required name="city" value={formData.city} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="City" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">State *</label>
+                      <Input required name="state" value={formData.state} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="State" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Pincode *</label>
+                      <Input required name="pincode" value={formData.pincode} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Pincode" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Country *</label>
+                      <Input required name="country" value={formData.country} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Country" />
+                    </div>
                   </div>
                 </div>
 
@@ -361,21 +402,36 @@ export default function RegisterForm() {
                 
                 <div className="grid grid-cols-1 gap-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input name="occupation" value={formData.occupation} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Occupation" />
-                    <Input name="organization" value={formData.organization} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Kennel Name" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Occupation</label>
+                      <Input name="occupation" value={formData.occupation} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Occupation" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Kennel Name</label>
+                      <Input name="organization" value={formData.organization} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Kennel Name" />
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input name="kciMembershipNo" value={formData.kciMembershipNo} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="KCI Membership No" />
-                    <Input name="breederLicenseNo" value={formData.breederLicenseNo} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Breeder License No" />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">KCI Membership No</label>
+                      <Input name="kciMembershipNo" value={formData.kciMembershipNo} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="KCI Membership No" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Breeder License No</label>
+                      <Input name="breederLicenseNo" value={formData.breederLicenseNo} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px]" placeholder="Breeder License No" />
+                    </div>
                   </div>
                   
-                  <select name="experienceInDogShows" value={formData.experienceInDogShows} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] outline-none focus:ring-2 focus:ring-foreground/20">
-                     <option value="">Select Experience Level</option>
-                     <option value="BEGINNER">Beginner (0-2 years)</option>
-                     <option value="INTERMEDIATE">Intermediate (2-5 years)</option>
-                     <option value="EXPERT">Expert (5+ years)</option>
-                  </select>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">Experience Level</label>
+                    <select name="experienceInDogShows" value={formData.experienceInDogShows} onChange={handleChange} className="h-[52px] rounded-[12px] bg-card border-border px-4 text-[14px] outline-none focus:ring-2 focus:ring-foreground/20">
+                       <option value="">Select Experience Level</option>
+                       <option value="BEGINNER">Beginner (0-2 years)</option>
+                       <option value="INTERMEDIATE">Intermediate (2-5 years)</option>
+                       <option value="EXPERT">Expert (5+ years)</option>
+                    </select>
+                  </div>
 
                   <div className="bg-card p-4 rounded-[12px] space-y-3 border border-border mt-2">
                     <div className="grid grid-cols-3 gap-2">

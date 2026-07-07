@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, ArrowLeft, SearchX, AlertTriangle } from 'lucide-react';
+import { ChevronRight, ArrowLeft, SearchX, AlertTriangle, CreditCard, Calendar, ShieldCheck } from 'lucide-react';
 import { formatTitle } from '@/lib/utils';
 import PageContainer from '@/components/layout/PageContainer';
 import api, { getImageUrl } from '@/lib/api';
+import RegisterForEventModal from '@/components/events/details/RegisterForEventModal';
+import { Button } from '@/components/ui/button';
 
 // Components
 import EventHero from '@/components/events/details/EventHero';
@@ -22,6 +24,7 @@ import EventVenue from '@/components/events/details/EventVenue';
 
 export default function EventDetailClient({ params }: { params?: Promise<{ slug: string }> }) {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Resolve slug from path parameter Promise, falling back to query search parameters
   let resolvedSlug = '';
@@ -40,6 +43,45 @@ export default function EventDetailClient({ params }: { params?: Promise<{ slug:
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasRegistered, setHasRegistered] = useState(false);
+
+  // Check if user has already registered for this event
+  useEffect(() => {
+    if (event) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        api.get('/registrations').then(res => {
+          if (res.success && res.data) {
+            const registered = res.data.some((r: any) => r.eventId === event.id);
+            setHasRegistered(registered);
+          }
+        }).catch(err => console.error(err));
+      }
+    }
+  }, [event]);
+
+  // Handle URL query trigger for registration modal
+  useEffect(() => {
+    if (event && searchParams.get('register') === 'true') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push(`/login?redirect=/events/detail/${event.slug}?register=true`);
+      } else {
+        setIsModalOpen(true);
+      }
+    }
+  }, [event, searchParams, router]);
+
+  const handleRegisterClick = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push(`/login?redirect=/events/detail/${event.slug}?register=true`);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
 
   useEffect(() => {
     if (!slug) {
@@ -180,55 +222,142 @@ export default function EventDetailClient({ params }: { params?: Promise<{ slug:
 
       {/* Detail Layout Content */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
           
-          {/* Club Logo, Name & Title Header */}
-          <div className="bg-card rounded-[20px] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-border flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            {event.club?.logoUrl && (
-              <div className="w-24 h-24 rounded-2xl bg-white border border-border p-3 flex items-center justify-center shrink-0 shadow-sm">
-                <img 
-                  src={getImageUrl(event.club.logoUrl)} 
-                  alt={event.club.name || 'Club Logo'} 
-                  className="w-full h-full object-contain"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/images/placeholder.webp';
-                  }}
-                />
-              </div>
-            )}
-            <div className="text-center sm:text-left flex-1 space-y-2">
-              <span className="text-xs font-black text-primary tracking-[2px] uppercase">
-                {event.club?.name || 'Kennel Club Event'}
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight">
-                {formatTitle(event.name)}
-              </h1>
-              <p className="text-muted-foreground font-semibold text-sm flex items-center justify-center sm:justify-start gap-1">
-                <span>📅</span> {new Date(event.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                {event.endDate && event.endDate !== event.startDate && (
-                  <> - {new Date(event.endDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</>
-                )}
-              </p>
-              {event.city && (
-                <p className="text-muted-foreground font-medium text-sm">
-                  📍 {event.city}, {event.state || ''} {event.country ? `, ${event.country}` : ', India'}
-                </p>
+          {/* Left Column: Event details */}
+          <div className="flex-1 space-y-8 min-w-0">
+            {/* Club Logo, Name & Title Header */}
+            <div className="bg-card rounded-[20px] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-border flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              {event.club?.logoUrl && (
+                <div className="w-24 h-24 rounded-2xl bg-white border border-border p-3 flex items-center justify-center shrink-0 shadow-sm">
+                  <img 
+                    src={getImageUrl(event.club.logoUrl)} 
+                    alt={event.club.name || 'Club Logo'} 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                    }}
+                  />
+                </div>
               )}
+              <div className="text-center sm:text-left flex-1 space-y-2">
+                <span className="text-xs font-black text-primary tracking-[2px] uppercase">
+                  {event.club?.name || 'Kennel Club Event'}
+                </span>
+                <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight">
+                  {formatTitle(event.name)}
+                </h1>
+                <p className="text-muted-foreground font-semibold text-sm flex items-center justify-center sm:justify-start gap-1">
+                  <span>📅</span> {new Date(event.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  {event.endDate && event.endDate !== event.startDate && (
+                    <> - {new Date(event.endDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</>
+                  )}
+                </p>
+                {event.city && (
+                  <p className="text-muted-foreground font-medium text-sm">
+                    📍 {event.city}, {event.state || ''} {event.country ? `, ${event.country}` : ', India'}
+                  </p>
+                )}
+              </div>
             </div>
+
+            {/* Judges */}
+            {event.judgingPanel && event.judgingPanel.length > 0 && (
+              <EventJudges judges={event.judgingPanel} />
+            )}
+
+            {/* Organizing Committee */}
+            {event.secretaries && event.secretaries.length > 0 && (
+              <OrganizingCommittee secretaries={event.secretaries} />
+            )}
           </div>
 
-          {/* Judges */}
-          {event.judgingPanel && event.judgingPanel.length > 0 && (
-            <EventJudges judges={event.judgingPanel} />
-          )}
+          {/* Right Column: Sticky Registration Card */}
+          <div className="w-full lg:w-[360px] shrink-0 sticky top-24 z-10">
+            {(() => {
+              const isClosed = event.status === 'CLOSED' || event.status === 'COMPLETED' || (event.registrationWindowEnd && new Date(event.registrationWindowEnd) < new Date());
+              const isOpen = (event.status === 'REGISTRATION_OPEN' || event.status === 'ACTIVE') && !isClosed;
+              
+              const regFee = event.paymentSettings?.registrationFee ?? event.entryFee ?? 1500;
+              const closingDate = event.registrationWindowEnd 
+                ? new Date(event.registrationWindowEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : 'N/A';
+              
+              return (
+                <div className="bg-card border border-border rounded-3xl p-6 shadow-xl space-y-5">
+                  <div className="flex justify-between items-center border-b border-border/40 pb-3">
+                    <h3 className="font-extrabold text-foreground text-base">Show Registration</h3>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                      hasRegistered ? 'bg-green-500/20 text-green-500 border border-green-500/20' : isOpen ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                    }`}>
+                      {hasRegistered ? 'Registered ✓' : isOpen ? 'Open' : 'Closed'}
+                    </span>
+                  </div>
 
-          {/* Organizing Committee */}
-          {event.secretaries && event.secretaries.length > 0 && (
-            <OrganizingCommittee secretaries={event.secretaries} />
-          )}
+                  <div className="space-y-3.5 text-sm font-semibold">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Entry Fee:</span>
+                      <span className="text-foreground font-bold">₹{regFee} / Dog</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Registration Ends:</span>
+                      <span className="text-red-500 font-bold">{closingDate}</span>
+                    </div>
+                    {event.capacity && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Slots Limit:</span>
+                        <span className="text-foreground font-bold">{event.capacity} Dogs</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Payment Method:</span>
+                      <span className="text-foreground font-bold flex items-center gap-1"><CreditCard className="w-4 h-4 text-primary" /> Razorpay</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    {hasRegistered ? (
+                      <div className="bg-green-500/5 border border-green-500/20 rounded-2xl p-4 text-center space-y-2">
+                        <p className="text-xs text-green-500 font-bold flex items-center justify-center gap-1">
+                          <ShieldCheck className="w-4 h-4" /> You are registered for this event
+                        </p>
+                        <Link href="/dashboard/events/registered" className="block w-full">
+                          <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl text-sm">
+                            View Registration
+                          </Button>
+                        </Link>
+                      </div>
+                    ) : isOpen ? (
+                      <Button 
+                        onClick={handleRegisterClick}
+                        className="w-full bg-[#38BDF8] hover:bg-blue-500 text-foreground font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg"
+                      >
+                        Register My Dog
+                      </Button>
+                    ) : (
+                      <Button 
+                        disabled 
+                        className="w-full bg-muted text-muted-foreground font-bold py-3.5 rounded-xl text-sm"
+                      >
+                        Registration Closed
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
 
         </div>
       </div>
+
+      {/* Registration Modal Wizard */}
+      <RegisterForEventModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        event={event}
+        onSuccess={() => setHasRegistered(true)}
+      />
     </PageContainer>
   );
 }

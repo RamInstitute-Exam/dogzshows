@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, ArrowLeft, Loader2, ImagePlus, CalendarDays, Settings, Info, MapPin, Trash2, Star, Plus, ChevronUp, ChevronDown, Move, Check } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, ImagePlus, CalendarDays, Settings, Info, MapPin, Trash2, Star, Plus, ChevronUp, ChevronDown, Move, Check, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
@@ -66,6 +66,41 @@ export default function EditEventClient() {
     isFeatured: false
   });
 
+  const [gateways, setGateways] = useState<any[]>([]);
+  const [paymentSettings, setPaymentSettings] = useState({
+    paymentRequired: true,
+    gatewayId: '',
+    allowOffline: false,
+    registrationFee: 1500,
+    gst: 18,
+    lateFee: 0,
+    convenienceFee: 50,
+    refundPolicy: 'Refunds allowed up to 7 days before the show starts.'
+  });
+
+  const [registrations, setRegistrations] = useState<any[]>([]);
+  const [loadingRegistrations, setLoadingRegistrations] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'registered_dogs' && id) {
+      fetchRegistrations();
+    }
+  }, [activeTab, id]);
+
+  const fetchRegistrations = async () => {
+    setLoadingRegistrations(true);
+    try {
+      const res = await api.get(`/registrations?eventId=${id}&limit=100`);
+      if (res.success) {
+        setRegistrations(res.data || []);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingRegistrations(false);
+    }
+  };
+
   // State for judges assigned:
   const [selectedJudges, setSelectedJudges] = useState<any[]>([]); // Array of { judgeId, name, isChiefJudge, displayOrder, remarks }
 
@@ -81,10 +116,11 @@ export default function EditEventClient() {
   const fetchData = async () => {
     setFetchLoading(true);
     try {
-      const [clubsRes, judgesRes, eventRes] = await Promise.all([
+      const [clubsRes, judgesRes, eventRes, gatewaysRes] = await Promise.all([
         api.get('/public/clubs?limit=1000'),
         api.get('/public/judges?limit=1000'),
-        api.get(`/shows/${id}`)
+        api.get(`/shows/${id}`),
+        api.get('/payment-gateways')
       ]);
       
       if (clubsRes?.success) {
@@ -93,6 +129,10 @@ export default function EditEventClient() {
 
       if (judgesRes?.success) {
         setAvailableJudges(judgesRes.data || []);
+      }
+
+      if (gatewaysRes?.success) {
+        setGateways(gatewaysRes.data || []);
       }
       
       if (eventRes?.success && eventRes.data) {
@@ -146,6 +186,19 @@ export default function EditEventClient() {
           status: ev.status || 'DRAFT',
           isFeatured: ev.isFeatured || false
         });
+
+        if (ev.paymentSettings) {
+          setPaymentSettings({
+            paymentRequired: ev.paymentSettings.paymentRequired,
+            gatewayId: ev.paymentSettings.gatewayId || '',
+            allowOffline: ev.paymentSettings.allowOffline,
+            registrationFee: ev.paymentSettings.registrationFee || 0,
+            gst: ev.paymentSettings.gst || 0,
+            lateFee: ev.paymentSettings.lateFee || 0,
+            convenienceFee: ev.paymentSettings.convenienceFee || 0,
+            refundPolicy: ev.paymentSettings.refundPolicy || ''
+          });
+        }
 
         // Map Judges
         if (ev.judges && ev.judges.length > 0) {
@@ -453,7 +506,17 @@ export default function EditEventClient() {
         registrationWindowStart: formData.registrationWindowStart ? new Date(formData.registrationWindowStart).toISOString() : null,
         registrationWindowEnd: formData.registrationWindowEnd ? new Date(formData.registrationWindowEnd).toISOString() : null,
         judges: selectedJudges,
-        secretaries: formattedSecretaries
+        secretaries: formattedSecretaries,
+        paymentSettings: {
+          paymentRequired: paymentSettings.paymentRequired,
+          gatewayId: paymentSettings.gatewayId || null,
+          allowOffline: paymentSettings.allowOffline,
+          registrationFee: Number(paymentSettings.registrationFee) || 0,
+          gst: Number(paymentSettings.gst) || 0,
+          lateFee: Number(paymentSettings.lateFee) || 0,
+          convenienceFee: Number(paymentSettings.convenienceFee) || 0,
+          refundPolicy: paymentSettings.refundPolicy || null
+        }
       };
 
       const res = await api.put(`/shows/${id}`, payload);
@@ -476,6 +539,8 @@ export default function EditEventClient() {
     { id: 'schedule', label: 'Scheduling', icon: CalendarDays },
     { id: 'venue', label: 'Venue & Location', icon: MapPin },
     { id: 'settings', label: 'Rules & Judges', icon: Settings },
+    { id: 'payment', label: 'Payment Configuration', icon: CreditCard },
+    { id: 'registered_dogs', label: 'Registered Dogs', icon: Users },
     { id: 'media', label: 'Banners & Media', icon: ImagePlus }
   ];
 
@@ -1068,6 +1133,204 @@ export default function EditEventClient() {
                         ))}
                       </div>
                     </div>
+                  </motion.div>
+                )}
+
+                {/* PAYMENT CONFIGURATION TAB */}
+                {activeTab === 'payment' && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                    <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Payment Configuration</h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">Payment Required</label>
+                        <select 
+                          value={paymentSettings.paymentRequired ? 'true' : 'false'} 
+                          onChange={e => setPaymentSettings({ ...paymentSettings, paymentRequired: e.target.value === 'true' })}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none appearance-none"
+                        >
+                          <option value="true">Yes</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">Payment Gateway</label>
+                        <select 
+                          value={paymentSettings.gatewayId} 
+                          onChange={e => setPaymentSettings({ ...paymentSettings, gatewayId: e.target.value })}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none appearance-none"
+                        >
+                          <option value="">Default Active Gateway</option>
+                          {gateways.map(g => (
+                            <option key={g.id} value={g.id}>{g.gatewayName} ({g.provider})</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">Allow Offline Payment</label>
+                        <select 
+                          value={paymentSettings.allowOffline ? 'true' : 'false'} 
+                          onChange={e => setPaymentSettings({ ...paymentSettings, allowOffline: e.target.value === 'true' })}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none appearance-none"
+                        >
+                          <option value="false">No</option>
+                          <option value="true">Yes</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">Registration Fee (INR)</label>
+                        <input 
+                          type="number" 
+                          value={paymentSettings.registrationFee} 
+                          onChange={e => setPaymentSettings({ ...paymentSettings, registrationFee: Number(e.target.value) })}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">GST %</label>
+                        <input 
+                          type="number" 
+                          value={paymentSettings.gst} 
+                          onChange={e => setPaymentSettings({ ...paymentSettings, gst: Number(e.target.value) })}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" 
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">Late Fee (INR)</label>
+                        <input 
+                          type="number" 
+                          value={paymentSettings.lateFee} 
+                          onChange={e => setPaymentSettings({ ...paymentSettings, lateFee: Number(e.target.value) })}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" 
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2">Convenience Fee (INR)</label>
+                        <input 
+                          type="number" 
+                          value={paymentSettings.convenienceFee} 
+                          onChange={e => setPaymentSettings({ ...paymentSettings, convenienceFee: Number(e.target.value) })}
+                          className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" 
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-bold text-muted-foreground mb-2">Refund Policy / Description</label>
+                      <textarea 
+                        value={paymentSettings.refundPolicy} 
+                        onChange={e => setPaymentSettings({ ...paymentSettings, refundPolicy: e.target.value })}
+                        rows={3} 
+                        className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-border outline-none" 
+                        placeholder="Define payment and refund policy rules..." 
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* REGISTERED DOGS TAB */}
+                {activeTab === 'registered_dogs' && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                    <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Registered Dogs</h2>
+
+                    {loadingRegistrations ? (
+                      <div className="flex justify-center items-center py-12">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                      </div>
+                    ) : registrations.length === 0 ? (
+                      <div className="text-center py-12 border border-dashed border-border rounded-2xl bg-muted/10 text-muted-foreground">
+                        No dogs registered for this show yet.
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto border border-border rounded-xl">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-muted/30 border-b border-border text-xs font-bold uppercase text-muted-foreground">
+                              <th className="p-4">Reg Number</th>
+                              <th className="p-4">Dog Name</th>
+                              <th className="p-4">Breed</th>
+                              <th className="p-4">Owner Name</th>
+                              <th className="p-4">Contact</th>
+                              <th className="p-4">Class</th>
+                              <th className="p-4">Payment</th>
+                              <th className="p-4">Status</th>
+                              <th className="p-4 text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="text-sm font-semibold divide-y divide-border/40">
+                            {registrations.map(reg => (
+                              <tr key={reg.id} className="hover:bg-muted/10">
+                                <td className="p-4 font-mono font-bold text-primary">{reg.serialNumber || 'Pending'}</td>
+                                <td className="p-4 text-foreground">{reg.dog?.name}</td>
+                                <td className="p-4">{reg.dog?.breed?.name || 'N/A'}</td>
+                                <td className="p-4 text-foreground">{reg.user?.name || 'N/A'}</td>
+                                <td className="p-4 text-xs">
+                                  <p>{reg.user?.email}</p>
+                                  <p className="text-muted-foreground mt-0.5">{reg.user?.mobile}</p>
+                                </td>
+                                <td className="p-4 text-primary">{reg.category?.name || 'N/A'}</td>
+                                <td className="p-4">
+                                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                                    reg.status === 'CONFIRMED' ? 'bg-green-600/10 text-green-500 border border-green-500/25' : 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/25'
+                                  }`}>
+                                    {reg.status === 'CONFIRMED' ? 'Paid' : 'Unpaid'}
+                                  </span>
+                                </td>
+                                <td className="p-4">
+                                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                                    reg.status === 'CONFIRMED' ? 'bg-green-600 text-white' : 
+                                    reg.status === 'CANCELLED' ? 'bg-red-600 text-white' : 'bg-yellow-500 text-foreground'
+                                  }`}>
+                                    {reg.status}
+                                  </span>
+                                </td>
+                                <td className="p-4 text-right space-x-1.5 whitespace-nowrap">
+                                  {reg.status !== 'CONFIRMED' && (
+                                    <Button 
+                                      type="button"
+                                      onClick={async () => {
+                                        if (window.confirm('Approve this registration?')) {
+                                          const res = await api.put(`/registrations/${reg.id}`, { status: 'CONFIRMED' });
+                                          if (res.success) { toast.success('Approved successfully'); fetchRegistrations(); }
+                                        }
+                                      }}
+                                      className="bg-green-600 hover:bg-green-700 text-white text-xs px-2.5 py-1 rounded-lg font-bold"
+                                    >
+                                      Approve
+                                    </Button>
+                                  )}
+                                  {reg.status !== 'CANCELLED' && (
+                                    <Button 
+                                      type="button"
+                                      variant="destructive"
+                                      onClick={async () => {
+                                        if (window.confirm('Reject/cancel this registration?')) {
+                                          const res = await api.put(`/registrations/${reg.id}`, { status: 'CANCELLED' });
+                                          if (res.success) { toast.success('Rejected successfully'); fetchRegistrations(); }
+                                        }
+                                      }}
+                                      className="bg-red-600 hover:bg-red-700 text-white text-xs px-2.5 py-1 rounded-lg font-bold"
+                                    >
+                                      Reject
+                                    </Button>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </motion.div>
                 )}
 

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Dog, Calendar, FileText, CheckCircle, ArrowRight, Activity, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/store/useAuthStore';
 import AdminDashboard from './AdminDashboard';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/lib/axios';
@@ -174,11 +174,14 @@ function UserDashboardComponent() {
 }
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   
   if (!user) return null;
 
-  if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') {
+  const roles = user?.roles?.map((r: any) => typeof r === 'string' ? r.toUpperCase() : r.role?.name?.toUpperCase()) || [];
+  const isAdminOrSuperAdmin = roles.includes('SUPER_ADMIN') || roles.includes('SUPER ADMIN') || roles.includes('ADMIN');
+
+  if (isAdminOrSuperAdmin) {
     return <AdminDashboard />;
   }
 

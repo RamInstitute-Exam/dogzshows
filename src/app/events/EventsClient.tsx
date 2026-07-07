@@ -22,6 +22,22 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
   const [clubs, setClubs] = useState<any[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRegistrations, setUserRegistrations] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      api.get('/registrations').then(res => {
+        if (res.success && res.data) {
+          const regMap: Record<string, any> = {};
+          res.data.forEach((r: any) => {
+            regMap[r.eventId] = r;
+          });
+          setUserRegistrations(regMap);
+        }
+      }).catch(err => console.error(err));
+    }
+  }, []);
 
   // Filter States
   const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -394,6 +410,14 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
                 day: '2-digit',
                 year: 'numeric'
               });
+              const isRegistered = !!userRegistrations[event.id];
+              const isClosed = event.status === 'CLOSED' || event.status === 'COMPLETED' || (event.registrationWindowEnd && new Date(event.registrationWindowEnd) < new Date());
+              const isOpen = (event.status === 'REGISTRATION_OPEN' || event.status === 'ACTIVE') && !isClosed;
+              
+              const regFee = event.paymentSettings?.registrationFee ?? event.entryFee ?? 1500;
+              const closingDate = event.registrationWindowEnd 
+                ? new Date(event.registrationWindowEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : 'N/A';
 
               return (
                 <motion.div 
@@ -401,69 +425,101 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="h-full"
+                  className="bg-card border border-border rounded-[24px] overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                 >
-                  <Link
-                    href={`/events/detail/${event.slug}`}
-                    className="group relative flex flex-col w-full h-[320px] bg-card/60 backdrop-blur-md rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
-                  >
-                    {/* 1. Banner Image */}
-                    <div className="w-full h-[180px] shrink-0 relative overflow-hidden bg-muted">
-                      <OptimizedImage 
-                        src={event.bannerUrl || '/images/events_banner.png'} 
-                        alt={event.name} 
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
-                      <div className="absolute top-4 left-4 z-20">
-                        {event.status && !['PUBLISH', 'PUBLISHED', 'ACTIVE', 'DRAFT'].includes(event.status) && (
-                          <span className={`inline-block text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${getStatusBadgeClass(event.status)}`}>
-                            {getStatusText(event.status)}
+                  {/* Top section: banner image + status badge */}
+                  <div className="w-full h-[150px] relative overflow-hidden bg-muted">
+                    <OptimizedImage 
+                      src={event.bannerUrl || '/images/events_banner.png'} 
+                      alt={event.name} 
+                      className="absolute inset-0 w-full h-full object-cover" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                    
+                    {/* Status Badge */}
+                    <div className="absolute top-4 left-4 z-20">
+                      <span className={`inline-block text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${
+                        isRegistered ? 'bg-green-600 text-white' : isClosed ? 'bg-red-600 text-white' : 'bg-green-500 text-white'
+                      }`}>
+                        {isRegistered ? 'Registered ✓' : isClosed ? 'Registration Closed' : 'Registration Open'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Middle section: info */}
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-3.5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full border border-border bg-white overflow-hidden flex items-center justify-center shrink-0">
+                        {event.club?.logoUrl ? (
+                          <img 
+                            src={getImageUrl(event.club.logoUrl)} 
+                            alt={event.club.name || 'Club Logo'} 
+                            className="w-full h-full object-contain p-0.5"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                            }}
+                          />
+                        ) : (
+                          <span className="text-xs font-black text-primary">
+                            {(event.club?.name || 'KC').split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
                           </span>
                         )}
                       </div>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-[11px] font-black text-primary uppercase tracking-wider block truncate">
+                          {event.club?.name || 'Kennel Club'}
+                        </span>
+                        <h4 className="text-sm font-bold text-foreground truncate mt-0.5" title={event.name}>
+                          {formatTitle(event.name)}
+                        </h4>
+                      </div>
                     </div>
 
-                    {/* 2. Club Logo (overlapping absolute) */}
-                    <div className="absolute top-[148px] left-6 w-16 h-16 rounded-full border-4 border-card bg-white shadow-lg overflow-hidden flex items-center justify-center z-10 shrink-0">
-                      {event.club?.logoUrl ? (
-                        <img 
-                          src={getImageUrl(event.club.logoUrl)} 
-                          alt={event.club.name || 'Club Logo'} 
-                          className="w-full h-full object-contain p-1"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/images/placeholder.webp';
-                          }}
-                        />
+                    <div className="space-y-1.5 text-xs text-muted-foreground border-t border-b border-border/40 py-2.5">
+                      <div className="flex justify-between">
+                        <span>Event Date:</span>
+                        <span className="font-bold text-foreground">{showDate}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Entry Fee:</span>
+                        <span className="font-bold text-foreground">₹{regFee} / Dog</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Closing Date:</span>
+                        <span className="font-bold text-red-500">{closingDate}</span>
+                      </div>
+                    </div>
+
+                    {/* Bottom section: action buttons */}
+                    <div className="flex gap-2 pt-1 w-full">
+                      {isRegistered ? (
+                        <Link href="/dashboard/events/registered" className="w-full">
+                          <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5">
+                            View Registration
+                          </Button>
+                        </Link>
                       ) : (
-                        <span className="text-lg font-black text-primary">
-                          {(event.club?.name || 'KC').split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
-                        </span>
+                        <>
+                          <Link href={`/events/detail/${event.slug}`} className="flex-1">
+                            <Button variant="outline" className="w-full border-border hover:bg-accent text-foreground font-bold text-xs py-2.5 rounded-xl">
+                              View Details
+                            </Button>
+                          </Link>
+                          {isOpen ? (
+                            <Link href={`/events/detail/${event.slug}?register=true`} className="flex-1">
+                              <Button className="w-full bg-[#38BDF8] hover:bg-blue-500 text-foreground font-bold text-xs py-2.5 rounded-xl">
+                                Register Now
+                              </Button>
+                            </Link>
+                          ) : (
+                            <Button disabled className="flex-1 bg-muted text-muted-foreground font-bold text-xs py-2.5 rounded-xl">
+                              Closed
+                            </Button>
+                          )}
+                        </>
                       )}
                     </div>
-
-                    {/* 3. Body Container */}
-                    <div className="flex flex-col flex-1 pt-10 px-6 pb-6 bg-card text-left justify-between items-start">
-                      {/* Club Name (Highlighted Badge) */}
-                      <div className="w-full">
-                        <span className="inline-block text-[11px] font-black text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full uppercase tracking-wider truncate max-w-full">
-                          {event.club?.name || 'KENNEL CLUB'}
-                        </span>
-                      </div>
-
-                      {/* Date Badge */}
-                      <div className="flex items-center gap-2 text-sm font-bold text-foreground">
-                        <Calendar className="w-4 h-4 text-primary shrink-0" />
-                        <span className="uppercase tracking-wide">{showDate}</span>
-                      </div>
-
-                      {/* View Event Button / Link */}
-                      <div className="w-full pt-4 border-t border-border/40 flex items-center justify-between text-xs font-black uppercase tracking-widest text-primary group-hover:text-primary/80 transition-colors mt-auto">
-                        <span>View Event</span>
-                        <ArrowRight className="w-4.5 h-4.5 transform group-hover:translate-x-1.5 transition-transform duration-300" />
-                      </div>
-                    </div>
-                  </Link>
+                  </div>
                 </motion.div>
               );
             })}

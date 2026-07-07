@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import type { Metadata } from "next";
+import Script from 'next/script';
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import QueryProvider from '@/components/providers/QueryProvider';
@@ -58,6 +59,7 @@ export default function RootLayout({
                   </PublicLayoutWrapper>
                   <AuthModal />
                   <Toaster position="top-right" richColors />
+                  <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
                 </QueryProvider>
               </LoaderProvider>
             </Suspense>

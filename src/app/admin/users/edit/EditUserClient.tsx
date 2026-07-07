@@ -6,14 +6,15 @@ import { Save, ArrowLeft, Loader2, UploadCloud, Shield, CheckCircle, User as Use
 import { Button } from '@/components/ui/button';
 import { AdminButton } from '@/components/ui/admin-button';
 import Link from 'next/link';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { config } from '@/lib/config';
 import api from '@/services/api';
 
 export default function EditUserForm() {
   const router = useRouter();
   const params = useParams();
-  const id = params?.id as string;
+  const searchParams = useSearchParams();
+  const id = (searchParams.get('id') || params?.id) as string;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [roles, setRoles] = useState<any[]>([]);
@@ -96,7 +97,7 @@ export default function EditUserForm() {
       const payload: any = { ...formData };
       if (!payload.password) delete payload.password; // Don't send empty password
 
-      const res = await api.get(`/users/${id}`);
+      const res = await api.put(`/users/${id}`, payload);
       
       const data = res;
       if (data.success) {

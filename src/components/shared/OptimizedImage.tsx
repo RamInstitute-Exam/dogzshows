@@ -5,9 +5,10 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
   src: string;
   alt?: string;
   width?: number; // Target width for optimization
+  priority?: boolean;
 }
 
-export default function OptimizedImage({ src, alt, className, width = 800, ...props }: OptimizedImageProps) {
+export default function OptimizedImage({ src, alt, className, width = 800, priority, ...props }: OptimizedImageProps) {
   // Pass the raw src to getOptimizedUrl. It safely handles nulls, local paths, and external S3 URLs.
   const optimizedSrc = getOptimizedUrl(src, width);
 
@@ -16,7 +17,8 @@ export default function OptimizedImage({ src, alt, className, width = 800, ...pr
       src={optimizedSrc} 
       alt={alt} 
       className={className} 
-      loading={props.loading || "lazy"} 
+      loading={priority ? undefined : (props.loading || "lazy")} 
+      fetchPriority={priority ? "high" : undefined}
       {...props} 
     />
   );

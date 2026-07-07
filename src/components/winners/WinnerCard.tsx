@@ -19,6 +19,13 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
   const eventTitle = winner.awardTitle || winner.eventName || winner.event?.name || 'Championship Show';
   const awardTitle = getValid(winner.winningTitle) || getValid(winner.awardCategory) || getValid(winner.awardTitle);
 
+  // Detect if this is a "Best Handler" type award
+  const isHandlerAward = [awardTitle, winner.winningTitle, winner.awardCategory, winner.awardTitle]
+    .some((t) => typeof t === 'string' && t.toLowerCase().includes('handler'));
+
+  // Resolve handler display: use handlerName first, fall back to ownerName for handler awards
+  const handlerDisplay = getValid(winner.handlerName) || (isHandlerAward ? getValid(winner.ownerName) : null);
+
   // Get Year safely
   let year = '';
   if (winner.showDate) {
@@ -31,7 +38,7 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
   }
 
   return (
-    <div className="w-full h-full rounded-[16px] sm:rounded-[26px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1 select-none border border-black/5">
+    <div className="w-full h-full rounded-[16px] sm:rounded-[26px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.12)] flex flex-col transition-transform duration-300 hover:-translate-y-1 select-none border border-black/5" style={{ overflow: 'visible' }}>
       {/* 1. Header (Event Title on top) */}
       {eventTitle && (
         <div className="px-2 py-2 sm:px-4 sm:py-3 flex items-center justify-center shrink-0 min-h-[48px] md:min-h-[64px] border-b border-black/5">
@@ -64,7 +71,7 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
       </div>
 
       {/* 3. Content Section */}
-      <div className="flex flex-col justify-start items-center text-center px-[10px] md:px-[16px] py-[8px] sm:py-[12px] md:py-[18px] w-full flex-1 bg-white overflow-hidden gap-1.5 md:gap-2">
+      <div className="flex flex-col justify-start items-center text-center px-[10px] md:px-[16px] py-[8px] sm:py-[12px] md:py-[18px] w-full flex-1 bg-white gap-1.5 md:gap-2" style={{ overflow: 'visible' }}>
         {/* Winning Title */}
         {awardTitle && (
           <h3 className="winning-title jd-card-winning-title text-[13px] md:text-[15px] font-bold text-black uppercase text-center w-full whitespace-normal break-words">
@@ -73,12 +80,19 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
         )}
 
         {/* Dog Name */}
-        <h4 className="jd-card-dog-name text-[12px] md:text-[14px] font-[600] text-black uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25', fontFamily: 'var(--font-heading)' }}>
+        <h4 className="jd-card-dog-name text-[11px] md:text-[13px] font-[600] text-black uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.3', fontFamily: 'var(--font-heading)' }}>
           DOG NAME : {dogName || '-'}
         </h4>
 
-        {/* Owner Name */}
-        {winner.ownerName?.trim() && (
+        {/* Handler Name — shown prominently for handler awards */}
+        {handlerDisplay && (
+          <p className="text-[10px] md:text-[12px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25' }}>
+            HANDLER : {handlerDisplay}
+          </p>
+        )}
+
+        {/* Owner Name — hide for handler awards if we already showed the handler fallback above */}
+        {winner.ownerName?.trim() && !(isHandlerAward && !winner.handlerName?.trim()) && (
           <p className="text-[10px] md:text-[12px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25' }}>
             OWNER : {winner.ownerName.trim()}
           </p>
@@ -88,13 +102,6 @@ export default function WinnerCard({ winner, compact = false }: WinnerCardProps)
         {winner.breederName?.trim() && (
           <p className="text-[10px] md:text-[12px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25' }}>
             BREEDER : {winner.breederName.trim()}
-          </p>
-        )}
-
-        {/* Handler Name */}
-        {winner.handlerName?.trim() && (
-          <p className="text-[10px] md:text-[12px] font-[500] text-gray-500 uppercase text-center w-full whitespace-normal break-words" style={{ lineHeight: '1.25' }}>
-            HANDLER : {winner.handlerName.trim()}
           </p>
         )}
       </div>

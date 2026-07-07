@@ -27,7 +27,6 @@ export function ThemeToggle() {
     <div className="flex items-center gap-3 shrink-0">
       <span className={`text-sm font-semibold items-center gap-1.5 transition-colors uppercase ${!isDark ? 'text-foreground font-bold' : 'text-muted-foreground'} hidden md:flex`}>
         <Sun className="w-4 h-4" />
-        <span className="hidden sm:inline">LIGHT</span>
       </span>
       
       <button
@@ -41,7 +40,6 @@ export function ThemeToggle() {
       </button>
 
       <span className={`text-sm font-semibold items-center gap-1.5 transition-colors uppercase ${isDark ? 'text-foreground font-bold' : 'text-muted-foreground'} hidden md:flex`}>
-        <span className="hidden sm:inline">DARK</span>
         <Moon className="w-4 h-4" />
       </span>
     </div>

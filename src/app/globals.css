@@ -519,28 +519,31 @@ summary {
 .navbar-btn-login {
   padding: 0 28px;
   background: transparent;
-  color: var(--nav-ghost-color);
+  color: var(--nav-ghost-color) !important;
   border: 1.5px solid var(--nav-ghost-border);
 }
 
 .navbar-btn-login:hover {
   background: var(--nav-ghost-hover-bg);
-  color: var(--nav-ghost-hover-color);
+  color: var(--nav-ghost-hover-color) !important;
   border-color: var(--nav-ghost-hover-bg);
   transform: none;
 }
 
-/* ── Sign Up — gold filled */
+/* ── Sign Up — ghost outline */
 .navbar-btn-signup {
   padding: 0 30px;
-  background: var(--btn-signup-bg);
-  color: var(--button-text);
-  border: 2px solid var(--btn-signup-border);
+  background: transparent !important;
+  color: var(--nav-ghost-color) !important;
+  border: 2px solid var(--nav-ghost-border) !important;
 }
 
 .navbar-btn-signup:hover {
+  background: var(--nav-ghost-hover-bg) !important;
+  color: var(--nav-ghost-hover-color) !important;
+  border-color: var(--nav-ghost-hover-bg) !important;
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.05);
   filter: brightness(1.05);
 }
 
@@ -548,27 +551,30 @@ summary {
 .navbar-btn-register {
   padding: 0 30px;
   background: transparent;
-  color: var(--nav-ghost-color);
+  color: var(--nav-ghost-color) !important;
   border: 2px solid var(--nav-ghost-border);
 }
 
 .navbar-btn-register:hover {
   background: var(--nav-ghost-hover-bg);
-  color: var(--nav-ghost-hover-color);
+  color: var(--nav-ghost-hover-color) !important;
   border-color: var(--nav-ghost-hover-bg);
 }
 
-/* ── Dashboard — gold filled */
+/* ── Dashboard — ghost outline */
 .navbar-btn-dashboard {
   padding: 0 28px;
-  background: var(--btn-signup-bg);
-  color: var(--button-text);
-  border: 2px solid var(--btn-signup-border);
+  background: transparent !important;
+  color: var(--nav-ghost-color) !important;
+  border: 2px solid var(--nav-ghost-border) !important;
 }
 
 .navbar-btn-dashboard:hover {
+  background: var(--nav-ghost-hover-bg) !important;
+  color: var(--nav-ghost-hover-color) !important;
+  border-color: var(--nav-ghost-hover-bg) !important;
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.05);
 }
 
 /* ── Dropdown panel ─────────────────────────────────────────────────── */
@@ -1092,9 +1098,10 @@ a[role="button"]:not([class*="text-"]) {
 
 .mobile-drawer-container .navbar-btn-signup,
 .mobile-drawer-container .navbar-btn-dashboard {
-  background: var(--button-bg) !important;
-  color: var(--button-text) !important;
-  border-color: var(--button-bg) !important;
+  background: transparent !important;
+  color: var(--nav-ghost-color) !important;
+  border-color: var(--nav-ghost-border) !important;
+  border-width: 2px !important;
 }
 
 /* ─── Netflix-style Featured Dog Shows Slider ─── */

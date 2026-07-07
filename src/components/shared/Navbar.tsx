@@ -420,20 +420,12 @@ export default function Navbar() {
                 >
                   LOGIN
                 </button>
-                {/*
                 <button
                   onClick={() => openModal('REGISTER')}
                   className="!hidden lg:!inline-flex navbar-btn-premium navbar-btn-signup"
                 >
                   SIGN UP
                 </button>
-                <Link
-                  href="/dogs/register"
-                  className="!hidden lg:!inline-flex navbar-btn-premium navbar-btn-register"
-                >
-                  REGISTER DOG
-                </Link>
-                */}
               </>
             )}
 
@@ -554,21 +546,12 @@ export default function Navbar() {
                       >
                         LOGIN
                       </button>
-                      {/*
                       <button
                         onClick={() => { setIsMobileOpen(false); openModal('REGISTER'); }}
                         className="navbar-btn-premium navbar-btn-signup w-full"
                       >
                         Sign Up
                       </button>
-                      <Link
-                        href="/dogs/register"
-                        onClick={() => setIsMobileOpen(false)}
-                        className="navbar-btn-premium navbar-btn-register w-full"
-                      >
-                        Register Dog
-                      </Link>
-                      */}
                     </>
                   )}
                 </div>
