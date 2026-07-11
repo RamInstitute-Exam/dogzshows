@@ -113,8 +113,8 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
             }}
             loop={clubs.length > 5}
             breakpoints={{
-              320: { slidesPerView: 1.8, spaceBetween: 12 },
-              480: { slidesPerView: 2.2, spaceBetween: 12 },
+              320: { slidesPerView: 1.2, spaceBetween: 12 },
+              480: { slidesPerView: 1.5, spaceBetween: 16 },
               768: { slidesPerView: 3, spaceBetween: 16 },
               1024: { slidesPerView: 4, spaceBetween: 20 },
               1440: { slidesPerView: 5, spaceBetween: 24 },
@@ -126,10 +126,10 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
                 <Link href={`/clubs/${club.slug || club.id}`} className="w-full h-full flex">
                     <motion.div
                       whileHover={{ y: -6 }}
-                      className="group relative flex flex-col w-full h-[360px] sm:h-[400px] md:h-[440px] lg:h-[480px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
+                      className="group relative flex flex-col w-full h-auto sm:h-[400px] md:h-[440px] lg:h-[480px] bg-card rounded-[20px] sm:rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
                     >
                       {/* Top Logo Section */}
-                      <div className="w-full h-[60%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
+                      <div className="w-full h-[180px] sm:h-[60%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
                         <div className="relative z-10 w-full h-full flex items-center justify-center shrink-0 drop-shadow-sm transition-transform duration-500 group-hover:scale-105">
                           {club.logoUrl ? (
                             <img 
@@ -157,7 +157,7 @@ export default function FeaturedClubsSlider({ initialClubs = [] }: { initialClub
                         <div className="flex flex-col items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground shrink-0 w-full mt-3">
                           {(club.city || club.state) && (
                             <div className="flex items-center justify-center gap-1.5 sm:gap-2">
-                              <MapPin className="w-3.5 h-3.5 text-red-500" />
+                              <MapPin className="w-3.5 h-3.5 text-fuchsia-500" />
                               <span className="truncate max-w-[200px] text-left">{[club.city, club.state].filter(Boolean).join(', ')}</span>
                             </div>
                           )}

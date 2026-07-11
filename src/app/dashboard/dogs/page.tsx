@@ -117,8 +117,8 @@ export default function DogsPage() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto w-full">
+              <table className="w-full min-w-[800px] text-left border-collapse">
                 <thead>
                   <tr className="bg-card border-b border-border text-muted-foreground uppercase text-xs tracking-wider">
                     <th className="p-4 font-semibold">Dog Info</th>

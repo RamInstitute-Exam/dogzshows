@@ -1,15 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ChevronRight, QrCode, CreditCard, Dog, Calendar } from 'lucide-react';
+import { CheckCircle2, ChevronRight, QrCode, CreditCard, Dog, Calendar, Loader2 } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
 import OptimizedImage from '@/components/shared/OptimizedImage';
+import { toast } from 'sonner';
+import api from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 export default function EventRegistrationWorkflow() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Data states
+  const [events, setEvents] = useState<any[]>([]);
+  const [dogs, setDogs] = useState<any[]>([]);
+  
+  // Selection states
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [selectedDogId, setSelectedDogId] = useState<string | null>(null);
+  const [validationResult, setValidationResult] = useState<any>(null);
+  const [registrationResponse, setRegistrationResponse] = useState<any>(null);
 
   const steps = [
     { num: 1, title: 'Choose Event', icon: Calendar },
@@ -19,17 +34,115 @@ export default function EventRegistrationWorkflow() {
     { num: 5, title: 'QR Pass', icon: QrCode },
   ];
 
-  const handleNext = () => {
-    if (step === 4) {
-      setIsProcessing(true);
-      setTimeout(() => {
-        setIsProcessing(false);
-        setStep(5);
-      }, 2000);
-    } else {
-      setStep((prev) => Math.min(prev + 1, 5));
+  useEffect(() => {
+    fetchEvents();
+    fetchDogs();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const res = await api.get('/public/shows?limit=100');
+      if (res.success) {
+        setEvents(res.data || []);
+      }
+    } catch (err) {
+      console.error('Failed to load events');
     }
   };
+
+  const fetchDogs = async () => {
+    try {
+      const res = await api.get('/dogs?limit=100');
+      if (res.success) {
+        setDogs(res.data || []);
+      }
+    } catch (err) {
+      console.error('Failed to load dogs');
+    }
+  };
+
+  const handleValidateEligibility = async () => {
+    if (!selectedEventId || !selectedDogId) return;
+    setLoading(true);
+    try {
+      const res = await api.post('/registrations/validate', {
+        eventId: selectedEventId,
+        dogId: selectedDogId
+      });
+      if (res.success) {
+        setValidationResult(res);
+        setStep(3);
+      } else {
+        toast.error(res.message || 'Eligibility check failed');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Validation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateRegistration = async () => {
+    if (!validationResult?.eligible || !validationResult.eligibleClasses?.length) {
+      toast.error('Dog is not eligible for any classes');
+      return;
+    }
+    
+    setIsProcessing(true);
+    try {
+      // Assuming first eligible class is selected automatically for now
+      const classId = validationResult.eligibleClasses[0].id;
+
+      const res = await api.post('/registrations', {
+        eventId: selectedEventId,
+        dogId: selectedDogId,
+        categoryId: classId
+      });
+
+      if (res.success) {
+        setRegistrationResponse(res.data);
+        setStep(5);
+        toast.success('Registration successful!');
+      } else {
+        toast.error(res.message || 'Registration failed');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to complete registration');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (step === 1 && !selectedEventId) {
+      toast.error('Please select an event');
+      return;
+    }
+    if (step === 2) {
+      if (!selectedDogId) {
+        toast.error('Please select a dog');
+        return;
+      }
+      handleValidateEligibility();
+      return;
+    }
+    if (step === 3) {
+      if (!validationResult?.eligible) {
+        toast.error('Cannot proceed, dog is not eligible.');
+        return;
+      }
+      setStep(4);
+      return;
+    }
+    if (step === 4) {
+      handleCreateRegistration();
+      return;
+    }
+    setStep((prev) => Math.min(prev + 1, 5));
+  };
+
+  const selectedEvent = events.find(e => e.id === selectedEventId);
+  const selectedDog = dogs.find(d => d.id === selectedDogId);
 
   return (
     <PageContainer>
@@ -37,7 +150,7 @@ export default function EventRegistrationWorkflow() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8">
           
           <div className="text-center mb-12">
-            <h1 className="text-muted-foregroundxl font-extrabold text-foreground tracking-tight mb-4">Event Registration</h1>
+            <h1 className="text-3xl font-extrabold text-foreground tracking-tight mb-4">Event Registration</h1>
             <p className="text-muted-foreground">Secure your spot in the upcoming championship.</p>
           </div>
 
@@ -77,15 +190,26 @@ export default function EventRegistrationWorkflow() {
                 <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                   <h3 className="text-2xl font-bold mb-6">Select an Event</h3>
                   <div className="space-y-4">
-                    {['National Specialty Show 2026', 'Winter Classic Championship'].map((event, i) => (
-                      <div key={i} className="p-4 border-2 border-border rounded-2xl hover:border-border cursor-pointer transition-colors flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-foreground/10 flex items-center justify-center">
+                    {events.length === 0 && <p className="text-muted-foreground py-4">No upcoming events found.</p>}
+                    {events.map((event) => (
+                      <div 
+                        key={event.id} 
+                        onClick={() => setSelectedEventId(event.id)}
+                        className={`p-4 border-2 rounded-2xl cursor-pointer transition-colors flex items-center gap-4 ${
+                          selectedEventId === event.id ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/30'
+                        }`}
+                      >
+                        <div className="w-12 h-12 rounded-full bg-foreground/10 flex items-center justify-center shrink-0">
                           <Calendar className="w-5 h-5 text-foreground" />
                         </div>
-                        <div>
-                          <p className="font-bold text-foreground">{event}</p>
-                          <p className="text-sm text-muted-foreground">Mumbai, IN • Oct 15, 2026</p>
+                        <div className="flex-1">
+                          <p className="font-bold text-foreground">{event.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {event.city && `${event.city} • `} 
+                            {event.startDate && new Date(event.startDate).toLocaleDateString()}
+                          </p>
                         </div>
+                        {selectedEventId === event.id && <CheckCircle2 className="w-6 h-6 text-foreground shrink-0" />}
                       </div>
                     ))}
                   </div>
@@ -96,69 +220,114 @@ export default function EventRegistrationWorkflow() {
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                   <h3 className="text-2xl font-bold mb-6">Select Your Dog</h3>
                   <div className="space-y-4">
-                    <div className="p-4 border-2 border-border bg-foreground/10/50 rounded-2xl cursor-pointer transition-colors flex justify-between items-center">
-                      <div className="flex items-center gap-4">
-                        <OptimizedImage src="/images/hero_banner.png" alt="Dog" className="w-12 h-12 rounded-full object-cover" />
-                        <div>
-                          <p className="font-bold text-foreground">Sir Maximus</p>
-                          <p className="text-sm text-muted-foreground">Golden Retriever • KCI-2023-4589</p>
+                    {dogs.length === 0 && <p className="text-muted-foreground py-4">You have not added any dogs to your profile.</p>}
+                    {dogs.map((dog) => (
+                      <div 
+                        key={dog.id} 
+                        onClick={() => setSelectedDogId(dog.id)}
+                        className={`p-4 border-2 rounded-2xl cursor-pointer transition-colors flex items-center gap-4 ${
+                          selectedDogId === dog.id ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/30'
+                        }`}
+                      >
+                        <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shrink-0 overflow-hidden">
+                          {dog.imageUrl ? (
+                            <img src={dog.imageUrl} alt={dog.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <Dog className="w-6 h-6 text-muted-foreground" />
+                          )}
                         </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-foreground">{dog.name}</p>
+                          <p className="text-sm text-muted-foreground">{dog.breed?.name || 'Unknown Breed'} • {dog.kciNumber}</p>
+                        </div>
+                        {selectedDogId === dog.id && <CheckCircle2 className="w-6 h-6 text-foreground shrink-0" />}
                       </div>
-                      <CheckCircle2 className="w-6 h-6 text-foreground" />
-                    </div>
+                    ))}
                   </div>
                 </motion.div>
               )}
 
-              {step === 3 && (
+              {step === 3 && validationResult && (
                 <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                   <h3 className="text-2xl font-bold mb-6">Eligibility Validation</h3>
-                  <div className="bg-card rounded-2xl p-6 space-y-4">
-                    <div className="flex justify-between items-center border-b border-border pb-4">
-                      <span className="text-muted-foreground font-medium">Breed Validation</span>
-                      <span className="text-green-600 font-bold flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Passed</span>
+                  
+                  {loading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="w-10 h-10 animate-spin text-muted-foreground" />
                     </div>
-                    <div className="flex justify-between items-center border-b border-border pb-4">
-                      <span className="text-muted-foreground font-medium">FCI Group Assigment</span>
-                      <span className="text-foreground font-bold">Group 8</span>
+                  ) : validationResult.eligible ? (
+                    <div className="bg-card rounded-2xl p-6 space-y-4 border border-border shadow-sm">
+                      <div className="flex justify-between items-center border-b border-border pb-4">
+                        <span className="text-muted-foreground font-medium">Eligibility Status</span>
+                        <span className="text-green-600 font-bold flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Passed</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center border-b border-border pb-4">
+                        <span className="text-muted-foreground font-medium">Age at Event Date</span>
+                        <span className="text-foreground font-bold">{validationResult.ageData?.totalMonths?.toFixed(1)} Months</span>
+                      </div>
+                      
+                      <div className="space-y-3 pt-2">
+                        <span className="text-muted-foreground font-medium">Eligible Classes</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {validationResult.eligibleClasses?.map((cls: any) => (
+                            <div key={cls.id} className="p-3 bg-accent/30 border border-border rounded-lg flex items-center justify-between">
+                              <span className="font-bold text-foreground">{cls.name}</span>
+                              <CheckCircle2 className="w-5 h-5 text-green-600" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground font-medium">Calculated Class</span>
-                      <span className="text-foreground font-bold">Intermediate (18-36 mo)</span>
+                  ) : (
+                    <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
+                      <h4 className="text-red-700 font-bold text-lg mb-2">Not Eligible</h4>
+                      <p className="text-red-600">{validationResult.message}</p>
                     </div>
-                  </div>
+                  )}
                 </motion.div>
               )}
 
               {step === 4 && (
                 <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                  <h3 className="text-2xl font-bold mb-6">Payment Gateway</h3>
+                  <h3 className="text-2xl font-bold mb-6">Payment Overview</h3>
                   <div className="p-6 border-2 border-border rounded-2xl text-center">
                     <p className="text-muted-foreground mb-2">Total Entry Fee</p>
-                    <p className="text-muted-foregroundxl font-extrabold text-foreground mb-6">₹1,500</p>
+                    <p className="text-4xl font-extrabold text-foreground mb-6">₹{selectedEvent?.entryFee || 1500}</p>
                     
                     <Button 
                       className="w-full h-14 text-lg font-bold bg-card hover:bg-foreground text-background rounded-xl flex items-center justify-center gap-2"
                       disabled={isProcessing}
                       onClick={handleNext}
                     >
-                      {isProcessing ? 'Processing via Razorpay...' : 'Pay with Razorpay'}
+                      {isProcessing ? (
+                        <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+                      ) : (
+                        'Confirm Registration (Offline Payment)'
+                      )}
                     </Button>
+                    <p className="text-xs text-muted-foreground mt-4">Razorpay integration pending. This will create a pending registration.</p>
                   </div>
                 </motion.div>
               )}
 
-              {step === 5 && (
+              {step === 5 && registrationResponse && (
                 <motion.div key="step5" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
                   <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
-                  <h3 className="text-muted-foregroundxl font-extrabold text-foreground mb-2">Registration Complete!</h3>
-                  <p className="text-muted-foreground mb-8">Your QR Pass and Receipt have been sent via WhatsApp and Email.</p>
+                  <h3 className="text-3xl font-extrabold text-foreground mb-2">Registration Requested!</h3>
+                  <p className="text-muted-foreground mb-8">Your application has been received and is pending payment/approval.</p>
                   
-                  <div className="max-w-xs mx-auto bg-card p-6 rounded-2xl border border-border">
+                  <div className="max-w-xs mx-auto bg-card p-6 rounded-2xl border border-border shadow-sm">
                     <QrCode className="w-32 h-32 mx-auto text-foreground mb-4" />
-                    <p className="text-sm font-bold text-foreground tracking-widest">SN: JUZ-98421-26</p>
+                    <p className="text-sm font-bold text-foreground tracking-widest">{registrationResponse.serialNumber}</p>
+                  </div>
+                  
+                  <div className="mt-8">
+                    <Button variant="outline" onClick={() => router.push('/dashboard/user')}>
+                      Go to Dashboard
+                    </Button>
                   </div>
                 </motion.div>
               )}
@@ -166,7 +335,12 @@ export default function EventRegistrationWorkflow() {
 
             {step < 4 && (
               <div className="mt-8 flex justify-end pt-6 border-t border-border">
-                <Button onClick={handleNext} className="bg-foreground hover:bg-foreground rounded-full px-8 shadow-sm">
+                <Button 
+                  onClick={handleNext} 
+                  disabled={loading || (step === 3 && !validationResult?.eligible)}
+                  className="bg-foreground hover:bg-foreground rounded-full px-8 shadow-sm"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                   Continue <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>

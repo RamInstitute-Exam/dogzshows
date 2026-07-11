@@ -57,7 +57,7 @@ export default function AllPhotosPage() {
               <Link
                 key={album.id}
                 href={`/gallery/album/${album.slug}`}
-                className="group relative flex flex-col overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out cursor-pointer p-3 md:p-4 w-full max-w-[380px] h-[450px] md:h-[500px] mx-auto"
+                className="group relative flex flex-col overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out cursor-pointer p-3 md:p-4 w-full max-w-[380px] h-full min-h-[460px] mx-auto"
               >
                 {/* Cover Image */}
                 <div className="relative w-full h-[180px] md:h-[220px] shrink-0 overflow-hidden bg-black rounded-[16px]">
@@ -87,7 +87,7 @@ export default function AllPhotosPage() {
                     </h3>
 
                     {album.subtitle && album.subtitle.trim() !== '' && album.subtitle !== 'null' && album.subtitle !== 'undefined' && (
-                      <div className="text-[13px] font-medium text-primary leading-snug mt-1">
+                      <div className="text-[13px] font-medium text-primary leading-snug mt-1 line-clamp-1">
                         {album.subtitle}
                       </div>
                     )}
@@ -100,7 +100,7 @@ export default function AllPhotosPage() {
                           </div>
                           <div className="overflow-hidden flex-1 text-left">
                             <p className="text-[9px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0">Location</p>
-                            <p className="text-[12px] font-[700] leading-[1.3] text-foreground truncate uppercase">
+                            <p className="text-[12px] font-[700] leading-[1.3] text-foreground uppercase">
                               {[album.city, album.state].filter(Boolean).join(', ') || album.location}
                             </p>
                           </div>
@@ -122,12 +122,7 @@ export default function AllPhotosPage() {
                     </div>
                   </div>
 
-                  <div className="w-full pt-3 border-t border-border/40 shrink-0 mt-auto">
-                    <div className="w-full py-2.5 rounded-xl bg-muted group-hover:bg-foreground group-hover:text-white text-foreground text-center font-bold text-xs transition-all flex items-center justify-center gap-1.5">
-                      View Album
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
+
                 </div>
               </Link>
             ))}

@@ -55,7 +55,7 @@ export default function EventJudges({ judges }: { judges: any[] }) {
         <span className="ml-3 text-base font-bold text-muted-foreground">({judges.length})</span>
       </h2>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         {judges.map((judge: any, i: number) => (
           <motion.div 
             key={judge?.id ?? i}
@@ -63,25 +63,25 @@ export default function EventJudges({ judges }: { judges: any[] }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="group p-6 bg-card rounded-[20px] border border-border hover:border-border/50 transition-all duration-300 text-center hover:shadow-lg"
+            className="group p-4 sm:p-6 bg-card rounded-[20px] border border-border hover:border-border/50 transition-all duration-300 text-center hover:shadow-lg flex flex-col items-center"
           >
             {/* Avatar */}
             <div
-              className="w-44 h-44 mx-auto rounded-[20px] overflow-hidden mb-5 border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300 bg-muted"
+              className="w-20 h-20 sm:w-32 sm:h-32 mx-auto rounded-full sm:rounded-[20px] overflow-hidden mb-3 sm:mb-5 border-2 sm:border-4 border-border shadow-md group-hover:scale-105 transition-transform duration-300 bg-muted"
             >
               <JudgeAvatar judge={judge} />
             </div>
 
             {/* Name */}
-            <h4 className="font-extrabold text-foreground text-lg mb-2 leading-tight">
+            <h4 className="font-extrabold text-foreground text-[11px] sm:text-lg mb-1 sm:mb-2 leading-snug sm:leading-tight">
               {judge?.name ?? 'Unknown Judge'}
             </h4>
 
             {/* Country */}
-            <div className="flex items-center justify-center gap-3 mb-4 text-sm font-semibold text-muted-foreground flex-wrap">
+            <div className="flex items-center justify-center gap-1 sm:gap-3 mb-2 sm:mb-4 text-[10px] sm:text-sm font-semibold text-muted-foreground flex-wrap">
               {judge?.country && (
                 <span className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                  <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground" />
                   {judge.country}
                 </span>
               )}
@@ -90,14 +90,12 @@ export default function EventJudges({ judges }: { judges: any[] }) {
             {/* Groups badge */}
             {judge?.groups && (
               <div
-                className="inline-flex items-center gap-2 px-3 py-1.5 font-bold text-xs rounded-lg bg-muted text-foreground border border-border"
+                className="inline-flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 font-bold text-[9px] sm:text-xs rounded-lg bg-muted text-foreground border border-border mt-auto w-full sm:w-auto break-words text-center"
               >
-                <Trophy className="w-3.5 h-3.5 text-muted-foreground" /> {judge.groups}
+                <Trophy className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground shrink-0" /> 
+                <span className="break-words whitespace-normal">{judge.groups}</span>
               </div>
             )}
-
-            
-            
             
           </motion.div>
         ))}

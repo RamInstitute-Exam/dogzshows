@@ -21,6 +21,9 @@ export default function CreateEventForm() {
   const [searchJudgeQuery, setSearchJudgeQuery] = useState('');
   const [customJudges, setCustomJudges] = useState<any[]>([]);
   
+  const [fciGroups, setFciGroups] = useState<any[]>([]);
+  const [groupLimits, setGroupLimits] = useState<any[]>([]);
+  
   const [clubSearchQuery, setClubSearchQuery] = useState('');
   const [isClubDropdownOpen, setIsClubDropdownOpen] = useState(false);
   const clubDropdownRef = React.useRef<HTMLDivElement>(null);
@@ -106,7 +109,25 @@ export default function CreateEventForm() {
   useEffect(() => {
     fetchClubs();
     fetchJudges();
+    fetchFciGroups();
   }, []);
+
+  const fetchFciGroups = async () => {
+    try {
+      const res = await api.get('/public/fci-groups?limit=100');
+      if (res.success) {
+        const groups = res.data || [];
+        setFciGroups(groups);
+        setGroupLimits(groups.map((g: any) => ({
+          fciGroupId: g.id,
+          name: g.name,
+          maxLimit: 30
+        })));
+      }
+    } catch (error) {
+      console.error('Failed to fetch fci groups');
+    }
+  };
 
   const fetchClubs = async () => {
     try {
@@ -302,6 +323,12 @@ export default function CreateEventForm() {
     }
   };
 
+  const handleGroupLimitChange = (fciGroupId: string, value: string) => {
+    setGroupLimits(prev => 
+      prev.map(g => g.fciGroupId === fciGroupId ? { ...g, maxLimit: Number(value) } : g)
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name) {
@@ -363,7 +390,8 @@ export default function CreateEventForm() {
         registrationWindowEnd: formData.registrationWindowEnd ? new Date(formData.registrationWindowEnd).toISOString() : null,
         judges: selectedJudges,
         customJudges: customJudges.filter(cj => cj.judge_name.trim() !== ''),
-        secretaries: formattedSecretaries
+        secretaries: formattedSecretaries,
+        groupLimits: groupLimits
       };
 
       const res = await api.post('/shows', payload);
@@ -386,6 +414,7 @@ export default function CreateEventForm() {
     { id: 'schedule', label: 'Scheduling', icon: CalendarDays },
     { id: 'venue', label: 'Venue & Location', icon: MapPin },
     { id: 'settings', label: 'Rules & Judges', icon: Settings },
+    { id: 'registration', label: 'Registration Config', icon: Settings },
     { id: 'media', label: 'Banners & Media', icon: ImagePlus }
   ];
 
@@ -1025,6 +1054,39 @@ export default function CreateEventForm() {
                             </div>
                           </div>
                         ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* REGISTRATION CONFIGURATION TAB */}
+                {activeTab === 'registration' && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                    <div>
+                      <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Registration Configuration</h2>
+                      <p className="text-sm text-muted-foreground mt-2">Configure maximum allowed entries for each FCI Group.</p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                        {groupLimits.map((gl) => (
+                          <div key={gl.fciGroupId} className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col space-y-2">
+                            <label className="text-sm font-bold text-foreground">{gl.name}</label>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-muted-foreground">Maximum Entries:</span>
+                              <input 
+                                type="number" 
+                                min="0"
+                                value={gl.maxLimit} 
+                                onChange={(e) => handleGroupLimitChange(gl.fciGroupId, e.target.value)} 
+                                className="w-24 px-3 py-1.5 bg-background border border-border rounded-lg text-foreground text-sm focus:border-border outline-none" 
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        {groupLimits.length === 0 && (
+                          <div className="col-span-full p-4 border border-dashed border-border rounded-xl text-center text-muted-foreground text-sm">
+                            No FCI Groups found or still loading...
+                          </div>
+                        )}
                       </div>
                     </div>
                   </motion.div>

@@ -16,6 +16,7 @@ interface DashboardStats {
   pendingRegistrations: number;
   certificates: number;
   recentRegistrations?: any[];
+  recentPayments?: any[];
 }
 
 function UserDashboardComponent() {
@@ -147,6 +148,41 @@ function UserDashboardComponent() {
               <Link href="/events">
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all">Browse Events</Button>
               </Link>
+            </div>
+          )}
+        </div>
+
+        <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6 shadow-xl mt-6 lg:mt-0">
+          <h2 className="text-xl font-bold text-foreground mb-6">Recent Payments</h2>
+          {stats?.recentPayments && stats.recentPayments.length > 0 ? (
+            <div className="space-y-4">
+              {stats.recentPayments.map((payment: any) => (
+                <div key={payment.id} className="flex items-start justify-between p-4 rounded-xl border border-border hover:bg-input transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                      <span className="font-bold text-green-500">₹</span>
+                    </div>
+                    <div>
+                      <p className="font-bold text-foreground">{payment.registration?.event?.name || 'Event Registration'}</p>
+                      <p className="text-sm text-muted-foreground">{payment.registration?.dog?.name || 'Dog Registration'}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${payment.status === 'SUCCESS' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}`}>
+                      {payment.status}
+                    </span>
+                    <p className="font-bold text-foreground mt-2">₹{payment.amount}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mb-4">
+                <FileText className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2">No recent payments</h3>
+              <p className="text-muted-foreground max-w-sm">You don't have any recent transactions.</p>
             </div>
           )}
         </div>

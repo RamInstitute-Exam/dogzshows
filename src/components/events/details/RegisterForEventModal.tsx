@@ -159,7 +159,7 @@ export default function RegisterForEventModal({ isOpen, onClose, event, onSucces
       
       // Step 1: Create Registration record (returns PENDING state)
       // Loop through all selected dogs and register them
-      const registeredList = [];
+      const registeredList: any[] = [];
       
       for (const dogId of selectedDogIds) {
         // Map recommended class to category (retrieve from event categories or default ID)

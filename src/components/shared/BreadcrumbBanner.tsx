@@ -60,24 +60,22 @@ export default function BreadcrumbBanner({
     <section
       className="relative w-full flex items-center justify-center"
       style={{
-        /* Desktop 520px → Tablet 300px → Mobile 200px */
-        height: 'clamp(200px, 27vw, 520px)',
+        /* Adjusted height clamp to match typical banner aspect ratio (e.g. 1920x600) and avoid black bars on mobile */
+        height: 'clamp(100px, 31.25vw, 520px)',
         background: 'linear-gradient(180deg, #060606 0%, #111111 100%)',
       }}
     >
       {/* ── BANNER IMAGE ──────────────────────────────────────────────────
-       *  object-fit: contain  → NEVER crops any side
-       *  object-position: center center → centred in the dark background
-       *  No scale transform — no zoom — no distortion
+       *  object-fit: cover  → Fills the entire area without any empty spaces
+       *  object-position: center center
        */}
       {hasBanner && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9, ease: 'easeOut' }}
-          /* fill the section width/height exactly — no overflow */
           className="absolute inset-0 w-full h-full"
-          style={{ overflow: 'visible' }}
+          style={{ overflow: 'hidden' }}
         >
           <SafeImage
             src={getImageUrl(data.bannerImage)}
@@ -88,9 +86,8 @@ export default function BreadcrumbBanner({
             quality={100}
             sizes="100vw"
             style={{
-              objectFit: 'contain',
+              objectFit: 'cover',
               objectPosition: 'center center',
-              /* GPU layer for smooth fade — no transform scale */
               willChange: 'opacity',
             }}
           />

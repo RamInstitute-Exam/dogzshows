@@ -94,7 +94,7 @@ function ClubWinnersRow({ club }: { club: any }) {
           }}
           pagination={{ clickable: true, dynamicBullets: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
-          className="w-full !pb-4 sm:!pb-14 home-slider-nav"
+          className="w-full !pb-10 sm:!pb-14 home-slider-nav"
           style={{ alignItems: 'stretch' } as React.CSSProperties}
         >
           {winners.map((winner: any, wIdx: number) => (

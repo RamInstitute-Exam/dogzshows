@@ -207,7 +207,7 @@ export default function EventDetailClient({ params }: { params?: Promise<{ slug:
   return (
     <PageContainer>
       {/* Breadcrumb */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-0 md:pt-6 md:pb-2 breadcrumb-container">
+      <div className="hidden md:block max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-0 md:pt-6 md:pb-2 breadcrumb-container">
         <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground flex-wrap">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="w-4 h-4 shrink-0" />
@@ -277,6 +277,8 @@ export default function EventDetailClient({ params }: { params?: Promise<{ slug:
             {(() => {
               const isClosed = event.status === 'CLOSED' || event.status === 'COMPLETED' || (event.registrationWindowEnd && new Date(event.registrationWindowEnd) < new Date());
               const isOpen = (event.status === 'REGISTRATION_OPEN' || event.status === 'ACTIVE') && !isClosed;
+              
+              if (!isOpen && !hasRegistered) return null;
               
               const regFee = event.paymentSettings?.registrationFee ?? event.entryFee ?? 1500;
               const closingDate = event.registrationWindowEnd 

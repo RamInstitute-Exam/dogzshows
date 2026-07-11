@@ -60,7 +60,7 @@ export default function OutdoorPhotosPage() {
               <Link
                 key={album.id}
                 href={`/gallery/album/${album.slug}`}
-                className="group relative flex flex-col overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out cursor-pointer p-3 md:p-4 w-full max-w-[380px] h-[460px] md:h-[520px] mx-auto"
+                className="group relative flex flex-col overflow-hidden bg-card rounded-[24px] border border-border hover:border-border/30 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out cursor-pointer p-3 md:p-4 w-full max-w-[380px] h-full min-h-[460px] mx-auto"
               >
                 {/* Cover Image */}
                 <div className="relative w-full h-[180px] md:h-[220px] shrink-0 overflow-hidden bg-black rounded-[16px]">
@@ -80,17 +80,21 @@ export default function OutdoorPhotosPage() {
                 {/* Card Info */}
                 <div className="px-1 pt-4 pb-1 flex-grow flex flex-col justify-between min-h-0">
                   <div className="space-y-1">
-                    <h3 className="text-lg md:text-xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug min-h-[2.5rem] md:min-h-[3rem]">
+                    <h3 className="text-lg md:text-xl font-bold text-foreground group-hover:text-foreground transition-colors leading-snug">
                       {album.title}
                     </h3>
 
-                    <div className="text-[13px] font-medium text-primary leading-snug min-h-[1.2rem] md:min-h-[1.4rem]">
-                      {album.subtitle || <span className="invisible">No Subtitle</span>}
-                    </div>
+                    {album.subtitle && (
+                      <div className="text-[13px] font-medium text-primary leading-snug line-clamp-1">
+                        {album.subtitle}
+                      </div>
+                    )}
 
-                    <div className="text-[12px] font-normal text-muted-foreground leading-snug line-clamp-2 mt-1 min-h-[2.2rem] md:min-h-[2.5rem]">
-                      {album.shortDescription || album.description || <span className="invisible">No Description</span>}
-                    </div>
+                    {(album.shortDescription || album.description) && (
+                      <div className="text-[12px] font-normal text-muted-foreground leading-snug line-clamp-2 mt-1">
+                        {album.shortDescription || album.description}
+                      </div>
+                    )}
 
                     <div className="flex flex-col gap-1.5 md:gap-2 pt-2 justify-end">
                       {(album.city || album.state || album.location) && (
@@ -100,7 +104,7 @@ export default function OutdoorPhotosPage() {
                           </div>
                           <div className="overflow-hidden flex-1 text-left">
                             <p className="text-[9px] font-[600] uppercase tracking-wider text-[#8b8b8b] mb-0">Location</p>
-                            <p className="text-[12px] font-[700] leading-[1.3] text-foreground truncate uppercase">
+                            <p className="text-[12px] font-[700] leading-[1.3] text-foreground uppercase">
                               {[album.city, album.state].filter(Boolean).join(', ') || album.location}
                             </p>
                           </div>
@@ -122,12 +126,7 @@ export default function OutdoorPhotosPage() {
                     </div>
                   </div>
 
-                  <div className="w-full pt-3 border-t border-border/40 shrink-0 mt-auto">
-                    <div className="w-full py-2.5 rounded-xl bg-muted group-hover:bg-foreground group-hover:text-white text-foreground text-center font-bold text-xs transition-all flex items-center justify-center gap-1.5">
-                      View Album
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
+
                 </div>
               </Link>
             ))}

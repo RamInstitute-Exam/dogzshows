@@ -29,12 +29,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const roles = user?.roles?.map((r: any) => typeof r === 'string' ? r.toUpperCase() : r.role?.name?.toUpperCase()) || [];
   const isAdminOrSuperAdmin = roles.includes('SUPER_ADMIN') || roles.includes('SUPER ADMIN') || roles.includes('ADMIN');
 
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+  // Auto-collapse sidebar on tablet/smaller desktop, expand on large desktop, and close mobile drawer
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1280) {
+        setIsSidebarCollapsed(true);
+      } else {
+        setIsSidebarCollapsed(false);
+      }
+      if (window.innerWidth >= 1024) {
+        setIsMobileDrawerOpen(false);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleMenu = (name: string) => {
     setOpenMenus(prev => ({ ...prev, [name]: !prev[name] }));
@@ -74,27 +92,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-card flex flex-col selection:bg-foreground selection:text-foreground font-sans">
       
       {/* Top Header */}
-      <header className="fixed top-0 w-full h-[72px] bg-card/80 backdrop-blur-md border-b border-border z-50 flex items-center justify-between pl-6 pr-4">
+      <header className="fixed top-0 w-full h-[72px] bg-card/80 backdrop-blur-md border-b border-border z-[100] flex items-center justify-between pl-6 pr-4">
         
         {/* Left: Sidebar Toggle, Logo */}
         <div className="flex items-center gap-4">
           <button 
+            onClick={() => setIsMobileDrawerOpen(true)} 
+            className="lg:hidden p-2 hover:bg-input rounded-lg text-muted-foreground transition-colors"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          
+          <button 
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-            className="p-2 hover:bg-input rounded-lg text-muted-foreground transition-colors"
+            className="hidden lg:block p-2 hover:bg-input rounded-lg text-muted-foreground transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
           
           <div className="flex items-center">
             {isSidebarCollapsed ? (
-              <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center shrink-0">
-                <Dog className="w-5 h-5 text-foreground" />
+              <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center shrink-0 hidden lg:flex">
+                <Dog className="w-5 h-5 text-background" />
               </div>
-            ) : (
-              <Link href="/" className="flex items-center h-full">
-                <OptimizedImage src="/Untitled-1.png" alt="JuzDog Logo" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
-              </Link>
-            )}
+            ) : null}
+            <Link href="/" className={`${isSidebarCollapsed ? 'lg:hidden' : ''} flex items-center h-full`}>
+              <OptimizedImage src="/Untitled-1.png" alt="JuzDog Logo" className="w-[110px] md:w-[130px] lg:w-[160px] h-auto object-contain transition-all hover:opacity-90" />
+            </Link>
           </div>
         </div>
 
@@ -124,8 +148,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </header>
 
-      <div className="flex flex-1 pt-[72px]">
-        {/* Sidebar */}
+      <div className="flex flex-1 pt-[72px] relative w-full min-w-0">
+        {/* Sidebar (Desktop Only) */}
         <motion.aside 
           animate={{ width: isSidebarCollapsed ? 80 : 280 }}
           transition={{ type: "spring", bounce: 0, duration: 0.3 }}
@@ -196,22 +220,107 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
 
           </div>
-
-          {/* Removed Logout from Sidebar footer */}
         </motion.aside>
 
+        {/* Mobile Navigation Drawer */}
+        <AnimatePresence>
+          {isMobileDrawerOpen && (
+            <div className="fixed inset-0 z-[1200] lg:hidden flex">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                onClick={() => setIsMobileDrawerOpen(false)}
+              />
+              <motion.div 
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="relative w-[280px] h-full bg-card shadow-2xl flex flex-col border-r border-border"
+              >
+                <div className="flex-1 py-6 overflow-y-auto mt-[72px]">
+                  <div className="px-4 mb-4">
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Menu</p>
+                    <nav className="space-y-1">
+                      {allowedRoutes.map(route => {
+                        const Icon = route.icon;
+                        const hasChildren = !!route.children;
+                        const isActive = pathname === route.href || (hasChildren && route.children?.some(c => pathname.startsWith(c.href)));
+                        const isOpen = openMenus[route.name];
+
+                        return (
+                          <div key={route.name}>
+                            {hasChildren ? (
+                              <button onClick={() => toggleMenu(route.name)} className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-foreground/10 text-foreground' : 'text-muted-foreground hover:bg-card hover:text-foreground'}`}>
+                                <div className="flex items-center">
+                                  <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-foreground' : 'text-muted-foreground'}`} />
+                                  <span>{route.name}</span>
+                                </div>
+                                <ChevronRight className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+                              </button>
+                            ) : (
+                              <Link href={route.href!} onClick={() => setIsMobileDrawerOpen(false)} onMouseEnter={() => handleRouteHover(route.href!)} className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors ${isActive ? 'bg-foreground/10 text-foreground' : 'text-muted-foreground hover:bg-card hover:text-foreground'}`}>
+                                <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-foreground' : 'text-muted-foreground'}`} />
+                                <span>{route.name}</span>
+                              </Link>
+                            )}
+
+                            {/* Render Children if open */}
+                            {hasChildren && (
+                              <AnimatePresence>
+                                {isOpen && (
+                                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <div className="pl-11 py-2 space-y-1">
+                                      {route.children?.map(child => (
+                                        <Link key={child.name} href={child.href} onClick={() => setIsMobileDrawerOpen(false)} onMouseEnter={() => handleRouteHover(child.href)} className={`block py-2 text-sm font-medium ${pathname === child.href ? 'text-foreground' : 'text-muted-foreground hover:text-foreground transition-colors'}`}>
+                                          {child.name}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </nav>
+                  </div>
+
+                  <div className="px-4 mt-8">
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">System</p>
+                    <nav className="space-y-1">
+                      <Link href="/dashboard/settings" onClick={() => setIsMobileDrawerOpen(false)} className="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-muted-foreground hover:bg-card hover:text-foreground">
+                        <Settings className="w-5 h-5 mr-3 text-muted-foreground" />
+                        <span>Settings</span>
+                      </Link>
+                      <Link href="/dashboard/support" onClick={() => setIsMobileDrawerOpen(false)} className="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-muted-foreground hover:bg-card hover:text-foreground">
+                        <LifeBuoy className="w-5 h-5 mr-3 text-muted-foreground" />
+                        <span>Support</span>
+                      </Link>
+                    </nav>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
         {/* Content Area */}
-        <motion.main 
-          animate={{ marginLeft: typeof window !== 'undefined' && window.innerWidth >= 1024 ? (isSidebarCollapsed ? 80 : 280) : 0 }}
-          transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-          className="flex-1 px-8 pb-8 pt-6 w-full"
+        <main 
+          className={`flex-1 px-4 sm:px-8 pb-8 pt-6 w-full min-w-0 transition-all duration-300 ${
+            isSidebarCollapsed ? 'lg:pl-[80px]' : 'lg:pl-[280px]'
+          }`}
           style={{ paddingTop: 0 }}
         >
-          <div className="w-full max-w-[1600px] mx-auto w-full">
+          <div className="w-full max-w-[1600px] mx-auto">
             
             {/* Dynamic Breadcrumbs */}
             {pathname !== '/dashboard' && (
-              <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
+              <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground mb-2 mt-4 lg:mt-0">
                 <Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
                 {pathname.split('/').filter(Boolean).slice(1).map((segment, index, arr) => {
                   const isLast = index === arr.length - 1;
@@ -234,7 +343,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {children}
           </div>
-        </motion.main>
+        </main>
       </div>
 
     </div>

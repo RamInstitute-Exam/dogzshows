@@ -377,7 +377,7 @@ export default function ImageLightbox({
                     e.stopPropagation();
                     handleTap(e);
                   }}
-                  className={`max-w-[92vw] max-h-[70vh] object-contain select-none pointer-events-auto w-auto h-auto ${scale > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+                  className={`max-w-[98vw] max-h-[88vh] object-contain select-none pointer-events-auto w-auto h-auto ${scale > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
                   style={{
                     transform: `scale(${scale})`,
                     transformOrigin: 'center center',

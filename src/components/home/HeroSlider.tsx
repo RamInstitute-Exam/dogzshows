@@ -48,15 +48,19 @@ function BannerSlide({
   isActive,
   isPriority,
   direction,
+  onNext,
+  onPrev,
 }: {
   banner: HeroBannerData;
   isActive: boolean;
   isPriority: boolean;
   direction: number;
+  onNext: () => void;
+  onPrev: () => void;
 }) {
   const imgSrc = getImageUrl(banner.imageUrl);
-  const href   = banner.redirectUrl?.trim();
-  
+  const href = banner.redirectUrl?.trim();
+
   // Smart Image Rendering state
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
   const [isPortrait, setIsPortrait] = useState<boolean>(false);
@@ -85,29 +89,24 @@ function BannerSlide({
 
   // Exit and Enter variants for cinematic OTT transitions
   const slideVariants: Variants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 120 : -120,
+    enter: (direction: number) => ({
+      x: direction > 0 ? 100 : -100,
       opacity: 0,
-      filter: 'blur(15px)',
     }),
     center: {
       x: 0,
       opacity: 1,
-      filter: 'blur(0px)',
-      transition: {
-        x: { type: 'spring' as const, stiffness: 300, damping: 30 },
-        opacity: { duration: 0.6 },
-        filter: { duration: 0.6 },
-      },
-    },
-    exit: (dir: number) => ({
-      x: dir > 0 ? -120 : 120,
-      opacity: 0,
-      filter: 'blur(15px)',
       transition: {
         x: { duration: 0.5, ease: 'easeInOut' },
         opacity: { duration: 0.4 },
-        filter: { duration: 0.4 },
+      },
+    },
+    exit: (direction: number) => ({
+      x: direction < 0 ? 100 : -100,
+      opacity: 0,
+      transition: {
+        x: { duration: 0.5, ease: 'easeInOut' },
+        opacity: { duration: 0.4 },
       },
     }),
   };
@@ -122,7 +121,7 @@ function BannerSlide({
       exit="exit"
     >
       {/* Layer 1: Blurred cinematic background */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 w-full h-full overflow-hidden select-none pointer-events-none"
         style={{ y: bgY }}
       >
@@ -138,7 +137,7 @@ function BannerSlide({
       </motion.div>
 
       {/* Layer 2: Dark cinematic gradient overlay */}
-      <div 
+      <div
         className="absolute inset-0 z-10 pointer-events-none"
         style={{
           background: 'linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.75) 100%)'
@@ -166,7 +165,7 @@ function BannerSlide({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.25, 1, 0.5, 1] }}
             className={`jd-banner-card ${isPortrait ? 'portrait' : 'landscape'}`}
-            style={{ 
+            style={{
               ['--aspect-ratio' as any]: aspectRatio ? `${aspectRatio}` : '1.6'
             }}
           >
@@ -175,7 +174,7 @@ function BannerSlide({
                 href={href}
                 target={banner.openNewTab ? '_blank' : '_self'}
                 rel="noopener noreferrer"
-                className="absolute inset-0 block w-full h-full overflow-hidden"
+                className="absolute inset-0 block w-full h-full overflow-hidden rounded-[inherit]"
               >
                 {/* Ken Burns zooming container */}
                 <motion.div
@@ -197,14 +196,14 @@ function BannerSlide({
                     quality={100}
                     onLoad={handleImageLoad}
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 85vw"
-                    className="object-cover object-center"
+                    className="object-contain object-center"
                     placeholder="blur"
                     blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
                   />
                 </motion.div>
               </Link>
             ) : (
-              <div className="absolute inset-0 w-full h-full overflow-hidden">
+              <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[inherit]">
                 {/* Ken Burns zooming container */}
                 <motion.div
                   className="w-full h-full relative"
@@ -225,7 +224,7 @@ function BannerSlide({
                     quality={100}
                     onLoad={handleImageLoad}
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 85vw"
-                    className="object-cover object-center"
+                    className="object-contain object-center"
                     placeholder="blur"
                     blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
                   />
@@ -233,7 +232,23 @@ function BannerSlide({
               </div>
             )}
 
-            {/* Overlays removed to show full banner image details */}
+            {/* Navigation Arrows positioned INSIDE the tightly wrapped card for mobile only */}
+            <div className="md:hidden absolute top-1/2 -translate-y-1/2 left-0 w-full z-30 pointer-events-none flex justify-between px-2">
+              <button
+                className="pointer-events-auto jd-hero-arrow"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onPrev(); }}
+                aria-label="Previous slide"
+              >
+                <ChevronLeft className="w-6 h-6 md:w-8 md:h-8 text-white drop-shadow-md" color="#ffffff" />
+              </button>
+              <button
+                className="pointer-events-auto jd-hero-arrow"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onNext(); }}
+                aria-label="Next slide"
+              >
+                <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-white drop-shadow-md" color="#ffffff" />
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       </div>
@@ -243,16 +258,16 @@ function BannerSlide({
 
 // ── Main slider ───────────────────────────────────────────────────────────────
 export default function HeroSlider({ banners }: HeroSliderProps) {
-  const [isMounted,  setIsMounted]  = useState(false);
-  const [current,    setCurrent]    = useState(0);
-  const [paused,     setPaused]     = useState(false);
-  const [direction,  setDirection]  = useState(1);
+  const [isMounted, setIsMounted] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [direction, setDirection] = useState(1);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
   const validBanners = banners?.filter(b => b?.imageUrl?.trim()) || [];
-  const total        = validBanners.length;
+  const total = validBanners.length;
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -261,7 +276,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
     setCurrent(((idx % total) + total) % total);
   }, [total]);
 
-  const next = useCallback(() => goTo(current + 1,  1), [current, goTo]);
+  const next = useCallback(() => goTo(current + 1, 1), [current, goTo]);
   const prev = useCallback(() => goTo(current - 1, -1), [current, goTo]);
 
   useEffect(() => {
@@ -273,7 +288,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') next();
-      if (e.key === 'ArrowLeft')  prev();
+      if (e.key === 'ArrowLeft') prev();
     };
     window.addEventListener('keydown', fn);
     return () => window.removeEventListener('keydown', fn);
@@ -292,8 +307,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           width:      calc(100vw - 24px);
           overflow:   hidden;
           background: #000;
-          height:     auto;
-          aspect-ratio: 1.6;
+          height:     55vh;
           margin: 12px auto 0 auto;
           border-radius: 20px;
         }
@@ -323,10 +337,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
           --aspect-ratio: 1.6; /* default fallback */
           position: relative;
           border-radius: 20px;
-          box-shadow: 0 20px 60px rgba(0,0,0,.35);
-          overflow: hidden;
-          background: #0a0a0a;
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: transparent;
           width: 100%;
           height: 100%;
         }
@@ -334,23 +345,22 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
         @media (min-width: 768px) {
           .jd-banner-card {
             border-radius: 28px;
-            box-shadow: 0 40px 120px rgba(0,0,0,.55);
-            /* max-height = 88% of 70vh */
-            --max-w: 88vw;
-            --max-h: 61.6vh;
+            --max-w: 86vw;
+            --max-h: 75vh;
             width: min(var(--max-w), var(--max-h) * var(--aspect-ratio));
             height: min(var(--max-h), var(--max-w) / var(--aspect-ratio));
+            margin: 0 auto;
           }
         }
 
         @media (min-width: 1024px) {
           .jd-banner-card {
             border-radius: 28px;
-            /* max-height = 90% of 90vh */
-            --max-w: 90vw;
-            --max-h: 81vh;
+            --max-w: 96vw;
+            --max-h: 88vh;
             width: min(var(--max-w), var(--max-h) * var(--aspect-ratio));
             height: min(var(--max-h), var(--max-w) / var(--aspect-ratio));
+            margin: 0 auto;
           }
         }
 
@@ -406,38 +416,37 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
 
         /* circular glass arrows with 20px blur */
         .jd-hero-arrow {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 30;
           display: flex;
           align-items: center;
           justify-content: center;
           width: 56px;
           height: 56px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.2);
+          border: 1px solid rgba(255, 255, 255, 0.4);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          color: #fff;
+          color: #ffffff;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+          .jd-hero-arrow {
+            width: 44px;
+            height: 44px;
+          }
         }
 
         .jd-hero-arrow:hover {
-          background: rgba(255, 255, 255, 0.18);
-          border-color: rgba(255, 255, 255, 0.35);
-          transform: translateY(-50%) scale(1.1);
-          box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+          background: rgba(255, 255, 255, 0.4);
+          border-color: rgba(255, 255, 255, 0.6);
+          transform: scale(1.1);
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        .jd-hero-arrow-prev { left: 28px; }
-        .jd-hero-arrow-next { right: 28px; }
-
         @media (max-width: 768px) {
-          .jd-hero-arrow,
           .jd-hero-dots-container {
             display: none !important;
           }
@@ -501,27 +510,29 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
             isActive={true}
             isPriority={true}
             direction={direction}
+            onNext={next}
+            onPrev={prev}
           />
         </AnimatePresence>
 
-        {/* Circular glass arrows */}
+        {/* Global Navigation Arrows for Desktop */}
         {total > 1 && (
-          <>
-            <button 
-              className="jd-hero-arrow jd-hero-arrow-prev" 
-              onClick={prev} 
+          <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 left-4 right-4 z-40 justify-between pointer-events-none">
+            <button
+              className="pointer-events-auto jd-hero-arrow"
+              onClick={prev}
               aria-label="Previous slide"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft className="w-8 h-8 text-white drop-shadow-md" color="#ffffff" />
             </button>
-            <button 
-              className="jd-hero-arrow jd-hero-arrow-next" 
-              onClick={next} 
+            <button
+              className="pointer-events-auto jd-hero-arrow"
+              onClick={next}
               aria-label="Next slide"
             >
-              <ChevronRight size={24} />
+              <ChevronRight className="w-8 h-8 text-white drop-shadow-md" color="#ffffff" />
             </button>
-          </>
+          </div>
         )}
 
         {/* Netflix style dot pagination */}

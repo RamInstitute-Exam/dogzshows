@@ -1,9 +1,8 @@
 const fs = require('fs');
-let s = fs.readFileSync('src/app/contact/ContactClient.tsx', 'utf8');
-
-s = s.replace(
-  'fallbackImage="/images/contact_banner.png"',
-  'fallbackImage="/images/contact_banner.png"\n        initialBannerData={initialBannerData}'
-);
-
-fs.writeFileSync('src/app/contact/ContactClient.tsx', s);
+const file = 'src/app/admin/entries/page.tsx';
+let content = fs.readFileSync(file, 'utf8');
+content = content.replace(/\\`/g, '`');
+content = content.replace(/\\\$/g, '$');
+content = content.replace(/\\\\n/g, '\\n');
+fs.writeFileSync(file, content);
+console.log('Fixed syntax escapes in ' + file);

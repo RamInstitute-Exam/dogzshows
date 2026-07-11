@@ -44,13 +44,13 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [selectedClub, setSelectedClub] = useState(searchParams.get('clubId') || '');
   const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || '');
-  
+
   const [selectedMonth, setSelectedMonth] = useState(searchParams.get('month') || '');
   const [selectedYear, setSelectedYear] = useState(searchParams.get('year') || '');
   const [fromDate, setFromDate] = useState(searchParams.get('fromDate') || '');
   const [toDate, setToDate] = useState(searchParams.get('toDate') || '');
   const [quickFilter, setQuickFilter] = useState(searchParams.get('quickFilter') || '');
-  
+
   const [page, setPage] = useState(parseInt(searchParams.get('page') || '1', 10));
   const [totalPages, setTotalPages] = useState(1);
 
@@ -173,19 +173,19 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
       const res = await api.get(`${endpoint}?${queryParams.toString()}`);
       if (res.success) {
         let fetchedEvents = res.data || res.items || [];
-        
+
         // Guarantee strict ascending chronological sorting & push past events to the bottom
         fetchedEvents = [...fetchedEvents].sort((a: any, b: any) => {
           const aDate = new Date(a.startDate).getTime();
           const bDate = new Date(b.startDate).getTime();
           const now = new Date().setHours(0, 0, 0, 0);
-          
+
           const aIsPast = aDate < now;
           const bIsPast = bDate < now;
-          
+
           if (aIsPast && !bIsPast) return 1;
           if (!aIsPast && bIsPast) return -1;
-          
+
           return aDate - bDate;
         });
 
@@ -272,7 +272,7 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
 
   return (
     <PageContainer>
-      
+
       <BreadcrumbBanner
         slug="events"
         fallbackTitle="DOG EVENTS & CHAMPIONSHIPS"
@@ -284,14 +284,14 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
       {/* Filter / Search Bar */}
       <PublicContainer className="mb-12 mt-6">
         <div className="flex flex-col gap-6">
-          
+
           {/* Row 1: Search Box */}
           <div className="w-full lg:w-[70%]">
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <input 
-                type="text" 
-                placeholder="Search Event Name, Club Name, Location..." 
+              <input
+                type="text"
+                placeholder="Search Event Name, Club Name, Location..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full h-[56px] pl-12 pr-4 rounded-[16px] bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-foreground text-base shadow-sm"
@@ -313,7 +313,7 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
             <select
               value={selectedMonth}
               onChange={(e) => { setSelectedMonth(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }}
-              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
+              className="h-[48px] px-5 bg-card/60 hover:bg-card border border-border/60 rounded-xl text-sm font-semibold text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 w-full md:w-auto transition-all cursor-pointer"
             >
               <option value="">All Months</option>
               <option value="1">January</option>
@@ -333,7 +333,7 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
             <select
               value={selectedYear}
               onChange={(e) => { setSelectedYear(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }}
-              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
+              className="h-[48px] px-5 bg-card/60 hover:bg-card border border-border/60 rounded-xl text-sm font-semibold text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 w-full md:w-auto transition-all cursor-pointer"
             >
               <option value="">All Years</option>
               {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -342,7 +342,7 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
             <select
               value={selectedClub}
               onChange={(e) => { setSelectedClub(e.target.value); setPage(1); scrollToEvents(); }}
-              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
+              className="h-[48px] px-5 bg-card/60 hover:bg-card border border-border/60 rounded-xl text-sm font-semibold text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 w-full md:flex-1 min-w-[200px] transition-all cursor-pointer"
             >
               <option value="">All Clubs</option>
               {clubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -351,31 +351,31 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
             <select
               value={selectedCity}
               onChange={(e) => { setSelectedCity(e.target.value); setPage(1); scrollToEvents(); }}
-              className="h-[44px] px-4 bg-background border border-border rounded-xl text-sm font-medium text-muted-foreground outline-none focus:border-primary w-full md:w-auto"
+              className="h-[48px] px-5 bg-card/60 hover:bg-card border border-border/60 rounded-xl text-sm font-semibold text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 w-full md:w-auto transition-all cursor-pointer"
             >
               <option value="">All Locations</option>
               {uniqueCities.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            
-            <div className="flex items-center gap-2 h-[44px] bg-background border border-border rounded-xl px-3 w-full md:w-auto">
-              <input 
-                type="date" 
-                value={fromDate} 
-                onChange={e => { setFromDate(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }} 
-                className="bg-transparent outline-none w-full text-sm font-medium text-muted-foreground min-w-[110px]" 
+
+            <div className="flex items-center gap-3 h-[48px] bg-card/60 hover:bg-card border border-border/60 rounded-xl px-4 w-full md:w-auto transition-all focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20">
+              <input
+                type="date"
+                value={fromDate}
+                onChange={e => { setFromDate(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }}
+                className="bg-transparent outline-none w-full md:w-[130px] text-sm font-semibold text-foreground cursor-pointer"
               />
-              <span className="text-muted-foreground font-bold">-</span>
-              <input 
-                type="date" 
-                value={toDate} 
-                onChange={e => { setToDate(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }} 
-                className="bg-transparent outline-none w-full text-sm font-medium text-muted-foreground min-w-[110px]" 
+              <span className="text-muted-foreground font-bold text-xs uppercase tracking-wider">TO</span>
+              <input
+                type="date"
+                value={toDate}
+                onChange={e => { setToDate(e.target.value); setQuickFilter(''); setPage(1); scrollToEvents(); }}
+                className="bg-transparent outline-none w-full md:w-[130px] text-sm font-semibold text-foreground cursor-pointer"
               />
             </div>
 
-            <button 
+            <button
               onClick={resetFilters}
-              className="h-[44px] px-6 rounded-xl border border-border text-muted-foreground font-bold hover:bg-muted w-full md:w-auto bg-background transition-colors"
+              className="h-[48px] px-8 rounded-xl border border-border/60 text-foreground font-bold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 w-full md:w-auto bg-card/60 transition-all uppercase tracking-wider text-[12px]"
             >
               Reset Filters
             </button>
@@ -412,85 +412,89 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
               });
               const isRegistered = !!userRegistrations[event.id];
               const isClosed = event.status === 'CLOSED' || event.status === 'COMPLETED' || (event.registrationWindowEnd && new Date(event.registrationWindowEnd) < new Date());
-              const isOpen = (event.status === 'REGISTRATION_OPEN' || event.status === 'ACTIVE') && !isClosed;
-              
+              const isRegistrationOpen = event.status === 'REGISTRATION_OPEN' && !isClosed;
+
               const regFee = event.paymentSettings?.registrationFee ?? event.entryFee ?? 1500;
-              const closingDate = event.registrationWindowEnd 
+              const closingDate = event.registrationWindowEnd
                 ? new Date(event.registrationWindowEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                 : 'N/A';
 
               return (
-                <motion.div 
+                <motion.div
                   key={event.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   className="bg-card border border-border rounded-[24px] overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                 >
-                  {/* Top section: banner image + status badge */}
-                  <div className="w-full h-[150px] relative overflow-hidden bg-muted">
-                    <OptimizedImage 
-                      src={event.bannerUrl || '/images/events_banner.png'} 
-                      alt={event.name} 
-                      className="absolute inset-0 w-full h-full object-cover" 
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
-                    
-                    {/* Status Badge */}
-                    <div className="absolute top-4 left-4 z-20">
-                      <span className={`inline-block text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${
-                        isRegistered ? 'bg-green-600 text-white' : isClosed ? 'bg-red-600 text-white' : 'bg-green-500 text-white'
-                      }`}>
-                        {isRegistered ? 'Registered ✓' : isClosed ? 'Registration Closed' : 'Registration Open'}
-                      </span>
-                    </div>
-                  </div>
+                  <Link href={`/events/detail/${event.slug}`} className="flex-1 flex flex-col group">
+                    {/* Top section: banner image + status badge */}
+                    <div className="w-full h-[220px] relative overflow-hidden bg-white">
+                      <OptimizedImage
+                        src={event.bannerUrl || '/images/events_banner.png'}
+                        alt={event.name}
+                        className="absolute inset-0 w-full h-full object-contain"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
 
-                  {/* Middle section: info */}
-                  <div className="p-5 flex-1 flex flex-col justify-between space-y-3.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full border border-border bg-white overflow-hidden flex items-center justify-center shrink-0">
-                        {event.club?.logoUrl ? (
-                          <img 
-                            src={getImageUrl(event.club.logoUrl)} 
-                            alt={event.club.name || 'Club Logo'} 
-                            className="w-full h-full object-contain p-0.5"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/images/placeholder.webp';
-                            }}
-                          />
-                        ) : (
-                          <span className="text-xs font-black text-primary">
-                            {(event.club?.name || 'KC').split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
-                          </span>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <span className="text-[11px] font-black text-primary uppercase tracking-wider block truncate">
-                          {event.club?.name || 'Kennel Club'}
+                      {/* Status Badge */}
+                      <div className="absolute top-4 left-4 z-20">
+                        <span className={`inline-block text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${
+                          isRegistered ? 'bg-green-600 text-white' : 
+                          isClosed ? 'bg-red-600 text-white' : 
+                          isRegistrationOpen ? 'bg-green-500 text-white' : 
+                          'bg-blue-500 text-white'
+                          }`}>
+                          {isRegistered ? 'Registered ✓' : isClosed ? 'Registration Closed' : isRegistrationOpen ? 'Registration Open' : 'Upcoming'}
                         </span>
-                        <h4 className="text-sm font-bold text-foreground truncate mt-0.5" title={event.name}>
-                          {formatTitle(event.name)}
-                        </h4>
                       </div>
                     </div>
 
-                    <div className="space-y-1.5 text-xs text-muted-foreground border-t border-b border-border/40 py-2.5">
-                      <div className="flex justify-between">
-                        <span>Event Date:</span>
-                        <span className="font-bold text-foreground">{showDate}</span>
+                    {/* Middle section: info */}
+                    <div className="p-5 flex-1 flex flex-col space-y-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full border border-border bg-white overflow-hidden flex items-center justify-center shrink-0">
+                          {event.club?.logoUrl ? (
+                            <img
+                              src={getImageUrl(event.club.logoUrl)}
+                              alt={event.club.name || 'Club Logo'}
+                              className="w-full h-full object-contain p-0.5"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                              }}
+                            />
+                          ) : (
+                            <span className="text-xs font-black text-primary">
+                              {(event.club?.name || 'KC').split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1 flex items-center">
+                          <h4 className="text-xs font-black text-foreground uppercase tracking-wider line-clamp-2 group-hover:text-primary transition-colors" title={event.club?.name || 'Kennel Club'}>
+                            {event.club?.name || 'Kennel Club'}
+                          </h4>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Entry Fee:</span>
-                        <span className="font-bold text-foreground">₹{regFee} / Dog</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Closing Date:</span>
-                        <span className="font-bold text-red-500">{closingDate}</span>
+
+                      <div className="space-y-1.5 text-xs text-muted-foreground border-t border-b border-border/40 py-2.5 mt-auto">
+                        <div className="flex justify-between">
+                          <span>Event Date:</span>
+                          <span className="font-bold text-foreground">{showDate}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Entry Fee:</span>
+                          <span className="font-bold text-foreground">₹{regFee} / Dog</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Closing Date:</span>
+                          <span className="font-bold text-red-500">{closingDate}</span>
+                        </div>
                       </div>
                     </div>
+                  </Link>
 
-                    {/* Bottom section: action buttons */}
+                  {/* Bottom section: action buttons */}
+                  <div className="px-5 pb-5 shrink-0">
                     <div className="flex gap-2 pt-1 w-full">
                       {isRegistered ? (
                         <Link href="/dashboard/events/registered" className="w-full">
@@ -501,11 +505,11 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
                       ) : (
                         <>
                           <Link href={`/events/detail/${event.slug}`} className="flex-1">
-                            <Button variant="outline" className="w-full border-border hover:bg-accent text-foreground font-bold text-xs py-2.5 rounded-xl">
+                            <Button variant="outline" className="w-full border-border hover:bg-accent text-foreground font-bold text-xs py-2.5 rounded-xl pointer-events-none">
                               View Details
                             </Button>
                           </Link>
-                          {isOpen ? (
+                          {isRegistrationOpen ? (
                             <Link href={`/events/detail/${event.slug}?register=true`} className="flex-1">
                               <Button className="w-full bg-[#38BDF8] hover:bg-blue-500 text-foreground font-bold text-xs py-2.5 rounded-xl">
                                 Register Now
@@ -513,7 +517,7 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
                             </Link>
                           ) : (
                             <Button disabled className="flex-1 bg-muted text-muted-foreground font-bold text-xs py-2.5 rounded-xl">
-                              Closed
+                              {isClosed ? 'Closed' : 'Upcoming'}
                             </Button>
                           )}
                         </>

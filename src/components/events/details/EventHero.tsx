@@ -57,8 +57,7 @@ export default function EventHero({ event }: { event: any }) {
   return (
     <div
       ref={heroRef}
-      className="relative w-full overflow-hidden"
-      style={{ height: 'clamp(300px, 52vw, 600px)' }}
+      className="relative w-full overflow-hidden bg-white"
     >
       {/* ── BACKGROUND IMAGE with Ken Burns + Parallax ── */}
       <motion.div
@@ -66,7 +65,7 @@ export default function EventHero({ event }: { event: any }) {
         style={{ y: imgY }}
       >
         <motion.div
-          className="w-full h-full"
+          className="w-full h-full bg-white"
           initial={{ scale: 1 }}
           animate={{ scale: 1.06 }}
           transition={{ duration: 12, ease: 'linear', repeat: Infinity, repeatType: 'mirror' }}
@@ -77,7 +76,7 @@ export default function EventHero({ event }: { event: any }) {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-contain object-right md:object-right-bottom"
             style={{ willChange: 'transform' }}
           />
         </motion.div>
@@ -93,15 +92,15 @@ export default function EventHero({ event }: { event: any }) {
       />
 
       {/* ── CONTENT ── */}
-      <div className="absolute inset-0 z-20 flex items-end">
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12 flex flex-col md:flex-row items-end md:items-end justify-between gap-6 md:gap-8">
+      <div className="relative z-20 flex flex-col justify-center min-h-[360px] md:min-h-[500px] lg:min-h-[600px] py-16 md:py-24">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
 
           {/* LEFT — Event Info */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-1 max-w-2xl"
+            className="flex-1 max-w-2xl mt-auto"
           >
             {/* Badges */}
             <div className="flex gap-2 mb-4 flex-wrap">

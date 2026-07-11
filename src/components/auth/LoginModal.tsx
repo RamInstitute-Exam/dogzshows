@@ -24,17 +24,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-0">
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={onClose}
             className="absolute inset-0 bg-background/60 backdrop-blur-sm"
           />
-          
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="relative w-full max-w-md bg-card rounded-[2rem] shadow-2xl overflow-hidden flex flex-col z-10"
           >
@@ -50,9 +50,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
                   >
-                    <OptimizedImage 
-                      src="/Untitled-1.png" 
-                      alt="JUZDOG" 
+                    <OptimizedImage
+                      src="/Untitled-1.png"
+                      alt="JUZDOG"
                       className="w-[100px] md:w-[140px] h-auto object-contain"
                     />
                   </motion.div>
@@ -73,7 +73,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input type="password" placeholder="Password" className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-xl focus:ring-2 focus:ring-foreground outline-none transition-all" />
                 </div>
-                
+
                 <div className="flex justify-between items-center text-sm">
                   <label className="flex items-center gap-2 text-muted-foreground cursor-pointer">
                     <input type="checkbox" className="rounded text-foreground focus:ring-foreground" />
@@ -97,7 +97,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                   <OptimizedImage src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5 mr-2" alt="Google" /> Google
                 </Button>
                 <Button variant="outline" className="h-12 rounded-xl font-bold border-border hover:bg-card text-[#1877F2]">
-                  <svg className="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Facebook
+                  <svg className="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg> Facebook
                 </Button>
               </div>
 
@@ -111,9 +111,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 </div>
               </div>
 
-              <p className="text-center text-sm text-muted-foreground mt-6">
+              {/* <p className="text-center text-sm text-muted-foreground mt-6">
                 Don't have an account? <a href="#" className="font-bold text-foreground hover:text-foreground">Create Account</a>
-              </p>
+              </p> */}
             </div>
           </motion.div>
         </div>

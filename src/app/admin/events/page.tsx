@@ -5,7 +5,7 @@ import {
   Calendar, Search, Filter, Download, Plus, RefreshCw, Loader2, Edit, Trash2, 
   Eye, Copy, MapPin, Trophy, Image as ImageIcon, Check, X, MoreVertical, 
   AlertTriangle, ChevronDown, ChevronUp, Users, Info, FileSpreadsheet, 
-  FileText, FileJson, CheckSquare, Square
+  FileText, FileJson, CheckSquare, Square, LayoutDashboard
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -647,7 +647,9 @@ export default function BespokeEventManagement() {
 
                       {/* Event Title */}
                       <td className="py-4 px-6 truncate font-bold text-foreground">
-                        <span className="block truncate hover:text-foreground cursor-pointer" onClick={() => setActiveEvent(item)}>{formatTitle(item.name)}</span>
+                        <Link href={`/admin/events/dashboard/${item.id}`} className="block truncate hover:text-indigo-400 cursor-pointer transition-colors" title="Open Event Dashboard">
+                          {formatTitle(item.name)}
+                        </Link>
                         <span className="block text-xs font-semibold text-muted-foreground mt-0.5">{item.type}</span>
                       </td>
 
@@ -682,6 +684,14 @@ export default function BespokeEventManagement() {
                       <td className="py-4 px-6 text-right relative whitespace-nowrap">
                         {/* Desktop actions (shown on larger screens) */}
                         <div className="hidden xl:flex items-center justify-end gap-1.5">
+                          <Link href={`/admin/events/dashboard/${item.id}`}>
+                            <button 
+                              className="p-2 text-indigo-500 hover:bg-indigo-500/10 rounded-lg transition-colors border border-indigo-500/20"
+                              title="Event Dashboard & Catalog"
+                            >
+                              <LayoutDashboard className="w-4 h-4" />
+                            </button>
+                          </Link>
                           <button 
                             onClick={() => setActiveEvent(item)}
                             className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors"
@@ -764,6 +774,9 @@ export default function BespokeEventManagement() {
                                 >
                                   <Eye className="w-4 h-4 text-blue-400" /> View Details
                                 </button>
+                                <Link href={`/admin/events/dashboard/${item.id}`} className="px-4 py-2 text-xs font-semibold hover:bg-slate-800 flex items-center gap-2 border-b border-slate-800">
+                                  <LayoutDashboard className="w-4 h-4 text-indigo-400" /> Event Dashboard
+                                </Link>
                                 <Link href={`/admin/events/edit?id=${item.id}`} className="px-4 py-2 text-xs font-semibold hover:bg-slate-800 flex items-center gap-2">
                                   <Edit className="w-4 h-4 text-slate-400" /> Edit Event
                                 </Link>

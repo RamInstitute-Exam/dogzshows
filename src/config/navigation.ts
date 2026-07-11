@@ -31,6 +31,7 @@ export const ADMIN_ROUTES = [
   { name: 'Dog Shows', icon: Trophy, roles: ['SUPER_ADMIN', 'ADMIN'], children: [
     { name: 'All Shows', href: '/admin/events' },
     { name: 'Create Show', href: '/admin/events/create' },
+    { name: 'Show Catalogs', href: '/admin/events' },
     { name: 'Bulk Upload Shows', href: '/admin/bulk-upload?module=events' },
     { name: 'Calendar', href: '/admin/events/calendar' },
     { name: 'Upcoming', href: '/admin/events/upcoming' },
