@@ -11,7 +11,7 @@ export default function RegistrationCapacityBanner({ eventId, dog }: { eventId: 
     const checkCapacity = async () => {
       setLoading(true);
       try {
-        const res = await fetch(\`/api/v1/event-group-limits/\${eventId}\`);
+        const res = await fetch(`/api/v1/event-group-limits/${eventId}`);
         const data = await res.json();
         if (data.success) {
           const limit = data.data.find((l: any) => l.fciGroupId === dog.breed.fciGroupId);
