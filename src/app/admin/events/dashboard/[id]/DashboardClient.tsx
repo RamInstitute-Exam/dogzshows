@@ -321,7 +321,7 @@ export default function DashboardClient({ eventId }: { eventId: string }) {
                   Generate a professional PDF catalog containing all confirmed registrations, organized automatically by Group, Breed, and Class as per KCI guidelines.
                 </p>
                 <a 
-                  href={`/api/v1/event-catalog/${eventId}/pdf`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5001/api/v1'}/event-catalog/${eventId}/pdf`}
                   target="_blank"
                   className="bg-green-600 text-white px-8 py-3.5 rounded-xl shadow-lg hover:bg-green-700 flex items-center space-x-3 transition-transform hover:scale-105 active:scale-95 font-bold"
                 >
