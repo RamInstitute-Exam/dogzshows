@@ -71,7 +71,7 @@ export default function AdminSidebar() {
                         className={`block px-3 py-2 rounded-lg text-sm transition-colors ${isSubActive
                           ? 'bg-foreground text-foreground font-semibold'
                           : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                        }`}
+                          }`}
                       >
                         {subItem.name}
                       </Link>

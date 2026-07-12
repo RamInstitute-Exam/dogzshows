@@ -45,20 +45,20 @@ export default function RegistrationCapacityBanner({ eventId, dog }: { eventId: 
   const isFull = capacityInfo.remaining <= 0;
 
   return (
-    <div className={\`p-4 rounded-md mb-6 \${isFull ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'}\`}>
+    <div className={`p-4 rounded-md mb-6 ${isFull ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'}`}>
       <div className="flex justify-between items-center mb-2">
-        <h4 className={\`font-medium \${isFull ? 'text-red-800' : 'text-blue-800'}\`}>
+        <h4 className={`font-medium ${isFull ? 'text-red-800' : 'text-blue-800'}`}>
           {capacityInfo.groupName} Capacity
         </h4>
-        <span className={\`text-sm font-bold \${isFull ? 'text-red-600' : 'text-blue-600'}\`}>
-          {isFull ? 'Registration Closed' : \`\${capacityInfo.remaining} Slots Remaining\`}
+        <span className={`text-sm font-bold ${isFull ? 'text-red-600' : 'text-blue-600'}`}>
+          {isFull ? 'Registration Closed' : `${capacityInfo.remaining} Slots Remaining`}
         </span>
       </div>
       
       <div className="w-full bg-gray-200 rounded-full h-2.5">
         <div 
-          className={\`h-2.5 rounded-full \${isFull ? 'bg-red-600' : 'bg-blue-600'}\`} 
-          style={{ width: \`\${Math.min(percentage, 100)}%\` }}
+          className={`h-2.5 rounded-full ${isFull ? 'bg-red-600' : 'bg-blue-600'}`} 
+          style={{ width: `${Math.min(percentage, 100)}%` }}
         ></div>
       </div>
       

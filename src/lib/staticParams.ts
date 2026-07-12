@@ -8,7 +8,6 @@
  * so the shell is identical for every ID — we just need the IDs enumerated so
  * Next.js doesn't throw the "missing param" error.
  *
- * Fallback behaviour: if the API is unreachable (e.g. during CI), an empty
  */
 
 const API_BASE =
