@@ -34,10 +34,28 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^gallery/outdoor/([^/]+)/?$ /gallery/outdoor/placeholder/index.html [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^gallery/show-photos/([^/]+)/?$ /gallery/show-photos/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^gallery/([^/]+)/?$ /gallery/placeholder/index.html [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^admin/events/edit/([^/]+)/?$ /admin/events/edit/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^admin/e-magazines/edit/([^/]+)/?$ /admin/e-magazines/edit/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^admin/events/dashboard/([^/]+)/?$ /admin/events/dashboard/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^dashboard/events/([^/]+)/?$ /dashboard/events/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^e-magazines/([^/]+)/?$ /e-magazines/placeholder/index.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^events/detail/([^/]+)/?$ /events/detail/placeholder/index.html [L,QSA]
 
 # ─── SPA fallback ─────────────────────────────────────────────────────────
 # Any path not matching a static file falls back to the root index.html
