@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'export',
   trailingSlash: true,         // Required for Apache/Hostinger to find index.html
   images: {
     loader: 'custom',

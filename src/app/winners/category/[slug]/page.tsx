@@ -7,6 +7,26 @@ interface PageProps {
 }
 
 // Required for static export (output: 'export')
+export async function generateStaticParams() {
+  try {
+    const res = await fetchServerData('/public/winner-categories/public?limit=100', 300).catch(() => null);
+    const categories = (res as any)?.data || (res as any)?.items || [];
+    if (Array.isArray(categories) && categories.length > 0) {
+      return categories.map((cat: any) => ({ slug: cat.slug || cat.id }));
+    }
+  } catch (_) {}
+  // Fallback: pre-generate known slugs
+  return [
+    { slug: 'best-in-show' },
+    { slug: 'reserve-best-in-show' },
+    { slug: 'best-puppy' },
+    { slug: 'best-junior' },
+    { slug: 'champion-winner' },
+    { slug: 'special-award' },
+    { slug: 'hall-of-fame' },
+    { slug: 'best-in-group' },
+  ];
+}
 
 export default async function CategoryDetailPage({ params }: PageProps) {
   // Resolve params if promise (Next.js 15 compatibility)

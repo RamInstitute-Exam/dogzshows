@@ -1,6 +1,10 @@
 import { Suspense } from 'react';
 import EventDetailClient from '../EventDetailClient';
 import { Loader2 } from 'lucide-react';
+import { getEventSlugs } from '@/lib/staticParams';
+
+// Static export compatibility: generateStaticParams fetches dynamic slugs during compile time.
+export { getEventSlugs as generateStaticParams };
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
   return (

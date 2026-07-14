@@ -268,8 +268,8 @@ function EditClubFormContent() {
                 <input type="text" name="secretary" value={formData.secretary} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Contact Email (Read-only)</label>
-                <input disabled type="email" name="email" value={formData.email} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-muted-foreground focus:border-blue-500 outline-none transition-all text-sm opacity-70 cursor-not-allowed" />
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Contact Email</label>
+                <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:border-blue-500 outline-none transition-all text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Phone Number</label>

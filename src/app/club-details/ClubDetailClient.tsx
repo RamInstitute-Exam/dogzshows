@@ -106,13 +106,23 @@ export default function ClubDetailClient({ club, recommendedClubs = [] }: ClubDe
   ];
 
   const getSecretaries = () => {
-    if (club?.clubSecretaries?.length > 0) return club.clubSecretaries;
-    if (club?.secretaries?.length > 0) return club.secretaries;
+    const isValid = (s: any) => s.name?.trim() || s.email?.trim() || s.mobile?.trim() || s.phone?.trim();
+
+    if (club?.clubSecretaries?.length > 0) {
+      const valid = club.clubSecretaries.filter(isValid);
+      if (valid.length > 0) return valid;
+    }
+    
+    if (club?.secretaries?.length > 0) {
+      const valid = club.secretaries.filter(isValid);
+      if (valid.length > 0) return valid;
+    }
     
     if (club?.events?.length > 0) {
       for (const evt of club.events) {
         if (evt.eventSecretaries && evt.eventSecretaries.length > 0) {
-          return evt.eventSecretaries;
+          const valid = evt.eventSecretaries.filter(isValid);
+          if (valid.length > 0) return valid;
         }
       }
     }
