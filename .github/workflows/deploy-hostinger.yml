@@ -1,0 +1,60 @@
+# Backup deployment for the static Next.js export.
+# Primary deploy is Hostinger's GitHub Connect. This runs only as a fallback
+# (e.g. if GitHub Connect is disabled) and requires the secrets below.
+#
+# Required GitHub Secrets (Settings -> Secrets and variables -> Actions):
+#   HOSTINGER_SSH_HOST   e.g. ssh.your-hostinger-server.com  (or the SFTP host)
+#   HOSTINGER_SSH_USER   your Hostinger FTP/SFTP username
+#   HOSTINGER_SSH_PASS   your Hostinger FTP/SFTP password
+#   HOSTINGER_DEPLOY_PATH  remote dir to upload into, e.g. /public_html
+#   (For key auth instead of password, use HOSTINGER_SSH_KEY and adjust the lftp cmd.)
+
+name: Deploy Frontend to Hostinger (backup)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build static export
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_UPLOAD_URL: ${{ secrets.NEXT_PUBLIC_UPLOAD_URL }}
+          NEXT_PUBLIC_APP_NAME: ${{ secrets.NEXT_PUBLIC_APP_NAME }}
+          NEXT_PUBLIC_APP_VERSION: ${{ secrets.NEXT_PUBLIC_APP_VERSION }}
+        run: npm run build
+
+      - name: Upload to Hostinger via SFTP
+        if: ${{ env.HOSTINGER_SSH_HOST != '' }}
+        env:
+          HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          PASS: ${{ secrets.HOSTINGER_SSH_PASS }}
+          DEST: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y lftp
+          lftp -f "
+            set ssl:verify-certificate no
+            open sftp://$USER:$PASS@$HOST
+            mirror -R frontend/out $DEST
+            bye
+          "

@@ -2,11 +2,14 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "node fix-rsc.js",
     "start": "next start",
+    "start:hostinger": "NODE_ENV=production node server.js",
     "lint": "eslint"
   },
   "dependencies": {
@@ -35,6 +38,7 @@
     "react-apexcharts": "^2.1.0",
     "react-dom": "19.2.4",
     "react-dropzone": "^15.0.0",
+    "serve": "^14.2.4",
     "react-easy-crop": "^6.0.2",
     "react-hook-form": "^7.78.0",
     "react-image-crop": "^11.0.10",

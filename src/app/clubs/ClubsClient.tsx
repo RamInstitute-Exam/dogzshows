@@ -18,12 +18,12 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
 
   const [clubs, setClubs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Filters & Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  
+
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [stateFilter, setStateFilter] = useState('');
@@ -48,7 +48,7 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
       if (kciApproved) url += `&kciApproved=true`;
       if (typeParam) url += `&type=${encodeURIComponent(typeParam)}`;
       if (sortBy) url += `&sortBy=${encodeURIComponent(sortBy)}`;
-      
+
       const res = await api.get(url);
       if (res.success) {
         const rawClubs = res.data || res.clubs || [];
@@ -111,7 +111,7 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
 
   return (
     <PageContainer>
-      <BreadcrumbBanner 
+      <BreadcrumbBanner
         slug="clubs"
         fallbackTitle="CLUB DIRECTORY"
         fallbackSubtitle="Discover registered kennel clubs across India. Connect with local chapters for events, dog shows, and community support."
@@ -142,7 +142,7 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
       {/* Listing Section */}
       <section className="py-12 bg-background min-h-[500px]">
         <PublicContainer>
-          
+
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">Results <span className="text-muted-foreground font-normal text-sm ml-2">({totalCount} clubs found)</span></h2>
           </div>
@@ -170,9 +170,9 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
                     <div className="w-full h-[180px] sm:h-[60%] shrink-0 relative overflow-hidden bg-white flex items-center justify-center p-4 sm:p-5">
                       <div className="relative z-10 w-full h-full flex items-center justify-center shrink-0 drop-shadow-sm transition-transform duration-500 group-hover:scale-105">
                         {club.logoThumbnailUrl || club.logoUrl ? (
-                          <Image 
-                            src={getImageUrl(club.logoThumbnailUrl || club.logoUrl)} 
-                            alt={club.name} 
+                          <Image
+                            src={getImageUrl(club.logoThumbnailUrl || club.logoUrl)}
+                            alt={club.name}
                             fill
                             className="object-contain"
                             loading="lazy"
@@ -197,7 +197,7 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
                           {club.name}
                         </h3>
                       </div>
-                      
+
                       <div className="flex flex-col items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground shrink-0 w-full mt-3">
                         {(club.city || club.state) && (
                           <div className="flex items-center justify-center gap-1.5 sm:gap-2">
@@ -232,12 +232,12 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
                 {typeParam ? "No clubs available in this category." : "No Clubs Found"}
               </h3>
               <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                {typeParam 
-                  ? "Check back later or browse other categories." 
+                {typeParam
+                  ? "Check back later or browse other categories."
                   : "We couldn't find any clubs matching your current filters. Try adjusting your search terms or clearing the filters."}
               </p>
               {!typeParam && (
-                <button 
+                <button
                   onClick={() => { setSearch(''); setStateFilter(''); setCityFilter(''); setBreedFilter(''); setKciApproved(false); }}
                   className="bg-foreground text-background font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
                 >
@@ -257,17 +257,16 @@ export default function ClubsClient({ initialBannerData }: { initialBannerData?:
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              
+
               <div className="flex flex-wrap items-center justify-center gap-1">
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i}
                     onClick={() => handlePageChange(i + 1)}
-                    className={`w-10 h-10 shrink-0 rounded-lg text-sm font-bold transition-colors ${
-                      page === i + 1 
-                        ? 'bg-foreground text-white border-transparent' 
+                    className={`w-10 h-10 shrink-0 rounded-lg text-sm font-bold transition-colors ${page === i + 1
+                        ? 'bg-foreground text-white border-transparent'
                         : 'border border-border bg-card text-foreground hover:bg-accent'
-                    }`}
+                      }`}
                   >
                     {i + 1}
                   </button>

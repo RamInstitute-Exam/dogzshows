@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // output: 'export', // Removed to deploy as Next.js server on Hostinger
   trailingSlash: true,         // Required for Apache/Hostinger to find index.html
   images: {
     loader: 'custom',

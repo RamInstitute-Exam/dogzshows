@@ -425,17 +425,21 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="bg-card border border-border rounded-[24px] overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                  className="h-full flex justify-center w-full"
                 >
-                  <Link href={`/events/detail/${event.slug}`} className="flex-1 flex flex-col group">
+                  <Link 
+                    href={`/events/detail/${event.slug}`} 
+                    className="group relative flex flex-col w-full h-[360px] sm:h-[380px] bg-[#111111] rounded-[16px] sm:rounded-[20px] border border-border hover:border-white/20 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 ease-out cursor-pointer overflow-hidden"
+                  >
                     {/* Top section: banner image + status badge */}
-                    <div className="w-full h-[220px] relative overflow-hidden bg-white">
-                      <OptimizedImage
-                        src={event.bannerUrl || '/images/events_banner.png'}
-                        alt={event.name}
-                        className="absolute inset-0 w-full h-full object-contain"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                    <div className="w-full h-[55%] relative overflow-hidden bg-white flex items-center justify-center p-4">
+                      <div className="relative z-10 w-full h-full flex items-center justify-center shrink-0 drop-shadow-sm transition-transform duration-500 group-hover:scale-105">
+                        <OptimizedImage
+                          src={event.bannerUrl || event.club?.logoUrl || '/images/events_banner.png'}
+                          alt={event.name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
 
                       {/* Status Badge */}
                       <div className="absolute top-4 left-4 z-20">
@@ -450,80 +454,42 @@ function EventsPageContent({ initialBannerData }: { initialBannerData?: any }) {
                       </div>
                     </div>
 
-                    {/* Middle section: info */}
-                    <div className="p-5 flex-1 flex flex-col space-y-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full border border-border bg-white overflow-hidden flex items-center justify-center shrink-0">
-                          {event.club?.logoUrl ? (
-                            <img
-                              src={getImageUrl(event.club.logoUrl)}
-                              alt={event.club.name || 'Club Logo'}
-                              className="w-full h-full object-contain p-0.5"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = '/images/placeholder.webp';
-                              }}
-                            />
-                          ) : (
-                            <span className="text-xs font-black text-primary">
-                              {(event.club?.name || 'KC').split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1 flex items-center">
-                          <h4 className="text-xs font-black text-foreground uppercase tracking-wider line-clamp-2 group-hover:text-primary transition-colors" title={event.club?.name || 'Kennel Club'}>
-                            {event.club?.name || 'Kennel Club'}
-                          </h4>
-                        </div>
+                    {/* Content Section */}
+                    <div className="p-4 sm:p-5 flex gap-3.5 sm:gap-4 bg-[#111111] flex-1">
+                      {/* Left: Small circular club logo */}
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shrink-0 flex items-center justify-center p-1 border border-border mt-1">
+                        {event.club?.logoUrl ? (
+                          <img
+                            src={getImageUrl(event.club.logoUrl)}
+                            alt={event.club.name || 'Club Logo'}
+                            className="w-full h-full object-contain rounded-full"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                            }}
+                          />
+                        ) : (
+                          <span className="text-xs font-black text-black">
+                            {(event.club?.name || 'KC').split(' ').map((n: string) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()}
+                          </span>
+                        )}
                       </div>
 
-                      <div className="space-y-1.5 text-xs text-muted-foreground border-t border-b border-border/40 py-2.5 mt-auto">
-                        <div className="flex justify-between">
-                          <span>Event Date:</span>
-                          <span className="font-bold text-foreground">{showDate}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Entry Fee:</span>
-                          <span className="font-bold text-foreground">₹{regFee} / Dog</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Closing Date:</span>
-                          <span className="font-bold text-red-500">{closingDate}</span>
+                      {/* Right: Info */}
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <h4 className="text-[10px] sm:text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1 truncate" title={event.club?.name || 'Kennel Club'}>
+                          {event.club?.name || 'Kennel Club'}
+                        </h4>
+                        <h3 className="text-[13px] sm:text-[15px] font-bold text-white uppercase leading-tight mb-2 line-clamp-3 group-hover:text-gray-200 transition-colors">
+                          {event.name}
+                        </h3>
+                        
+                        <div className="flex items-center gap-1.5 mt-auto text-[11px] sm:text-[12px] font-medium text-gray-400">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{showDate}</span>
                         </div>
                       </div>
                     </div>
                   </Link>
-
-                  {/* Bottom section: action buttons */}
-                  <div className="px-5 pb-5 shrink-0">
-                    <div className="flex gap-2 pt-1 w-full">
-                      {isRegistered ? (
-                        <Link href="/dashboard/events/registered" className="w-full">
-                          <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5">
-                            View Registration
-                          </Button>
-                        </Link>
-                      ) : (
-                        <>
-                          <Link href={`/events/detail/${event.slug}`} className="flex-1">
-                            <Button variant="outline" className="w-full border-border hover:bg-accent text-foreground font-bold text-xs py-2.5 rounded-xl pointer-events-none">
-                              View Details
-                            </Button>
-                          </Link>
-                          {isRegistrationOpen ? (
-                            <Link href={`/events/detail/${event.slug}?register=true`} className="flex-1">
-                              <Button className="w-full bg-[#38BDF8] hover:bg-blue-500 text-foreground font-bold text-xs py-2.5 rounded-xl">
-                                Register Now
-                              </Button>
-                            </Link>
-                          ) : (
-                            <Button disabled className="flex-1 bg-muted text-muted-foreground font-bold text-xs py-2.5 rounded-xl">
-                              {isClosed ? 'Closed' : 'Upcoming'}
-                            </Button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
                 </motion.div>
               );
             })}
